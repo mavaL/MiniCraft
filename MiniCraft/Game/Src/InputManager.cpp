@@ -13,7 +13,6 @@ m_bIsInit(false)
 
 CInputManager::~CInputManager(void)
 {
-	Shutdown();
 }
 
 bool CInputManager::Init()

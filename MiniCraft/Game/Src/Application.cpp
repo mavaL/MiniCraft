@@ -17,7 +17,6 @@ Applicaton::Applicaton()
 
 Applicaton::~Applicaton()
 {
-	Shutdown();
 }
 
 bool Applicaton::Init()

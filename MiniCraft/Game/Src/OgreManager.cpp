@@ -17,7 +17,6 @@ m_pViewport(NULL)
 
 COgreManager::~COgreManager(void)
 {
-	Shutdown();
 }
 
 bool COgreManager::Init()

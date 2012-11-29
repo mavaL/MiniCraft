@@ -39,7 +39,6 @@ public:
 	virtual bool pause(){return true;}
 	virtual void resume(){};
 	virtual void update(float timeSinceLastFrame) = 0;
-	virtual void render() = 0;
 
 protected:
 	CAppState(){};

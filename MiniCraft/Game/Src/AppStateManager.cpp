@@ -154,9 +154,3 @@ CAppState* CAppStateManager::getCurState()
 
 	return m_ActiveStateStack[m_ActiveStateStack.size()-1];
 }
-
-void CAppStateManager::Render()
-{
-	if(!m_ActiveStateStack.empty())
-		m_ActiveStateStack.back()->render(); 
-}

@@ -26,8 +26,6 @@ public:
 	void shutdown();
 	//更新当前状态逻辑,返回false代表退出游戏
 	bool UpdateCurrentState(float dt);
-	//更新当前状态渲染
-	void Render();
 
 	CAppState* getCurState();
 	void manageAppState(const std::string& stateName, CAppState* state);

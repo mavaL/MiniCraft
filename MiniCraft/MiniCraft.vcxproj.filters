@@ -13,6 +13,45 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="OgreRecast">
+      <UniqueIdentifier>{b3dbc9c5-30ae-4122-9a05-3d93c8193260}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="OgreRecast\Include">
+      <UniqueIdentifier>{45906fab-a72e-46ee-800b-afcaf7481bea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="OgreRecast\Src">
+      <UniqueIdentifier>{9d663455-9003-421b-846e-4abaf1c4fbe1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="OgreRecast\Include\Detour">
+      <UniqueIdentifier>{4b8e87e9-404d-4422-9107-4c12348edc46}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="OgreRecast\Include\DetourCrowd">
+      <UniqueIdentifier>{6ca96e83-2dca-44e8-a600-603b73695b50}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="OgreRecast\Include\DetourTileCache">
+      <UniqueIdentifier>{14045472-9439-4a34-8a1a-2abd9318e06f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="OgreRecast\Include\Recast">
+      <UniqueIdentifier>{2a8571df-9cd5-40c5-a3f0-b137225abf32}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="OgreRecast\Include\RecastContrib">
+      <UniqueIdentifier>{8e42df7f-5e45-4125-9ce1-66e848037011}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="OgreRecast\Src\Detour">
+      <UniqueIdentifier>{7102498e-75b4-408e-a2a0-b163e21b2ef2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="OgreRecast\Src\DetourCrowd">
+      <UniqueIdentifier>{d145cba9-1a41-457f-a7a7-7372b6204ec5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="OgreRecast\Src\DetourTileCache">
+      <UniqueIdentifier>{370a9efc-062c-446f-acb3-12c2d35d3bff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="OgreRecast\Src\Recast">
+      <UniqueIdentifier>{e57f7bc2-33c1-4fc5-9df5-f421cdbd5b6c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="OgreRecast\Src\RecastContrib">
+      <UniqueIdentifier>{152671a0-75be-45b6-89f8-9416d2067949}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Include\AppState.h">
@@ -39,6 +78,102 @@
     <ClInclude Include="Game\Include\OgreManager.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="Dependency\OgreRecast\Include\ConvexShapeObstacle.h">
+      <Filter>OgreRecast\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependency\OgreRecast\Include\CylinderObstacle.h">
+      <Filter>OgreRecast\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependency\OgreRecast\Include\Obstacle.h">
+      <Filter>OgreRecast\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependency\OgreRecast\Include\OgreDetourCrowd.h">
+      <Filter>OgreRecast\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependency\OgreRecast\Include\OgreDetourTileCache.h">
+      <Filter>OgreRecast\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependency\OgreRecast\Include\OgreRecast.h">
+      <Filter>OgreRecast\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependency\OgreRecast\Include\OgreRecastDefinitions.h">
+      <Filter>OgreRecast\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependency\OgreRecast\Include\OgreRecastNavmeshPruner.h">
+      <Filter>OgreRecast\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependency\OgreRecast\Include\RecastConvexHull.h">
+      <Filter>OgreRecast\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependency\OgreRecast\Include\RecastInputGeom.h">
+      <Filter>OgreRecast\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependency\OgreRecast\Include\Detour\DetourAlloc.h">
+      <Filter>OgreRecast\Include\Detour</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependency\OgreRecast\Include\Detour\DetourAssert.h">
+      <Filter>OgreRecast\Include\Detour</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependency\OgreRecast\Include\Detour\DetourCommon.h">
+      <Filter>OgreRecast\Include\Detour</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependency\OgreRecast\Include\Detour\DetourNavMesh.h">
+      <Filter>OgreRecast\Include\Detour</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependency\OgreRecast\Include\Detour\DetourNavMeshBuilder.h">
+      <Filter>OgreRecast\Include\Detour</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependency\OgreRecast\Include\Detour\DetourNavMeshQuery.h">
+      <Filter>OgreRecast\Include\Detour</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependency\OgreRecast\Include\Detour\DetourNode.h">
+      <Filter>OgreRecast\Include\Detour</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependency\OgreRecast\Include\Detour\DetourStatus.h">
+      <Filter>OgreRecast\Include\Detour</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependency\OgreRecast\Include\DetourCrowd\DetourCrowd.h">
+      <Filter>OgreRecast\Include\DetourCrowd</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependency\OgreRecast\Include\DetourCrowd\DetourLocalBoundary.h">
+      <Filter>OgreRecast\Include\DetourCrowd</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependency\OgreRecast\Include\DetourCrowd\DetourObstacleAvoidance.h">
+      <Filter>OgreRecast\Include\DetourCrowd</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependency\OgreRecast\Include\DetourCrowd\DetourPathCorridor.h">
+      <Filter>OgreRecast\Include\DetourCrowd</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependency\OgreRecast\Include\DetourCrowd\DetourPathQueue.h">
+      <Filter>OgreRecast\Include\DetourCrowd</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependency\OgreRecast\Include\DetourCrowd\DetourProximityGrid.h">
+      <Filter>OgreRecast\Include\DetourCrowd</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependency\OgreRecast\Include\DetourTileCache\DetourTileCache.h">
+      <Filter>OgreRecast\Include\DetourTileCache</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependency\OgreRecast\Include\DetourTileCache\DetourTileCacheBuilder.h">
+      <Filter>OgreRecast\Include\DetourTileCache</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependency\OgreRecast\Include\RecastContrib\fastlz\fastlz.h">
+      <Filter>OgreRecast\Include\RecastContrib</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependency\OgreRecast\Include\Recast\Recast.h">
+      <Filter>OgreRecast\Include\Recast</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependency\OgreRecast\Include\Recast\RecastAlloc.h">
+      <Filter>OgreRecast\Include\Recast</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependency\OgreRecast\Include\Recast\RecastAssert.h">
+      <Filter>OgreRecast\Include\Recast</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependency\OgreRecast\Include\Character.h">
+      <Filter>OgreRecast\Include\RecastContrib</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependency\OgreRecast\Include\TestCharacter.h">
+      <Filter>OgreRecast\Include\RecastContrib</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game\Src\AppStateManager.cpp">
@@ -61,6 +196,108 @@
     </ClCompile>
     <ClCompile Include="Game\Src\OgreManager.cpp">
       <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependency\OgreRecast\Src\Obstacle.cpp">
+      <Filter>OgreRecast\Src</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependency\OgreRecast\Src\OgreDetourCrowd.cpp">
+      <Filter>OgreRecast\Src</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependency\OgreRecast\Src\OgreDetourTileCache.cpp">
+      <Filter>OgreRecast\Src</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependency\OgreRecast\Src\OgreRecast.cpp">
+      <Filter>OgreRecast\Src</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependency\OgreRecast\Src\OgreRecastNavmeshPruner.cpp">
+      <Filter>OgreRecast\Src</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependency\OgreRecast\Src\RecastConvexHull.cpp">
+      <Filter>OgreRecast\Src</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependency\OgreRecast\Src\RecastInputGeom.cpp">
+      <Filter>OgreRecast\Src</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependency\OgreRecast\Src\Detour\DetourAlloc.cpp">
+      <Filter>OgreRecast\Src\Detour</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependency\OgreRecast\Src\Detour\DetourCommon.cpp">
+      <Filter>OgreRecast\Src\Detour</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependency\OgreRecast\Src\Detour\DetourNavMesh.cpp">
+      <Filter>OgreRecast\Src\Detour</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependency\OgreRecast\Src\Detour\DetourNavMeshBuilder.cpp">
+      <Filter>OgreRecast\Src\Detour</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependency\OgreRecast\Src\Detour\DetourNavMeshQuery.cpp">
+      <Filter>OgreRecast\Src\Detour</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependency\OgreRecast\Src\Detour\DetourNode.cpp">
+      <Filter>OgreRecast\Src\Detour</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependency\OgreRecast\Src\DetourCrowd\DetourCrowd.cpp">
+      <Filter>OgreRecast\Src\DetourCrowd</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependency\OgreRecast\Src\DetourCrowd\DetourLocalBoundary.cpp">
+      <Filter>OgreRecast\Src\DetourCrowd</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependency\OgreRecast\Src\DetourCrowd\DetourObstacleAvoidance.cpp">
+      <Filter>OgreRecast\Src\DetourCrowd</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependency\OgreRecast\Src\DetourCrowd\DetourPathCorridor.cpp">
+      <Filter>OgreRecast\Src\DetourCrowd</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependency\OgreRecast\Src\DetourCrowd\DetourPathQueue.cpp">
+      <Filter>OgreRecast\Src\DetourCrowd</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependency\OgreRecast\Src\DetourCrowd\DetourProximityGrid.cpp">
+      <Filter>OgreRecast\Src\DetourCrowd</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependency\OgreRecast\Src\DetourTileCache\DetourTileCache.cpp">
+      <Filter>OgreRecast\Src\DetourTileCache</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependency\OgreRecast\Src\DetourTileCache\DetourTileCacheBuilder.cpp">
+      <Filter>OgreRecast\Src\DetourTileCache</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependency\OgreRecast\Src\RecastContrib\fastlz\fastlz.c">
+      <Filter>OgreRecast\Src\RecastContrib</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependency\OgreRecast\Src\Recast\Recast.cpp">
+      <Filter>OgreRecast\Src\Recast</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependency\OgreRecast\Src\Recast\RecastAlloc.cpp">
+      <Filter>OgreRecast\Src\Recast</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependency\OgreRecast\Src\Recast\RecastArea.cpp">
+      <Filter>OgreRecast\Src\Recast</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependency\OgreRecast\Src\Recast\RecastContour.cpp">
+      <Filter>OgreRecast\Src\Recast</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependency\OgreRecast\Src\Recast\RecastFilter.cpp">
+      <Filter>OgreRecast\Src\Recast</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependency\OgreRecast\Src\Recast\RecastLayers.cpp">
+      <Filter>OgreRecast\Src\Recast</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependency\OgreRecast\Src\Recast\RecastMesh.cpp">
+      <Filter>OgreRecast\Src\Recast</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependency\OgreRecast\Src\Recast\RecastMeshDetail.cpp">
+      <Filter>OgreRecast\Src\Recast</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependency\OgreRecast\Src\Recast\RecastRasterization.cpp">
+      <Filter>OgreRecast\Src\Recast</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependency\OgreRecast\Src\Recast\RecastRegion.cpp">
+      <Filter>OgreRecast\Src\Recast</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependency\OgreRecast\Src\Character.cpp">
+      <Filter>OgreRecast\Src</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependency\OgreRecast\Src\TestCharacter.cpp">
+      <Filter>OgreRecast\Src</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

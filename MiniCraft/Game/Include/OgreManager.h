@@ -29,6 +29,7 @@ public:
 	Ogre::Timer*	GetTimer()			{ return m_Timer; }
 	void			GetMainWndHandle(unsigned long& hwnd) { mWindow->getCustomAttribute("WINDOW", &hwnd);}
 	Ogre::RenderWindow*	GetRenderWindow()	{ return mWindow; }
+	Ogre::Viewport*	GetViewport()		{ return m_pViewport; }
 
 private:
 	Ogre::Root*			mRoot;
