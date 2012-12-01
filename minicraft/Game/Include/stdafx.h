@@ -5,6 +5,14 @@
 //Ogre
 #include <Ogre.h>
 
+//CEGUI
+#include <CEGUI.h>
+
+//RecastÑ°Â·¿â
+#include "Recast/Recast.h"
+#include "DetourCrowd/DetourCrowd.h"
+#include "OgreDetourTileCache.h"
+#include "OgreDetourCrowd.h"
 
 //STL
 #include <string>

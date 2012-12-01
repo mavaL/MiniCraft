@@ -45,15 +45,15 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>.\Dependency\boost;.\Dependency\OgreRecast\Include;.\Dependency\OIS\include;.\Dependency\Ogre\include;.\Game\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\Dependency\CEGUI\include;.\Dependency\boost;.\Dependency\OgreRecast\Include;.\Dependency\OIS\include;.\Dependency\Ogre\include;.\Game\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <AdditionalOptions>/Zm112 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/Zm143 %(AdditionalOptions)</AdditionalOptions>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>.\Dependency\boost\Lib;.\Dependency\OIS\Lib\$(Configuration);.\Dependency\Ogre\Lib\$(Configuration)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>OgreMain_d.lib;OIS_d.lib;OgreTerrain_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>.\Dependency\CEGUI\lib\debug;.\Dependency\boost\Lib;.\Dependency\OIS\Lib\$(Configuration);.\Dependency\Ogre\Lib\$(Configuration)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>OgreMain_d.lib;OIS_d.lib;OgreTerrain_d.lib;CEGUIBase_d.lib;CEGUIOgreRenderer_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -62,7 +62,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>.\Dependency\boost;.\Dependency\OgreRecast\Include;.\Dependency\OIS\include;.\Dependency\Ogre\include;.\Game\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\Dependency\CEGUI\include;.\Dependency\boost;.\Dependency\OgreRecast\Include;.\Dependency\OIS\include;.\Dependency\Ogre\include;.\Game\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -108,10 +108,15 @@
     <ClInclude Include="Game\Include\AppState.h" />
     <ClInclude Include="Game\Include\AppStateManager.h" />
     <ClInclude Include="Game\Include\BattleState.h" />
+    <ClInclude Include="Game\Include\Building.h" />
+    <ClInclude Include="Game\Include\Command.h" />
+    <ClInclude Include="Game\Include\GUIManager.h" />
     <ClInclude Include="Game\Include\InputManager.h" />
     <ClInclude Include="Game\Include\OgreManager.h" />
     <ClInclude Include="Game\Include\Singleton.h" />
     <ClInclude Include="Game\Include\stdafx.h" />
+    <ClInclude Include="Game\Include\Unit.h" />
+    <ClInclude Include="Game\Include\UnitState.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Dependency\OgreRecast\Src\Character.cpp">
@@ -219,12 +224,17 @@
     <ClCompile Include="Game\Src\Application.cpp" />
     <ClCompile Include="Game\Src\AppStateManager.cpp" />
     <ClCompile Include="Game\Src\BattleState.cpp" />
+    <ClCompile Include="Game\Src\Building.cpp" />
+    <ClCompile Include="Game\Src\Command.cpp" />
+    <ClCompile Include="Game\Src\GUIManager.cpp" />
     <ClCompile Include="Game\Src\InputManager.cpp" />
     <ClCompile Include="Game\Src\MiniCraft.cpp" />
     <ClCompile Include="Game\Src\OgreManager.cpp" />
     <ClCompile Include="Game\Src\stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Game\Src\Unit.cpp" />
+    <ClCompile Include="Game\Src\UnitState.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

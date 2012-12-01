@@ -174,6 +174,21 @@
     <ClInclude Include="Dependency\OgreRecast\Include\TestCharacter.h">
       <Filter>OgreRecast\Include\RecastContrib</Filter>
     </ClInclude>
+    <ClInclude Include="Game\Include\Building.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Include\Command.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Include\Unit.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Include\GUIManager.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Include\UnitState.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game\Src\AppStateManager.cpp">
@@ -298,6 +313,21 @@
     </ClCompile>
     <ClCompile Include="Dependency\OgreRecast\Src\TestCharacter.cpp">
       <Filter>OgreRecast\Src</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Src\Building.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Src\Command.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Src\Unit.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Src\GUIManager.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Src\UnitState.cpp">
+      <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -10,15 +10,11 @@ namespace Ogre
 	class Camera;
 	class SceneManager;
 }
-namespace OgreBites
-{
-	class SdkCameraMan;
-}
+
 class OgreRecast;
 class OgreDetourTileCache;
 class OgreDetourCrowd;
-class Character;
-
+class Unit;
 
 
 /************************************************************************/
@@ -55,12 +51,15 @@ private:
 	bool						m_bQuit;
 	Ogre::Camera*				m_pCamera;
 	Ogre::SceneManager*			m_pSceneMgr;
-	OgreBites::SdkCameraMan*	m_pCameraMan;
 
+	//RecastÑ°Â·¿â
 	OgreRecast*					m_pRecast;
 	OgreDetourTileCache*		m_pDetourTileCache;
 	OgreDetourCrowd*			m_pDetourCrowd;
-	Character*					m_pCharacter;
+
+	bool						m_bIsSelection;		//¿òÑ¡×´Ì¬
+	bool						m_bCamMoveLeft, m_bCamMoveRight, m_bCamMoveUp, m_bCamMoveDown;
+	Unit*						m_pTestUnit;
 };
 
 

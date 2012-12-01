@@ -41,11 +41,8 @@ class CInputManager : public CSingleton<CInputManager>, public OIS::MouseListene
 	typedef boost::function<bool(const OIS::KeyEvent&)> KeyHandler;
 
 public:
-	//初始化输入系统
 	bool Init();
-	//关闭输入系统
 	void Shutdown();
-	//输入系统是否已初始化
 	bool IsInit() { return m_bIsInit; }
 	//捕获输入设备
 	void Capture();

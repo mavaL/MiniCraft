@@ -54,7 +54,7 @@ bool COgreManager::Init()
 	//ogre.cfg
 	if(mRoot->restoreConfig() || mRoot->showConfigDialog())
 	{
-		mWindow = mRoot->initialise(true, "Game : Race And Roll");
+		mWindow = mRoot->initialise(true, "Game : MiniCraft");
 	}
 	else
 	{

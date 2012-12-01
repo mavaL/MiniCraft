@@ -2,6 +2,7 @@
 #include "Application.h"
 #include "InputManager.h"
 #include "OgreManager.h"
+#include "GUIManager.h"
 #include "AppStateManager.h"
 #include "BattleState.h"
 
@@ -11,6 +12,7 @@ Applicaton::Applicaton()
 :m_stateMgr(nullptr)
 ,m_inputMgr(nullptr)
 ,m_ogreMgr(nullptr)
+,m_guiMgr(nullptr)
 {
 
 }
@@ -24,10 +26,13 @@ bool Applicaton::Init()
 	m_stateMgr = CAppStateManager::GetSingletonPtr();
 	m_inputMgr = CInputManager::GetSingletonPtr();
 	m_ogreMgr =	COgreManager::GetSingletonPtr();
+	m_guiMgr = CGUIManager::GetSingletonPtr();
 
 	CBattleState::create(m_stateMgr, CBattleState::StateName);
 
-	if(!m_ogreMgr->Init() || !m_inputMgr->Init())
+	if(	!m_ogreMgr->Init()	|| 
+		!m_inputMgr->Init()	||
+		!m_guiMgr->Init()	)
 		return false;
 
 	return true;

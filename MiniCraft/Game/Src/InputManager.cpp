@@ -37,6 +37,10 @@ bool CInputManager::Init()
 		return false;
 	}
 
+	OIS::MouseState& mouseState = const_cast<OIS::MouseState&>(mMouse->getMouseState());
+	mouseState.width = COgreManager::GetSingleton().GetRenderWindow()->getWidth();
+	mouseState.height = COgreManager::GetSingleton().GetRenderWindow()->getHeight();
+
 	mKeyboard->setEventCallback(this);
 	mMouse->setEventCallback(this);
 	m_bIsInit = true;

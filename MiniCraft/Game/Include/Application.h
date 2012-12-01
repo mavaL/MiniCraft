@@ -5,6 +5,7 @@
 class CAppStateManager;
 class CInputManager;
 class COgreManager;
+class CGUIManager;
 
 
 /************************************************************************/
@@ -25,6 +26,7 @@ private:
 	CAppStateManager*	m_stateMgr;
 	CInputManager*		m_inputMgr;
 	COgreManager*		m_ogreMgr;
+	CGUIManager*		m_guiMgr;
 };
 
 

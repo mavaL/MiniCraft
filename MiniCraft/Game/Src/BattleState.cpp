@@ -1,11 +1,9 @@
 #include "stdafx.h"
 #include "BattleState.h"
-#include <SdkCameraMan.h>
 #include "OgreManager.h"
-#include "OgreRecast.h"
-#include "OgreDetourTileCache.h"
-#include "OgreDetourCrowd.h"
-#include "TestCharacter.h"
+#include "Unit.h"
+#include "Command.h"
+#include "UnitState.h"
 
 
 
@@ -15,11 +13,15 @@ std::string CBattleState::StateName = "BattleState";
 CBattleState::CBattleState()
 :m_pCamera(nullptr)
 ,m_pSceneMgr(nullptr)
-,m_pCameraMan(nullptr)
 ,m_pRecast(nullptr)
 ,m_pDetourTileCache(nullptr)
 ,m_pDetourCrowd(nullptr)
-,m_pCharacter(nullptr)
+,m_bIsSelection(false)
+,m_bCamMoveLeft(false)
+,m_bCamMoveRight(false)
+,m_bCamMoveUp(false)
+,m_bCamMoveDown(false)
+,m_pTestUnit(nullptr)
 {
 }
 
@@ -39,11 +41,8 @@ void CBattleState::enter()
 	m_pSceneMgr->setAmbientLight(ColourValue(1.0f, 1.0f, 1.0f));
 
 	//45度俯角
-	m_pCamera->setPosition(0, 100, 0);
-	m_pCamera->lookAt(0, 0, -100);
-	m_pCameraMan = new OgreBites::SdkCameraMan(m_pCamera);
-	m_pCameraMan->setStyle(OgreBites::CS_FREELOOK);
-	m_pCameraMan->setTopSpeed(50);
+	m_pCamera->setPosition(0, 50, 0);
+	m_pCamera->lookAt(0, 0, 50);
 
 	//场景中参与构建NavMesh的物体
 	std::vector<Entity*> vecNavEnt;	
@@ -68,7 +67,8 @@ void CBattleState::enter()
 	pMineNode->attachObject(ent);
 	vecNavEnt.push_back(ent);
 
-	m_pRecast = new OgreRecast(m_pSceneMgr);
+	//初始化Recast库,全局config非常重要,参见默认值
+	m_pRecast = new OgreRecast(m_pSceneMgr, OgreRecastConfigParams());
 	m_pDetourTileCache = new OgreDetourTileCache(m_pRecast);
 	if(m_pDetourTileCache->TileCacheBuild(vecNavEnt)) 
 	{
@@ -83,12 +83,19 @@ void CBattleState::enter()
 
 	//初始化Detour寻路库
 	m_pDetourCrowd = new OgreDetourCrowd(m_pRecast);
-	m_pCharacter = new TestCharacter("TestAgent", m_pSceneMgr, m_pDetourCrowd, Vector3(20,0,20));
-	m_pCharacter->updateDestination(Vector3(-15,0,-15));
+// 	m_pCharacter = new TestCharacter("TestAgent", m_pSceneMgr, m_pDetourCrowd, Vector3(20,0,20));
+// 	m_pCharacter->updateDestination(Vector3(-15,0,-15));
+// 
+// 	int ret = m_pRecast->FindPath(Vector3(20,0,20), Vector3(-15,0,-15), 1, 1) ;
+// 	if( ret >= 0 )
+// 		m_pRecast->CreateRecastPathLine(1) ; // Draw a line showing path at specified slot
 
-	int ret = m_pRecast->FindPath(Vector3(20,0,20), Vector3(-15,0,-15), 1, 1) ;
-	if( ret >= 0 )
-		m_pRecast->CreateRecastPathLine(1) ; // Draw a line showing path at specified slot
+	//测试Unit 
+	Entity* pEnt = m_pSceneMgr->createEntity("Sinbad.mesh");
+	SceneNode* pNode = m_pSceneMgr->getRootSceneNode()->createChildSceneNode
+		("UnitNode", Vector3(10,0,10), Quaternion(Radian(Math::PI), Vector3::UNIT_Y));
+	m_pTestUnit = new Unit(pEnt, pNode, m_pRecast, m_pDetourCrowd);
+	m_pTestUnit->SetState(IdleState(m_pTestUnit));
 
 	//绑定输入事件
 	CInputManager& inputMgr = CInputManager::GetSingleton();
@@ -112,12 +119,10 @@ void CBattleState::resume()
 
 void CBattleState::exit()
 {
-	SAFE_DELETE(m_pCharacter);
 	SAFE_DELETE(m_pDetourCrowd);
 	SAFE_DELETE(m_pDetourTileCache);
 	SAFE_DELETE(m_pRecast);
 
-	SAFE_DELETE(m_pCameraMan);
 	COgreManager::GetSingleton().GetViewport()->setCamera(nullptr);
 	Ogre::Root::getSingleton().destroySceneManager(m_pSceneMgr);
 	
@@ -133,12 +138,16 @@ void CBattleState::update(float timeSinceLastFrame)
 		return;
 	}
 
-	Ogre::FrameEvent evt;
-	evt.timeSinceLastFrame = 0.03f;
-	m_pCameraMan->frameRenderingQueued(evt);
+	//寻路更新加速一下
+	m_pDetourCrowd->updateTick(timeSinceLastFrame*3);
 
-	m_pDetourCrowd->updateTick(timeSinceLastFrame);
-	m_pCharacter->update(timeSinceLastFrame);
+	//更新摄像机运动
+	if(m_bCamMoveLeft)	m_pCamera->move(Ogre::Vector3(timeSinceLastFrame*40, 0, 0));
+	if(m_bCamMoveRight) m_pCamera->move(Ogre::Vector3(-timeSinceLastFrame*40, 0, 0));
+	if(m_bCamMoveUp)	m_pCamera->move(Ogre::Vector3(0, 0, timeSinceLastFrame*40));
+	if(m_bCamMoveDown)	m_pCamera->move(Ogre::Vector3(0, 0, -timeSinceLastFrame*40));
+
+	m_pTestUnit->Update(timeSinceLastFrame);
 }
 
 bool CBattleState::OnInputSys_MousePressed( const OIS::MouseEvent& arg, OIS::MouseButtonID id )
@@ -147,29 +156,60 @@ bool CBattleState::OnInputSys_MousePressed( const OIS::MouseEvent& arg, OIS::Mou
 	{
 
 	}
-	else
+	else if (id == OIS::MB_Right)
 	{
-		m_pCameraMan->injectMouseDown(arg, id);
-	}
+		//检测拾取射线是否与游戏区域相交
+		float screenX = arg.state.X.abs / (float)arg.state.width;
+		float screenY = arg.state.Y.abs / (float)arg.state.height;
+		Ogre::Ray ray;
+		m_pCamera->getCameraToViewportRay(screenX, screenY, &ray);
+		Ogre::Plane floor(Ogre::Vector3::UNIT_Y, 0);
+		auto result = ray.intersects(floor);
+		if (result.first)
+		{
+			//检测是否目标点超出了游戏地图
+			Ogre::Vector3 destPos(ray.getPoint(result.second));
+			if(destPos.x < -50 || destPos.x > 50 || destPos.z < -50 || destPos.z > 50)
+				return true;
+
+			//执行移动命令
+			destPos.y += 5;
+			MoveCommand cmd(m_pTestUnit, destPos);
+			m_pTestUnit->GiveCommand(cmd);
+		}
+	}        
 
 	return true;
 }
 
 bool CBattleState::OnInputSys_MouseReleased( const OIS::MouseEvent& arg, OIS::MouseButtonID id )
 {
-	m_pCameraMan->injectMouseUp(arg, id);
 	return true;
 }
 
 bool CBattleState::OnInputSys_MouseMove( const OIS::MouseEvent& arg )
 {
-	m_pCameraMan->injectMouseMove(arg);
+	//获取屏幕尺寸
+	Ogre::RenderWindow* pRenderWnd = COgreManager::GetSingleton().GetRenderWindow();
+	int w = (int)pRenderWnd->getWidth(), h = (int)pRenderWnd->getHeight();
+	//获取当前鼠标绝对位置
+	int absX = arg.state.X.abs, absY = arg.state.Y.abs;
+
+	if	(absX == w		&& arg.state.X.rel	> 0 ) m_bCamMoveRight = true;
+	else if(absX == 0	&& arg.state.X.rel < 0)	m_bCamMoveLeft = true;
+	if(absY == h	&& arg.state.Y.rel > 0) m_bCamMoveDown = true;
+	else if(absY == 0	&& arg.state.Y.rel < 0) m_bCamMoveUp = true;
+
+	if (absX > 0 && absX < w)
+		m_bCamMoveRight = m_bCamMoveLeft = false;
+	if (absY > 0 && absY < h)
+		m_bCamMoveUp = m_bCamMoveDown = false;
+
 	return true;
 }
 
 bool CBattleState::OnInputSys_KeyPressed( const OIS::KeyEvent& arg )
 {
-	m_pCameraMan->injectKeyDown(arg);
 	return true;
 }
 
@@ -177,8 +217,6 @@ bool CBattleState::OnInputSys_KeyReleased( const OIS::KeyEvent& arg )
 {
 	if(arg.key == OIS::KC_ESCAPE)
 		m_bQuit = true;
-	else
-		m_pCameraMan->injectKeyUp(arg);
 
 	return true;
 }
