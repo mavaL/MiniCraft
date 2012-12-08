@@ -2,10 +2,10 @@
 #include "Command.h"
 #include "Unit.h"
 #include "UnitState.h"
+#include "GameDefine.h"
 
 
-HarvestCommand::HarvestCommand(Unit* pOwner, const Ogre::Vector3& resPos)
-:m_resPos(resPos)
+HarvestCommand::HarvestCommand(Unit* pOwner)
 {
 	m_pOwner = pOwner;
 	m_type = eCommandType_Harvest;
@@ -15,7 +15,13 @@ void HarvestCommand::Clone( const CommandBase& cmd )
 {
 	CommandBase::Clone(cmd);
 	const HarvestCommand& harvestCmd = dynamic_cast<const HarvestCommand&>(cmd);
-	m_resPos = harvestCmd.GetResPos();
+}
+
+void HarvestCommand::Excute()
+{
+	//首先向资源移动
+	m_pOwner->SetDestPos(RES_COLLECT_POS);
+	m_pOwner->SetState(eUnitState_Move);
 }
 
 BuildCommand::BuildCommand( Unit* pOwner, const Ogre::Vector3& pos )
@@ -62,10 +68,11 @@ void MoveCommand::Clone( const CommandBase& cmd )
 
 void MoveCommand::Excute()
 {
-	m_pOwner->SetState(MoveState(m_pOwner));
+	m_pOwner->SetDestPos(m_destPos);
+	m_pOwner->SetState(eUnitState_Move);
 }
 
 void CommandBase::Cancel()
 {
-	m_pOwner->SetState(IdleState(m_pOwner));
+	m_pOwner->SetState(eUnitState_Idle);
 }

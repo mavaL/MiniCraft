@@ -4,6 +4,7 @@
 
 enum eCommandType
 {
+	///!!!!这里要与UnitState.lua中的常量相对应
 	eCommandType_Move,
 	eCommandType_Attack,
 	eCommandType_Harvest,
@@ -22,7 +23,7 @@ public:
 	CommandBase() {}
 	virtual ~CommandBase() {}
 public:
-	virtual	void	Clone(const CommandBase& cmd) { m_pOwner = cmd.GetOwner(); }
+	virtual	void	Clone(const CommandBase& cmd) { m_type = cmd.GetType(); m_pOwner = cmd.GetOwner(); }
 	virtual void	Excute() = 0;
 public:
 	eCommandType	GetType() const { return m_type; }
@@ -63,16 +64,11 @@ class HarvestCommand : public CommandBase
 {
 public:
 	HarvestCommand() {}
-	HarvestCommand(Unit* pOwner, const Ogre::Vector3& resPos);
+	HarvestCommand(Unit* pOwner);
 	virtual ~HarvestCommand() {}
 public:
 	virtual	void			Clone(const CommandBase& cmd);
-	virtual void			Excute() {}
-public:
-	const Ogre::Vector3&	GetResPos() const { return m_resPos; }
-
-private:
-	Ogre::Vector3	m_resPos;
+	virtual void			Excute();
 };
 
 /************************************************************************/

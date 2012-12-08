@@ -7,6 +7,8 @@ class Unit;
 
 enum eUnitState
 {
+	///!!!!这里要与UnitState.lua中的常量相对应
+	// TODO:DRY原则,也许这里需要重新设计
 	eUnitState_Idle,
 	eUnitState_Move,
 	eUnitState_Attack,
@@ -22,6 +24,7 @@ class UnitState
 {
 public:
 	UnitState(Unit* pOwner):m_pOwner(pOwner) {}
+	UnitState(const UnitState& rhs):m_type(rhs.GetType()),m_pOwner(rhs.GetOwner()) {}
 	virtual ~UnitState() {}
 public:
 	virtual	void Enter() = 0;
@@ -29,6 +32,7 @@ public:
 	virtual void Exit() = 0;
 public:
 	eUnitState	GetType() const { return m_type; }
+	Unit*		GetOwner() const { return m_pOwner; }
 
 protected:
 	eUnitState	m_type;
@@ -43,6 +47,7 @@ class IdleState : public UnitState
 {
 public:
 	IdleState(Unit* pOwner):UnitState(pOwner),m_pIdleAnim(nullptr) { m_type = eUnitState_Idle; }
+	IdleState(const IdleState& rhs):UnitState(rhs) {}
 	virtual ~IdleState() {}
 public:
 	virtual	void Enter();
@@ -61,16 +66,13 @@ class MoveState : public UnitState
 {
 public:
 	MoveState(Unit* pOwner);
+	MoveState(const MoveState& rhs):UnitState(rhs) {}
 	virtual ~MoveState() {}
+
 public:
 	virtual	void Enter();
 	virtual void Update(float dt);
 	virtual void Exit();
-
-private:
-	Ogre::Vector3			m_destPos;
-	Ogre::AnimationState*	m_pRunBaseAnim;
-	Ogre::AnimationState*	m_pRunTopAnim;
 };
 
 /************************************************************************/
@@ -81,6 +83,7 @@ class AttackState : public UnitState
 {
 public:
 	AttackState(Unit* pOwner):UnitState(pOwner) { m_type = eUnitState_Attack; }
+	AttackState(const AttackState& rhs):UnitState(rhs) {}
 	virtual ~AttackState() {}
 public:
 	virtual	void Enter() {}
@@ -96,6 +99,7 @@ class BuildState : public UnitState
 {
 public:
 	BuildState(Unit* pOwner):UnitState(pOwner) { m_type = eUnitState_Build; }
+	BuildState(const BuildState& rhs):UnitState(rhs) {}
 	virtual ~BuildState() {}
 public:
 	virtual	void Enter() {}
@@ -111,12 +115,13 @@ public:
 class CollectResState : public UnitState
 {
 public:
-	CollectResState(Unit* pOwner):UnitState(pOwner) { m_type = eUnitState_Collect; }
+	CollectResState(Unit* pOwner);
+	CollectResState(const CollectResState& rhs):UnitState(rhs) {}
 	virtual ~CollectResState() {}
 public:
-	virtual	void Enter() {}
-	virtual void Update(float dt) {}
-	virtual void Exit() {}
+	virtual	void Enter();
+	virtual void Update(float dt);
+	virtual void Exit();
 };
 
 /************************************************************************/
@@ -126,12 +131,13 @@ public:
 class ReturnResState : public UnitState
 {
 public:
-	ReturnResState(Unit* pOwner):UnitState(pOwner) { m_type = eUnitState_Return; }
+	ReturnResState(Unit* pOwner);
+	ReturnResState(const ReturnResState& rhs):UnitState(rhs) {}
 	virtual ~ReturnResState() {}
 public:
-	virtual	void Enter() {}
-	virtual void Update(float dt) {}
-	virtual void Exit() {}
+	virtual	void Enter();
+	virtual void Update(float dt);
+	virtual void Exit();
 };
 
 

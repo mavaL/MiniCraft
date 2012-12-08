@@ -2,92 +2,86 @@
 #include "UnitState.h"
 #include "Unit.h"
 #include "Command.h"
+#include "GameDefine.h"
 
 
+///TODO: 各UnitState逻辑现在都改为依赖Unit来实现了,所以各UnitState可写为单件,避免频繁创建销毁
 
 void IdleState::Enter()
 {
-	//播放休闲动画
-	m_pIdleAnim = m_pOwner->GetEntity()->getAnimationState("IdleTop");
-	assert(m_pIdleAnim);
-	m_pIdleAnim->setEnabled(true);
-	m_pIdleAnim->setTimePosition(0);
-	m_pIdleAnim->setLoop(true);
+	ScriptSystem::GetSingleton().Call("IdleState_Enter");
 }
 
 void IdleState::Exit()
 {
-	m_pIdleAnim->setEnabled(false);
+	ScriptSystem::GetSingleton().Call("IdleState_Exit");
 }
 
 void IdleState::Update(float dt)
 {
-	m_pIdleAnim->addTime(dt);
+	ScriptSystem::GetSingleton().Call("IdleState_Update", dt);
 }
 
 MoveState::MoveState( Unit* pOwner )
 :UnitState(pOwner)
-,m_destPos(-1,-1,-1)
-,m_pRunBaseAnim(nullptr)
-,m_pRunTopAnim(nullptr)
 {
 	m_type = eUnitState_Move;
 }
 
 void MoveState::Enter()
 {
-	/// TODO:单位状态应该不依赖Command,因为状态变化不一定是由Command引起的
-	MoveCommand* pCmd = dynamic_cast<MoveCommand*>(m_pOwner->GetCurCommand());
-	assert(pCmd);
-	m_destPos = pCmd->GetDestPos();
-
-	if(!m_pOwner->FindPath(m_destPos))
-	{
-		//寻路失败,转入空闲状态
-		m_pOwner->SetState(IdleState(m_pOwner));
-		return;
-	}
-
-	//打开跑动画
-	m_pRunBaseAnim = m_pOwner->GetEntity()->getAnimationState("RunBase");
-	m_pRunTopAnim = m_pOwner->GetEntity()->getAnimationState("RunTop");
-	assert(m_pRunBaseAnim && m_pRunTopAnim);
-
-	m_pRunBaseAnim->setEnabled(true);
-	m_pRunBaseAnim->setTimePosition(0);
-	m_pRunBaseAnim->setLoop(true);
-
-	m_pRunTopAnim->setEnabled(true);
-	m_pRunTopAnim->setTimePosition(0);
-	m_pRunTopAnim->setLoop(true);
+	ScriptSystem::GetSingleton().Call("MoveState_Enter");
 }
 
 void MoveState::Update( float dt )
 {
-	//更新动画
-	m_pRunBaseAnim->addTime(dt);
-	m_pRunTopAnim->addTime(dt);
-
-	if(m_pOwner->GetAgent()->active) 
-	{
-		Ogre::Vector3 agentPos;
-		OgreRecast::FloatAToOgreVect3(m_pOwner->GetAgent()->npos, agentPos);
-
-		agentPos.y = m_pOwner->GetSceneNode()->_getDerivedPosition().y;
-		//更新寻路
-		m_pOwner->MoveTo(agentPos);
-
-		//是否已到达目的点
-		if (agentPos.positionEquals(m_destPos, 1))
-			m_pOwner->SetState(IdleState(m_pOwner));
-	}
+	ScriptSystem::GetSingleton().Call("MoveState_Update", dt);
 }
 
 void MoveState::Exit()
 {
-	if(m_pRunBaseAnim)
-		m_pRunBaseAnim->setEnabled(false);
-	if(m_pRunTopAnim)
-		m_pRunTopAnim->setEnabled(false);
+	ScriptSystem::GetSingleton().Call("MoveState_Exit");
+}
+
+CollectResState::CollectResState( Unit* pOwner )
+:UnitState(pOwner)
+{ 
+	m_type = eUnitState_Collect; 
+}
+
+void CollectResState::Enter()
+{
+	ScriptSystem::GetSingleton().Call("CollectResState_Enter");
+}
+
+void CollectResState::Update( float dt )
+{
+	ScriptSystem::GetSingleton().Call("CollectResState_Update", dt);
+}
+
+void CollectResState::Exit()
+{
+	ScriptSystem::GetSingleton().Call("CollectResState_Exit");
+}
+
+ReturnResState::ReturnResState( Unit* pOwner )
+:UnitState(pOwner)
+{ 
+	m_type = eUnitState_Return; 
+}
+
+void ReturnResState::Enter()
+{
+	ScriptSystem::GetSingleton().Call("ReturnResState_Enter");
+}
+
+void ReturnResState::Update( float dt )
+{
+	ScriptSystem::GetSingleton().Call("ReturnResState_Update", dt);
+}
+
+void ReturnResState::Exit()
+{
+	ScriptSystem::GetSingleton().Call("ReturnResState_Exit");
 }
 
