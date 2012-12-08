@@ -241,7 +241,7 @@
     <ClCompile Include="Game\Src\World.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Build\Bin\Debug\UnitState.lua" />
+    <None Include="UnitState.lua" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -349,7 +349,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Build\Bin\Debug\UnitState.lua">
+    <None Include="UnitState.lua">
       <Filter>资源文件</Filter>
     </None>
   </ItemGroup>
