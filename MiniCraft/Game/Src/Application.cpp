@@ -4,6 +4,7 @@
 #include "OgreManager.h"
 #include "GUIManager.h"
 #include "AppStateManager.h"
+#include "ScriptSystem.h"
 #include "BattleState.h"
 
 
@@ -34,6 +35,8 @@ bool Applicaton::Init()
 		!m_inputMgr->Init()	||
 		!m_guiMgr->Init()	)
 		return false;
+
+	ScriptSystem::GetSingleton().Init();
 
 	return true;
 }
@@ -76,6 +79,7 @@ void Applicaton::Run()
 
 void Applicaton::Shutdown()
 {
+	ScriptSystem::GetSingleton().Shutdown();
 	m_stateMgr->shutdown();	
 	m_inputMgr->Shutdown();
 	m_ogreMgr->Shutdown();

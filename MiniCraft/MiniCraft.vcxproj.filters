@@ -52,6 +52,9 @@
     <Filter Include="OgreRecast\Src\RecastContrib">
       <UniqueIdentifier>{152671a0-75be-45b6-89f8-9416d2067949}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Script">
+      <UniqueIdentifier>{af5cb7dc-6b11-4246-9018-3e22d11243a0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Include\AppState.h">
@@ -189,6 +192,18 @@
     <ClInclude Include="Game\Include\UnitState.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="Game\Include\GameDefine.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Include\World.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Include\luna.h">
+      <Filter>Script</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Include\ScriptSystem.h">
+      <Filter>Script</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game\Src\AppStateManager.cpp">
@@ -311,9 +326,6 @@
     <ClCompile Include="Dependency\OgreRecast\Src\Character.cpp">
       <Filter>OgreRecast\Src</Filter>
     </ClCompile>
-    <ClCompile Include="Dependency\OgreRecast\Src\TestCharacter.cpp">
-      <Filter>OgreRecast\Src</Filter>
-    </ClCompile>
     <ClCompile Include="Game\Src\Building.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -329,5 +341,16 @@
     <ClCompile Include="Game\Src\UnitState.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Src\World.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Src\ScriptSystem.cpp">
+      <Filter>Script</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Build\Bin\Debug\UnitState.lua">
+      <Filter>资源文件</Filter>
+    </None>
   </ItemGroup>
 </Project>

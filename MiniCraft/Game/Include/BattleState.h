@@ -9,12 +9,14 @@ namespace Ogre
 {
 	class Camera;
 	class SceneManager;
+	class Entity;
 }
 
 class OgreRecast;
 class OgreDetourTileCache;
 class OgreDetourCrowd;
 class Unit;
+class CommandBase;
 
 
 /************************************************************************/
@@ -46,20 +48,14 @@ private:
 	bool OnInputSys_KeyReleased(const OIS::KeyEvent& arg);
 
 	void _QueryCursorPos(Ogre::Vector3& retPos);
+	//获取右击目标点会产生的命令(移动,攻击...)
+	CommandBase* _ComputeCommand(Unit* pUnit, const Ogre::Vector3& targetPos);
 
 private:
 	bool						m_bQuit;
 	Ogre::Camera*				m_pCamera;
-	Ogre::SceneManager*			m_pSceneMgr;
 
-	//Recast寻路库
-	OgreRecast*					m_pRecast;
-	OgreDetourTileCache*		m_pDetourTileCache;
-	OgreDetourCrowd*			m_pDetourCrowd;
-
-	bool						m_bIsSelection;		//框选状态
 	bool						m_bCamMoveLeft, m_bCamMoveRight, m_bCamMoveUp, m_bCamMoveDown;
-	Unit*						m_pTestUnit;
 };
 
 

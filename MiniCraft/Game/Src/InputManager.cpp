@@ -23,7 +23,7 @@ bool CInputManager::Init()
 	OIS::ParamList pl;
 	unsigned long hwnd = 0;
 	COgreManager::GetSingleton().GetMainWndHandle(hwnd);
-	pl.insert(std::make_pair(std::string("WINDOW"), Ogre::StringConverter::toString(hwnd)));
+	pl.insert(std::make_pair("WINDOW", Ogre::StringConverter::toString(hwnd)));
 
 	mInputManager = OIS::InputManager::createInputSystem( pl );
 	if(mInputManager == NULL)
@@ -40,6 +40,8 @@ bool CInputManager::Init()
 	OIS::MouseState& mouseState = const_cast<OIS::MouseState&>(mMouse->getMouseState());
 	mouseState.width = COgreManager::GetSingleton().GetRenderWindow()->getWidth();
 	mouseState.height = COgreManager::GetSingleton().GetRenderWindow()->getHeight();
+	mouseState.X.abs = 400;
+	mouseState.Y.abs = 300;
 
 	mKeyboard->setEventCallback(this);
 	mMouse->setEventCallback(this);

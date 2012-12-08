@@ -40,20 +40,21 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>$(SolutionDir)\Build\Bin\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)\Build\Intermediate\$(Configuration)\</IntDir>
+    <GenerateManifest>false</GenerateManifest>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>.\Dependency\CEGUI\include;.\Dependency\boost;.\Dependency\OgreRecast\Include;.\Dependency\OIS\include;.\Dependency\Ogre\include;.\Game\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\Dependency\Lua5_1_4\src;.\Dependency\CEGUI\include;.\Dependency\boost;.\Dependency\OgreRecast\Include;.\Dependency\OIS\include;.\Dependency\Ogre\include;.\Game\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <AdditionalOptions>/Zm143 %(AdditionalOptions)</AdditionalOptions>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>.\Dependency\CEGUI\lib\debug;.\Dependency\boost\Lib;.\Dependency\OIS\Lib\$(Configuration);.\Dependency\Ogre\Lib\$(Configuration)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>OgreMain_d.lib;OIS_d.lib;OgreTerrain_d.lib;CEGUIBase_d.lib;CEGUIOgreRenderer_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>.\Dependency\Lua5_1_4\lib;.\Dependency\CEGUI\lib\debug;.\Dependency\boost\Lib;.\Dependency\OIS\Lib\$(Configuration);.\Dependency\Ogre\Lib\$(Configuration)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>OgreMain_d.lib;OIS_d.lib;OgreTerrain_d.lib;CEGUIBase_d.lib;CEGUIOgreRenderer_d.lib;lua51.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -62,7 +63,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>.\Dependency\CEGUI\include;.\Dependency\boost;.\Dependency\OgreRecast\Include;.\Dependency\OIS\include;.\Dependency\Ogre\include;.\Game\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\Dependency\Lua5_1_4\src;.\Dependency\CEGUI\include;.\Dependency\boost;.\Dependency\OgreRecast\Include;.\Dependency\OIS\include;.\Dependency\Ogre\include;.\Game\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -110,13 +111,17 @@
     <ClInclude Include="Game\Include\BattleState.h" />
     <ClInclude Include="Game\Include\Building.h" />
     <ClInclude Include="Game\Include\Command.h" />
+    <ClInclude Include="Game\Include\GameDefine.h" />
     <ClInclude Include="Game\Include\GUIManager.h" />
     <ClInclude Include="Game\Include\InputManager.h" />
+    <ClInclude Include="Game\Include\luna.h" />
     <ClInclude Include="Game\Include\OgreManager.h" />
+    <ClInclude Include="Game\Include\ScriptSystem.h" />
     <ClInclude Include="Game\Include\Singleton.h" />
     <ClInclude Include="Game\Include\stdafx.h" />
     <ClInclude Include="Game\Include\Unit.h" />
     <ClInclude Include="Game\Include\UnitState.h" />
+    <ClInclude Include="Game\Include\World.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Dependency\OgreRecast\Src\Character.cpp">
@@ -218,9 +223,6 @@
     <ClCompile Include="Dependency\OgreRecast\Src\Recast\RecastRegion.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="Dependency\OgreRecast\Src\TestCharacter.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
-    </ClCompile>
     <ClCompile Include="Game\Src\Application.cpp" />
     <ClCompile Include="Game\Src\AppStateManager.cpp" />
     <ClCompile Include="Game\Src\BattleState.cpp" />
@@ -230,11 +232,16 @@
     <ClCompile Include="Game\Src\InputManager.cpp" />
     <ClCompile Include="Game\Src\MiniCraft.cpp" />
     <ClCompile Include="Game\Src\OgreManager.cpp" />
+    <ClCompile Include="Game\Src\ScriptSystem.cpp" />
     <ClCompile Include="Game\Src\stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Game\Src\Unit.cpp" />
     <ClCompile Include="Game\Src\UnitState.cpp" />
+    <ClCompile Include="Game\Src\World.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Build\Bin\Debug\UnitState.lua" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
