@@ -54,9 +54,7 @@ Unit::Unit( int ID, Ogre::Entity* pEnt, Ogre::SceneNode* pNode, OgreRecast* pRec
 	m_pNode->setScale(scale, scale, scale);
 
 	//将对象绑定到lua
-	Ogre::String name("Unit");
-	name += Ogre::StringConverter::toString(m_ID);
-	ScriptSystem::GetSingleton().BindObjectToLua<Unit>(name, this);
+	ScriptSystem::GetSingleton().BindObjectToLua<Unit>("UnitTable", m_ID, this);
 }
 
 void Unit::GiveCommand( const CommandBase& cmd )

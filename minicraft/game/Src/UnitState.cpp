@@ -9,17 +9,17 @@
 
 void IdleState::Enter()
 {
-	ScriptSystem::GetSingleton().Call("IdleState_Enter");
+	ScriptSystem::GetSingleton().Call("IdleState_Enter", m_pOwner->GetID());
 }
 
 void IdleState::Exit()
 {
-	ScriptSystem::GetSingleton().Call("IdleState_Exit");
+	ScriptSystem::GetSingleton().Call("IdleState_Exit", m_pOwner->GetID());
 }
 
 void IdleState::Update(float dt)
 {
-	ScriptSystem::GetSingleton().Call("IdleState_Update", dt);
+	ScriptSystem::GetSingleton().Call("IdleState_Update", m_pOwner->GetID(), dt);
 }
 
 MoveState::MoveState( Unit* pOwner )
@@ -30,17 +30,17 @@ MoveState::MoveState( Unit* pOwner )
 
 void MoveState::Enter()
 {
-	ScriptSystem::GetSingleton().Call("MoveState_Enter");
+	ScriptSystem::GetSingleton().Call("MoveState_Enter", m_pOwner->GetID());
 }
 
 void MoveState::Update( float dt )
 {
-	ScriptSystem::GetSingleton().Call("MoveState_Update", dt);
+	ScriptSystem::GetSingleton().Call("MoveState_Update", m_pOwner->GetID(), dt);
 }
 
 void MoveState::Exit()
 {
-	ScriptSystem::GetSingleton().Call("MoveState_Exit");
+	ScriptSystem::GetSingleton().Call("MoveState_Exit", m_pOwner->GetID());
 }
 
 CollectResState::CollectResState( Unit* pOwner )
@@ -51,17 +51,17 @@ CollectResState::CollectResState( Unit* pOwner )
 
 void CollectResState::Enter()
 {
-	ScriptSystem::GetSingleton().Call("CollectResState_Enter");
+	ScriptSystem::GetSingleton().Call("CollectResState_Enter", m_pOwner->GetID());
 }
 
 void CollectResState::Update( float dt )
 {
-	ScriptSystem::GetSingleton().Call("CollectResState_Update", dt);
+	ScriptSystem::GetSingleton().Call("CollectResState_Update", m_pOwner->GetID(), dt);
 }
 
 void CollectResState::Exit()
 {
-	ScriptSystem::GetSingleton().Call("CollectResState_Exit");
+	ScriptSystem::GetSingleton().Call("CollectResState_Exit", m_pOwner->GetID());
 }
 
 ReturnResState::ReturnResState( Unit* pOwner )
@@ -72,16 +72,16 @@ ReturnResState::ReturnResState( Unit* pOwner )
 
 void ReturnResState::Enter()
 {
-	ScriptSystem::GetSingleton().Call("ReturnResState_Enter");
+	ScriptSystem::GetSingleton().Call("ReturnResState_Enter", m_pOwner->GetID());
 }
 
 void ReturnResState::Update( float dt )
 {
-	ScriptSystem::GetSingleton().Call("ReturnResState_Update", dt);
+	ScriptSystem::GetSingleton().Call("ReturnResState_Update", m_pOwner->GetID(), dt);
 }
 
 void ReturnResState::Exit()
 {
-	ScriptSystem::GetSingleton().Call("ReturnResState_Exit");
+	ScriptSystem::GetSingleton().Call("ReturnResState_Exit", m_pOwner->GetID());
 }
 
