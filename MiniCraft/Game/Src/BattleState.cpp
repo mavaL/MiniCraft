@@ -6,6 +6,7 @@
 #include "Command.h"
 #include "UnitState.h"
 #include "World.h"
+#include <SdkCameraMan.h>
 
 
 
@@ -13,8 +14,7 @@
 std::string CBattleState::StateName = "BattleState";
 
 CBattleState::CBattleState()
-:m_pCamera(nullptr)
-,m_bCamMoveLeft(false)
+:m_bCamMoveLeft(false)
 ,m_bCamMoveRight(false)
 ,m_bCamMoveUp(false)
 ,m_bCamMoveDown(false)
@@ -29,19 +29,19 @@ void CBattleState::enter()
 {
 	using namespace Ogre;
 
-	World::GetSingleton().Init();
+	World& world = World::GetSingleton();
+	world.Init();
 
-	Unit* pTestUnit = World::GetSingleton().CreateUnit();
+	//创建测试单位
+	Unit* pTestUnit = world.CreateUnit(Ogre::Vector3(10, 0, -10));
 	pTestUnit->SetState(eUnitState_Idle);
 
-	SceneManager* pSceneMgr = Root::getSingleton().getSceneManager(SCENE_MANAGER_NAME);
-	m_pCamera = pSceneMgr->createCamera("GodViewCam");
-	m_pCamera->setNearClipDistance(1.0f);
-	COgreManager::GetSingleton().GetViewport()->setCamera(m_pCamera);
-
-	//45度俯角
-	m_pCamera->setPosition(0, 50, 0);
-	m_pCamera->lookAt(0, 0, 50);
+	for(int i=0; i<9; ++i)
+	{
+		const Ogre::Vector3 randPos = world.GetRandomPositionOnNavmesh();
+		Unit* pTestUnit = world.CreateUnit(randPos);
+		pTestUnit->SetState(eUnitState_Idle);
+	}
 
 	//绑定输入事件
 	CInputManager& inputMgr = CInputManager::GetSingleton();
@@ -67,9 +67,6 @@ void CBattleState::resume()
 void CBattleState::exit()
 {
 	World::GetSingleton().Shutdown();
-
-	COgreManager::GetSingleton().GetViewport()->setCamera(nullptr);
-	m_pCamera = nullptr;
 }
 
 void CBattleState::update(float timeSinceLastFrame)
@@ -80,13 +77,24 @@ void CBattleState::update(float timeSinceLastFrame)
 		return;
 	}
 
-	World::GetSingleton().Update(timeSinceLastFrame);
+	World& world = World::GetSingleton();
+	world.Update(timeSinceLastFrame);
 
-	//更新摄像机运动
-	if(m_bCamMoveLeft)	m_pCamera->move(Ogre::Vector3(timeSinceLastFrame*40, 0, 0));
-	if(m_bCamMoveRight) m_pCamera->move(Ogre::Vector3(-timeSinceLastFrame*40, 0, 0));
-	if(m_bCamMoveUp)	m_pCamera->move(Ogre::Vector3(0, 0, timeSinceLastFrame*40));
-	if(m_bCamMoveDown)	m_pCamera->move(Ogre::Vector3(0, 0, -timeSinceLastFrame*40));
+	if(world.IsFreeCameraEnabled())
+	{
+		Ogre::FrameEvent evt;
+		evt.timeSinceLastFrame = timeSinceLastFrame;
+		world.GetCameraMan()->frameRenderingQueued(evt);
+	}
+	else
+	{
+		Ogre::Camera* pCam = world.GetCamera();
+		//更新摄像机运动
+		if(m_bCamMoveLeft)	pCam->move(Ogre::Vector3(timeSinceLastFrame*40, 0, 0));
+		if(m_bCamMoveRight) pCam->move(Ogre::Vector3(-timeSinceLastFrame*40, 0, 0));
+		if(m_bCamMoveUp)	pCam->move(Ogre::Vector3(0, 0, timeSinceLastFrame*40));
+		if(m_bCamMoveDown)	pCam->move(Ogre::Vector3(0, 0, -timeSinceLastFrame*40));
+	}
 }
 
 bool CBattleState::OnInputSys_MousePressed( const OIS::MouseEvent& arg, OIS::MouseButtonID id )
@@ -101,7 +109,7 @@ bool CBattleState::OnInputSys_MousePressed( const OIS::MouseEvent& arg, OIS::Mou
 		float screenX = arg.state.X.abs / (float)arg.state.width;
 		float screenY = arg.state.Y.abs / (float)arg.state.height;
 		Ogre::Ray ray;
-		m_pCamera->getCameraToViewportRay(screenX, screenY, &ray);
+		World::GetSingleton().GetCamera()->getCameraToViewportRay(screenX, screenY, &ray);
 		Ogre::Plane floor(Ogre::Vector3::UNIT_Y, 0);
 		auto result = ray.intersects(floor);
 		if (result.first)
@@ -124,16 +132,20 @@ bool CBattleState::OnInputSys_MouseReleased( const OIS::MouseEvent& arg, OIS::Mo
 
 bool CBattleState::OnInputSys_MouseMove( const OIS::MouseEvent& arg )
 {
+
+	if (World::GetSingleton().IsFreeCameraEnabled())
+		World::GetSingleton().GetCameraMan()->injectMouseMove(arg);
+
 	//获取屏幕尺寸
 	Ogre::RenderWindow* pRenderWnd = COgreManager::GetSingleton().GetRenderWindow();
 	int w = (int)pRenderWnd->getWidth(), h = (int)pRenderWnd->getHeight();
 	//获取当前鼠标绝对位置
 	int absX = arg.state.X.abs, absY = arg.state.Y.abs;
 
-	if	(absX == w		&& arg.state.X.rel	> 0 ) m_bCamMoveRight = true;
-	else if(absX == 0	&& arg.state.X.rel < 0)	m_bCamMoveLeft = true;
-	if(absY == h	&& arg.state.Y.rel > 0) m_bCamMoveDown = true;
-	else if(absY == 0	&& arg.state.Y.rel < 0) m_bCamMoveUp = true;
+	if		(absX == w	&& arg.state.X.rel	> 0 ) m_bCamMoveRight = true;
+	else if	(absX == 0	&& arg.state.X.rel < 0)	m_bCamMoveLeft = true;
+	if		(absY == h	&& arg.state.Y.rel > 0) m_bCamMoveDown = true;
+	else if	(absY == 0	&& arg.state.Y.rel < 0) m_bCamMoveUp = true;
 
 	if (absX > 0 && absX < w)
 		m_bCamMoveRight = m_bCamMoveLeft = false;
@@ -145,6 +157,9 @@ bool CBattleState::OnInputSys_MouseMove( const OIS::MouseEvent& arg )
 
 bool CBattleState::OnInputSys_KeyPressed( const OIS::KeyEvent& arg )
 {
+	if (World::GetSingleton().IsFreeCameraEnabled())
+		World::GetSingleton().GetCameraMan()->injectKeyDown(arg);
+
 	return true;
 }
 
@@ -152,13 +167,12 @@ bool CBattleState::OnInputSys_KeyReleased( const OIS::KeyEvent& arg )
 {
 	if(arg.key == OIS::KC_ESCAPE)
 		m_bQuit = true;
+	else if(arg.key == OIS::KC_F1)
+		World::GetSingleton().EnableFreeCamera(!World::GetSingleton().IsFreeCameraEnabled());
+	else if (World::GetSingleton().IsFreeCameraEnabled())
+		World::GetSingleton().GetCameraMan()->injectKeyUp(arg);
 
 	return true;
-}
-
-void CBattleState::_QueryCursorPos( Ogre::Vector3& retPos )
-{
-
 }
 
 CommandBase* CBattleState::_ComputeCommand( Unit* pUnit, const Ogre::Vector3& targetPos )
@@ -181,8 +195,11 @@ CommandBase* CBattleState::_ComputeCommand( Unit* pUnit, const Ogre::Vector3& ta
 	}
 	else
 	{
+		//将目标点调整至有效
+		Ogre::Vector3 adjustPos(targetPos);
+		World::GetSingleton().ClampPosToNavMesh(adjustPos);
 		//执行移动命令
-		pCmd = new MoveCommand(pUnit, targetPos);
+		pCmd = new MoveCommand(pUnit, adjustPos);
 	}
 
 	return pCmd;

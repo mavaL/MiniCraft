@@ -3,6 +3,7 @@
 #include "OgreDetourCrowd.h"
 #include "Command.h"
 #include "GameDefine.h"
+#include "World.h"
 
 
 //**** Define stuff for the Lua Class ****//
@@ -40,18 +41,17 @@ Unit::Unit( int ID, Ogre::Entity* pEnt, Ogre::SceneNode* pNode, OgreRecast* pRec
 ,m_pResNode(nullptr)
 {
 	m_pNode->attachObject(m_pEntity);
-	m_pNode->translate(0, (float)OFFSET_TO_GROURD, 0, Ogre::Node::TS_WORLD);
-	//将单位缩放至适于Recast库
-	float scale = m_pDetour->getAgentRadius() / pEnt->getBoundingRadius();
-	m_pNode->setScale(scale, scale, scale);
 
 	//创建寻路对象
 	m_agentID = m_pDetour->addAgent(pNode->_getDerivedPosition());
 	m_pAgent = const_cast<dtCrowdAgent*>(m_pDetour->getAgent(m_agentID));
 	assert(m_pAgent);
 
-	// TODO:搞清楚这个有什么用
-	//m_pEntity->setQueryFlags(DEFAULT_MASK);
+	m_pNode->translate(0, UNIT_OFFSET_TO_GROURD, 0, Ogre::Node::TS_WORLD);
+
+	//将单位缩放至适于Recast库
+	float scale = m_pDetour->getAgentRadius() / pEnt->getBoundingRadius();
+	m_pNode->setScale(scale, scale, scale);
 
 	//将对象绑定到lua
 	Ogre::String name("Unit");
@@ -124,35 +124,20 @@ void Unit::Update( float dt )
 bool Unit::FindPath( const Ogre::Vector3& destPos )
 {
 	Ogre::Vector3 beginPos(m_pNode->_getDerivedPosition());
-	beginPos.y = 0;
-	int ret = m_pRecast->FindPath(beginPos, destPos, 1, 1);
+	World::GetSingleton().ClampPosToNavMesh(beginPos);
+
+	Ogre::Vector3 adjustDestPos(destPos);
+	World::GetSingleton().ClampPosToNavMesh(adjustDestPos);
+
+	int ret = m_pRecast->FindPath(beginPos, adjustDestPos, 1, 1);
 	if( ret >= 0)
 	{
-		m_pDetour->setMoveTarget(m_agentID, destPos, false);
+		m_pDetour->setMoveTarget(m_agentID, adjustDestPos, false);
 		//绘制路径线
 		m_pRecast->CreateRecastPathLine(1);
 	}
 
 	return ret >= 0;
-}
-
-bool Unit::FindNearestPath( const Ogre::Vector3& destPos, Ogre::Vector3* pRetNearestPt )
-{
-	//先尝试精确寻路
-	if(FindPath(destPos))
-	{
-		*pRetNearestPt = destPos;
-		return true;
-	}
-
-	//失败,寻找最近点
-	if(!m_pRecast->findNearestPointOnNavmesh(destPos, *pRetNearestPt))
-		return false;
-
-	pRetNearestPt->y = 0;
-	m_pDetour->setMoveTarget(m_agentID, *pRetNearestPt, false);
-
-	return true;
 }
 
 void Unit::PlayAnimation( const Ogre::String& topAnimName, const Ogre::String& baseAnimName /*= Ogre::StringUtil::BLANK*/ )
@@ -189,10 +174,10 @@ bool Unit::UpdatePathFinding( float dt )
 	{
 		Ogre::Vector3 agentPos;
 		OgreRecast::FloatAToOgreVect3(m_pAgent->npos, agentPos);
-		agentPos.y = 0;
 
 		Ogre::Vector3 graphicPos(agentPos);
-		graphicPos.y = OFFSET_TO_GROURD;
+		graphicPos.y = m_pNode->_getDerivedPosition().y;
+
 		//sinbad.mesh的建模Z轴是反的
 		m_pNode->lookAt(graphicPos, Ogre::Node::TS_WORLD, Ogre::Vector3::UNIT_Z);
 		m_pNode->_setDerivedPosition(graphicPos);
@@ -287,7 +272,7 @@ int Unit::Lookat( lua_State* L )
 	float y = system.Get_Float(-2);
 	float z = system.Get_Float(-1);
 
-	m_pNode->lookAt(Ogre::Vector3(x, y + OFFSET_TO_GROURD, z), Ogre::Node::TS_WORLD, Ogre::Vector3::UNIT_Z);
+	m_pNode->lookAt(Ogre::Vector3(x, y + UNIT_OFFSET_TO_GROURD, z), Ogre::Node::TS_WORLD, Ogre::Vector3::UNIT_Z);
 
 	return 0;
 }
@@ -331,4 +316,12 @@ int Unit::SetDestPosition( lua_State* L )
 	m_destPos = Ogre::Vector3(x, y, z);
 
 	return 0;
+}
+
+void Unit::SetDestPos( const Ogre::Vector3& destPos )
+{
+	Ogre::Vector3 adjustPos(destPos);
+	World::GetSingleton().ClampPosToNavMesh(adjustPos);
+	
+	m_destPos = adjustPos;
 }

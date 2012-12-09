@@ -4,11 +4,7 @@
 #include "ScriptSystem.h"
 #include "UnitState.h"
 
-enum QueryFlags {
-	DEFAULT_MASK = 1u<<0,
-	NAVMESH_MASK = 1u<<1,
-	OBSTACLE_MASK= 1u<<2
-};
+
 
 class CommandBase;
 class OgreRecast;
@@ -31,8 +27,6 @@ public:
 	static const char className[];
 	static Luna<Unit>::RegType methods[];
 
-	static const int	OFFSET_TO_GROURD = 5;
-
 public:
 	Ogre::SceneNode*	GetSceneNode() { return m_pNode; }
 	Ogre::Entity*	GetEntity() { return m_pEntity; }
@@ -48,12 +42,10 @@ public:
 	void			Update(float dt);
 	//精确寻路
 	bool			FindPath(const Ogre::Vector3& destPos);
-	//如果目标点不能寻路,则寻找最近点
-	bool			FindNearestPath(const Ogre::Vector3& destPos, Ogre::Vector3* pRetNearestPt);
 	//更新寻路,到达目的地则返回true
 	bool			UpdatePathFinding(float dt);
 
-	void			SetDestPos(const Ogre::Vector3& destPos)	{ m_destPos = destPos; }
+	void			SetDestPos(const Ogre::Vector3& destPos);
 	const Ogre::Vector3& GetDestPos() const	{ return m_destPos; }
 	UnitState*		GetCurState() const { return m_pCurState; }
 	void			PlayAnimation(const Ogre::String& topAnimName, const Ogre::String& baseAnimName = Ogre::StringUtil::BLANK);

@@ -5,6 +5,12 @@
 //Ogre
 #include <Ogre.h>
 
+//OIS
+#include <OISEvents.h>
+#include <OISInputManager.h>
+#include <OISKeyboard.h>
+#include <OISMouse.h>
+
 //CEGUI
 #include <CEGUI.h>
 

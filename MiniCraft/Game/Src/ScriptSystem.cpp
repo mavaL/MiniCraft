@@ -21,7 +21,7 @@ void ScriptSystem::Init()
 	Luna<Unit>::Register(m_pLuaState);
 
 	//º”‘ÿΩ≈±æ
-	DoFile("UnitState.lua");
+	DoFile("../../../UnitState.lua");
 }
 
 void ScriptSystem::Shutdown()

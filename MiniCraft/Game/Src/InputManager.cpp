@@ -40,8 +40,8 @@ bool CInputManager::Init()
 	OIS::MouseState& mouseState = const_cast<OIS::MouseState&>(mMouse->getMouseState());
 	mouseState.width = COgreManager::GetSingleton().GetRenderWindow()->getWidth();
 	mouseState.height = COgreManager::GetSingleton().GetRenderWindow()->getHeight();
-	mouseState.X.abs = 400;
-	mouseState.Y.abs = 300;
+	mouseState.X.abs = mouseState.width / 2;
+	mouseState.Y.abs = mouseState.height / 2;
 
 	mKeyboard->setEventCallback(this);
 	mMouse->setEventCallback(this);

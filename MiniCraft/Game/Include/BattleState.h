@@ -47,15 +47,12 @@ private:
 	bool OnInputSys_KeyPressed(const OIS::KeyEvent& arg);
 	bool OnInputSys_KeyReleased(const OIS::KeyEvent& arg);
 
-	void _QueryCursorPos(Ogre::Vector3& retPos);
 	//获取右击目标点会产生的命令(移动,攻击...)
 	CommandBase* _ComputeCommand(Unit* pUnit, const Ogre::Vector3& targetPos);
 
 private:
-	bool						m_bQuit;
-	Ogre::Camera*				m_pCamera;
-
-	bool						m_bCamMoveLeft, m_bCamMoveRight, m_bCamMoveUp, m_bCamMoveDown;
+	bool	m_bQuit;
+	bool	m_bCamMoveLeft, m_bCamMoveRight, m_bCamMoveUp, m_bCamMoveDown;
 };
 
 
