@@ -16,6 +16,8 @@ World::World()
 ,m_pCamera(nullptr)
 ,m_cameraMan(nullptr)
 ,m_bFreeCamMode(false)
+,m_pSceneQuery(nullptr)
+,m_pRaySceneQuery(nullptr)
 {
 
 }
@@ -26,6 +28,12 @@ void World::Init()
 
 	m_pSceneMgr = Ogre::Root::getSingleton().createSceneManager(Ogre::ST_GENERIC, SCENE_MANAGER_NAME);
 	m_pSceneMgr->setAmbientLight(ColourValue(1.0f, 1.0f, 1.0f));
+
+	m_pSceneQuery = m_pSceneMgr->createAABBQuery(AxisAlignedBox());
+	m_pRaySceneQuery = m_pSceneMgr->createRayQuery(Ray());
+	m_pRaySceneQuery->setSortByDistance(true);
+
+	Ogre::MovableObject::setDefaultQueryFlags(eQueryType_Default);
 
 	m_pCamera = m_pSceneMgr->createCamera("GodViewCam");
 	m_pCamera->setNearClipDistance(0.1f);
@@ -45,11 +53,13 @@ void World::Init()
 		Ogre::Plane(Ogre::Vector3::UNIT_Y, 0), 100, 100, 10, 10, true, 1, 20, 20, Ogre::Vector3::UNIT_Z);
 	Ogre::Entity* ent = m_pSceneMgr->createEntity("entFloor", "FloorMesh");
 	ent->setMaterialName("Examples/BumpyMetal");
+	ent->setQueryFlags(eQueryType_WorldGeometry);
 	Ogre::SceneNode* node = m_pSceneMgr->getRootSceneNode()->createChildSceneNode("GroundNode");
 	node->attachObject(ent);
 	vecNavEnt.push_back(ent);
 
 	ent = m_pSceneMgr->createEntity("highlanderhouse.01.mesh");
+	ent->setQueryFlags(eQueryType_WorldGeometry);
 	SceneNode* pHouseNode = m_pSceneMgr->getRootSceneNode()->createChildSceneNode(BASE_POS);
 	pHouseNode->attachObject(ent);
 	vecNavEnt.push_back(ent);
@@ -57,6 +67,7 @@ void World::Init()
 	SceneNode* pMineNode = m_pSceneMgr->getRootSceneNode()->createChildSceneNode(RES_POS);
 	pMineNode->scale(0.04f, 0.04f, 0.04f);
 	m_pGold = m_pSceneMgr->createEntity("银矿脉.mesh");
+	m_pGold->setQueryFlags(eQueryType_WorldGeometry);
 	pMineNode->attachObject(m_pGold);
 	vecNavEnt.push_back(m_pGold);
 
@@ -88,11 +99,22 @@ void World::Shutdown()
 	SAFE_DELETE(m_pRecast);
 	SAFE_DELETE(m_cameraMan);
 
+	//重置脚本系统,为了销毁所有Unit
+	ScriptSystem::GetSingleton().Reset();
+
+	m_pSceneMgr->destroyQuery(m_pSceneQuery);
+	m_pSceneMgr->destroyQuery(m_pRaySceneQuery);
+	m_pSceneQuery = nullptr;
+	m_pRaySceneQuery = nullptr;
+
 	Ogre::Root::getSingleton().destroySceneManager(m_pSceneMgr);
 	m_pSceneMgr = nullptr;
 
 	COgreManager::GetSingleton().GetViewport()->setCamera(nullptr);
 	m_pCamera = nullptr;
+
+	m_vecSelectUnis.clear();
+	m_vecUnits.clear();
 }
 
 void World::Update(float dt)
@@ -108,10 +130,14 @@ Unit* World::CreateUnit(const Ogre::Vector3& pos)
 	Ogre::Vector3 adjustPos(pos);
 	assert(ClampPosToNavMesh(adjustPos));
 
-	Ogre::Entity* pEnt = m_pSceneMgr->createEntity("Sinbad.mesh");
+	int newID = (int)m_vecUnits.size();
+	Ogre::String entName(Unit::ENTITY_NAME_PREFIX);
+	entName += Ogre::StringConverter::toString(newID);
+
+	Ogre::Entity* pEnt = m_pSceneMgr->createEntity(entName, "Sinbad.mesh");
 	Ogre::SceneNode* pNode = m_pSceneMgr->getRootSceneNode()->createChildSceneNode(adjustPos);
 
-	Unit* pNewUnit = new Unit((int)m_vecUnits.size(), pEnt, pNode, m_pRecast, m_pDetourCrowd);
+	Unit* pNewUnit = new Unit(newID, pEnt, pNode, m_pRecast, m_pDetourCrowd);
 	assert(pNewUnit);
 
 	m_vecUnits.push_back(pNewUnit);
@@ -158,4 +184,50 @@ void World::EnableFreeCamera( bool bEnable )
 	}
 
 	m_bFreeCamMode = bEnable;
+}
+
+void World::GetAABBSceneQueryResult(const Ogre::AxisAlignedBox& box, 
+	std::vector<Ogre::MovableObject*>& result, int queryMask)
+{
+	assert(m_pSceneQuery);
+
+	m_pSceneQuery->setBox(box);
+	Ogre::SceneQueryResult& queryResults = m_pSceneQuery->execute();
+
+	auto movableList = queryResults.movables;
+	for (auto iter=movableList.begin(); iter!=movableList.end(); ++iter)
+	{
+		if((*iter)->getQueryFlags() & queryMask)
+			result.push_back(*iter);
+	}
+}
+
+Ogre::MovableObject* World::GetRaySceneQueryResult( const Ogre::Ray& ray, int queryMask /*= 0xffffffff*/ )
+{
+	assert(m_pRaySceneQuery);
+
+	m_pRaySceneQuery->setRay(ray);
+	const Ogre::RaySceneQueryResult& result = m_pRaySceneQuery->execute();
+
+	if(result.empty() || result[0].worldFragment)
+		return nullptr;
+
+	if(result[0].movable->getQueryFlags() & queryMask)
+		return result[0].movable;
+
+	return nullptr;
+}
+
+void World::SetUnitSelected( int ID )
+{
+	m_vecUnits[ID]->SetSelected(true);
+	m_vecSelectUnis.push_back(m_vecUnits[ID]);
+}
+
+void World::ClearAllUnitSelected()
+{
+	for (size_t i=0; i<m_vecSelectUnis.size(); ++i)
+		m_vecSelectUnis[i]->SetSelected(false);
+
+	m_vecSelectUnis.clear();
 }

@@ -53,6 +53,11 @@ private:
 private:
 	bool	m_bQuit;
 	bool	m_bCamMoveLeft, m_bCamMoveRight, m_bCamMoveUp, m_bCamMoveDown;
+	bool	m_bLBDown;		//鼠标左键是否按下
+	Ogre::Vector3	m_LBDownPos;	//鼠标左键按下的对应世界坐标
+	Ogre::Vector2	m_LBDownScreenPos;
+	Ogre::Rectangle2D*	m_pSelectionQuad;	//框选绘制
+	Ogre::SceneNode*	m_pQuadNode;
 };
 
 

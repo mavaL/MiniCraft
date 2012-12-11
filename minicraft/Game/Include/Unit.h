@@ -27,6 +27,9 @@ public:
 	static const char className[];
 	static Luna<Unit>::RegType methods[];
 
+	const static Ogre::String UNIT_TABLE_NAME;
+	const static Ogre::String ENTITY_NAME_PREFIX;
+
 public:
 	Ogre::SceneNode*	GetSceneNode() { return m_pNode; }
 	Ogre::Entity*	GetEntity() { return m_pEntity; }
@@ -52,9 +55,7 @@ public:
 	void			StopAnimation();
 	dtCrowdAgent*	GetAgent() { return m_pAgent; }
 	int				GetID() const { return m_ID; }
-	//获取该对象在lua栈上的索引
-	// TODO:抽象出Scriptable基类
-	int				GetLuaStackIndex() const { return m_luaStackIdx; }
+	void			SetSelected(bool bSelected);
 
 public:
 	///lua导出函数
@@ -80,8 +81,8 @@ private:
 	CommandBase*		m_pCurCommand;	//当前命令
 	UnitState*			m_pCurState;	//单位当前状态(逻辑状态机)
 	int					m_ID;
-	int					m_luaStackIdx;
 	Ogre::Vector3		m_destPos;
+	bool				m_bSelected;
 
 	typedef std::vector<Ogre::AnimationState*> VecAnims;
 	VecAnims			m_playingAnims;

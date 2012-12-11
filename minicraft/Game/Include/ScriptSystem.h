@@ -18,6 +18,7 @@ class ScriptSystem : public CSingleton<ScriptSystem>
 public:
 	void	Init();
 	void	Shutdown();
+	void	Reset() { Shutdown(); Init(); }
 
 public:
 	///Õ»Í¨ÐÅ

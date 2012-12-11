@@ -112,7 +112,7 @@ end
 ---ReturnRes State
 ---------------------
 
-function ReturnResState_Enter()
+function ReturnResState_Enter(id)
 	UnitTable[id]:PlayAnimation("", "RunBase");
 	if UnitTable[id]:FindPath(returnResX, returnResY, returnResZ) then
 		--背负一个资源物体..
@@ -120,7 +120,7 @@ function ReturnResState_Enter()
 	end
 end
 
-function ReturnResState_Update(dt)
+function ReturnResState_Update(id,dt)
 	if UnitTable[id]:UpdatePathFinding(dt) then
 		--继续去采集资源
 		UnitTable[id]:SetDestPosition(collectResX, collectResY, collectResZ);
@@ -128,7 +128,7 @@ function ReturnResState_Update(dt)
 	end
 end
 
-function ReturnResState_Exit()
+function ReturnResState_Exit(id)
 	UnitTable[id]:StopAnimation();
 	UnitTable[id]:DetachRes();
 end

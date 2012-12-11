@@ -28,6 +28,9 @@ Luna<Unit>::RegType Unit::methods[] =
 	{0,0}
 };
 
+const Ogre::String Unit::UNIT_TABLE_NAME	=	"UnitTable";
+const Ogre::String Unit::ENTITY_NAME_PREFIX	=	"EntUnit";
+
 Unit::Unit( int ID, Ogre::Entity* pEnt, Ogre::SceneNode* pNode, OgreRecast* pRecast, OgreDetourCrowd* pDetour )
 :m_pCurCommand(nullptr)
 ,m_pEntity(pEnt)
@@ -35,11 +38,12 @@ Unit::Unit( int ID, Ogre::Entity* pEnt, Ogre::SceneNode* pNode, OgreRecast* pRec
 ,m_pDetour(pDetour)
 ,m_pNode(pNode)
 ,m_pCurState(nullptr)
-,m_luaStackIdx(-1)
 ,m_ID(ID)
 ,m_pResEnt(nullptr)
 ,m_pResNode(nullptr)
+,m_bSelected(false)
 {
+	pEnt->setQueryFlags(eQueryType_Unit);
 	m_pNode->attachObject(m_pEntity);
 
 	//创建寻路对象
@@ -54,7 +58,7 @@ Unit::Unit( int ID, Ogre::Entity* pEnt, Ogre::SceneNode* pNode, OgreRecast* pRec
 	m_pNode->setScale(scale, scale, scale);
 
 	//将对象绑定到lua
-	ScriptSystem::GetSingleton().BindObjectToLua<Unit>("UnitTable", m_ID, this);
+	ScriptSystem::GetSingleton().BindObjectToLua<Unit>(UNIT_TABLE_NAME, m_ID, this);
 }
 
 void Unit::GiveCommand( const CommandBase& cmd )
@@ -322,4 +326,10 @@ void Unit::SetDestPos( const Ogre::Vector3& destPos )
 	World::GetSingleton().ClampPosToNavMesh(adjustPos);
 	
 	m_destPos = adjustPos;
+}
+
+void Unit::SetSelected( bool bSelected )
+{
+	m_pNode->showBoundingBox(bSelected);
+	m_bSelected = bSelected;
 }

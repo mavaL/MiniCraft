@@ -18,6 +18,11 @@ CBattleState::CBattleState()
 ,m_bCamMoveRight(false)
 ,m_bCamMoveUp(false)
 ,m_bCamMoveDown(false)
+,m_bLBDown(false)
+,m_LBDownPos(-1, -1, -1)
+,m_LBDownScreenPos(-1, -1)
+,m_pSelectionQuad(nullptr)
+,m_pQuadNode(nullptr)
 {
 }
 
@@ -43,6 +48,13 @@ void CBattleState::enter()
 		pTestUnit->SetState(eUnitState_Idle);
 	}
 
+	m_pSelectionQuad = new Ogre::Rectangle2D(true);
+	m_pSelectionQuad->setMaterial("SelectionQuad");
+	(const_cast<Ogre::AxisAlignedBox&>(m_pSelectionQuad->getBoundingBox())).setInfinite();
+	m_pQuadNode = Ogre::Root::getSingleton().getSceneManager(SCENE_MANAGER_NAME)->getRootSceneNode()->createChildSceneNode("SelectionQuadNode");
+	m_pQuadNode->attachObject(m_pSelectionQuad);
+	m_pQuadNode->setVisible(false);
+	
 	//绑定输入事件
 	CInputManager& inputMgr = CInputManager::GetSingleton();
 	inputMgr.BindKeyPressed(boost::bind(&CBattleState::OnInputSys_KeyPressed, this, _1));
@@ -67,6 +79,8 @@ void CBattleState::resume()
 void CBattleState::exit()
 {
 	World::GetSingleton().Shutdown();
+	SAFE_DELETE(m_pSelectionQuad);
+	m_pQuadNode = nullptr;
 }
 
 void CBattleState::update(float timeSinceLastFrame)
@@ -99,25 +113,40 @@ void CBattleState::update(float timeSinceLastFrame)
 
 bool CBattleState::OnInputSys_MousePressed( const OIS::MouseEvent& arg, OIS::MouseButtonID id )
 {
+	World& world = World::GetSingleton();
+
+	float screenX = arg.state.X.abs / (float)arg.state.width;
+	float screenY = arg.state.Y.abs / (float)arg.state.height;
+	Ogre::Ray ray;
+	world.GetCamera()->getCameraToViewportRay(screenX, screenY, &ray);
+
+	Ogre::Plane floor(Ogre::Vector3::UNIT_Y, 0);
+	auto result = ray.intersects(floor);
+	//检测拾取射线是否与游戏区域相交
+	if (!result.first)
+		return true;
+
 	if(id == OIS::MB_Left)
 	{
+		//坐标空间转换
+		float x = screenX * 2 - 1;
+		float y = 1 - 2 * screenY;
 
+		m_pSelectionQuad->setCorners(x, y, x, y, false);
+		m_pQuadNode->setVisible(true);
+
+		m_LBDownScreenPos = Ogre::Vector2(screenX, screenY);
+		m_LBDownPos = ray.getPoint(result.second);
+		m_bLBDown = true;
 	}
 	else if (id == OIS::MB_Right)
 	{
-		//检测拾取射线是否与游戏区域相交
-		float screenX = arg.state.X.abs / (float)arg.state.width;
-		float screenY = arg.state.Y.abs / (float)arg.state.height;
-		Ogre::Ray ray;
-		World::GetSingleton().GetCamera()->getCameraToViewportRay(screenX, screenY, &ray);
-		Ogre::Plane floor(Ogre::Vector3::UNIT_Y, 0);
-		auto result = ray.intersects(floor);
-		if (result.first)
+		const UnitContainer& selectedUnits = world.GetAllUnitSelected();
+		for (size_t i=0; i<selectedUnits.size(); ++i)
 		{
-			Unit* pUnit = World::GetSingleton().GetUnitFromID(0);
-			CommandBase* pCmd = _ComputeCommand(pUnit, ray.getPoint(result.second));
+			CommandBase* pCmd = _ComputeCommand(selectedUnits[i], ray.getPoint(result.second));
 			if(pCmd)
-				pUnit->GiveCommand(*pCmd);
+				selectedUnits[i]->GiveCommand(*pCmd);
 			delete pCmd;
 		}
 	}        
@@ -127,6 +156,60 @@ bool CBattleState::OnInputSys_MousePressed( const OIS::MouseEvent& arg, OIS::Mou
 
 bool CBattleState::OnInputSys_MouseReleased( const OIS::MouseEvent& arg, OIS::MouseButtonID id )
 {
+	if (id == OIS::MB_Left)
+	{
+		World& world = World::GetSingleton();
+		world.ClearAllUnitSelected();
+		m_pQuadNode->setVisible(false);
+
+		float screenX = arg.state.X.abs / (float)arg.state.width;
+		float screenY = arg.state.Y.abs / (float)arg.state.height;
+		Ogre::Ray ray;
+		world.GetCamera()->getCameraToViewportRay(screenX, screenY, &ray);
+
+		Ogre::Plane floor(Ogre::Vector3::UNIT_Y, 0);
+		auto result = ray.intersects(floor);
+		//检测拾取射线是否与游戏区域相交
+		if (!result.first)
+		{
+			m_bLBDown = false;
+			return true;
+		}
+		
+		std::vector<Ogre::MovableObject*> vecResult;
+		//鼠标拖动小于阕值时,进行射线查询,使得结果更准确
+		Ogre::Vector3 mouseUpPos(ray.getPoint(result.second));
+		if(mouseUpPos.positionEquals(m_LBDownPos, 0.1f))
+		{
+			Ogre::MovableObject* pObject = world.GetRaySceneQueryResult(ray, eQueryType_Unit);
+			if (pObject)
+				vecResult.push_back(pObject);
+		}
+		else
+		{
+			//建立查询包围盒
+			Ogre::AxisAlignedBox aabb;
+			aabb.setMinimum(std::min(m_LBDownPos.x, mouseUpPos.x), std::min(m_LBDownPos.y, mouseUpPos.y), 
+				std::min(m_LBDownPos.z, mouseUpPos.z));
+			aabb.setMaximum(std::max(m_LBDownPos.x, mouseUpPos.x), std::max(m_LBDownPos.y + 100, mouseUpPos.y + 100),
+				std::max(m_LBDownPos.z, mouseUpPos.z));
+
+			world.GetAABBSceneQueryResult(aabb, vecResult, eQueryType_Unit);
+		}
+
+		//单位设置为选中状态
+		for(size_t i=0; i<vecResult.size(); ++i)
+		{
+			const Ogre::String& entName = vecResult[i]->getName();
+			assert(entName.find_first_of(Unit::ENTITY_NAME_PREFIX) != Ogre::String::npos);
+
+			const Ogre::String strID(&entName[strlen(Unit::ENTITY_NAME_PREFIX.c_str())]);
+			int unitID = Ogre::StringConverter::parseInt(strID, -1);
+
+			world.SetUnitSelected(unitID);
+		}
+	}
+
 	return true;
 }
 
@@ -135,6 +218,22 @@ bool CBattleState::OnInputSys_MouseMove( const OIS::MouseEvent& arg )
 
 	if (World::GetSingleton().IsFreeCameraEnabled())
 		World::GetSingleton().GetCameraMan()->injectMouseMove(arg);
+
+	if(m_bLBDown)
+	{
+		Ogre::Vector2 newScreenPos((float)arg.state.X.abs/arg.state.width, (float)arg.state.Y.abs/arg.state.height);
+		float left		= std::min(m_LBDownScreenPos.x, newScreenPos.x);
+		float bottom	= std::max(m_LBDownScreenPos.y, newScreenPos.y);
+		float right		= std::max(m_LBDownScreenPos.x, newScreenPos.x);
+		float top		= std::min(m_LBDownScreenPos.y, newScreenPos.y);
+
+		left = 2 * left - 1;
+		right = 2 * right - 1;
+		bottom = 1 - 2 * bottom;
+		top	= 1 - 2 * top;
+
+		m_pSelectionQuad->setCorners(left, top, right, bottom, false);
+	}
 
 	//获取屏幕尺寸
 	Ogre::RenderWindow* pRenderWnd = COgreManager::GetSingleton().GetRenderWindow();
