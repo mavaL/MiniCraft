@@ -1,0 +1,5 @@
+[Scene editor features]
+
+1. Resource selector, with thumbnail support.
+2. Placement of object, with S-R-T operation.
+3. Terrain edit, like height modify, brush paint.
