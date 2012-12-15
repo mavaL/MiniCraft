@@ -30,6 +30,10 @@ public:
 
 public:
 	afx_msg void OnAppAbout();
+	afx_msg void OnFileNew();
+	afx_msg void OnFileOpen();
+	afx_msg void OnFileSave();
+	afx_msg void OnFileClose();
 	DECLARE_MESSAGE_MAP()
 
 public:

@@ -9,6 +9,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SceneEdit", "..\Editor\Scen
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Codejock.ToolkitPro.Shared", "..\Editor\Dependency\XTP\Workspace\ToolkitPro\ToolkitProShared_vc100.vcxproj", "{920FE0D5-3CA1-0A85-8950-DE740E579326}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OgreTerrain", "..\..\Ogre_1_8_0\build\Components\Terrain\OgreTerrain.vcxproj", "{F0617CC5-2D7E-4765-8412-F3AE01726DF9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -101,6 +103,24 @@ Global
 		{920FE0D5-3CA1-0A85-8950-DE740E579326}.Unicode Release|Win32.Build.0 = Unicode Release|Win32
 		{920FE0D5-3CA1-0A85-8950-DE740E579326}.Unicode Release|x64.ActiveCfg = Unicode Release|x64
 		{920FE0D5-3CA1-0A85-8950-DE740E579326}.Unicode Release|x64.Build.0 = Unicode Release|x64
+		{F0617CC5-2D7E-4765-8412-F3AE01726DF9}.Debug|Win32.ActiveCfg = Debug|Win32
+		{F0617CC5-2D7E-4765-8412-F3AE01726DF9}.Debug|Win32.Build.0 = Debug|Win32
+		{F0617CC5-2D7E-4765-8412-F3AE01726DF9}.Debug|x64.ActiveCfg = Debug|Win32
+		{F0617CC5-2D7E-4765-8412-F3AE01726DF9}.MinSizeRel|Win32.ActiveCfg = MinSizeRel|Win32
+		{F0617CC5-2D7E-4765-8412-F3AE01726DF9}.MinSizeRel|Win32.Build.0 = MinSizeRel|Win32
+		{F0617CC5-2D7E-4765-8412-F3AE01726DF9}.MinSizeRel|x64.ActiveCfg = MinSizeRel|Win32
+		{F0617CC5-2D7E-4765-8412-F3AE01726DF9}.Release|Win32.ActiveCfg = Release|Win32
+		{F0617CC5-2D7E-4765-8412-F3AE01726DF9}.Release|Win32.Build.0 = Release|Win32
+		{F0617CC5-2D7E-4765-8412-F3AE01726DF9}.Release|x64.ActiveCfg = Release|Win32
+		{F0617CC5-2D7E-4765-8412-F3AE01726DF9}.RelWithDebInfo|Win32.ActiveCfg = RelWithDebInfo|Win32
+		{F0617CC5-2D7E-4765-8412-F3AE01726DF9}.RelWithDebInfo|Win32.Build.0 = RelWithDebInfo|Win32
+		{F0617CC5-2D7E-4765-8412-F3AE01726DF9}.RelWithDebInfo|x64.ActiveCfg = RelWithDebInfo|Win32
+		{F0617CC5-2D7E-4765-8412-F3AE01726DF9}.Unicode Debug|Win32.ActiveCfg = Debug|Win32
+		{F0617CC5-2D7E-4765-8412-F3AE01726DF9}.Unicode Debug|Win32.Build.0 = Debug|Win32
+		{F0617CC5-2D7E-4765-8412-F3AE01726DF9}.Unicode Debug|x64.ActiveCfg = Debug|Win32
+		{F0617CC5-2D7E-4765-8412-F3AE01726DF9}.Unicode Release|Win32.ActiveCfg = Release|Win32
+		{F0617CC5-2D7E-4765-8412-F3AE01726DF9}.Unicode Release|Win32.Build.0 = Release|Win32
+		{F0617CC5-2D7E-4765-8412-F3AE01726DF9}.Unicode Release|x64.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

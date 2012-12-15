@@ -77,8 +77,8 @@ BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)
 
 	cs.dwExStyle &= ~WS_EX_CLIENTEDGE;
 	cs.lpszClass = AfxRegisterWndClass(0);
-	cs.cx = 800;
-	cs.cy = 600;
+	cs.cx = EDITOR_VP_WIDTH;
+	cs.cy = EDITOR_VP_HEIGHT;
 	return TRUE;
 }
 
@@ -129,6 +129,8 @@ bool CMainFrame::_OnCreateRibbon()
 	if (!InitCommandBars())
 		return false;
 
+	_LoadIcon();
+
 	// Get a pointer to the command bars object.
 	CXTPCommandBars* pCommandBars = GetCommandBars();
 	if(pCommandBars == NULL)
@@ -136,26 +138,45 @@ bool CMainFrame::_OnCreateRibbon()
 
 	CXTPPaintManager::SetTheme(xtpThemeRibbon);
 
+	//关闭默认菜单
 	CMenu menu;
 	menu.Attach(::GetMenu(m_hWnd));
 	SetMenu(NULL);
 
-	CXTPRibbonBar* pRibbonBar = (CXTPRibbonBar*)pCommandBars->Add(_T("The Ribbon"), xtpBarTop, RUNTIME_CLASS(CXTPRibbonBar));
+	//Ribbon - Home
+	CXTPRibbonBar* pRibbonBar = (CXTPRibbonBar*)pCommandBars->Add(_T("Home"), xtpBarTop, RUNTIME_CLASS(CXTPRibbonBar));
 	if (!pRibbonBar)
-	{
 		return false;
-	}
 	pRibbonBar->EnableDocking(0);
 	//pRibbonBar->GetTabPaintManager()->m_bSelectOnButtonDown = FALSE;
 
+	//创建系统按钮
 	CXTPControlPopup* pControlFile = (CXTPControlPopup*)pRibbonBar->AddSystemButton();
 	pControlFile->SetIconId(IDB_GEAR);
 
-	UINT uCommand = {IDB_GEAR};
-	pCommandBars->GetImageManager()->SetIcons(IDB_GEAR, &uCommand, 1, CSize(0, 0), xtpImageNormal);
-
+	CMenu sysMenu;
+	sysMenu.LoadMenu(IDR_MAINFRAME);
+	CXTPPopupBar* pCommandBar = new CXTPRibbonSystemPopupBar();
+	pCommandBar->SetCommandBars(pCommandBars);
+	pControlFile->SetCommandBar(pCommandBar);
+	pCommandBar->InternalRelease();
+	pCommandBar->LoadMenu(sysMenu.GetSubMenu(0));
+	pCommandBar->SetIconSize(CSize(32, 32));
+	
+	//test tab
 	CXTPRibbonTab* pTab1 = pRibbonBar->AddTab(L"Tab1");
 	CXTPRibbonTab* pTab2 = pRibbonBar->AddTab(L"Tab2");
 
 	return true;
+}
+
+void CMainFrame::_LoadIcon()
+{
+	CXTPCommandBars* pCommandBars = GetCommandBars();
+
+	UINT uCommand = {IDB_GEAR};
+	pCommandBars->GetImageManager()->SetIcons(IDB_GEAR, &uCommand, 1, CSize(0, 0), xtpImageNormal);
+
+	UINT uiSystemMenu[] = { ID_FILE_NEW, ID_FILE_OPEN, ID_FILE_SAVE }; 
+	pCommandBars->GetImageManager()->SetIcons(IDB_SYSTEMMENULARGE, uiSystemMenu, _countof(uiSystemMenu), CSize(32, 32));
 }

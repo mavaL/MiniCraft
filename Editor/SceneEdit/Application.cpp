@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Application.h"
-
+#include "UI/DialogSceneNew.h"
+#include "Manipulator/ManipulatorScene.h"
 
 
 Application::Application()
@@ -20,7 +21,6 @@ void Application::Init( int width, int height, HWND hwnd, HWND hParent )
 {
 	_InitOgre(width, height, hwnd, hParent);
 	_InitOIS(hParent);
-	_LoadScene();
 }
 
 void Application::_InitOgre(int width, int height, HWND hwnd, HWND hParent)
@@ -63,7 +63,7 @@ void Application::_InitOgre(int width, int height, HWND hwnd, HWND hParent)
 
 	m_pRoot->initialise(false);
 
-	m_pSceneMgr = m_pRoot->createSceneManager(ST_GENERIC);
+	m_pSceneMgr = m_pRoot->createSceneManager(ST_GENERIC, SCENE_MANAGER_NAME);
 	m_pMainCam = m_pSceneMgr->createCamera("MainCamera");
 
 	NameValuePairList params;
@@ -107,19 +107,12 @@ void Application::_InitOIS(HWND hwnd)
 	m_pMouse->setEventCallback(this);
 }
 
-void Application::_LoadScene()
-{
-	Ogre::Entity* pEnt = m_pSceneMgr->createEntity("Ent", "ogrehead.mesh");
-	m_pSceneMgr->getRootSceneNode()->attachObject(pEnt);
-
-	m_pMainCam->setPosition(0,0,50);
-	m_pMainCam->lookAt(0,0,0);
-}
-
 void Application::Run()
 {
 	//OGRE渲染主循环
 	m_pRoot->startRendering();
+
+	ManipulatorScene::GetSingleton().Shutdown();
 
 	//销毁OGRE
 	if(m_pRoot)
@@ -209,6 +202,57 @@ bool Application::frameRenderingQueued( const Ogre::FrameEvent& evt )
 	m_pMainCam->moveRelative(m_tranVector * evt.timeSinceLastFrame * 30);
 
 	return true;
+}
+
+void Application::SceneNew()
+{
+	//先关闭当前场景
+	//TODO:检测改动,提示保存
+	SceneClose();
+
+	DialogSceneNew dlg;
+	std::wstring newSceneName;
+	if (IDOK == dlg.DoModal(ManipulatorScene::GetSingleton().GetScenePath(), newSceneName))
+	{
+		ManipulatorScene::GetSingleton().SceneNew(newSceneName);
+	}
+}
+
+void Application::SceneOpen()
+{
+	//先关闭当前场景
+	//TODO:检测改动,提示保存
+	SceneClose();
+
+	WCHAR path[MAX_PATH];
+	::GetCurrentDirectory(MAX_PATH, path);
+
+	std::wstring strFilename;
+	CFileDialog dlgFile(TRUE);	
+	dlgFile.GetOFN().lpstrFilter = L"*.scene";
+	dlgFile.GetOFN().lpstrDefExt = L"scene";
+	dlgFile.GetOFN().lpstrInitialDir = path; 
+	dlgFile.GetOFN().lpstrTitle = L"Open Scene"; 
+
+	if(IDOK == dlgFile.DoModal())
+	{
+		strFilename = dlgFile.GetOFN().lpstrFile;
+		ManipulatorScene::GetSingleton().SceneOpen(strFilename);
+	}
+}
+
+void Application::SceneSave()
+{
+	ManipulatorScene::GetSingleton().SceneSave();
+}
+
+void Application::SceneClose()
+{
+	ManipulatorScene::GetSingleton().SceneClose();
+
+	//重置摄像机位置
+	m_pMainCam->setPosition(0,100,0);
+	m_pMainCam->lookAt(0,0,20);
 }
 
 

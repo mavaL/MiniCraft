@@ -19,6 +19,10 @@
 
 BEGIN_MESSAGE_MAP(CSceneEditApp, CWinApp)
 	ON_COMMAND(ID_APP_ABOUT, &CSceneEditApp::OnAppAbout)
+	ON_COMMAND(ID_FILE_NEW, CSceneEditApp::OnFileNew)
+	ON_COMMAND(ID_FILE_OPEN, CSceneEditApp::OnFileOpen)
+	ON_COMMAND(ID_FILE_SAVE, CSceneEditApp::OnFileSave)
+	ON_COMMAND(ID_FILE_CLOSE, CSceneEditApp::OnFileClose)
 END_MESSAGE_MAP()
 
 
@@ -148,6 +152,26 @@ void CSceneEditApp::OnAppAbout()
 {
 	CAboutDlg aboutDlg;
 	aboutDlg.DoModal();
+}
+
+void CSceneEditApp::OnFileNew()
+{
+	m_app.SceneNew();
+}
+
+void CSceneEditApp::OnFileOpen()
+{
+	m_app.SceneOpen();
+}
+
+void CSceneEditApp::OnFileSave()
+{
+	m_app.SceneSave();
+}
+
+void CSceneEditApp::OnFileClose()
+{
+	m_app.SceneClose();
 }
 
 // CSceneEditApp 消息处理程序

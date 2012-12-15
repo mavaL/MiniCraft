@@ -24,22 +24,22 @@
 #include <afxwin.h>         // MFC 核心组件和标准组件
 #include <afxext.h>         // MFC 扩展
 
-
-#define SAFE_DELETE(p) { if(p) { delete p; p=NULL; } }
-#define SAFE_DELETE_ARRAY(a) { if(p) { delete []p; p=NULL; } }
-
+#include "Utility.h"
 
 //Ogre
-#include <OgreException.h>
-#include <OgreRoot.h>
-#include <OgreConfigFile.h>
-#include <OgreCamera.h>
-#include <OgreViewport.h>
-#include <OgreSceneManager.h>
-#include <OgreRenderWindow.h>
-#include <OgreEntity.h>
-#include <OgreWindowEventUtilities.h>
+#include <Ogre.h>
+#include <Terrain/OgreTerrain.h>
+#include <Terrain/OgreTerrainGroup.h>
+#include <Terrain/OgreTerrainQuadTreeNode.h>
+#include <Terrain/OgreTerrainMaterialGeneratorA.h>
 
+//rapidxml
+#include "rapidxml/rapidxml.hpp"       
+#include "rapidxml/rapidxml_utils.hpp"
+#include "rapidxml/rapidxml_print.hpp"
+
+using Ogre::String;
+using Ogre::Vector3;
 
 
 #ifndef _AFX_NO_OLE_SUPPORT
@@ -59,9 +59,6 @@
 
 //XTP
 #include <XTToolkitPro.h>
-
-
-
 
 
 #ifdef _UNICODE

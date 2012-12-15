@@ -53,14 +53,14 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>../../MiniCraft/Dependency/OIS/include;../../MiniCraft/Dependency/Ogre/include;../Dependency/XTP/Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../MiniCraft/Dependency/OIS/include;../../MiniCraft/Dependency/Ogre/include/Terrain;../../MiniCraft/Dependency/Ogre/include;../Dependency/XTP/Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/Zm300 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>..\Dependency\XTP\lib\vc100;..\..\MiniCraft\Dependency\OIS\lib\debug;..\..\MiniCraft\Dependency\Ogre\lib\debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>OIS_d.lib;OgreMain_d.lib</AdditionalDependencies>
+      <AdditionalDependencies>OIS_d.lib;OgreMain_d.lib;OgreTerrain_d.lib</AdditionalDependencies>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -81,7 +81,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>../../MiniCraft/Dependency/OIS/include;../../MiniCraft/Dependency/Ogre/include;../Dependency/XTP/Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../MiniCraft/Dependency/OIS/include;../../MiniCraft/Dependency/Ogre/include/Terrain;../../MiniCraft/Dependency/Ogre/include;../Dependency/XTP/Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -107,29 +107,49 @@
     <None Include="res\SceneEdit.ico" />
     <None Include="res\SceneEdit.rc2" />
     <None Include="res\shiny-gear.png" />
+    <None Include="res\SystemMenuLarge.png" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
+    <ClInclude Include="DotSceneLoader.h" />
+    <ClInclude Include="DotSceneSerializer.h" />
     <ClInclude Include="MainFrm.h" />
+    <ClInclude Include="Manipulator\ManipulatorScene.h" />
+    <ClInclude Include="Manipulator\ManipulatorTerrain.h" />
+    <ClInclude Include="rapidxml\rapidxml.hpp" />
+    <ClInclude Include="rapidxml\rapidxml_iterators.hpp" />
+    <ClInclude Include="rapidxml\rapidxml_print.hpp" />
+    <ClInclude Include="rapidxml\rapidxml_utils.hpp" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="SceneEdit.h" />
+    <ClInclude Include="Singleton.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="UI\DialogSceneNew.h" />
+    <ClInclude Include="Utility.h" />
     <ClInclude Include="View.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
+    <ClCompile Include="DotSceneLoader.cpp" />
+    <ClCompile Include="DotSceneSerializer.cpp" />
     <ClCompile Include="MainFrm.cpp" />
+    <ClCompile Include="Manipulator\ManipulatorScene.cpp" />
+    <ClCompile Include="Manipulator\ManipulatorTerrain.cpp" />
     <ClCompile Include="SceneEdit.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="UI\DialogSceneNew.cpp" />
+    <ClCompile Include="Utility.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="View.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="SceneEdit.rc">
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">C:\Users\mavaL\Desktop\SceneEdit\SceneEdit\Dependency\XTP\Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\Dependency\XTP\Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

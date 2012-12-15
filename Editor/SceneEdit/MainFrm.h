@@ -37,6 +37,7 @@ private:
 	afx_msg void	OnClose();
 	DECLARE_MESSAGE_MAP()
 
+	void			_LoadIcon();
 	bool			_OnCreateRibbon();
 };
 
