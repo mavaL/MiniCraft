@@ -13,6 +13,7 @@ class CEditorView : public CView
 // 构造
 public:
 	CEditorView();
+	DECLARE_DYNCREATE(CEditorView)
 
 // 特性
 public:
@@ -33,6 +34,7 @@ public:
 	// 生成的消息映射函数
 protected:
 	afx_msg void OnPaint();
+	afx_msg void OnSize(UINT nType, int cx, int cy);	
 	DECLARE_MESSAGE_MAP()
 };
 

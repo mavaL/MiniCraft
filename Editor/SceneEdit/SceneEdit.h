@@ -28,13 +28,13 @@ public:
 
 // й╣ож
 
-public:
-	afx_msg void OnAppAbout();
-	afx_msg void OnFileNew();
-	afx_msg void OnFileOpen();
-	afx_msg void OnFileSave();
-	afx_msg void OnFileClose();
+private:
 	DECLARE_MESSAGE_MAP()
+	afx_msg void	OnAppAbout();
+	afx_msg void	OnFileNew();
+	afx_msg void	OnFileOpen();
+	afx_msg void	OnFileSave();
+	afx_msg void	OnFileClose();
 
 public:
 	Application		m_app;

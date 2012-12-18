@@ -30,7 +30,12 @@ void ManipulatorScene::SceneNew(const std::wstring& sceneName)
 
 void ManipulatorScene::SceneOpen(const std::wstring& filepath)
 {
-	m_sceneLoader->parseDotScene(Utility::UnicodeToEngine(filepath));
+	String fullpath(Utility::UnicodeToEngine(filepath)), path, basename, extname;
+	Ogre::StringUtil::splitFullFilename(fullpath, basename, extname, path);
+
+	m_sceneName = Utility::EngineToUnicode(basename);
+
+	m_sceneLoader->parseDotScene(fullpath);
 }
 
 void ManipulatorScene::SceneSave()

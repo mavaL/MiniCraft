@@ -1,3 +1,4 @@
+StringVectorPtr
 
 // SceneEdit.cpp : 定义应用程序的类行为。
 //
@@ -101,9 +102,24 @@ BOOL CSceneEditApp::InitInstance()
 	RECT rect;
 	pView->GetClientRect(&rect);
 	
+	///////////////////////////////////////////
+	///////////////////////////初始化主程序
 	m_app.Init(rect.right-rect.left, rect.bottom-rect.top, pView->GetSafeHwnd(), m_pMainWnd->GetSafeHwnd());
-	m_app.Run();
-	m_app.Shutdown();
+
+	///////////////////////////////////////////
+	///////////////////////////初始化编辑器UI
+	CImageList iconList;
+	Ogre::StringVectorPtr meshNames;
+	m_app.RenderAllMeshIcons(iconList, meshNames);
+
+	if(!pFrame->CreateMeshPanel(iconList, meshNames))
+		return FALSE;
+
+	pFrame->CreateDockPane();
+
+	///////////////////////////////////////////
+	///////////////////////////初始化完毕,开始渲染...
+	pFrame->SetTimer(0, (UINT)TIME_PER_FRAME*1000, NULL);
 
 	return TRUE;
 }

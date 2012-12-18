@@ -13,6 +13,7 @@ Application::Application()
 ,m_pKeyboard(nullptr)
 ,m_bRButtonDown(false)
 ,m_bQuit(false)
+,m_pRenderWnd(nullptr)
 {
 
 }
@@ -29,10 +30,10 @@ void Application::_InitOgre(int width, int height, HWND hwnd, HWND hParent)
 
 	String ResourceCfg, PluginCfg;
 #ifdef _DEBUG
-	ResourceCfg = "resources_d.cfg";
+	ResourceCfg = "resources_editor_d.cfg";
 	PluginCfg = "plugins_d.cfg";
 #else
-	ResourceCfg = "resources.cfg";
+	ResourceCfg = "resources_editor.cfg";
 	PluginCfg = "plugins.cfg";
 #endif
 	
@@ -69,9 +70,9 @@ void Application::_InitOgre(int width, int height, HWND hwnd, HWND hParent)
 	NameValuePairList params;
 	params["externalWindowHandle"] = StringConverter::toString((unsigned int)hwnd);
 	params["parentWindowHandle"] = StringConverter::toString((unsigned int)hParent);
-	RenderWindow* pRenderWnd = m_pRoot->createRenderWindow("MainWindow", width, height, false, &params);
+	m_pRenderWnd = m_pRoot->createRenderWindow("MainWindow", width, height, false, &params);
 
-	Viewport* vp = pRenderWnd->addViewport(m_pMainCam);
+	Viewport* vp = m_pRenderWnd->addViewport(m_pMainCam);
 	vp->setBackgroundColour(Ogre::ColourValue(0,0,0));
 	m_pMainCam->setAspectRatio((Ogre::Real)vp->getActualWidth() / (Ogre::Real)vp->getActualHeight());
 	m_pMainCam->setNearClipDistance(5);
@@ -81,12 +82,8 @@ void Application::_InitOgre(int width, int height, HWND hwnd, HWND hParent)
 	Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);
 	//初始化所有资源
 	Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
-	//Set initial mouse clipping size
-	// 	windowResized(mWindow);
-	// 	//Register as a Window listener
-	// 	Ogre::WindowEventUtilities::addWindowEventListener(mWindow, this);
-	m_pRoot->addFrameListener(this);
-	pRenderWnd->setActive(true);
+
+	m_pRenderWnd->setActive(true);
 }
 
 void Application::_InitOIS(HWND hwnd)
@@ -107,16 +104,24 @@ void Application::_InitOIS(HWND hwnd)
 	m_pMouse->setEventCallback(this);
 }
 
-void Application::Run()
+bool Application::Update()
 {
-	//OGRE渲染主循环
-	m_pRoot->startRendering();
+	if(m_bQuit)
+		return false;
 
+	m_pMouse->capture();
+	m_pKeyboard->capture();
+
+	m_pMainCam->moveRelative(m_tranVector * TIME_PER_FRAME * 30);
+
+	m_pRoot->renderOneFrame();
+
+	return true;
+}
+
+void Application::Shutdown()
+{
 	ManipulatorScene::GetSingleton().Shutdown();
-
-	//销毁OGRE
-	if(m_pRoot)
-		m_pRoot->removeFrameListener(this);
 
 	if( m_pInputManager )
 	{
@@ -129,11 +134,6 @@ void Application::Run()
 		m_pInputManager = 0;
 	}
 	SAFE_DELETE(m_pRoot);
-}
-
-void Application::Shutdown()
-{
-	m_bQuit = true;	
 }
 
 bool Application::mouseMoved( const OIS::MouseEvent &arg )
@@ -171,6 +171,7 @@ bool Application::keyPressed( const OIS::KeyEvent &arg )
 	case OIS::KC_A: m_tranVector.x = -1; break;
 	case OIS::KC_S: m_tranVector.z =  1; break;
 	case OIS::KC_D: m_tranVector.x =  1; break;
+	case OIS::KC_ESCAPE: m_bQuit = true; break;
 	default: return false;
 	}
 
@@ -187,19 +188,6 @@ bool Application::keyReleased( const OIS::KeyEvent &arg )
 	case OIS::KC_D: m_tranVector.x = 0; break;
 	default: return false;
 	}
-
-	return true;
-}
-
-bool Application::frameRenderingQueued( const Ogre::FrameEvent& evt )
-{
-	if(m_bQuit)
-		return false;
-
-	m_pMouse->capture();
-	m_pKeyboard->capture();
-
-	m_pMainCam->moveRelative(m_tranVector * evt.timeSinceLastFrame * 30);
 
 	return true;
 }
@@ -253,6 +241,105 @@ void Application::SceneClose()
 	//重置摄像机位置
 	m_pMainCam->setPosition(0,100,0);
 	m_pMainCam->lookAt(0,0,20);
+}
+
+void Application::OnViewportResized()
+{
+	if (m_pMainCam)
+	{	
+		//设备丢失
+		m_pRenderWnd->windowMovedOrResized();	
+		m_pMainCam->setAspectRatio(m_pRenderWnd->getWidth()/(float)m_pRenderWnd->getHeight()); 
+		//reset 设备
+		m_pRenderWnd->update();	
+	}
+}
+
+void Application::RenderAllMeshIcons(CImageList& retImageList, Ogre::StringVectorPtr& retMeshNames)
+{
+	using namespace Ogre;
+
+	retImageList.Create(MESH_ICON_SIZE, MESH_ICON_SIZE, ILC_COLOR32, 100, 500);
+
+	retMeshNames = ResourceGroupManager::getSingleton().findResourceNames(
+		ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, "*.mesh");
+
+	//没有mesh资源
+	if(retMeshNames->empty())
+		return;
+
+	//准备工作...
+	const PixelFormat imageFormat = PF_A8R8G8B8;
+	TexturePtr texture = TextureManager::getSingleton().createManual( "MeshIconRtt", ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, 
+		TEX_TYPE_2D, 256, 256, 0, imageFormat , TU_RENDERTARGET );
+
+	RenderTexture *rttTex = texture->getBuffer()->getRenderTarget();
+	SceneManager *SceneMgr = Root::getSingletonPtr()->createSceneManager("OctreeSceneManager", "MeshIconSceneMgr");
+
+	Light *dirl = SceneMgr->createLight("DisplayLight");
+	dirl->setDirection(-1,-1,-1);
+	dirl->setDiffuseColour(1,1,1);
+	dirl->setType(Light::LT_DIRECTIONAL);
+
+	Camera* RTTCam = SceneMgr->createCamera("MeshIconCamera");
+	RTTCam->setNearClipDistance(0.01f);
+	RTTCam->setFarClipDistance(0);
+	RTTCam->setAspectRatio(1);
+	RTTCam->setFOVy(Degree(90));
+	RTTCam->setPosition(0,0,1);
+	RTTCam->lookAt(0,0,0);
+
+	Viewport *v = rttTex->addViewport( RTTCam );
+	v->setClearEveryFrame( true );
+	v->setBackgroundColour(ColourValue(0,0,0,0));
+
+	Entity *entity;
+	unsigned char dataptr[300 * 300 * 6]; 
+	unsigned char *dataptr2;
+	PixelBox pb(256,256,1,imageFormat, dataptr);
+	//开始渲染
+	for(size_t i=0; i<retMeshNames->size(); ++i)
+	{
+		entity = SceneMgr->createEntity("TempEntity", retMeshNames->at(i));
+		SceneMgr->getRootSceneNode()->attachObject(entity);
+
+		Vector3 vSize = entity->getBoundingBox().getHalfSize();
+		Vector3 vCenter = entity->getBoundingBox().getCenter(); 
+		vSize += Vector3(vSize.z, vSize.z, vSize.z);
+		float maxsize = max(max(vSize.x,vSize.y),vSize.z);
+		vSize = Vector3(0, 0, maxsize * 1.1f) + vCenter;
+
+		RTTCam->setPosition(vSize.x,vSize.y,vSize.z);
+		RTTCam->lookAt(vCenter.x,vCenter.y,vCenter.z);
+
+		try
+		{
+			rttTex->update();
+			rttTex->copyContentsToMemory(pb, RenderTarget::FB_FRONT);
+
+			dataptr2 = new unsigned char[MESH_ICON_SIZE*MESH_ICON_SIZE*PixelUtil::getNumElemBytes(imageFormat)];
+			PixelBox pb2(MESH_ICON_SIZE,MESH_ICON_SIZE,1,imageFormat, dataptr2);
+			Image::scale(pb,pb2);
+
+ 			//图像数据加入列表
+			CBitmap bm;
+			assert(bm.CreateBitmap(MESH_ICON_SIZE, MESH_ICON_SIZE, 1, PixelUtil::getNumElemBits(imageFormat), dataptr2));
+			retImageList.Add(&bm, RGB(0,0,0));
+		}
+		catch(...)
+		{
+			assert(0);
+		}
+
+		entity->detachFromParent();
+		SceneMgr->destroyEntity(entity);
+	}
+
+	//清理工作...
+	rttTex->removeAllViewports();
+	Root::getSingletonPtr()->destroySceneManager(SceneMgr);
+	TextureManager::getSingletonPtr()->unload(texture->getName());
+	TextureManager::getSingletonPtr()->remove(texture->getName());
 }
 
 

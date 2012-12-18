@@ -21,9 +21,11 @@ CEditorView::~CEditorView()
 {
 }
 
+IMPLEMENT_DYNCREATE(CEditorView, CView)
 
 BEGIN_MESSAGE_MAP(CEditorView, CWnd)
 	ON_WM_PAINT()
+	ON_WM_SIZE()
 END_MESSAGE_MAP()
 
 
@@ -50,5 +52,11 @@ void CEditorView::OnPaint()
 	// TODO: 在此处添加消息处理程序代码
 	
 	// 不要为绘制消息而调用 CWnd::OnPaint()
+}
+
+void CEditorView::OnSize( UINT nType, int cx, int cy )
+{
+	CView::OnSize(nType, cx, cy);
+	((CSceneEditApp*)AfxGetApp())->m_app.OnViewportResized();
 }
 

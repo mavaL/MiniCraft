@@ -18,11 +18,15 @@
 
 const	int		EDITOR_VP_WIDTH		=	1024;
 const	int		EDITOR_VP_HEIGHT	=	768;
+const	int		FPS					=	100;
+const	float	TIME_PER_FRAME		=	1.0f / FPS;
+const	int		MESH_ICON_SIZE		=	64;
+const	int		RES_SELECTOR_COLUMN_WIDTH	=	80;
 
 using namespace Ogre;
 
 
-class Application : public Ogre::FrameListener, OIS::MouseListener, OIS::KeyListener
+class Application : public OIS::MouseListener, OIS::KeyListener
 {
 public:
 	Application();
@@ -30,8 +34,12 @@ public:
 
 public:
 	void		Init(int width, int height, HWND hwnd, HWND hParent);
-	void		Run();
+	bool		Update();
 	void		Shutdown();
+	//渲染视口大小改变,进行相应处理
+	void		OnViewportResized();
+	//RTT渲染所有mesh的图标,返回Icon列表和mesh名字列表
+	void		RenderAllMeshIcons(CImageList& retImageList, Ogre::StringVectorPtr& retMeshNames);
 
 	void		SceneNew();
 	void		SceneOpen();
@@ -39,7 +47,6 @@ public:
 	void		SceneClose();
 
 private:
-	virtual bool frameRenderingQueued(const Ogre::FrameEvent& evt);
 	// OIS::MouseListener
 	virtual bool mouseMoved( const OIS::MouseEvent &arg );
 	virtual bool mousePressed( const OIS::MouseEvent &arg, OIS::MouseButtonID id );
@@ -49,6 +56,10 @@ private:
 	virtual bool keyReleased( const OIS::KeyEvent &arg ); 
 
 private:
+	void		_InitOgre(int width, int height, HWND hwnd, HWND hParent);
+	void		_InitOIS(HWND hwnd);
+
+	RenderWindow*		m_pRenderWnd;
 	Root*				m_pRoot;
 	Camera*				m_pMainCam;
 	SceneManager*		m_pSceneMgr;
@@ -56,13 +67,9 @@ private:
 	OIS::Mouse*			m_pMouse;
 	OIS::Keyboard*		m_pKeyboard;
 
+	bool				m_bQuit;
 	bool				m_bRButtonDown;
 	Vector3				m_tranVector;
-	bool				m_bQuit;
-
-private:
-	void		_InitOgre(int width, int height, HWND hwnd, HWND hParent);
-	void		_InitOIS(HWND hwnd);
 };
 
 

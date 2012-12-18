@@ -43,6 +43,18 @@
     <None Include="res\SystemMenuLarge.png">
       <Filter>资源文件</Filter>
     </None>
+    <None Include="res\icon1.ico">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\icon13.ico">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\icon14.ico">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\bitmap1.bmp">
+      <Filter>资源文件</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SceneEdit.h">

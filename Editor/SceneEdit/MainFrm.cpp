@@ -1,11 +1,12 @@
+String
 
 // MainFrm.cpp : CMainFrame 类的实现
 //
 
 #include "stdafx.h"
 #include "SceneEdit.h"
-
 #include "MainFrm.h"
+#include "View.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -19,48 +20,28 @@ BEGIN_MESSAGE_MAP(CMainFrame, CXTPFrameWnd)
 	ON_WM_CREATE()
 	ON_WM_SETFOCUS()
 	ON_WM_CLOSE()
+	ON_WM_TIMER()
+	ON_MESSAGE(XTPWM_DOCKINGPANE_NOTIFY, _AttachDockPane)
 END_MESSAGE_MAP()
 
-static UINT indicators[] =
-{
-	ID_SEPARATOR,           // 状态行指示器
-	ID_INDICATOR_CAPS,
-	ID_INDICATOR_NUM,
-	ID_INDICATOR_SCRL,
-};
 
 // CMainFrame 构造/析构
 
 CMainFrame::CMainFrame()
+:m_wndView(NULL)
 {
-	// TODO: 在此添加成员初始化代码
+	
 }
 
 CMainFrame::~CMainFrame()
 {
+	SAFE_DELETE(m_wndView);
 }
 
 int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
 	if (CXTPFrameWnd::OnCreate(lpCreateStruct) == -1)
 		return -1;
-
-	if (!m_wndView.Create(NULL, NULL, AFX_WS_DEFAULT_VIEW, 
-		CRect(0, 0, lpCreateStruct->cx, lpCreateStruct->cy), this, AFX_IDW_PANE_FIRST, NULL))
-		return -1;
-
-	SetActiveView(&m_wndView);
-
-	// Create Status bar.
-	// Important: All control bars including the Status Bar
-	// must be created before CommandBars....
-// 	if (!m_wndStatusBar.Create(this) ||
-// 		!m_wndStatusBar.SetIndicators(indicators,
-// 		sizeof(indicators)/sizeof(UINT)))
-// 	{
-// 		TRACE0("Failed to create status bar\n");
-// 		return -1;      // fail to create
-// 	}
 
 	if(!_OnCreateRibbon())
 		return -1;
@@ -102,13 +83,13 @@ void CMainFrame::Dump(CDumpContext& dc) const
 void CMainFrame::OnSetFocus(CWnd* /*pOldWnd*/)
 {
 	// 将焦点前移到视图窗口
-	m_wndView.SetFocus();
+	m_wndView->SetFocus();
 }
 
 BOOL CMainFrame::OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERINFO* pHandlerInfo)
 {
 	// 让视图第一次尝试该命令
-	if (m_wndView.OnCmdMsg(nID, nCode, pExtra, pHandlerInfo))
+	if (m_wndView->OnCmdMsg(nID, nCode, pExtra, pHandlerInfo))
 		return TRUE;
 
 	// 否则，执行默认处理
@@ -117,6 +98,8 @@ BOOL CMainFrame::OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERINFO*
 
 void CMainFrame::OnClose()
 {
+	KillTimer(0);
+
 	CSceneEditApp* app = (CSceneEditApp*)AfxGetApp();
 	app->m_app.Shutdown();
 
@@ -179,4 +162,87 @@ void CMainFrame::_LoadIcon()
 
 	UINT uiSystemMenu[] = { ID_FILE_NEW, ID_FILE_OPEN, ID_FILE_SAVE }; 
 	pCommandBars->GetImageManager()->SetIcons(IDB_SYSTEMMENULARGE, uiSystemMenu, _countof(uiSystemMenu), CSize(32, 32));
+}
+
+BOOL CMainFrame::OnCreateClient( LPCREATESTRUCT lpcs, CCreateContext* pContext )
+{
+	m_wndView = new CEditorView;
+	if (!m_wndView->Create(NULL, NULL, AFX_WS_DEFAULT_VIEW, CRect(0, 0, lpcs->cx, lpcs->cy), this, AFX_IDW_PANE_FIRST, NULL))
+		return FALSE;
+	SetActiveView(m_wndView);
+
+	return TRUE;
+}
+
+void CMainFrame::OnTimer( UINT_PTR nIDEvent )
+{
+	assert(nIDEvent == 0);
+
+	CSceneEditApp* app = (CSceneEditApp*)AfxGetApp();
+	if(!app->m_app.Update())
+		SendMessage(WM_CLOSE);
+}
+
+void CMainFrame::CreateDockPane()
+{
+	m_paneManager.InstallDockingPanes(this);
+
+	// Create docking panes.
+	m_paneManager.CreatePane(IDR_Pane_ResourceSelector, CRect(0, 0, 250, 120), xtpPaneDockLeft);
+}
+
+LRESULT CMainFrame::_AttachDockPane( WPARAM wParam, LPARAM lParam )
+{
+	if (wParam == XTP_DPN_SHOWWINDOW)
+	{
+		CXTPDockingPane* pPane = (CXTPDockingPane*)lParam;
+
+		if (!pPane->IsValid())
+		{
+			switch (pPane->GetID())
+			{
+			case IDR_Pane_ResourceSelector:
+				pPane->Attach(&m_resourceSelector);
+				break;
+			default: assert(0);
+			}
+		}
+		return 1;
+	}
+
+	return 0;
+}
+
+bool CMainFrame::CreateMeshPanel( CImageList& imageList, Ogre::StringVectorPtr& meshNames )
+{
+	if (!m_resourceSelector.Create(WS_CHILD|WS_VISIBLE, CRect(200,100,400,300), this, IDS_ResourceSelector))
+		return false;
+
+	m_resourceSelector.SetOwner(this);
+	m_resourceSelector.SetIconSize(CSize(MESH_ICON_SIZE, MESH_ICON_SIZE));
+	CXTPTaskPanelGroup* pGroup = m_resourceSelector.AddGroup(IDS_ResourceSelector_Mesh);
+
+	int itemCount = imageList.GetImageCount();
+ 	m_resourceSelector.GetImageManager()->SetImageList(imageList.Detach(), 0);
+	
+	for (int i=0; i<itemCount; ++i)
+	{
+		std::wstring meshname(Utility::EngineToUnicode(meshNames->at(i)));
+		meshname.erase(meshname.length()-5);
+		// Add folder entries
+		CXTPTaskPanelGroupItem* pItem = pGroup->AddLinkItem(i, 0);
+		pItem->SetIconIndex(i);
+		pItem->SetCaption(meshname.c_str());
+	}
+					
+	m_resourceSelector.SetBehaviour(xtpTaskPanelBehaviourList);
+	m_resourceSelector.SetSelectItemOnFocus(TRUE);
+	m_resourceSelector.SetMultiColumn(TRUE);
+	m_resourceSelector.SetColumnWidth(RES_SELECTOR_COLUMN_WIDTH);
+
+	// Select the first folder.
+	m_resourceSelector.GetAt(0)->SetExpanded(TRUE);
+	m_resourceSelector.AllowDrag(TRUE);
+
+	return true;
 }
