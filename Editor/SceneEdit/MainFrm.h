@@ -33,6 +33,7 @@ private:
 	afx_msg void	OnSetFocus(CWnd *pOldWnd);
 	afx_msg void	OnClose();
 	afx_msg void	OnTimer(UINT_PTR nIDEvent);
+	afx_msg LRESULT OnResPanelNotify(WPARAM wParam, LPARAM lParam);
 
 	void			_LoadIcon();
 	bool			_OnCreateRibbon();

@@ -1,8 +1,11 @@
 #include "stdafx.h"
-#include "ManipulatorScene.h"
-#include "ManipulatorTerrain.h"
 #include "../DotSceneSerializer.h"
 #include "../DotSceneLoader.h"
+#include "ManipulatorScene.h"
+#include "ManipulatorTerrain.h"
+#include "ManipulatorObject.h"
+#include "../EditorDefine.h"
+
 
 ManipulatorScene::ManipulatorScene()
 :m_sceneName(L"")
@@ -13,6 +16,7 @@ ManipulatorScene::ManipulatorScene()
 	m_scenePath += L"\\..\\..\\..\\..\\Editor\\Scene\\";
 
 	m_manipulatorTerrain = new ManipulatorTerrain;
+	m_manipulatorObject = new ManipulatorObject;
 	m_sceneSerializer = new DotSceneSerialezer;
 	m_sceneLoader = new DotSceneLoader;
 }
@@ -55,6 +59,7 @@ void ManipulatorScene::SceneClose()
 void ManipulatorScene::Shutdown()
 {
 	SAFE_DELETE(m_manipulatorTerrain);
+	SAFE_DELETE(m_manipulatorObject);
 	SAFE_DELETE(m_sceneSerializer);
 	SAFE_DELETE(m_sceneLoader);
 }

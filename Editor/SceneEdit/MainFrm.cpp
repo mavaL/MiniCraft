@@ -7,6 +7,7 @@ String
 #include "SceneEdit.h"
 #include "MainFrm.h"
 #include "View.h"
+#include "EditorDefine.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -22,6 +23,7 @@ BEGIN_MESSAGE_MAP(CMainFrame, CXTPFrameWnd)
 	ON_WM_CLOSE()
 	ON_WM_TIMER()
 	ON_MESSAGE(XTPWM_DOCKINGPANE_NOTIFY, _AttachDockPane)
+	ON_MESSAGE(XTPWM_TASKPANEL_NOTIFY,	OnResPanelNotify)
 END_MESSAGE_MAP()
 
 
@@ -58,8 +60,8 @@ BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)
 
 	cs.dwExStyle &= ~WS_EX_CLIENTEDGE;
 	cs.lpszClass = AfxRegisterWndClass(0);
-	cs.cx = EDITOR_VP_WIDTH;
-	cs.cy = EDITOR_VP_HEIGHT;
+	cs.cx = EDITOR_CLIENT_W;
+	cs.cy = EDITOR_CLIENT_H;
 	return TRUE;
 }
 
@@ -242,7 +244,29 @@ bool CMainFrame::CreateMeshPanel( CImageList& imageList, Ogre::StringVectorPtr& 
 
 	// Select the first folder.
 	m_resourceSelector.GetAt(0)->SetExpanded(TRUE);
-	m_resourceSelector.AllowDrag(TRUE);
+	m_resourceSelector.AllowDrag(xtpTaskItemAllowDragCopyOutsideControl);
 
 	return true;
+}
+
+LRESULT CMainFrame::OnResPanelNotify( WPARAM wParam, LPARAM lParam )
+{
+	switch(wParam) {
+	case XTP_TPN_CLICK:
+		{
+			CXTPTaskPanelGroupItem* pItem = (CXTPTaskPanelGroupItem*)lParam;
+			TRACE(_T("Click Event: pItem.Caption = %s, pItem.ID = %i\n"), pItem->GetCaption(), pItem->GetID());
+		}
+		break;
+
+	case XTP_TPN_RCLICK:
+		{
+			CXTPTaskPanelItem* pItem = (CXTPTaskPanelItem*)lParam;
+			TRACE(_T("RClick Event: pItem.Caption = %s, pItem.ID = %i\n"), pItem->GetCaption(), pItem->GetID());
+
+		}
+		break;
+	}
+
+	return 0;
 }

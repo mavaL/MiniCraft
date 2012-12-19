@@ -10,6 +10,7 @@ StringVectorPtr
 #include "MainFrm.h"
 
 #include "Application.h"
+#include "EditorDefine.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -101,10 +102,13 @@ BOOL CSceneEditApp::InitInstance()
 	CView* pView = pFrame->GetActiveView();
 	RECT rect;
 	pView->GetClientRect(&rect);
-	
+
 	///////////////////////////////////////////
 	///////////////////////////初始化主程序
 	m_app.Init(rect.right-rect.left, rect.bottom-rect.top, pView->GetSafeHwnd(), m_pMainWnd->GetSafeHwnd());
+
+	//初始化OLE
+	OleInitialize(NULL);
 
 	///////////////////////////////////////////
 	///////////////////////////初始化编辑器UI
@@ -126,7 +130,7 @@ BOOL CSceneEditApp::InitInstance()
 
 int CSceneEditApp::ExitInstance()
 {
-	//TODO: 处理可能已添加的附加资源
+	OleUninitialize();
 	return CWinApp::ExitInstance();
 }
 

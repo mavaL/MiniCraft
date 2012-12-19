@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "Application.h"
+#include "EditorDefine.h"
 #include "UI/DialogSceneNew.h"
 #include "Manipulator/ManipulatorScene.h"
 
@@ -65,7 +66,7 @@ void Application::_InitOgre(int width, int height, HWND hwnd, HWND hParent)
 	m_pRoot->initialise(false);
 
 	m_pSceneMgr = m_pRoot->createSceneManager(ST_GENERIC, SCENE_MANAGER_NAME);
-	m_pMainCam = m_pSceneMgr->createCamera("MainCamera");
+	m_pMainCam = m_pSceneMgr->createCamera(MAIN_CAMERA_NAME);
 
 	NameValuePairList params;
 	params["externalWindowHandle"] = StringConverter::toString((unsigned int)hwnd);

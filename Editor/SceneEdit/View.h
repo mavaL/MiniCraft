@@ -6,35 +6,30 @@
 #pragma once
 
 
-// CEditorView 窗口
 
 class CEditorView : public CView
 {
-// 构造
 public:
 	CEditorView();
+	virtual ~CEditorView();
 	DECLARE_DYNCREATE(CEditorView)
 
-// 特性
 public:
+	virtual DROPEFFECT OnDragOver(COleDataObject* pDataObject, DWORD dwKeyState, CPoint point);
+	virtual BOOL OnDrop(COleDataObject* pDataObject, DROPEFFECT dropEffect, CPoint point);
 
-// 操作
-public:
-
-// 重写
-	protected:
-	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
-	virtual	void OnDraw(CDC* dc) {}
-	virtual void PostNcDestroy() {}
-
-// 实现
-public:
-	virtual ~CEditorView();
-
-	// 生成的消息映射函数
 protected:
-	afx_msg void OnPaint();
-	afx_msg void OnSize(UINT nType, int cx, int cy);	
+	virtual BOOL	PreCreateWindow(CREATESTRUCT& cs);
+	virtual	void	OnDraw(CDC* dc) {}
+	virtual void	PostNcDestroy() {}
+
+private:
+	afx_msg void	OnPaint();
+	afx_msg void	OnSize(UINT nType, int cx, int cy);
+	afx_msg int		OnCreate(LPCREATESTRUCT lpCreateStruct);
 	DECLARE_MESSAGE_MAP()
+
+private:
+	COleDropTarget*	m_pResDropHelper;	//ole拖拽
 };
 

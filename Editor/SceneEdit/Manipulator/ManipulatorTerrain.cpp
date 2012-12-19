@@ -5,6 +5,7 @@
 #include "ManipulatorScene.h"
 #include <OgreStreamSerialiser.h>
 #include <OgreDeflate.h>
+#include "../EditorDefine.h"
 
 
 const	int	TERRAIN_SIZE	=	65;

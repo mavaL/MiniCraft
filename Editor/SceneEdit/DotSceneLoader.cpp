@@ -3,6 +3,7 @@
 #include "Manipulator/ManipulatorScene.h"
 #include "Manipulator/ManipulatorTerrain.h"
 #include <fstream>
+#include "EditorDefine.h"
 
 
 // #include "PagedGeometry.h"

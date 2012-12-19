@@ -16,12 +16,6 @@
 #include <OISKeyboard.h>
 #include <OISMouse.h>
 
-const	int		EDITOR_VP_WIDTH		=	1024;
-const	int		EDITOR_VP_HEIGHT	=	768;
-const	int		FPS					=	100;
-const	float	TIME_PER_FRAME		=	1.0f / FPS;
-const	int		MESH_ICON_SIZE		=	64;
-const	int		RES_SELECTOR_COLUMN_WIDTH	=	80;
 
 using namespace Ogre;
 

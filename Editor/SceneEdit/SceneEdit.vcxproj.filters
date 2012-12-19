@@ -111,6 +111,12 @@
     <ClInclude Include="Singleton.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="Manipulator\ManipulatorObject.h">
+      <Filter>头文件\Manipulator</Filter>
+    </ClInclude>
+    <ClInclude Include="EditorDefine.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SceneEdit.cpp">
@@ -145,6 +151,9 @@
     </ClCompile>
     <ClCompile Include="Utility.cpp">
       <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Manipulator\ManipulatorObject.cpp">
+      <Filter>源文件\Manipulator</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

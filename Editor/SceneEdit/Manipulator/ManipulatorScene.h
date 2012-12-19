@@ -16,14 +16,12 @@ namespace Ogre
 	class SceneManager;
 }
 
-class ManipulatorTerrain;
 class DotSceneSerialezer;
 class DotSceneLoader;
+class ManipulatorTerrain;
+class ManipulatorObject;
 
-//当前.scene版本号
-const	float	SCENE_VERSION	=	0.1f;
-//默认场景管理器名字
-const	std::string	SCENE_MANAGER_NAME	=	"DefaultSceneMgr";
+
 
 class ManipulatorScene : public CSingleton<ManipulatorScene>
 {
@@ -40,13 +38,15 @@ public:
 	void	Shutdown();
 	const std::wstring&	GetScenePath()	{ return m_scenePath; }
 	const std::wstring&	GetSceneName()	{ return m_sceneName; }
-	const std::wstring GenerateSceneFullPath();
+	const std::wstring	GenerateSceneFullPath();
 	ManipulatorTerrain&	GetTerrain()	{ return *m_manipulatorTerrain; }
+	ManipulatorObject&	GetObject()		{ return *m_manipulatorObject; }
 
 private:
 	std::wstring		m_scenePath;
 	std::wstring		m_sceneName;
 	ManipulatorTerrain*	m_manipulatorTerrain;
+	ManipulatorObject*	m_manipulatorObject;
 	DotSceneSerialezer*	m_sceneSerializer;
 	DotSceneLoader*		m_sceneLoader;
 };

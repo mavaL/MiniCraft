@@ -3,6 +3,7 @@
 #include <fstream>
 #include "Manipulator/ManipulatorScene.h"
 #include "Manipulator/ManipulatorTerrain.h"
+#include "EditorDefine.h"
 
 
 void DotSceneSerialezer::Serialize( const Ogre::String& path, const Ogre::String& scene )

@@ -117,7 +117,9 @@
     <ClInclude Include="Application.h" />
     <ClInclude Include="DotSceneLoader.h" />
     <ClInclude Include="DotSceneSerializer.h" />
+    <ClInclude Include="EditorDefine.h" />
     <ClInclude Include="MainFrm.h" />
+    <ClInclude Include="Manipulator\ManipulatorObject.h" />
     <ClInclude Include="Manipulator\ManipulatorScene.h" />
     <ClInclude Include="Manipulator\ManipulatorTerrain.h" />
     <ClInclude Include="rapidxml\rapidxml.hpp" />
@@ -138,6 +140,7 @@
     <ClCompile Include="DotSceneLoader.cpp" />
     <ClCompile Include="DotSceneSerializer.cpp" />
     <ClCompile Include="MainFrm.cpp" />
+    <ClCompile Include="Manipulator\ManipulatorObject.cpp" />
     <ClCompile Include="Manipulator\ManipulatorScene.cpp" />
     <ClCompile Include="Manipulator\ManipulatorTerrain.cpp" />
     <ClCompile Include="SceneEdit.cpp" />
