@@ -11,16 +11,12 @@
 
 #include <Ogre.h>
 
-#include <OISEvents.h>
-#include <OISInputManager.h>
-#include <OISKeyboard.h>
-#include <OISMouse.h>
-
 
 using namespace Ogre;
 
+struct SActionParam;
 
-class Application : public OIS::MouseListener, OIS::KeyListener
+class Application
 {
 public:
 	Application();
@@ -40,30 +36,22 @@ public:
 	void		SceneSave();
 	void		SceneClose();
 
-private:
-	// OIS::MouseListener
-	virtual bool mouseMoved( const OIS::MouseEvent &arg );
-	virtual bool mousePressed( const OIS::MouseEvent &arg, OIS::MouseButtonID id );
-	virtual bool mouseReleased( const OIS::MouseEvent &arg, OIS::MouseButtonID id );
-	// OIS::KeyListener
-	virtual bool keyPressed( const OIS::KeyEvent &arg );
-	virtual bool keyReleased( const OIS::KeyEvent &arg ); 
+	void		OnLButtonDown(const POINT& pt);
+	void		OnLButtonUp(const POINT& pt);
+	void		OnRButtonDown(const POINT& pt);
+	void		OnRButtonUp(const POINT& pt);
+	void		OnMouseMove(const POINT& pt);
 
 private:
 	void		_InitOgre(int width, int height, HWND hwnd, HWND hParent);
-	void		_InitOIS(HWND hwnd);
+	bool		_UpdateInput(float dt);
+	void		_CreateActionParam(const POINT& viewClientPt, SActionParam& retParam);
 
 	RenderWindow*		m_pRenderWnd;
 	Root*				m_pRoot;
 	Camera*				m_pMainCam;
 	SceneManager*		m_pSceneMgr;
-	OIS::InputManager*	m_pInputManager;
-	OIS::Mouse*			m_pMouse;
-	OIS::Keyboard*		m_pKeyboard;
-
-	bool				m_bQuit;
-	bool				m_bRButtonDown;
-	Vector3				m_tranVector;
+	bool				m_bRBDown;
 };
 
 

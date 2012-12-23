@@ -3,18 +3,16 @@
 #include "EditorDefine.h"
 #include "UI/DialogSceneNew.h"
 #include "Manipulator/ManipulatorScene.h"
+#include "Manipulator/ManipulatorAction.h"
+#include "Action/ActionBase.h"
 
 
 Application::Application()
 :m_pRoot(nullptr)
 ,m_pMainCam(nullptr)
 ,m_pSceneMgr(nullptr)
-,m_pInputManager(nullptr)
-,m_pMouse(nullptr)
-,m_pKeyboard(nullptr)
-,m_bRButtonDown(false)
-,m_bQuit(false)
 ,m_pRenderWnd(nullptr)
+,m_bRBDown(false)
 {
 
 }
@@ -22,7 +20,6 @@ Application::Application()
 void Application::Init( int width, int height, HWND hwnd, HWND hParent )
 {
 	_InitOgre(width, height, hwnd, hParent);
-	_InitOIS(hParent);
 }
 
 void Application::_InitOgre(int width, int height, HWND hwnd, HWND hParent)
@@ -87,33 +84,10 @@ void Application::_InitOgre(int width, int height, HWND hwnd, HWND hParent)
 	m_pRenderWnd->setActive(true);
 }
 
-void Application::_InitOIS(HWND hwnd)
-{
-	OIS::ParamList pl;
-	pl.insert(std::make_pair(std::string("WINDOW"), Ogre::StringConverter::toString((unsigned int)hwnd)));
-	pl.insert(std::make_pair(std::string("w32_mouse"), "DISCL_FOREGROUND"));     
-	pl.insert(std::make_pair(std::string("w32_mouse"), "DISCL_NONEXCLUSIVE"));
-
-	m_pInputManager = OIS::InputManager::createInputSystem( pl );
-	assert(m_pInputManager);
-
-	m_pKeyboard = static_cast<OIS::Keyboard*>(m_pInputManager->createInputObject( OIS::OISKeyboard, true ));
-	m_pMouse = static_cast<OIS::Mouse*>(m_pInputManager->createInputObject( OIS::OISMouse, true ));
-	assert(m_pKeyboard && m_pMouse);
-
-	m_pKeyboard->setEventCallback(this);
-	m_pMouse->setEventCallback(this);
-}
-
 bool Application::Update()
 {
-	if(m_bQuit)
+	if(!_UpdateInput(TIME_PER_FRAME))
 		return false;
-
-	m_pMouse->capture();
-	m_pKeyboard->capture();
-
-	m_pMainCam->moveRelative(m_tranVector * TIME_PER_FRAME * 30);
 
 	m_pRoot->renderOneFrame();
 
@@ -122,75 +96,8 @@ bool Application::Update()
 
 void Application::Shutdown()
 {
-	ManipulatorScene::GetSingleton().Shutdown();
-
-	if( m_pInputManager )
-	{
-		m_pInputManager->destroyInputObject( m_pMouse );
-		m_pInputManager->destroyInputObject( m_pKeyboard );
-
-		OIS::InputManager::destroyInputSystem(m_pInputManager);
-		m_pMouse = 0;
-		m_pKeyboard = 0;
-		m_pInputManager = 0;
-	}
+	ManipulatorSystem.Shutdown();
 	SAFE_DELETE(m_pRoot);
-}
-
-bool Application::mouseMoved( const OIS::MouseEvent &arg )
-{
-	if(m_bRButtonDown)
-	{
-		m_pMainCam->yaw(Ogre::Radian(-arg.state.X.rel * 0.01f));
-		m_pMainCam->pitch(Ogre::Radian(-arg.state.Y.rel * 0.01f));
-	}
-	
-	return true;
-}
-
-bool Application::mousePressed( const OIS::MouseEvent &arg, OIS::MouseButtonID id )
-{
-	if(OIS::MB_Right == id)
-		m_bRButtonDown = true;
-
-	return true;
-}
-
-bool Application::mouseReleased( const OIS::MouseEvent &arg, OIS::MouseButtonID id )
-{
-	if(OIS::MB_Right == id)
-		m_bRButtonDown = false;
-
-	return true;
-}
-
-bool Application::keyPressed( const OIS::KeyEvent &arg )
-{
-	switch (arg.key)
-	{
-	case OIS::KC_W: m_tranVector.z = -1; break;
-	case OIS::KC_A: m_tranVector.x = -1; break;
-	case OIS::KC_S: m_tranVector.z =  1; break;
-	case OIS::KC_D: m_tranVector.x =  1; break;
-	case OIS::KC_ESCAPE: m_bQuit = true; break;
-	default: return false;
-	}
-
-	return true;
-}
-
-bool Application::keyReleased( const OIS::KeyEvent &arg )
-{
-	switch (arg.key)
-	{
-	case OIS::KC_W: m_tranVector.z = 0; break;
-	case OIS::KC_A: m_tranVector.x = 0; break;
-	case OIS::KC_S: m_tranVector.z = 0;	break;
-	case OIS::KC_D: m_tranVector.x = 0; break;
-	default: return false;
-	}
-
-	return true;
 }
 
 void Application::SceneNew()
@@ -201,9 +108,9 @@ void Application::SceneNew()
 
 	DialogSceneNew dlg;
 	std::wstring newSceneName;
-	if (IDOK == dlg.DoModal(ManipulatorScene::GetSingleton().GetScenePath(), newSceneName))
+	if (IDOK == dlg.DoModal(ManipulatorSystem.GetScenePath(), newSceneName))
 	{
-		ManipulatorScene::GetSingleton().SceneNew(newSceneName);
+		ManipulatorSystem.SceneNew(newSceneName);
 	}
 }
 
@@ -226,18 +133,18 @@ void Application::SceneOpen()
 	if(IDOK == dlgFile.DoModal())
 	{
 		strFilename = dlgFile.GetOFN().lpstrFile;
-		ManipulatorScene::GetSingleton().SceneOpen(strFilename);
+		ManipulatorSystem.SceneOpen(strFilename);
 	}
 }
 
 void Application::SceneSave()
 {
-	ManipulatorScene::GetSingleton().SceneSave();
+	ManipulatorSystem.SceneSave();
 }
 
 void Application::SceneClose()
 {
-	ManipulatorScene::GetSingleton().SceneClose();
+	ManipulatorSystem.SceneClose();
 
 	//重置摄像机位置
 	m_pMainCam->setPosition(0,100,0);
@@ -341,6 +248,107 @@ void Application::RenderAllMeshIcons(CImageList& retImageList, Ogre::StringVecto
 	Root::getSingletonPtr()->destroySceneManager(SceneMgr);
 	TextureManager::getSingletonPtr()->unload(texture->getName());
 	TextureManager::getSingletonPtr()->remove(texture->getName());
+}
+
+bool Application::_UpdateInput(float dt)
+{
+	if(GetAsyncKeyState(VK_ESCAPE) < 0)
+		return false;
+
+	POINT curPos;
+	GetCursorPos(&curPos);
+
+	static POINT lastPos = curPos;
+
+	Vector3	vecMove(Vector3::ZERO);
+	//处理摄像机移动
+	if(GetAsyncKeyState('W') < 0)
+		vecMove.z = -1;
+	else if(GetAsyncKeyState('S') < 0)
+		vecMove.z =  1;
+	if(GetAsyncKeyState('A') < 0)
+		vecMove.x = -1;
+	else if(GetAsyncKeyState('D') < 0)
+		vecMove.x =  1;
+
+	m_pMainCam->moveRelative(vecMove * dt * 50);
+
+	//处理摄像机方向
+	if(m_bRBDown)
+	{
+		m_pMainCam->yaw(Ogre::Radian((lastPos.x-curPos.x)*dt*0.5f));
+		m_pMainCam->pitch(Ogre::Radian((lastPos.y-curPos.y)*dt*0.5f));
+	}
+
+	lastPos = curPos;
+	return true;
+}
+
+void Application::OnLButtonDown( const POINT& pt )
+{
+	if(!ManipulatorSystem.GetIsSceneReady())
+		return;
+
+	SActionParam param;
+	_CreateActionParam(pt, param);
+
+	ManipulatorAction::GetSingleton().GetActiveActoin()->OnMouseLButtonDown(param);
+}
+
+void Application::OnLButtonUp( const POINT& pt )
+{
+	if(!ManipulatorSystem.GetIsSceneReady())
+		return;
+
+	SActionParam param;
+	_CreateActionParam(pt, param);
+
+	ManipulatorAction::GetSingleton().GetActiveActoin()->OnMouseLButtonUp(param);
+}
+
+void Application::OnMouseMove( const POINT& pt )
+{
+	if(!ManipulatorSystem.GetIsSceneReady())
+		return;
+
+	SActionParam param;
+	_CreateActionParam(pt, param);
+
+	ManipulatorAction::GetSingleton().GetActiveActoin()->OnMouseMove(param);
+}
+
+void Application::OnRButtonDown( const POINT& pt )
+{
+	if(!ManipulatorSystem.GetIsSceneReady())
+		return;
+
+	SActionParam param;
+	_CreateActionParam(pt, param);
+
+	ManipulatorAction::GetSingleton().GetActiveActoin()->OnMouseRButtonDown(param);
+	m_bRBDown = true;
+}
+
+void Application::OnRButtonUp( const POINT& pt )
+{
+	if(!ManipulatorSystem.GetIsSceneReady())
+		return;
+
+	SActionParam param;
+	_CreateActionParam(pt, param);
+
+	ManipulatorAction::GetSingleton().GetActiveActoin()->OnMouseRButtonDown(param);
+	m_bRBDown = false;
+}
+
+void Application::_CreateActionParam( const POINT& viewClientPt, SActionParam& retParam )
+{
+	retParam.m_ptPixel = Ogre::Vector2((float)viewClientPt.x, (float)viewClientPt.y);
+
+	unsigned int vpWidth = m_pRenderWnd->getWidth();
+	unsigned int vpHeight = m_pRenderWnd->getHeight();
+	const Ogre::Ray ray = m_pMainCam->getCameraToViewportRay(viewClientPt.x/(float)vpWidth, viewClientPt.y/(float)vpHeight);
+	retParam.m_bHitTerrain = ManipulatorSystem.GetTerrain().GetRayIntersectPoint(ray, retParam.m_ptTerrain);
 }
 
 

@@ -9,8 +9,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SceneEdit", "..\Editor\Scen
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OgreTerrain", "..\..\Ogre_1_8_0\build\Components\Terrain\OgreTerrain.vcxproj", "{F0617CC5-2D7E-4765-8412-F3AE01726DF9}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Codejock.ToolkitPro.Shared", "..\..\Xtreme ToolkitPro v15.2.1\Workspace\ToolkitPro\ToolkitProShared_vc100.vcxproj", "{06739158-FFB0-66BD-4A6E-CD5E37D64486}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RenderSystem_Direct3D9", "..\..\Ogre_1_8_0\build\RenderSystems\Direct3D9\RenderSystem_Direct3D9.vcxproj", "{B3973624-A51E-4EB8-ACAF-7595A101A863}"
 EndProject
 Global
@@ -101,28 +99,6 @@ Global
 		{F0617CC5-2D7E-4765-8412-F3AE01726DF9}.Unicode Release|Win32.ActiveCfg = Release|Win32
 		{F0617CC5-2D7E-4765-8412-F3AE01726DF9}.Unicode Release|Win32.Build.0 = Release|Win32
 		{F0617CC5-2D7E-4765-8412-F3AE01726DF9}.Unicode Release|x64.ActiveCfg = Release|Win32
-		{06739158-FFB0-66BD-4A6E-CD5E37D64486}.Debug|Win32.ActiveCfg = Debug|Win32
-		{06739158-FFB0-66BD-4A6E-CD5E37D64486}.Debug|Win32.Build.0 = Debug|Win32
-		{06739158-FFB0-66BD-4A6E-CD5E37D64486}.Debug|x64.ActiveCfg = Debug|x64
-		{06739158-FFB0-66BD-4A6E-CD5E37D64486}.Debug|x64.Build.0 = Debug|x64
-		{06739158-FFB0-66BD-4A6E-CD5E37D64486}.MinSizeRel|Win32.ActiveCfg = Unicode Release|x64
-		{06739158-FFB0-66BD-4A6E-CD5E37D64486}.MinSizeRel|x64.ActiveCfg = Unicode Release|x64
-		{06739158-FFB0-66BD-4A6E-CD5E37D64486}.MinSizeRel|x64.Build.0 = Unicode Release|x64
-		{06739158-FFB0-66BD-4A6E-CD5E37D64486}.Release|Win32.ActiveCfg = Release|Win32
-		{06739158-FFB0-66BD-4A6E-CD5E37D64486}.Release|Win32.Build.0 = Release|Win32
-		{06739158-FFB0-66BD-4A6E-CD5E37D64486}.Release|x64.ActiveCfg = Release|x64
-		{06739158-FFB0-66BD-4A6E-CD5E37D64486}.Release|x64.Build.0 = Release|x64
-		{06739158-FFB0-66BD-4A6E-CD5E37D64486}.RelWithDebInfo|Win32.ActiveCfg = Release|x64
-		{06739158-FFB0-66BD-4A6E-CD5E37D64486}.RelWithDebInfo|x64.ActiveCfg = Release|x64
-		{06739158-FFB0-66BD-4A6E-CD5E37D64486}.RelWithDebInfo|x64.Build.0 = Release|x64
-		{06739158-FFB0-66BD-4A6E-CD5E37D64486}.Unicode Debug|Win32.ActiveCfg = Unicode Debug|Win32
-		{06739158-FFB0-66BD-4A6E-CD5E37D64486}.Unicode Debug|Win32.Build.0 = Unicode Debug|Win32
-		{06739158-FFB0-66BD-4A6E-CD5E37D64486}.Unicode Debug|x64.ActiveCfg = Unicode Debug|x64
-		{06739158-FFB0-66BD-4A6E-CD5E37D64486}.Unicode Debug|x64.Build.0 = Unicode Debug|x64
-		{06739158-FFB0-66BD-4A6E-CD5E37D64486}.Unicode Release|Win32.ActiveCfg = Unicode Release|Win32
-		{06739158-FFB0-66BD-4A6E-CD5E37D64486}.Unicode Release|Win32.Build.0 = Unicode Release|Win32
-		{06739158-FFB0-66BD-4A6E-CD5E37D64486}.Unicode Release|x64.ActiveCfg = Unicode Release|x64
-		{06739158-FFB0-66BD-4A6E-CD5E37D64486}.Unicode Release|x64.Build.0 = Unicode Release|x64
 		{B3973624-A51E-4EB8-ACAF-7595A101A863}.Debug|Win32.ActiveCfg = Debug|Win32
 		{B3973624-A51E-4EB8-ACAF-7595A101A863}.Debug|Win32.Build.0 = Debug|Win32
 		{B3973624-A51E-4EB8-ACAF-7595A101A863}.Debug|x64.ActiveCfg = Debug|Win32

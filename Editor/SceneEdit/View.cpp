@@ -31,6 +31,11 @@ BEGIN_MESSAGE_MAP(CEditorView, CWnd)
 	ON_WM_PAINT()
 	ON_WM_SIZE()
 	ON_WM_CREATE()
+	ON_WM_LBUTTONDOWN()
+	ON_WM_LBUTTONUP()
+	ON_WM_RBUTTONDOWN()
+	ON_WM_RBUTTONUP()
+	ON_WM_MOUSEMOVE()
 END_MESSAGE_MAP()
 
 
@@ -90,7 +95,7 @@ BOOL CEditorView::OnDrop( COleDataObject* pDataObject, DROPEFFECT dropEffect, CP
 	pos.y /= (rect.bottom-rect.top);
 
 	//创建物体
-	if(!ManipulatorScene::GetSingleton().GetObject().AddEntity(Utility::UnicodeToEngine(meshname), pos))
+	if(!ManipulatorSystem.GetObject().AddEntity(Utility::UnicodeToEngine(meshname), pos))
 		return FALSE;
 
 	return TRUE;
@@ -99,5 +104,30 @@ BOOL CEditorView::OnDrop( COleDataObject* pDataObject, DROPEFFECT dropEffect, CP
 DROPEFFECT CEditorView::OnDragOver( COleDataObject* pDataObject, DWORD dwKeyState, CPoint point )
 {
 	return DROPEFFECT_COPY;
+}
+
+void CEditorView::OnLButtonDown( UINT nFlags, CPoint point )
+{
+	(dynamic_cast<CSceneEditApp*>(AfxGetApp()))->m_app.OnLButtonDown(point);
+}
+
+void CEditorView::OnLButtonUp( UINT nFlags, CPoint point )
+{
+	(dynamic_cast<CSceneEditApp*>(AfxGetApp()))->m_app.OnLButtonUp(point);
+}
+
+void CEditorView::OnMouseMove( UINT nFlags, CPoint point )
+{
+	(dynamic_cast<CSceneEditApp*>(AfxGetApp()))->m_app.OnMouseMove(point);
+}
+
+void CEditorView::OnRButtonDown( UINT nFlags, CPoint point )
+{
+	(dynamic_cast<CSceneEditApp*>(AfxGetApp()))->m_app.OnRButtonDown(point);
+}
+
+void CEditorView::OnRButtonUp( UINT nFlags, CPoint point )
+{
+	(dynamic_cast<CSceneEditApp*>(AfxGetApp()))->m_app.OnRButtonUp(point);
 }
 

@@ -85,9 +85,9 @@ BOOL CSceneEditApp::InitInstance()
 	// 例如修改为公司或组织名
 	SetRegistryKey(_T("应用程序向导生成的本地应用程序"));
 
+	//初始化OLE
+	OleInitialize(NULL);
 
-	// 若要创建主窗口，此代码将创建新的框架窗口
-	// 对象，然后将其设置为应用程序的主窗口对象
 	CMainFrame* pFrame = new CMainFrame;
 	if (!pFrame)
 		return FALSE;
@@ -95,34 +95,24 @@ BOOL CSceneEditApp::InitInstance()
 	// 创建并加载框架及其资源
 	pFrame->LoadFrame(IDR_MAINFRAME, WS_OVERLAPPEDWINDOW | FWS_ADDTOTITLE, NULL, NULL);
 
-	// 唯一的一个窗口已初始化，因此显示它并对其进行更新
-	pFrame->ShowWindow(SW_SHOW);
-	pFrame->UpdateWindow();
-
+	///////////////////////////////////////////
+	///////////////////////////初始化主程序
 	CView* pView = pFrame->GetActiveView();
 	RECT rect;
 	pView->GetClientRect(&rect);
 
-	///////////////////////////////////////////
-	///////////////////////////初始化主程序
 	m_app.Init(rect.right-rect.left, rect.bottom-rect.top, pView->GetSafeHwnd(), m_pMainWnd->GetSafeHwnd());
-
-	//初始化OLE
-	OleInitialize(NULL);
 
 	///////////////////////////////////////////
 	///////////////////////////初始化编辑器UI
-	CImageList iconList;
-	Ogre::StringVectorPtr meshNames;
-	m_app.RenderAllMeshIcons(iconList, meshNames);
-
-	if(!pFrame->CreateMeshPanel(iconList, meshNames))
+	if(!pFrame->CreateEditorMainUI())
 		return FALSE;
-
-	pFrame->CreateDockPane();
 
 	///////////////////////////////////////////
 	///////////////////////////初始化完毕,开始渲染...
+	pFrame->ShowWindow(SW_SHOW);
+	pFrame->UpdateWindow();
+
 	pFrame->SetTimer(0, (UINT)TIME_PER_FRAME*1000, NULL);
 
 	return TRUE;

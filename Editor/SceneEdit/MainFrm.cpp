@@ -8,6 +8,9 @@ String
 #include "MainFrm.h"
 #include "View.h"
 #include "EditorDefine.h"
+#include "Manipulator/ManipulatorScene.h"
+#include "Manipulator/ManipulatorAction.h"
+#include "Action/ActionBase.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -24,6 +27,16 @@ BEGIN_MESSAGE_MAP(CMainFrame, CXTPFrameWnd)
 	ON_WM_TIMER()
 	ON_MESSAGE(XTPWM_DOCKINGPANE_NOTIFY, _AttachDockPane)
 	ON_MESSAGE(XTPWM_TASKPANEL_NOTIFY,	OnResPanelNotify)
+	ON_UPDATE_COMMAND_UI(ID_Terrain_BrushSize1, OnUpdateUI_TerrainBrushSize1)
+	ON_UPDATE_COMMAND_UI(ID_Terrain_BrushSize2, OnUpdateUI_TerrainBrushSize2)
+	ON_XTP_EXECUTE(ID_Terrain_BrushSize1, OnTerrainBrushSize1)
+	ON_NOTIFY(XTP_FN_SPINUP, ID_Terrain_BrushSize1, OnTerrainBrushSize1Spin)
+	ON_NOTIFY(XTP_FN_SPINDOWN, ID_Terrain_BrushSize1, OnTerrainBrushSize1Spin)
+	ON_XTP_EXECUTE(ID_Terrain_BrushSize2, OnTerrainBrushSize2)
+	ON_NOTIFY(XTP_FN_SPINUP, ID_Terrain_BrushSize2, OnTerrainBrushSize2Spin)
+	ON_NOTIFY(XTP_FN_SPINDOWN, ID_Terrain_BrushSize2, OnTerrainBrushSize2Spin)
+	ON_UPDATE_COMMAND_UI(IDC_Terrain_Modify, OnUpdateUI_BtnTerrainModify)
+	ON_COMMAND(IDC_Terrain_Modify, OnBtnTerrainModify)
 END_MESSAGE_MAP()
 
 
@@ -43,9 +56,6 @@ CMainFrame::~CMainFrame()
 int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
 	if (CXTPFrameWnd::OnCreate(lpCreateStruct) == -1)
-		return -1;
-
-	if(!_OnCreateRibbon())
 		return -1;
 
 	return 0;
@@ -114,8 +124,6 @@ bool CMainFrame::_OnCreateRibbon()
 	if (!InitCommandBars())
 		return false;
 
-	_LoadIcon();
-
 	// Get a pointer to the command bars object.
 	CXTPCommandBars* pCommandBars = GetCommandBars();
 	if(pCommandBars == NULL)
@@ -124,18 +132,21 @@ bool CMainFrame::_OnCreateRibbon()
 	CXTPPaintManager::SetTheme(xtpThemeRibbon);
 
 	//关闭默认菜单
-	CMenu menu;
-	menu.Attach(::GetMenu(m_hWnd));
-	SetMenu(NULL);
+	::SetMenu(m_hWnd, nullptr);
+	m_hMenuDefault = nullptr;
+	m_dwMenuBarState = AFX_MBS_HIDDEN;
+	
+	//初始化图标
+	_LoadIcon();
 
-	//Ribbon - Home
-	CXTPRibbonBar* pRibbonBar = (CXTPRibbonBar*)pCommandBars->Add(_T("Home"), xtpBarTop, RUNTIME_CLASS(CXTPRibbonBar));
+	///Ribbon
+	CXTPRibbonBar* pRibbonBar = (CXTPRibbonBar*)pCommandBars->Add(_T("Ribbon"), xtpBarTop, RUNTIME_CLASS(CXTPRibbonBar));
 	if (!pRibbonBar)
 		return false;
 	pRibbonBar->EnableDocking(0);
 	//pRibbonBar->GetTabPaintManager()->m_bSelectOnButtonDown = FALSE;
 
-	//创建系统按钮
+	///创建系统按钮
 	CXTPControlPopup* pControlFile = (CXTPControlPopup*)pRibbonBar->AddSystemButton();
 	pControlFile->SetIconId(IDB_GEAR);
 
@@ -147,10 +158,25 @@ bool CMainFrame::_OnCreateRibbon()
 	pCommandBar->InternalRelease();
 	pCommandBar->LoadMenu(sysMenu.GetSubMenu(0));
 	pCommandBar->SetIconSize(CSize(32, 32));
+
+	///RibbonHome
+	CXTPRibbonTab* pTab = pRibbonBar->AddTab(L"Home");
+
+	///RibbonHome - GroupTerrainModify
+	CXTPRibbonGroup* pGroup = pTab->AddGroup(L"Terrain Modify");
+
+	//RibbonHome - GroupTerrainModify - BtnTerrainModify
+	pGroup->Add(xtpControlButton, IDC_Terrain_Modify);
 	
-	//test tab
-	CXTPRibbonTab* pTab1 = pRibbonBar->AddTab(L"Tab1");
-	CXTPRibbonTab* pTab2 = pRibbonBar->AddTab(L"Tab2");
+	//RibbonHome - GroupTerrainBrush
+	pGroup = pTab->AddGroup(L"Terrain Brush");
+
+	//RibbonHome - GroupTerrainBrush - EditBrushSize
+	CXTPControlEdit* pControl = (CXTPControlEdit*)pGroup->Add(xtpControlEdit, ID_Terrain_BrushSize1);
+	pControl->ShowSpinButtons(TRUE);
+
+	pControl = (CXTPControlEdit*)pGroup->Add(xtpControlEdit, ID_Terrain_BrushSize2);
+	pControl->ShowSpinButtons(TRUE);
 
 	return true;
 }
@@ -164,6 +190,9 @@ void CMainFrame::_LoadIcon()
 
 	UINT uiSystemMenu[] = { ID_FILE_NEW, ID_FILE_OPEN, ID_FILE_SAVE }; 
 	pCommandBars->GetImageManager()->SetIcons(IDB_SYSTEMMENULARGE, uiSystemMenu, _countof(uiSystemMenu), CSize(32, 32));
+
+	UINT uiTerrainModifyBtn[] = { IDC_Terrain_Modify };
+	pCommandBars->GetImageManager()->SetIcons(IDB_Button, uiTerrainModifyBtn, _countof(uiTerrainModifyBtn), CSize(32, 32));
 }
 
 BOOL CMainFrame::OnCreateClient( LPCREATESTRUCT lpcs, CCreateContext* pContext )
@@ -185,7 +214,7 @@ void CMainFrame::OnTimer( UINT_PTR nIDEvent )
 		SendMessage(WM_CLOSE);
 }
 
-void CMainFrame::CreateDockPane()
+void CMainFrame::_CreateDockPane()
 {
 	m_paneManager.InstallDockingPanes(this);
 
@@ -215,7 +244,7 @@ LRESULT CMainFrame::_AttachDockPane( WPARAM wParam, LPARAM lParam )
 	return 0;
 }
 
-bool CMainFrame::CreateMeshPanel( CImageList& imageList, Ogre::StringVectorPtr& meshNames )
+bool CMainFrame::_CreateMeshPanel( CImageList& imageList, Ogre::StringVectorPtr& meshNames )
 {
 	if (!m_resourceSelector.Create(WS_CHILD|WS_VISIBLE, CRect(200,100,400,300), this, IDS_ResourceSelector))
 		return false;
@@ -269,4 +298,141 @@ LRESULT CMainFrame::OnResPanelNotify( WPARAM wParam, LPARAM lParam )
 	}
 
 	return 0;
+}
+
+bool CMainFrame::CreateEditorMainUI()
+{
+	if(!_OnCreateRibbon())
+		return false;
+
+	CImageList iconList;
+	Ogre::StringVectorPtr meshNames;
+	(dynamic_cast<CSceneEditApp*>(AfxGetApp()))->m_app.RenderAllMeshIcons(iconList, meshNames);
+
+	if(!_CreateMeshPanel(iconList, meshNames))
+		return FALSE;
+
+	_CreateDockPane();
+
+	return true;
+}
+
+void CMainFrame::OnUpdateUI_TerrainBrushSize1( CCmdUI* pCmdUI )
+{
+	if(!ManipulatorSystem.GetIsSceneReady())
+	{
+		pCmdUI->Enable(FALSE);
+		return;
+	}
+
+	CXTPControlEdit* pControl = DYNAMIC_DOWNCAST(CXTPControlEdit, CXTPControl::FromUI(pCmdUI));
+	if (pControl && !pControl->HasFocus())
+	{
+		float width = ManipulatorSystem.GetTerrain().GetSquareBrushWidth();
+		std::wstring strWidth = Utility::EngineToUnicode(Ogre::StringConverter::toString(width));
+		pControl->SetEditText(strWidth.c_str());
+	}
+	pCmdUI->Enable(TRUE);
+}
+
+void CMainFrame::OnUpdateUI_TerrainBrushSize2( CCmdUI* pCmdUI )
+{
+	if(!ManipulatorSystem.GetIsSceneReady())
+	{
+		pCmdUI->Enable(FALSE);
+		return;
+	}
+
+	CXTPControlEdit* pControl = DYNAMIC_DOWNCAST(CXTPControlEdit, CXTPControl::FromUI(pCmdUI));
+	if (pControl && !pControl->HasFocus())
+	{
+		float height = ManipulatorSystem.GetTerrain().GetSquareBrushHeight();
+		std::wstring strHeight = Utility::EngineToUnicode(Ogre::StringConverter::toString(height));
+		pControl->SetEditText(strHeight.c_str());
+	}
+	pCmdUI->Enable(TRUE);
+}
+
+void CMainFrame::OnTerrainBrushSize1( NMHDR* pNMHDR, LRESULT* pResult )
+{
+	NMXTPCONTROL* tagNMCONTROL = (NMXTPCONTROL*)pNMHDR;
+	CXTPControlEdit* pControl = DYNAMIC_DOWNCAST(CXTPControlEdit, tagNMCONTROL->pControl);
+
+	if (pControl)
+	{
+		String strWidth = Utility::UnicodeToEngine(pControl->GetEditText());
+		float width = Ogre::StringConverter::parseReal(strWidth);
+		ManipulatorSystem.GetTerrain().SetSquareBrushWidth(width);
+
+		*pResult = TRUE;
+	}
+}
+
+void CMainFrame::OnTerrainBrushSize1Spin( NMHDR* pNMHDR, LRESULT* pResult )
+{
+	NMXTPUPDOWN* tagNMCONTROL = (NMXTPUPDOWN*)pNMHDR;
+	CXTPControlEdit* pControl = DYNAMIC_DOWNCAST(CXTPControlEdit, tagNMCONTROL->pControl);
+
+	if (pControl)
+	{
+		String strWidth = Utility::UnicodeToEngine(pControl->GetEditText());
+		float width = Ogre::StringConverter::parseReal(strWidth) + tagNMCONTROL->iDelta;
+		ManipulatorSystem.GetTerrain().SetSquareBrushWidth(width);
+
+		std::wstring strNewWidth = Utility::EngineToUnicode(Ogre::StringConverter::toString(width));
+		pControl->SetEditText(strNewWidth.c_str());
+	}
+	*pResult = 1;
+}
+
+void CMainFrame::OnTerrainBrushSize2( NMHDR* pNMHDR, LRESULT* pResult )
+{
+	NMXTPCONTROL* tagNMCONTROL = (NMXTPCONTROL*)pNMHDR;
+	CXTPControlEdit* pControl = DYNAMIC_DOWNCAST(CXTPControlEdit, tagNMCONTROL->pControl);
+
+	if (pControl)
+	{
+		String strHeight = Utility::UnicodeToEngine(pControl->GetEditText());
+		float height = Ogre::StringConverter::parseReal(strHeight);
+		ManipulatorSystem.GetTerrain().SetSquareBrushHeight(height);
+
+		*pResult = TRUE;
+	}
+}
+
+void CMainFrame::OnTerrainBrushSize2Spin( NMHDR* pNMHDR, LRESULT* pResult )
+{
+	NMXTPUPDOWN* tagNMCONTROL = (NMXTPUPDOWN*)pNMHDR;
+	CXTPControlEdit* pControl = DYNAMIC_DOWNCAST(CXTPControlEdit, tagNMCONTROL->pControl);
+
+	if (pControl)
+	{
+		String strHeight = Utility::UnicodeToEngine(pControl->GetEditText());
+		float height = Ogre::StringConverter::parseReal(strHeight) + tagNMCONTROL->iDelta;
+		ManipulatorSystem.GetTerrain().SetSquareBrushHeight(height);
+
+		std::wstring strNewHeight = Utility::EngineToUnicode(Ogre::StringConverter::toString(height));
+		pControl->SetEditText(strNewHeight.c_str());
+	}
+	*pResult = 1;
+}
+
+void CMainFrame::OnUpdateUI_BtnTerrainModify( CCmdUI* pCmdUI )
+{
+	if(!ManipulatorSystem.GetIsSceneReady())
+	{
+		pCmdUI->Enable(FALSE);
+		return;
+	}
+
+	bool bActive = ManipulatorSystem.GetTerrain().GetTerrainModifyEnabled();
+	pCmdUI->Enable(TRUE);
+	pCmdUI->SetCheck(bActive);
+}
+
+void CMainFrame::OnBtnTerrainModify()
+{
+	bool bEnable = !ManipulatorSystem.GetTerrain().GetTerrainModifyEnabled();
+	eActionType action = bEnable ? eActionType_TerrainDeform : eActionType_None;
+	ManipulatorAction::GetSingleton().SetActiveAction(action);
 }

@@ -13,12 +13,6 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="头文件\Manipulator">
-      <UniqueIdentifier>{675ce93e-9be8-4b13-a7d3-acb545cab74d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="源文件\Manipulator">
-      <UniqueIdentifier>{9098e639-1066-43f7-8d60-c721f0c69606}</UniqueIdentifier>
-    </Filter>
     <Filter Include="DotScene">
       <UniqueIdentifier>{75942cc7-968b-4aa3-a1f5-04efb434546a}</UniqueIdentifier>
     </Filter>
@@ -27,6 +21,24 @@
     </Filter>
     <Filter Include="DotScene\rapidxml">
       <UniqueIdentifier>{1b030b2e-87fb-4d67-a6ed-319190048a40}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Manipulator">
+      <UniqueIdentifier>{7985c4cc-42ce-4fec-8dc7-ce61963cd83e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Manipulator\Include">
+      <UniqueIdentifier>{96139c4a-80eb-46c2-b8c6-85e104975ef9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Manipulator\Src">
+      <UniqueIdentifier>{19b37cae-622c-469b-9b8c-3b3599b485dc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="EditorAction">
+      <UniqueIdentifier>{d11f9afa-1e67-4388-a448-db8bf6b8a699}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="EditorAction\Include">
+      <UniqueIdentifier>{bc6c8e78-0473-4a0a-b72f-b5d1457016a3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="EditorAction\Src">
+      <UniqueIdentifier>{13a2933c-ff7a-45d4-8fb3-fc80ad28dd8b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -43,16 +55,7 @@
     <None Include="res\SystemMenuLarge.png">
       <Filter>资源文件</Filter>
     </None>
-    <None Include="res\icon1.ico">
-      <Filter>资源文件</Filter>
-    </None>
-    <None Include="res\icon13.ico">
-      <Filter>资源文件</Filter>
-    </None>
-    <None Include="res\icon14.ico">
-      <Filter>资源文件</Filter>
-    </None>
-    <None Include="res\bitmap1.bmp">
+    <None Include="res\Button.png">
       <Filter>资源文件</Filter>
     </None>
   </ItemGroup>
@@ -78,17 +81,11 @@
     <ClInclude Include="Application.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Manipulator\ManipulatorTerrain.h">
-      <Filter>头文件\Manipulator</Filter>
-    </ClInclude>
     <ClInclude Include="DotSceneLoader.h">
       <Filter>DotScene</Filter>
     </ClInclude>
     <ClInclude Include="DotSceneSerializer.h">
       <Filter>DotScene</Filter>
-    </ClInclude>
-    <ClInclude Include="Manipulator\ManipulatorScene.h">
-      <Filter>头文件\Manipulator</Filter>
     </ClInclude>
     <ClInclude Include="UI\DialogSceneNew.h">
       <Filter>UI</Filter>
@@ -111,11 +108,35 @@
     <ClInclude Include="Singleton.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Manipulator\ManipulatorObject.h">
-      <Filter>头文件\Manipulator</Filter>
-    </ClInclude>
     <ClInclude Include="EditorDefine.h">
       <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Brush.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Gizmo.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Manipulator\ManipulatorObject.h">
+      <Filter>Manipulator\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Manipulator\ManipulatorScene.h">
+      <Filter>Manipulator\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Manipulator\ManipulatorTerrain.h">
+      <Filter>Manipulator\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Action\ActionBase.h">
+      <Filter>EditorAction\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Action\ActionTerrainDeform.h">
+      <Filter>EditorAction\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Manipulator\ManipulatorAction.h">
+      <Filter>EditorAction\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Action\ActionNone.h">
+      <Filter>EditorAction\Include</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -134,17 +155,11 @@
     <ClCompile Include="Application.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Manipulator\ManipulatorTerrain.cpp">
-      <Filter>源文件\Manipulator</Filter>
-    </ClCompile>
     <ClCompile Include="DotSceneLoader.cpp">
       <Filter>DotScene</Filter>
     </ClCompile>
     <ClCompile Include="DotSceneSerializer.cpp">
       <Filter>DotScene</Filter>
-    </ClCompile>
-    <ClCompile Include="Manipulator\ManipulatorScene.cpp">
-      <Filter>源文件\Manipulator</Filter>
     </ClCompile>
     <ClCompile Include="UI\DialogSceneNew.cpp">
       <Filter>UI</Filter>
@@ -152,8 +167,26 @@
     <ClCompile Include="Utility.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="Brush.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Gizmo.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
     <ClCompile Include="Manipulator\ManipulatorObject.cpp">
-      <Filter>源文件\Manipulator</Filter>
+      <Filter>Manipulator\Src</Filter>
+    </ClCompile>
+    <ClCompile Include="Manipulator\ManipulatorScene.cpp">
+      <Filter>Manipulator\Src</Filter>
+    </ClCompile>
+    <ClCompile Include="Manipulator\ManipulatorTerrain.cpp">
+      <Filter>Manipulator\Src</Filter>
+    </ClCompile>
+    <ClCompile Include="Action\ActionTerrainDeform.cpp">
+      <Filter>EditorAction\Src</Filter>
+    </ClCompile>
+    <ClCompile Include="Manipulator\ManipulatorAction.cpp">
+      <Filter>EditorAction\Src</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

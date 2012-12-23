@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "ManipulatorObject.h"
 #include "../EditorDefine.h"
+#include "ManipulatorScene.h"
 
 
 bool ManipulatorObject::AddEntity( const Ogre::String& meshname, const Ogre::Vector3& worldPos )
@@ -25,14 +26,9 @@ bool ManipulatorObject::AddEntity( const Ogre::String& meshname, const Ogre::Vec
 
 	Ogre::Ray ray = pCam->getCameraToViewportRay(screenPos.x, screenPos.y);
 
-	//TODO: 暂时是硬编码测试与平板地形相交
-	Ogre::Plane plane(Vector3::UNIT_Y, 0);
-	auto result = ray.intersects(plane);
-
-	if (result.first)
-	{
-		return AddEntity(meshname, ray.getPoint(result.second));
-	}
+	Vector3 pt;
+	if (ManipulatorSystem.GetTerrain().GetRayIntersectPoint(ray, pt))
+		return AddEntity(meshname, pt);
 
 	return true;
 }

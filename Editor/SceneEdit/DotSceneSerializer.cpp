@@ -2,7 +2,6 @@
 #include "DotSceneSerializer.h"
 #include <fstream>
 #include "Manipulator/ManipulatorScene.h"
-#include "Manipulator/ManipulatorTerrain.h"
 #include "EditorDefine.h"
 
 
@@ -26,7 +25,7 @@ void DotSceneSerialezer::Serialize( const Ogre::String& path, const Ogre::String
 
 	//terrain节
 	xml_node<>* terrainNode =   doc.allocate_node(node_element, "terrain");
-	ManipulatorScene::GetSingleton().GetTerrain().Serialize(doc, terrainNode);
+	ManipulatorSystem.GetTerrain().Serialize(doc, terrainNode);
 	sceneNode->append_node(terrainNode);
 	
 	//保存文件

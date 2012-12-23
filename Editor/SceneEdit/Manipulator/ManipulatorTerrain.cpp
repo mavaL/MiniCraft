@@ -1,10 +1,10 @@
 #include "stdafx.h"
 #include "ManipulatorTerrain.h"
+#include <OgreStreamSerialiser.h>
+#include <OgreDeflate.h>
 #include "../DotSceneLoader.h"
 #include "../DotSceneSerializer.h"
 #include "ManipulatorScene.h"
-#include <OgreStreamSerialiser.h>
-#include <OgreDeflate.h>
 #include "../EditorDefine.h"
 
 
@@ -13,9 +13,14 @@ const	int	WORLD_SIZE	=	128;
 
 
 ManipulatorTerrain::ManipulatorTerrain()
+:m_curBrushIndex(1)
 {
 	m_pSceneMgr = Ogre::Root::getSingleton().getSceneManager(SCENE_MANAGER_NAME);
 	assert(m_pSceneMgr);
+
+	m_brush[0].reset(new BrushCircle);
+	m_brush[1].reset(new BrushSquare);
+	m_brush[1]->SetDimension(10, 10);
 }
 
 void ManipulatorTerrain::NewFlatTerrain()
@@ -131,8 +136,7 @@ void ManipulatorTerrain::Load( rapidxml::xml_node<>* XMLNode )
 	//     }
 
 	//加载地形数据
-	ManipulatorScene& manScene = ManipulatorScene::GetSingleton();
-	std::wstring fullPath(manScene.GenerateSceneFullPath());
+	std::wstring fullPath(ManipulatorSystem.GenerateSceneFullPath());
 	fullPath += L"terrain.dat";
 	m_terrainGroup->defineTerrain(0, 0, Utility::UnicodeToEngine(fullPath));
 	m_terrainGroup->loadTerrain(0, 0);
@@ -157,14 +161,85 @@ void ManipulatorTerrain::Serialize( rapidxml::xml_document<>& doc, rapidxml::xml
 	XMLNode->append_attribute(doc.allocate_attribute("tuningMaxPixelError", doc.allocate_string(strPixelError.c_str())));
 
 	//保存地形数据
-	ManipulatorScene& manScene = ManipulatorScene::GetSingleton();
-	std::wstring fullPath(manScene.GenerateSceneFullPath());
+	std::wstring fullPath(ManipulatorSystem.GenerateSceneFullPath());
 	fullPath += L"terrain.dat";
 	Ogre::DataStreamPtr stream = Ogre::Root::getSingleton().createFileStream(Utility::UnicodeToEngine(fullPath), 
 		Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, true);
 	//文件压缩.地形数据貌似很大,以后研究为什么
-	Ogre::DataStreamPtr compressStream(OGRE_NEW Ogre::DeflateStream(Utility::UnicodeToEngine(fullPath), stream));
+	Ogre::DataStreamPtr compressStream(new Ogre::DeflateStream(Utility::UnicodeToEngine(fullPath), stream));
 	Ogre::StreamSerialiser ser(compressStream);
 
 	m_terrainGroup->getTerrain(0, 0)->save(ser);
+}
+
+float ManipulatorTerrain::GetHeightAt( const Ogre::Vector2& worldPos )
+{
+	assert(m_terrainGroup);
+
+	Terrain* pTerrain = nullptr;
+	float retH = m_terrainGroup->getHeightAtWorldPosition(worldPos.x, 0, worldPos.y, &pTerrain);
+	//assert(pTerrain && "worldPos is invalid!");
+
+	return retH;
+}
+
+void ManipulatorTerrain::SetTerrainModifyEnabled(bool bEnable)
+{
+	m_brush[m_curBrushIndex]->SetActive(bEnable);
+}
+
+void ManipulatorTerrain::SetBrushPosition( const Ogre::Vector3& pos )
+{
+	m_brush[m_curBrushIndex]->SetPosition(pos);
+}
+
+bool ManipulatorTerrain::GetRayIntersectPoint( const Ogre::Ray& worldRay, Ogre::Vector3& retPt )
+{
+	assert(m_terrainGroup);
+
+	auto result = m_terrainGroup->rayIntersects(worldRay);
+
+	if (result.hit)
+	{
+		retPt = result.position;
+		return true;
+	}
+
+	return false;
+}
+
+void ManipulatorTerrain::OnGizmoNodeReset()
+{
+	m_brush[0]->OnGizmoNodeReset();
+	m_brush[1]->OnGizmoNodeReset();
+}
+
+void ManipulatorTerrain::SetSquareBrushWidth( float w )
+{
+	float oldW, oldH;
+	m_brush[1]->GetDimension(oldW, oldH);
+	m_brush[1]->SetDimension(w, oldH);
+}
+
+void ManipulatorTerrain::SetSquareBrushHeight( float h )
+{
+	float oldW, oldH;
+	m_brush[1]->GetDimension(oldW, oldH);
+	m_brush[1]->SetDimension(oldW, h);
+}
+
+float ManipulatorTerrain::GetSquareBrushWidth()
+{
+	float oldW, oldH;
+	m_brush[1]->GetDimension(oldW, oldH);
+
+	return oldW;
+}
+
+float ManipulatorTerrain::GetSquareBrushHeight()
+{
+	float oldW, oldH;
+	m_brush[1]->GetDimension(oldW, oldH);
+
+	return oldH;
 }

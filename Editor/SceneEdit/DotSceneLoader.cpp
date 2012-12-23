@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "DotSceneLoader.h"
 #include "Manipulator/ManipulatorScene.h"
-#include "Manipulator/ManipulatorTerrain.h"
 #include <fstream>
 #include "EditorDefine.h"
 
@@ -258,7 +257,7 @@ void DotSceneLoader::processEnvironment(rapidxml::xml_node<>* XMLNode)
 
 void DotSceneLoader::processTerrain(rapidxml::xml_node<>* XMLNode)
 {
-   ManipulatorScene::GetSingleton().GetTerrain().Load(XMLNode);
+   ManipulatorSystem.GetTerrain().Load(XMLNode);
 }
 
 void DotSceneLoader::processTerrainPage(rapidxml::xml_node<>* XMLNode)

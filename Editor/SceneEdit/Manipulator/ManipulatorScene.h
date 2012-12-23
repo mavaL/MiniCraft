@@ -10,6 +10,8 @@
 #define ManipulatorScene_h__
 
 #include "../Singleton.h"
+#include "ManipulatorObject.h"
+#include "ManipulatorTerrain.h"
 
 namespace Ogre
 {
@@ -18,9 +20,6 @@ namespace Ogre
 
 class DotSceneSerialezer;
 class DotSceneLoader;
-class ManipulatorTerrain;
-class ManipulatorObject;
-
 
 
 class ManipulatorScene : public CSingleton<ManipulatorScene>
@@ -35,22 +34,29 @@ public:
 	void	SceneSave();
 	void	SceneClose();
 
+	bool	GetIsSceneReady()	{ return m_bIsSceneReay; }
+	//重新绑定SceneNode(比如切换了场景)
+	void	OnGizmoNodeReset();
+
 	void	Shutdown();
 	const std::wstring&	GetScenePath()	{ return m_scenePath; }
 	const std::wstring&	GetSceneName()	{ return m_sceneName; }
 	const std::wstring	GenerateSceneFullPath();
+
 	ManipulatorTerrain&	GetTerrain()	{ return *m_manipulatorTerrain; }
 	ManipulatorObject&	GetObject()		{ return *m_manipulatorObject; }
 
 private:
 	std::wstring		m_scenePath;
 	std::wstring		m_sceneName;
+	bool				m_bIsSceneReay;
 	ManipulatorTerrain*	m_manipulatorTerrain;
 	ManipulatorObject*	m_manipulatorObject;
 	DotSceneSerialezer*	m_sceneSerializer;
 	DotSceneLoader*		m_sceneLoader;
 };
 
+#define	ManipulatorSystem	ManipulatorScene::GetSingleton()
 
 #endif // ManipulatorScene_h__
 

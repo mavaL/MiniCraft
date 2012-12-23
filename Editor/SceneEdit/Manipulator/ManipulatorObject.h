@@ -21,6 +21,8 @@ public:
 	//´´½¨Entity
 	bool	AddEntity(const Ogre::String& meshname, const Ogre::Vector3& worldPos);
 	bool	AddEntity(const Ogre::String& meshname, const Ogre::Vector2& screenPos);
+
+	void	OnGizmoNodeReset() {}
 };
 
 

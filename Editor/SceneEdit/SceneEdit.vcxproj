@@ -53,14 +53,15 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>../../MiniCraft/Dependency/OIS/include;../../MiniCraft/Dependency/Ogre/include/Terrain;../../MiniCraft/Dependency/Ogre/include;../Dependency/XTP/Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./;../../MiniCraft/Dependency/OIS/include;../../MiniCraft/Dependency/Ogre/include/Terrain;../../MiniCraft/Dependency/Ogre/include;../Dependency/XTP/Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/Zm300 %(AdditionalOptions)</AdditionalOptions>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>..\Dependency\XTP\lib\vc100;..\..\MiniCraft\Dependency\OIS\lib\debug;..\..\MiniCraft\Dependency\Ogre\lib\debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>OIS_d.lib;OgreMain_d.lib;OgreTerrain_d.lib</AdditionalDependencies>
+      <AdditionalDependencies>OgreMain_d.lib;OgreTerrain_d.lib</AdditionalDependencies>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -104,21 +105,24 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
-    <None Include="res\bitmap1.bmp" />
-    <None Include="res\icon1.ico" />
-    <None Include="res\icon13.ico" />
-    <None Include="res\icon14.ico" />
+    <None Include="res\Button.png" />
     <None Include="res\SceneEdit.ico" />
     <None Include="res\SceneEdit.rc2" />
     <None Include="res\shiny-gear.png" />
     <None Include="res\SystemMenuLarge.png" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Action\ActionBase.h" />
+    <ClInclude Include="Action\ActionNone.h" />
+    <ClInclude Include="Action\ActionTerrainDeform.h" />
     <ClInclude Include="Application.h" />
+    <ClInclude Include="Brush.h" />
     <ClInclude Include="DotSceneLoader.h" />
     <ClInclude Include="DotSceneSerializer.h" />
     <ClInclude Include="EditorDefine.h" />
+    <ClInclude Include="Gizmo.h" />
     <ClInclude Include="MainFrm.h" />
+    <ClInclude Include="Manipulator\ManipulatorAction.h" />
     <ClInclude Include="Manipulator\ManipulatorObject.h" />
     <ClInclude Include="Manipulator\ManipulatorScene.h" />
     <ClInclude Include="Manipulator\ManipulatorTerrain.h" />
@@ -136,10 +140,14 @@
     <ClInclude Include="View.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Action\ActionTerrainDeform.cpp" />
     <ClCompile Include="Application.cpp" />
+    <ClCompile Include="Brush.cpp" />
     <ClCompile Include="DotSceneLoader.cpp" />
     <ClCompile Include="DotSceneSerializer.cpp" />
+    <ClCompile Include="Gizmo.cpp" />
     <ClCompile Include="MainFrm.cpp" />
+    <ClCompile Include="Manipulator\ManipulatorAction.cpp" />
     <ClCompile Include="Manipulator\ManipulatorObject.cpp" />
     <ClCompile Include="Manipulator\ManipulatorScene.cpp" />
     <ClCompile Include="Manipulator\ManipulatorTerrain.cpp" />

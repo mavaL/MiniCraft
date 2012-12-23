@@ -2,13 +2,12 @@
 #include "../DotSceneSerializer.h"
 #include "../DotSceneLoader.h"
 #include "ManipulatorScene.h"
-#include "ManipulatorTerrain.h"
-#include "ManipulatorObject.h"
 #include "../EditorDefine.h"
 
 
 ManipulatorScene::ManipulatorScene()
 :m_sceneName(L"")
+,m_bIsSceneReay(false)
 {
 	WCHAR path[MAX_PATH];
 	::GetCurrentDirectory(MAX_PATH, path);
@@ -30,6 +29,9 @@ void ManipulatorScene::SceneNew(const std::wstring& sceneName)
 {
 	m_sceneName = sceneName;
 	m_manipulatorTerrain->NewFlatTerrain();
+	m_bIsSceneReay = true;
+
+	OnGizmoNodeReset();
 }
 
 void ManipulatorScene::SceneOpen(const std::wstring& filepath)
@@ -40,6 +42,10 @@ void ManipulatorScene::SceneOpen(const std::wstring& filepath)
 	m_sceneName = Utility::EngineToUnicode(basename);
 
 	m_sceneLoader->parseDotScene(fullpath);
+
+	m_bIsSceneReay = true;
+
+	OnGizmoNodeReset();
 }
 
 void ManipulatorScene::SceneSave()
@@ -54,6 +60,7 @@ void ManipulatorScene::SceneClose()
 	Ogre::SceneManager* pSceneMgr = Ogre::Root::getSingleton().getSceneManager(SCENE_MANAGER_NAME);
 	assert(pSceneMgr);
 	pSceneMgr->clearScene();
+	m_bIsSceneReay = false;
 }
 
 void ManipulatorScene::Shutdown()
@@ -73,4 +80,10 @@ const std::wstring ManipulatorScene::GenerateSceneFullPath()
 	fullPath += L"\\";
 
 	return fullPath;
+}
+
+void ManipulatorScene::OnGizmoNodeReset()
+{
+	m_manipulatorTerrain->OnGizmoNodeReset();
+	m_manipulatorObject->OnGizmoNodeReset();
 }
