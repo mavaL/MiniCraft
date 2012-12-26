@@ -27,6 +27,13 @@ class ManipulatorTerrain
 public:
 	ManipulatorTerrain();
 	~ManipulatorTerrain() {}
+	
+	enum eTerrainEditMode
+	{
+		eTerrainEditMode_None,
+		eTerrainEditMode_Deform,
+		eTerrainEditMode_Splat
+	};
 
 public:
 	void	NewFlatTerrain();
@@ -37,14 +44,24 @@ public:
 	void	OnGizmoNodeReset();
 	float	GetHeightAt(const Ogre::Vector2& worldPos);
 	bool	GetRayIntersectPoint(const Ogre::Ray& worldRay, Ogre::Vector3& retPt);
+	float	GetWorldSize() const { assert(m_terrainGroup); return m_terrainGroup->getTerrainWorldSize(); }
+	size_t	GetMapSize() const	{ assert(m_terrainGroup); return m_terrainGroup->getTerrainSize(); }
 
-	void	SetTerrainModifyEnabled(bool bEnable);
-	bool	GetTerrainModifyEnabled() { return m_brush[m_curBrushIndex]->GetActive(); }
+	//brush stuff
 	void	SetBrushPosition(const Ogre::Vector3& pos);
 	void	SetSquareBrushWidth(float w);
 	void	SetSquareBrushHeight(float h);
 	float	GetSquareBrushWidth();
-	float	GetSquareBrushHeight();	
+	float	GetSquareBrushHeight();
+
+	void	OnEdit(float dt);
+	//deform
+	void	SetTerrainDeformEnabled(bool bEnable);
+	bool	GetTerrainDeformEnabled() { return m_curEditMode == eTerrainEditMode_Deform; }
+
+	//splat
+	void	SetTerrainSplatEnabled(bool bEnable);
+	bool	GetTerrainSplatEnabled() { return m_curEditMode == eTerrainEditMode_Splat; }
 
 private:
 	void	_ConfigureTerrainDefaults();
@@ -52,9 +69,16 @@ private:
 private:
 	std::unique_ptr<TerrainGroup>			m_terrainGroup;
 	std::unique_ptr<TerrainGlobalOptions>	m_terrainOption;
+	Terrain*								m_pTerrain;			//目前仅有一块地形
 	Ogre::SceneManager*						m_pSceneMgr;
+
+	int										m_vertexPerSide;	//地形每边的顶点数
+	float									m_worldSize;		//地形范围
+	Ogre::Vector3							m_origPos;			//地形原点
+
 	std::unique_ptr<Brush>					m_brush[2]; //0:cirle 1:square
 	int										m_curBrushIndex;
+	eTerrainEditMode						m_curEditMode;
 };
 
 

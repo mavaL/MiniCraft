@@ -5,6 +5,7 @@
 #include "Manipulator/ManipulatorScene.h"
 #include "Manipulator/ManipulatorAction.h"
 #include "Action/ActionBase.h"
+#include "MainFrm.h"
 
 
 Application::Application()
@@ -89,6 +90,8 @@ bool Application::Update()
 	if(!_UpdateInput(TIME_PER_FRAME))
 		return false;
 
+	ManipulatorAction::GetSingleton().GetActiveActoin()->OnFrameMove(TIME_PER_FRAME);
+
 	m_pRoot->renderOneFrame();
 
 	return true;
@@ -111,6 +114,9 @@ void Application::SceneNew()
 	if (IDOK == dlg.DoModal(ManipulatorSystem.GetScenePath(), newSceneName))
 	{
 		ManipulatorSystem.SceneNew(newSceneName);
+
+		CMainFrame* pFrame = (CMainFrame*)(AfxGetApp()->m_pMainWnd);
+		pFrame->UpdateTerrainPropertyPane();
 	}
 }
 
@@ -134,6 +140,10 @@ void Application::SceneOpen()
 	{
 		strFilename = dlgFile.GetOFN().lpstrFile;
 		ManipulatorSystem.SceneOpen(strFilename);
+
+		//TODO:应增加Manipulator事件回调,让UI监听处理事件
+		CMainFrame* pFrame = (CMainFrame*)(AfxGetApp()->m_pMainWnd);
+		pFrame->UpdateTerrainPropertyPane();
 	}
 }
 

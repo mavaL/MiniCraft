@@ -25,12 +25,6 @@
     <Filter Include="Manipulator">
       <UniqueIdentifier>{7985c4cc-42ce-4fec-8dc7-ce61963cd83e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Manipulator\Include">
-      <UniqueIdentifier>{96139c4a-80eb-46c2-b8c6-85e104975ef9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Manipulator\Src">
-      <UniqueIdentifier>{19b37cae-622c-469b-9b8c-3b3599b485dc}</UniqueIdentifier>
-    </Filter>
     <Filter Include="EditorAction">
       <UniqueIdentifier>{d11f9afa-1e67-4388-a448-db8bf6b8a699}</UniqueIdentifier>
     </Filter>
@@ -56,6 +50,9 @@
       <Filter>资源文件</Filter>
     </None>
     <None Include="res\Button.png">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\PaneProperties.bmp">
       <Filter>资源文件</Filter>
     </None>
   </ItemGroup>
@@ -117,15 +114,6 @@
     <ClInclude Include="Gizmo.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Manipulator\ManipulatorObject.h">
-      <Filter>Manipulator\Include</Filter>
-    </ClInclude>
-    <ClInclude Include="Manipulator\ManipulatorScene.h">
-      <Filter>Manipulator\Include</Filter>
-    </ClInclude>
-    <ClInclude Include="Manipulator\ManipulatorTerrain.h">
-      <Filter>Manipulator\Include</Filter>
-    </ClInclude>
     <ClInclude Include="Action\ActionBase.h">
       <Filter>EditorAction\Include</Filter>
     </ClInclude>
@@ -137,6 +125,24 @@
     </ClInclude>
     <ClInclude Include="Action\ActionNone.h">
       <Filter>EditorAction\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Action\ActionTerrainSplat.h">
+      <Filter>EditorAction\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\PropertiesPane.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\TerrainPropertyPane.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Manipulator\ManipulatorObject.h">
+      <Filter>Manipulator</Filter>
+    </ClInclude>
+    <ClInclude Include="Manipulator\ManipulatorScene.h">
+      <Filter>Manipulator</Filter>
+    </ClInclude>
+    <ClInclude Include="Manipulator\ManipulatorTerrain.h">
+      <Filter>Manipulator</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -173,20 +179,29 @@
     <ClCompile Include="Gizmo.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Manipulator\ManipulatorObject.cpp">
-      <Filter>Manipulator\Src</Filter>
-    </ClCompile>
-    <ClCompile Include="Manipulator\ManipulatorScene.cpp">
-      <Filter>Manipulator\Src</Filter>
-    </ClCompile>
-    <ClCompile Include="Manipulator\ManipulatorTerrain.cpp">
-      <Filter>Manipulator\Src</Filter>
-    </ClCompile>
     <ClCompile Include="Action\ActionTerrainDeform.cpp">
       <Filter>EditorAction\Src</Filter>
     </ClCompile>
     <ClCompile Include="Manipulator\ManipulatorAction.cpp">
       <Filter>EditorAction\Src</Filter>
+    </ClCompile>
+    <ClCompile Include="Action\ActionTerrainSplat.cpp">
+      <Filter>EditorAction\Src</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\PropertiesPane.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\TerrainPropertyPane.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Manipulator\ManipulatorObject.cpp">
+      <Filter>Manipulator</Filter>
+    </ClCompile>
+    <ClCompile Include="Manipulator\ManipulatorScene.cpp">
+      <Filter>Manipulator</Filter>
+    </ClCompile>
+    <ClCompile Include="Manipulator\ManipulatorTerrain.cpp">
+      <Filter>Manipulator</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

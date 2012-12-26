@@ -1,5 +1,5 @@
 [Scene editor features]
 
 1. Resource selector, with thumbnail support. (100%)
-2. Placement of object, with S-R-T operation. (0%)
-3. Terrain edit, like height modify, brush paint. (40%)
+2. Placement of object, with S-R-T operation. (0%)	
+3. Terrain edit, like height modify, brush paint. (50%)

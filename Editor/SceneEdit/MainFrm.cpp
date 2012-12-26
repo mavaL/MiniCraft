@@ -11,6 +11,7 @@ String
 #include "Manipulator/ManipulatorScene.h"
 #include "Manipulator/ManipulatorAction.h"
 #include "Action/ActionBase.h"
+#include "UI/TerrainPropertyPane.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -35,8 +36,10 @@ BEGIN_MESSAGE_MAP(CMainFrame, CXTPFrameWnd)
 	ON_XTP_EXECUTE(ID_Terrain_BrushSize2, OnTerrainBrushSize2)
 	ON_NOTIFY(XTP_FN_SPINUP, ID_Terrain_BrushSize2, OnTerrainBrushSize2Spin)
 	ON_NOTIFY(XTP_FN_SPINDOWN, ID_Terrain_BrushSize2, OnTerrainBrushSize2Spin)
-	ON_UPDATE_COMMAND_UI(IDC_Terrain_Modify, OnUpdateUI_BtnTerrainModify)
-	ON_COMMAND(IDC_Terrain_Modify, OnBtnTerrainModify)
+	ON_UPDATE_COMMAND_UI(IDC_Terrain_Deform, OnUpdateUI_BtnTerrainDeform)
+	ON_COMMAND(IDC_Terrain_Deform, OnBtnTerrainDeform)
+	ON_UPDATE_COMMAND_UI(IDC_Terrain_Splat, OnUpdateUI_BtnTerrainSplat)
+	ON_COMMAND(IDC_Terrain_Splat, OnBtnTerrainSplat)
 END_MESSAGE_MAP()
 
 
@@ -44,12 +47,14 @@ END_MESSAGE_MAP()
 
 CMainFrame::CMainFrame()
 :m_wndView(NULL)
+,m_propertyTerrain(new PropertyPaneTerrain)
 {
 	
 }
 
 CMainFrame::~CMainFrame()
 {
+	SAFE_DELETE(m_propertyTerrain);
 	SAFE_DELETE(m_wndView);
 }
 
@@ -165,8 +170,11 @@ bool CMainFrame::_OnCreateRibbon()
 	///RibbonHome - GroupTerrainModify
 	CXTPRibbonGroup* pGroup = pTab->AddGroup(L"Terrain Modify");
 
-	//RibbonHome - GroupTerrainModify - BtnTerrainModify
-	pGroup->Add(xtpControlButton, IDC_Terrain_Modify);
+	//RibbonHome - GroupTerrainModify - Deform
+	pGroup->Add(xtpControlButton, IDC_Terrain_Deform);
+
+	//RibbonHome - GroupTerrainModify - Splat
+	pGroup->Add(xtpControlButton, IDC_Terrain_Splat);
 	
 	//RibbonHome - GroupTerrainBrush
 	pGroup = pTab->AddGroup(L"Terrain Brush");
@@ -191,8 +199,11 @@ void CMainFrame::_LoadIcon()
 	UINT uiSystemMenu[] = { ID_FILE_NEW, ID_FILE_OPEN, ID_FILE_SAVE }; 
 	pCommandBars->GetImageManager()->SetIcons(IDB_SYSTEMMENULARGE, uiSystemMenu, _countof(uiSystemMenu), CSize(32, 32));
 
-	UINT uiTerrainModifyBtn[] = { IDC_Terrain_Modify };
-	pCommandBars->GetImageManager()->SetIcons(IDB_Button, uiTerrainModifyBtn, _countof(uiTerrainModifyBtn), CSize(32, 32));
+	UINT iconDeform[] = { IDC_Terrain_Deform };
+	pCommandBars->GetImageManager()->SetIcons(IDB_Button, iconDeform, _countof(iconDeform), CSize(32, 32));
+
+	UINT iconSplat[] = { IDC_Terrain_Splat };
+	pCommandBars->GetImageManager()->SetIcons(IDB_Button, iconSplat, _countof(iconSplat), CSize(32, 32));
 }
 
 BOOL CMainFrame::OnCreateClient( LPCREATESTRUCT lpcs, CCreateContext* pContext )
@@ -217,9 +228,16 @@ void CMainFrame::OnTimer( UINT_PTR nIDEvent )
 void CMainFrame::_CreateDockPane()
 {
 	m_paneManager.InstallDockingPanes(this);
+	m_paneManager.SetTheme(xtpPaneThemeVisualStudio2010);
+	m_paneManager.SetClientMargin(6);
+	m_paneManager.SetThemedFloatingFrames(TRUE);
+	m_paneManager.SetAlphaDockingContext(TRUE);
+	m_paneManager.SetShowDockingContextStickers(TRUE);
+	m_paneManager.SetShowContentsWhileDragging(TRUE);
+	m_paneManager.SetDefaultPaneOptions(xtpPaneHasMenuButton);
 
-	// Create docking panes.
-	m_paneManager.CreatePane(IDR_Pane_ResourceSelector, CRect(0, 0, 250, 120), xtpPaneDockLeft);
+	CXTPDockingPane* paneResSelector = m_paneManager.CreatePane(IDR_Pane_ResourceSelector, CRect(0, 0, 250, 120), xtpPaneDockRight);
+	m_paneManager.CreatePane(IDR_Pane_TerrainProperty, CRect(0, 0, 180, 140), xtpPaneDockRight, paneResSelector);
 }
 
 LRESULT CMainFrame::_AttachDockPane( WPARAM wParam, LPARAM lParam )
@@ -235,6 +253,11 @@ LRESULT CMainFrame::_AttachDockPane( WPARAM wParam, LPARAM lParam )
 			case IDR_Pane_ResourceSelector:
 				pPane->Attach(&m_resourceSelector);
 				break;
+
+			case IDR_Pane_TerrainProperty:
+				pPane->Attach(m_propertyTerrain);
+				break;
+
 			default: assert(0);
 			}
 		}
@@ -270,9 +293,8 @@ bool CMainFrame::_CreateMeshPanel( CImageList& imageList, Ogre::StringVectorPtr&
 	m_resourceSelector.SetSelectItemOnFocus(TRUE);
 	m_resourceSelector.SetMultiColumn(TRUE);
 	m_resourceSelector.SetColumnWidth(RES_SELECTOR_COLUMN_WIDTH);
-
-	// Select the first folder.
 	m_resourceSelector.GetAt(0)->SetExpanded(TRUE);
+	//ÍÏ×§Ö§³Ö
 	m_resourceSelector.AllowDrag(xtpTaskItemAllowDragCopyOutsideControl);
 
 	return true;
@@ -311,6 +333,9 @@ bool CMainFrame::CreateEditorMainUI()
 
 	if(!_CreateMeshPanel(iconList, meshNames))
 		return FALSE;
+
+	m_propertyTerrain->Create(L"STATIC", NULL, WS_CHILD|WS_VISIBLE|WS_CLIPCHILDREN|WS_CLIPSIBLINGS, CXTPEmptyRect(), this, 0);
+	m_propertyTerrain->m_wndPropertyGrid.SetTheme(xtpGridThemeVisualStudio2010);
 
 	_CreateDockPane();
 
@@ -417,7 +442,7 @@ void CMainFrame::OnTerrainBrushSize2Spin( NMHDR* pNMHDR, LRESULT* pResult )
 	*pResult = 1;
 }
 
-void CMainFrame::OnUpdateUI_BtnTerrainModify( CCmdUI* pCmdUI )
+void CMainFrame::OnUpdateUI_BtnTerrainDeform( CCmdUI* pCmdUI )
 {
 	if(!ManipulatorSystem.GetIsSceneReady())
 	{
@@ -425,14 +450,39 @@ void CMainFrame::OnUpdateUI_BtnTerrainModify( CCmdUI* pCmdUI )
 		return;
 	}
 
-	bool bActive = ManipulatorSystem.GetTerrain().GetTerrainModifyEnabled();
+	bool bActive = ManipulatorSystem.GetTerrain().GetTerrainDeformEnabled();
 	pCmdUI->Enable(TRUE);
 	pCmdUI->SetCheck(bActive);
 }
 
-void CMainFrame::OnBtnTerrainModify()
+void CMainFrame::OnBtnTerrainDeform()
 {
-	bool bEnable = !ManipulatorSystem.GetTerrain().GetTerrainModifyEnabled();
+	bool bEnable = !ManipulatorSystem.GetTerrain().GetTerrainDeformEnabled();
 	eActionType action = bEnable ? eActionType_TerrainDeform : eActionType_None;
 	ManipulatorAction::GetSingleton().SetActiveAction(action);
+}
+
+void CMainFrame::OnUpdateUI_BtnTerrainSplat( CCmdUI* pCmdUI )
+{
+	if(!ManipulatorSystem.GetIsSceneReady())
+	{
+		pCmdUI->Enable(FALSE);
+		return;
+	}
+
+	bool bActive = ManipulatorSystem.GetTerrain().GetTerrainSplatEnabled();
+	pCmdUI->Enable(TRUE);
+	pCmdUI->SetCheck(bActive);
+}
+
+void CMainFrame::OnBtnTerrainSplat()
+{
+	bool bEnable = !ManipulatorSystem.GetTerrain().GetTerrainSplatEnabled();
+	eActionType action = bEnable ? eActionType_TerrainSplat : eActionType_None;
+	ManipulatorAction::GetSingleton().SetActiveAction(action);
+}
+
+void CMainFrame::UpdateTerrainPropertyPane()
+{
+	m_propertyTerrain->UpdateFromEngine();
 }

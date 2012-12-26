@@ -32,6 +32,7 @@ public:
 	virtual void	OnMouseRButtonDown(const SActionParam& param) {}
 	virtual void	OnMouseRButtonUp(const SActionParam& param) {}
 	virtual void	OnMouseMove(const SActionParam& param) {}
+	virtual void	OnFrameMove(float dt) {}
 };
 
 

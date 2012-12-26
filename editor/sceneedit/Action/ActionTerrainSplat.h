@@ -1,22 +1,23 @@
 /********************************************************************
-	created:	24:12:2012   0:15
-	filename: 	F:\MiniCraft\Editor\SceneEdit\Action\ActionTerrainDeform.h
+	created:	25:12:2012   1:32
+	filename: 	F:\MiniCraft\Editor\SceneEdit\Action\ActionTerrainSplat.h
 	author:		maval
 	
-	purpose:	地形高度变形编辑状态
+	purpose:	地形纹理混合状态
 *********************************************************************/
 
-#ifndef ActionTerrainDeform_h__
-#define ActionTerrainDeform_h__
+#ifndef ActionTerrainSplat_h__
+#define ActionTerrainSplat_h__
+
 
 #include "ActionBase.h"
 
 
-class ActionTerrainDeform : public ActionBase
+class ActionTerrainSplat : public ActionBase
 {
 public:
-	ActionTerrainDeform() {}
-	~ActionTerrainDeform() {}
+	ActionTerrainSplat() {}
+	~ActionTerrainSplat() {}
 
 public:
 	virtual	void	Enter();
@@ -27,9 +28,9 @@ public:
 	virtual void	OnFrameMove(float dt);
 
 private:
-	bool			m_bInDeform;
+	bool			m_bInSplat;
 };
 
 
 
-#endif // ActionTerrainDeform_h__
+#endif // ActionTerrainSplat_h__

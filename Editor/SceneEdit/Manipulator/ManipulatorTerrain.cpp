@@ -8,12 +8,15 @@
 #include "../EditorDefine.h"
 
 
-const	int	TERRAIN_SIZE	=	65;
-const	int	WORLD_SIZE	=	128;
 
 
 ManipulatorTerrain::ManipulatorTerrain()
-:m_curBrushIndex(1)
+:m_vertexPerSide(65)
+,m_worldSize(128)
+,m_origPos(Ogre::Vector3::ZERO)
+,m_pTerrain(nullptr)
+,m_curBrushIndex(1)
+,m_curEditMode(eTerrainEditMode_None)
 {
 	m_pSceneMgr = Ogre::Root::getSingleton().getSceneManager(SCENE_MANAGER_NAME);
 	assert(m_pSceneMgr);
@@ -26,8 +29,8 @@ ManipulatorTerrain::ManipulatorTerrain()
 void ManipulatorTerrain::NewFlatTerrain()
 {
 	m_terrainOption.reset(new TerrainGlobalOptions);
-	m_terrainGroup.reset(new TerrainGroup(m_pSceneMgr, Terrain::ALIGN_X_Z, (Ogre::uint16)TERRAIN_SIZE, (float)WORLD_SIZE));
-	m_terrainGroup->setOrigin(Vector3(0, 0, 0));
+	m_terrainGroup.reset(new TerrainGroup(m_pSceneMgr, Terrain::ALIGN_X_Z, (Ogre::uint16)m_vertexPerSide, (float)m_worldSize));
+	m_terrainGroup->setOrigin(m_origPos);
 
 	_ConfigureTerrainDefaults();
 	
@@ -47,6 +50,7 @@ void ManipulatorTerrain::NewFlatTerrain()
 // 		}
 // 	}
 	m_terrainGroup->freeTemporaryResources();
+	m_pTerrain = m_terrainGroup->getTerrain(0, 0);
 }
 
 void ManipulatorTerrain::_ConfigureTerrainDefaults()
@@ -71,8 +75,8 @@ void ManipulatorTerrain::_ConfigureTerrainDefaults()
 
 	// Configure default import settings for if we use imported image
 	Terrain::ImportData& defaultimp = m_terrainGroup->getDefaultImportSettings();
-	defaultimp.terrainSize = TERRAIN_SIZE;
-	defaultimp.worldSize = WORLD_SIZE;
+	defaultimp.terrainSize = m_vertexPerSide;
+	defaultimp.worldSize = m_worldSize;
 	defaultimp.inputScale = 600;
 	defaultimp.minBatchSize = 17;
 	defaultimp.maxBatchSize = 65;
@@ -117,7 +121,7 @@ void ManipulatorTerrain::Load( rapidxml::xml_node<>* XMLNode )
 	//mSceneMgr->destroyLight("tstLight");
 
 	m_terrainGroup.reset(new Ogre::TerrainGroup(m_pSceneMgr, Ogre::Terrain::ALIGN_X_Z, mapSize, worldSize));
-	m_terrainGroup->setOrigin(Ogre::Vector3::ZERO);
+	m_terrainGroup->setOrigin(m_origPos);
 	m_terrainGroup->setResourceGroup("General");
 
 	//     rapidxml::xml_node<>* pElement;
@@ -141,7 +145,7 @@ void ManipulatorTerrain::Load( rapidxml::xml_node<>* XMLNode )
 	m_terrainGroup->defineTerrain(0, 0, Utility::UnicodeToEngine(fullPath));
 	m_terrainGroup->loadTerrain(0, 0);
 	m_terrainGroup->freeTemporaryResources();
-	//mTerrain->setPosition(mTerrainPosition);
+	m_pTerrain = m_terrainGroup->getTerrain(0, 0);
 }
 
 void ManipulatorTerrain::Shutdown()
@@ -152,8 +156,8 @@ void ManipulatorTerrain::Shutdown()
 
 void ManipulatorTerrain::Serialize( rapidxml::xml_document<>& doc, rapidxml::xml_node<>* XMLNode )
 {
-	String strWorldSize = Ogre::StringConverter::toString(WORLD_SIZE);
-	String strTerrainSize = Ogre::StringConverter::toString(TERRAIN_SIZE);
+	String strWorldSize = Ogre::StringConverter::toString(m_worldSize);
+	String strTerrainSize = Ogre::StringConverter::toString(m_vertexPerSide);
 	String strPixelError = Ogre::StringConverter::toString(m_terrainOption->getMaxPixelError());
 
 	XMLNode->append_attribute(doc.allocate_attribute("worldSize", doc.allocate_string(strWorldSize.c_str())));
@@ -183,14 +187,41 @@ float ManipulatorTerrain::GetHeightAt( const Ogre::Vector2& worldPos )
 	return retH;
 }
 
-void ManipulatorTerrain::SetTerrainModifyEnabled(bool bEnable)
+void ManipulatorTerrain::SetTerrainDeformEnabled(bool bEnable)
 {
 	m_brush[m_curBrushIndex]->SetActive(bEnable);
+	m_curEditMode = bEnable ? eTerrainEditMode_Deform : eTerrainEditMode_None;
+}
+
+void ManipulatorTerrain::SetTerrainSplatEnabled( bool bEnable )
+{
+	m_brush[m_curBrushIndex]->SetActive(bEnable);
+	m_curEditMode = bEnable ? eTerrainEditMode_Splat : eTerrainEditMode_None;
 }
 
 void ManipulatorTerrain::SetBrushPosition( const Ogre::Vector3& pos )
 {
-	m_brush[m_curBrushIndex]->SetPosition(pos);
+	//¼ì²â·ÀÖ¹»­Ë¢·¶Î§³¬³öµØÐÎ±ß½ç
+	Ogre::Vector3 clampPos(pos);
+	float brushDim1, brushDim2;
+	m_brush[m_curBrushIndex]->GetDimension(brushDim1, brushDim2);
+
+	if (m_curBrushIndex == 0)	//circle
+	{
+		if(clampPos.x - brushDim2 < -m_worldSize/2)	clampPos.x = brushDim2 - m_worldSize/2;
+		if(clampPos.x + brushDim2 > m_worldSize/2)	clampPos.x = m_worldSize/2 - brushDim2;
+		if(clampPos.z - brushDim2 < -m_worldSize/2)	clampPos.z = brushDim2 - m_worldSize/2;
+		if(clampPos.z + brushDim2 > m_worldSize/2)	clampPos.z = m_worldSize/2 - brushDim2;
+	}
+	else	//square
+	{
+		if(clampPos.x - brushDim1/2 < -m_worldSize/2)	clampPos.x = brushDim1/2 - m_worldSize/2;
+		if(clampPos.x + brushDim1/2 > m_worldSize/2)	clampPos.x = m_worldSize/2 - brushDim1/2;
+		if(clampPos.z - brushDim2/2 < -m_worldSize/2)	clampPos.z = brushDim2/2 - m_worldSize/2;
+		if(clampPos.z + brushDim2/2 > m_worldSize/2)	clampPos.z = m_worldSize/2 - brushDim2/2;
+	}
+
+	m_brush[m_curBrushIndex]->SetPosition(clampPos);
 }
 
 bool ManipulatorTerrain::GetRayIntersectPoint( const Ogre::Ray& worldRay, Ogre::Vector3& retPt )
@@ -242,4 +273,9 @@ float ManipulatorTerrain::GetSquareBrushHeight()
 	m_brush[1]->GetDimension(oldW, oldH);
 
 	return oldH;
+}
+
+void ManipulatorTerrain::OnEdit( float dt )
+{
+	assert(m_curEditMode != eTerrainEditMode_None);
 }

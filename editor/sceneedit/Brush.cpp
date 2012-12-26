@@ -52,8 +52,8 @@ void BrushSquare::SetHeight( float h )
 
 void BrushSquare::SetPosition( const Ogre::Vector3& pos )
 {
-	m_pRenderable->UpdatePosition(pos, m_width, m_height);
-}
+	Brush::SetPosition(pos);
+	m_pRenderable->UpdatePosition(pos, m_width, m_height);}
 
 void BrushSquare::OnGizmoNodeReset()
 {

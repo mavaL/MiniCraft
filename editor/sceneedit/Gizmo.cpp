@@ -60,8 +60,6 @@ void GizmoRectangle::getWorldTransforms( Matrix4* xform ) const
 
 void GizmoRectangle::UpdatePosition( const Ogre::Vector3& pos, float w, float h )
 {
-	//Vector3 pos(0,0,0);
-
 	ManipulatorTerrain& terrain = ManipulatorSystem.GetTerrain();
 	//矩形长宽上分布点的个数
 	const int ptCountOfWidth = (int)std::ceil(w * POINT_DENSITY);

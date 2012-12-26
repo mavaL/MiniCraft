@@ -2,6 +2,7 @@
 
 
 class CEditorView;
+class PropertyPaneTerrain;
 
 class CMainFrame : public CXTPFrameWnd
 {
@@ -21,6 +22,7 @@ public:
 
 	//初始化编辑器界面
 	bool			CreateEditorMainUI();
+	void			UpdateTerrainPropertyPane();
 
 protected:
 	DECLARE_DYNAMIC(CMainFrame)
@@ -36,23 +38,30 @@ private:
 
 	void			_LoadIcon();
 	bool			_OnCreateRibbon();
-	//创建mesh资源选择面板
-	bool			_CreateMeshPanel(CImageList& imageList, Ogre::StringVectorPtr& meshNames);
 	void			_CreateDockPane();
 	LRESULT			_AttachDockPane(WPARAM wParam, LPARAM lParam);
+	//创建mesh资源选择面板
+	bool			_CreateMeshPanel(CImageList& imageList, Ogre::StringVectorPtr& meshNames);
 
+	///Terrain
 	void			OnUpdateUI_TerrainBrushSize1(CCmdUI* pCmdUI);
 	void			OnUpdateUI_TerrainBrushSize2(CCmdUI* pCmdUI);
 	void			OnTerrainBrushSize1(NMHDR* pNMHDR, LRESULT* pResult);
 	void			OnTerrainBrushSize1Spin(NMHDR* pNMHDR, LRESULT* pResult);
 	void			OnTerrainBrushSize2(NMHDR* pNMHDR, LRESULT* pResult);
 	void			OnTerrainBrushSize2Spin(NMHDR* pNMHDR, LRESULT* pResult);
-	void			OnUpdateUI_BtnTerrainModify(CCmdUI* pCmdUI);
-	void			OnBtnTerrainModify();
+	//deform
+	void			OnUpdateUI_BtnTerrainDeform(CCmdUI* pCmdUI);
+	void			OnBtnTerrainDeform();
+	//splat
+	void			OnUpdateUI_BtnTerrainSplat(CCmdUI* pCmdUI);
+	void			OnBtnTerrainSplat();
+
 
 	CXTPDockingPaneManager	m_paneManager;
 	CEditorView*			m_wndView;
 	CXTPTaskPanel			m_resourceSelector;
+	PropertyPaneTerrain*	m_propertyTerrain;
 };
 
 

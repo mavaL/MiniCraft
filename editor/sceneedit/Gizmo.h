@@ -34,7 +34,7 @@ protected:
 
 private:
 	//点的分布密度,即1个世界单位对应点的个数
-	static const int POINT_DENSITY = 1;
+	static const int POINT_DENSITY = 5;
 };
 
 //

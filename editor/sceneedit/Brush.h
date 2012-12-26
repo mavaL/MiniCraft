@@ -27,7 +27,7 @@ public:
 	virtual ~Brush() {}
 
 public:
-	virtual	void	SetPosition(const Ogre::Vector3& pos) = 0;
+	virtual	void	SetPosition(const Ogre::Vector3& pos) { m_pos = pos; }
 	virtual void	OnGizmoNodeReset() = 0;
 	//对圆形画刷,dim1=内径,dim2=外径
 	//对方形画刷,dim1=长,dim2=宽
@@ -37,10 +37,12 @@ public:
 public:
 	void			SetActive(bool bActive);
 	bool			GetActive() const { return m_bActive; }
+	const Ogre::Vector3& GetPosition() const { return m_pos; }
 
 protected:
 	Ogre::SceneNode*	m_pNode;
 	bool				m_bActive;
+	Ogre::Vector3	m_pos;
 };
 
 
