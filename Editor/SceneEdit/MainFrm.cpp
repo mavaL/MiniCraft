@@ -49,11 +49,11 @@ CMainFrame::CMainFrame()
 :m_wndView(NULL)
 ,m_propertyTerrain(new PropertyPaneTerrain)
 {
-	
 }
 
 CMainFrame::~CMainFrame()
 {
+	ManipulatorSystem.RemoveCallback(this);
 	SAFE_DELETE(m_propertyTerrain);
 	SAFE_DELETE(m_wndView);
 }
@@ -338,6 +338,8 @@ bool CMainFrame::CreateEditorMainUI()
 	m_propertyTerrain->m_wndPropertyGrid.SetTheme(xtpGridThemeVisualStudio2010);
 
 	_CreateDockPane();
+
+	ManipulatorSystem.AddCallback(this);
 
 	return true;
 }

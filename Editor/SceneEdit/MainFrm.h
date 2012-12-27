@@ -1,10 +1,11 @@
 #pragma once
 
+#include "Manipulator/ManipulatorEventCallback.h"
 
 class CEditorView;
 class PropertyPaneTerrain;
 
-class CMainFrame : public CXTPFrameWnd
+class CMainFrame : public CXTPFrameWnd, public ManipulatorSceneEventCallback
 {
 	
 public:
@@ -14,6 +15,11 @@ public:
 public:
 	virtual BOOL	PreCreateWindow(CREATESTRUCT& cs);
 	virtual BOOL	OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERINFO* pHandlerInfo);
+
+	/////////////////////////////////////////////////////////
+	///事件回调
+	virtual	void	OnSceneNew() { UpdateTerrainPropertyPane(); }
+	virtual	void	OnSceneOpen() { UpdateTerrainPropertyPane(); }
 	
 #ifdef _DEBUG
 	virtual void	AssertValid() const;

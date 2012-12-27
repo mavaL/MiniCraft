@@ -44,8 +44,17 @@ public:
 	void	OnGizmoNodeReset();
 	float	GetHeightAt(const Ogre::Vector2& worldPos);
 	bool	GetRayIntersectPoint(const Ogre::Ray& worldRay, Ogre::Vector3& retPt);
-	float	GetWorldSize() const { assert(m_terrainGroup); return m_terrainGroup->getTerrainWorldSize(); }
-	size_t	GetMapSize() const	{ assert(m_terrainGroup); return m_terrainGroup->getTerrainSize(); }
+	float	GetWorldSize() const { return m_terrainGroup->getTerrainWorldSize(); }
+	size_t	GetMapSize() const	{ return m_terrainGroup->getTerrainSize(); }
+	float	GetMaxPixelError() const { return m_terrainOption->getMaxPixelError(); }
+	float	GetSkirtSize() const { return m_terrainOption->getSkirtSize(); }
+	int		GetMinBatchSize() const { return m_pTerrain->getMinBatchSize(); }
+	int		GetMaxBatchSize() const { return m_pTerrain->getMaxBatchSize(); }
+	float	GetCompositeMapDist() const { return m_terrainOption->getCompositeMapDistance(); }
+
+	void	SetMaxPixelError(float f) { m_terrainOption->setMaxPixelError(f); }
+	void	SetSkirtSize(float f) { m_terrainOption->setSkirtSize(f); }	
+	void	SetCompositeMapDist(float f) { m_terrainOption->setCompositeMapDistance(f); }	
 
 	//brush stuff
 	void	SetBrushPosition(const Ogre::Vector3& pos);

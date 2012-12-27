@@ -32,6 +32,10 @@ void ManipulatorScene::SceneNew(const std::wstring& sceneName)
 	m_bIsSceneReay = true;
 
 	OnGizmoNodeReset();
+
+	//回调事件
+	for (auto iter=m_listeners.begin(); iter!=m_listeners.end(); ++iter)
+		(*iter)->OnSceneNew();
 }
 
 void ManipulatorScene::SceneOpen(const std::wstring& filepath)
@@ -46,6 +50,10 @@ void ManipulatorScene::SceneOpen(const std::wstring& filepath)
 	m_bIsSceneReay = true;
 
 	OnGizmoNodeReset();
+
+	//回调事件
+	for (auto iter=m_listeners.begin(); iter!=m_listeners.end(); ++iter)
+		(*iter)->OnSceneOpen();
 }
 
 void ManipulatorScene::SceneSave()
@@ -87,3 +95,5 @@ void ManipulatorScene::OnGizmoNodeReset()
 	m_manipulatorTerrain->OnGizmoNodeReset();
 	m_manipulatorObject->OnGizmoNodeReset();
 }
+
+

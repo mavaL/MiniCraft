@@ -12,6 +12,7 @@
 #include "../Singleton.h"
 #include "ManipulatorObject.h"
 #include "ManipulatorTerrain.h"
+#include "ManipulatorEventCallback.h"
 
 namespace Ogre
 {
@@ -22,7 +23,7 @@ class DotSceneSerialezer;
 class DotSceneLoader;
 
 
-class ManipulatorScene : public CSingleton<ManipulatorScene>
+class ManipulatorScene : public CSingleton<ManipulatorScene>, public ManipulatorCallbackManager<ManipulatorSceneEventCallback>
 {
 	ManipulatorScene();
 	~ManipulatorScene();

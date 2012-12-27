@@ -80,17 +80,11 @@ void ManipulatorTerrain::_ConfigureTerrainDefaults()
 	defaultimp.inputScale = 600;
 	defaultimp.minBatchSize = 17;
 	defaultimp.maxBatchSize = 65;
-	// textures
-	defaultimp.layerList.resize(3);
+	//默认给一层,不然是黑的
+	defaultimp.layerList.resize(1);
 	defaultimp.layerList[0].worldSize = 128;
 	defaultimp.layerList[0].textureNames.push_back("dirt_grayrocky_diffusespecular.dds");
 	defaultimp.layerList[0].textureNames.push_back("dirt_grayrocky_normalheight.dds");
-	defaultimp.layerList[1].worldSize = 128;
-	defaultimp.layerList[1].textureNames.push_back("grass_green-01_diffusespecular.dds");
-	defaultimp.layerList[1].textureNames.push_back("grass_green-01_normalheight.dds");
-	defaultimp.layerList[2].worldSize = 128;
-	defaultimp.layerList[2].textureNames.push_back("growth_weirdfungus-03_diffusespecular.dds");
-	defaultimp.layerList[2].textureNames.push_back("growth_weirdfungus-03_normalheight.dds");
 }
 
 void ManipulatorTerrain::Load( rapidxml::xml_node<>* XMLNode )
@@ -278,4 +272,40 @@ float ManipulatorTerrain::GetSquareBrushHeight()
 void ManipulatorTerrain::OnEdit( float dt )
 {
 	assert(m_curEditMode != eTerrainEditMode_None);
+
+	const Vector3 brushPos = m_brush[m_curBrushIndex]->GetPosition();
+	Vector3 tsPos;
+	m_pTerrain->getTerrainPosition(brushPos, &tsPos);
+
+	float brushSizeW, brushSizeH;
+	m_brush[m_curBrushIndex]->GetDimension(brushSizeW, brushSizeH);
+	brushSizeW /= m_worldSize;
+	brushSizeH /= m_worldSize;
+
+	// we need point coords
+	float terrainSize = (m_pTerrain->getSize() - 1);
+	long startx = (tsPos.x - brushSizeW / 2) * m_vertexPerSide;
+	long starty = (tsPos.y - brushSizeH / 2) * m_vertexPerSide;
+	long endx = (tsPos.x + brushSizeW / 2) * m_vertexPerSide;
+	long endy= (tsPos.y + brushSizeH / 2) * m_vertexPerSide;
+	startx = max(startx, 0L);
+	starty = max(starty, 0L);
+	endx = min(endx, (long)m_vertexPerSide);
+	endy = min(endy, (long)m_vertexPerSide);
+
+	for (long y = starty; y <= endy; ++y)
+	{
+		for (long x = startx; x <= endx; ++x)
+		{
+			float tsXdist = (x / m_vertexPerSide) - tsPos.x;
+			float tsYdist = (y / m_vertexPerSide)  - tsPos.y;
+
+			float* heightData = m_pTerrain->getHeightData();
+			heightData[y*m_vertexPerSide+x] += 100.0f * dt;
+		}
+	}
+	
+	Ogre::Rect rect(startx, starty, endx, endy);
+	m_pTerrain->dirtyRect(rect);
+	m_pTerrain->update();
 }

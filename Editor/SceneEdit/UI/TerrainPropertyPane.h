@@ -25,7 +25,11 @@ public:
 
 protected:
 	DECLARE_MESSAGE_MAP()
-	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
+	afx_msg int		OnCreate(LPCREATESTRUCT lpCreateStruct);
+	afx_msg LRESULT OnGridNotify(WPARAM, LPARAM);
+
+private:
+	std::unordered_map<int, CXTPPropertyGridItem*>	m_mapItem;
 };
 
 

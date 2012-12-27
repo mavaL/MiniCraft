@@ -125,6 +125,7 @@
     <ClInclude Include="Gizmo.h" />
     <ClInclude Include="MainFrm.h" />
     <ClInclude Include="Manipulator\ManipulatorAction.h" />
+    <ClInclude Include="Manipulator\ManipulatorEventCallback.h" />
     <ClInclude Include="Manipulator\ManipulatorObject.h" />
     <ClInclude Include="Manipulator\ManipulatorScene.h" />
     <ClInclude Include="Manipulator\ManipulatorTerrain.h" />

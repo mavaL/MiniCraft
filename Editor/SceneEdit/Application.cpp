@@ -114,9 +114,6 @@ void Application::SceneNew()
 	if (IDOK == dlg.DoModal(ManipulatorSystem.GetScenePath(), newSceneName))
 	{
 		ManipulatorSystem.SceneNew(newSceneName);
-
-		CMainFrame* pFrame = (CMainFrame*)(AfxGetApp()->m_pMainWnd);
-		pFrame->UpdateTerrainPropertyPane();
 	}
 }
 
@@ -140,10 +137,6 @@ void Application::SceneOpen()
 	{
 		strFilename = dlgFile.GetOFN().lpstrFile;
 		ManipulatorSystem.SceneOpen(strFilename);
-
-		//TODO:应增加Manipulator事件回调,让UI监听处理事件
-		CMainFrame* pFrame = (CMainFrame*)(AfxGetApp()->m_pMainWnd);
-		pFrame->UpdateTerrainPropertyPane();
 	}
 }
 
