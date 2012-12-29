@@ -18,8 +18,9 @@ public:
 
 	/////////////////////////////////////////////////////////
 	///事件回调
-	virtual	void	OnSceneNew() { UpdateTerrainPropertyPane(); }
-	virtual	void	OnSceneOpen() { UpdateTerrainPropertyPane(); }
+	virtual	void	OnSceneNew();
+	virtual	void	OnSceneOpen();
+	virtual void	OnSceneClose();
 	
 #ifdef _DEBUG
 	virtual void	AssertValid() const;
@@ -28,11 +29,12 @@ public:
 
 	//初始化编辑器界面
 	bool			CreateEditorMainUI();
-	void			UpdateTerrainPropertyPane();
 
 protected:
 	DECLARE_DYNAMIC(CMainFrame)
 	virtual BOOL	OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext);
+
+	afx_msg int		OnCreateControl(LPCREATECONTROLSTRUCT lpCreateControl);
 
 private:
 	DECLARE_MESSAGE_MAP()
@@ -44,6 +46,7 @@ private:
 
 	void			_LoadIcon();
 	bool			_OnCreateRibbon();
+	void			_CreateLayerTexIcon();
 	void			_CreateDockPane();
 	LRESULT			_AttachDockPane(WPARAM wParam, LPARAM lParam);
 	//创建mesh资源选择面板
@@ -62,12 +65,18 @@ private:
 	//splat
 	void			OnUpdateUI_BtnTerrainSplat(CCmdUI* pCmdUI);
 	void			OnBtnTerrainSplat();
+	//LayerTexture
+	void			OnUpdateUI_GalleryLayerTex(CCmdUI* pCmdUI);
+	void			OnSelectLayerTex(NMHDR* pNMHDR, LRESULT* pResult);
+	void			OnUpdateUI_SplatSelectLayer(CCmdUI* pCmdUI);
+	void			OnSplatSelectLayer(UINT nID);
 
-
+private:
 	CXTPDockingPaneManager	m_paneManager;
 	CEditorView*			m_wndView;
 	CXTPTaskPanel			m_resourceSelector;
 	PropertyPaneTerrain*	m_propertyTerrain;
+	CXTPControlGalleryItems* m_terrainTexGallery;					
 };
 
 

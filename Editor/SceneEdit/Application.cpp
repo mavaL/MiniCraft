@@ -149,7 +149,9 @@ void Application::SceneClose()
 {
 	ManipulatorSystem.SceneClose();
 
-	//重置摄像机位置
+	//重置摄像机
+	m_pMainCam->setNearClipDistance(0.1f);
+	m_pMainCam->setFarClipDistance(500);
 	m_pMainCam->setPosition(0,100,0);
 	m_pMainCam->lookAt(0,0,20);
 }

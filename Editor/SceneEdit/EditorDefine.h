@@ -11,10 +11,9 @@
 
 
 
-//当前.scene版本号
-const	float	SCENE_VERSION	=	0.1f;
-//默认场景管理器名字
-const	std::string	SCENE_MANAGER_NAME	=	"DefaultSceneMgr";
+
+const	float	SCENE_VERSION	=	0.1f;	//当前.scene版本号
+const	std::string	SCENE_MANAGER_NAME	=	"DefaultSceneMgr";//默认场景管理器名字
 const	int		EDITOR_CLIENT_W			=	1024;
 const	int		EDITOR_CLIENT_H			=	768;
 const	int		FPS					=	100;
@@ -22,6 +21,7 @@ const	float	TIME_PER_FRAME		=	1.0f / FPS;
 const	int		MESH_ICON_SIZE		=	64;
 const	int		RES_SELECTOR_COLUMN_WIDTH	=	80;
 const	String	MAIN_CAMERA_NAME	=	"MainCamera";
+const	int		TERRAIN_MAX_LAYER	=	5;	//最多5层地形纹理混合
 
 
 #endif // EditorDefine_h__

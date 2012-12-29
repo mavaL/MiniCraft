@@ -56,6 +56,7 @@ class ManipulatorSceneEventCallback : public ManipulatorEventCallbackBase
 public:
 	virtual	void	OnSceneNew() {}
 	virtual	void	OnSceneOpen() {}
+	virtual void	OnSceneClose() {}
 };
 
 

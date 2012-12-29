@@ -60,6 +60,10 @@ using Ogre::Vector3;
 //XTP
 #include <XTToolkitPro.h>
 
+//GDI+
+#include <GdiPlus.h>
+#pragma comment(lib, "gdiplus.lib")
+
 
 #ifdef _UNICODE
 #if defined _M_IX86

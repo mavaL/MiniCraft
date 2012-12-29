@@ -23,6 +23,7 @@ IMPLEMENT_DYNAMIC(CMainFrame, CXTPFrameWnd)
 
 BEGIN_MESSAGE_MAP(CMainFrame, CXTPFrameWnd)
 	ON_WM_CREATE()
+	ON_XTP_CREATECONTROL()
 	ON_WM_SETFOCUS()
 	ON_WM_CLOSE()
 	ON_WM_TIMER()
@@ -40,6 +41,10 @@ BEGIN_MESSAGE_MAP(CMainFrame, CXTPFrameWnd)
 	ON_COMMAND(IDC_Terrain_Deform, OnBtnTerrainDeform)
 	ON_UPDATE_COMMAND_UI(IDC_Terrain_Splat, OnUpdateUI_BtnTerrainSplat)
 	ON_COMMAND(IDC_Terrain_Splat, OnBtnTerrainSplat)
+	ON_UPDATE_COMMAND_UI(IDC_Terrain_LayerTexture, OnUpdateUI_GalleryLayerTex)
+	ON_XTP_EXECUTE(IDC_Terrain_LayerTexture, OnSelectLayerTex)
+	ON_UPDATE_COMMAND_UI_RANGE(IDC_Terrain_Splat_Layer0, IDC_Terrain_Splat_Layer4, OnUpdateUI_SplatSelectLayer)
+	ON_COMMAND_RANGE(IDC_Terrain_Splat_Layer0, IDC_Terrain_Splat_Layer4, OnSplatSelectLayer)
 END_MESSAGE_MAP()
 
 
@@ -48,6 +53,7 @@ END_MESSAGE_MAP()
 CMainFrame::CMainFrame()
 :m_wndView(NULL)
 ,m_propertyTerrain(new PropertyPaneTerrain)
+,m_terrainTexGallery(NULL)
 {
 }
 
@@ -174,7 +180,12 @@ bool CMainFrame::_OnCreateRibbon()
 	pGroup->Add(xtpControlButton, IDC_Terrain_Deform);
 
 	//RibbonHome - GroupTerrainModify - Splat
-	pGroup->Add(xtpControlButton, IDC_Terrain_Splat);
+	CXTPControlPopup* pBtn = dynamic_cast<CXTPControlPopup*>(pGroup->Add(xtpControlSplitButtonPopup, IDC_Terrain_Splat));
+	pBtn->GetCommandBar()->GetControls()->Add(xtpControlButton, IDC_Terrain_Splat_Layer0);
+	pBtn->GetCommandBar()->GetControls()->Add(xtpControlButton, IDC_Terrain_Splat_Layer1);
+	pBtn->GetCommandBar()->GetControls()->Add(xtpControlButton, IDC_Terrain_Splat_Layer2);
+	pBtn->GetCommandBar()->GetControls()->Add(xtpControlButton, IDC_Terrain_Splat_Layer3);
+	pBtn->GetCommandBar()->GetControls()->Add(xtpControlButton, IDC_Terrain_Splat_Layer4);
 	
 	//RibbonHome - GroupTerrainBrush
 	pGroup = pTab->AddGroup(L"Terrain Brush");
@@ -185,6 +196,22 @@ bool CMainFrame::_OnCreateRibbon()
 
 	pControl = (CXTPControlEdit*)pGroup->Add(xtpControlEdit, ID_Terrain_BrushSize2);
 	pControl->ShowSpinButtons(TRUE);
+
+	//RibbonHome - GroupTerrainTexture
+	pGroup = pTab->AddGroup(L"Layer Texture");
+	pGroup->SetControlsCentering(TRUE);
+
+	m_terrainTexGallery = CXTPControlGalleryItems::CreateItems(pCommandBars, IDC_Terrain_LayerTexture);
+
+	CXTPControlGallery* pControlGallery = (CXTPControlGallery*)pGroup->Add(new CXTPControlGallery(), IDC_Terrain_LayerTexture);	
+	pControlGallery->SetControlSize(CSize(250, 60));
+	//pControlGallery->SetResizable();
+	pControlGallery->SetItemsMargin(0, 1, 0, 1);
+	pControlGallery->ShowLabels(FALSE);
+	pControlGallery->ShowBorders(TRUE);
+	pControlGallery->SetItems(m_terrainTexGallery);
+	
+	_CreateLayerTexIcon();
 
 	return true;
 }
@@ -344,6 +371,23 @@ bool CMainFrame::CreateEditorMainUI()
 	return true;
 }
 
+void CMainFrame::OnSceneNew()
+{
+	m_propertyTerrain->UpdateAllFromEngine();
+	m_propertyTerrain->EnableMutableProperty(TRUE);
+}
+
+void CMainFrame::OnSceneOpen()
+{
+	m_propertyTerrain->UpdateAllFromEngine();
+	m_propertyTerrain->EnableMutableProperty(TRUE);
+}
+
+void CMainFrame::OnSceneClose()
+{
+	m_propertyTerrain->EnableMutableProperty(FALSE);
+}
+
 void CMainFrame::OnUpdateUI_TerrainBrushSize1( CCmdUI* pCmdUI )
 {
 	if(!ManipulatorSystem.GetIsSceneReady())
@@ -484,7 +528,75 @@ void CMainFrame::OnBtnTerrainSplat()
 	ManipulatorAction::GetSingleton().SetActiveAction(action);
 }
 
-void CMainFrame::UpdateTerrainPropertyPane()
+int CMainFrame::OnCreateControl( LPCREATECONTROLSTRUCT lpCreateControl )
 {
-	m_propertyTerrain->UpdateFromEngine();
+	return FALSE;
+}
+
+void CMainFrame::_CreateLayerTexIcon()
+{
+	const Ogre::StringVector& vecNames = ManipulatorSystem.GetTerrain().GetAllLayerTexThumbnailNames();
+	Gdiplus::Bitmap bmFinal(vecNames.size()*50, 50);
+	Gdiplus::Graphics g(&bmFinal);
+
+	for (size_t i=0; i<vecNames.size(); ++i)
+	{
+		const std::wstring path = Utility::EngineToUnicode(vecNames[i]);
+		Gdiplus::Bitmap bmTex(path.c_str());
+		//每个纹理缩略图以64*64绘在图像上
+		g.DrawImage(&bmTex, Gdiplus::Rect(i*50,0,50,50), 
+			0, 0, bmTex.GetWidth(), bmTex.GetHeight(), Gdiplus::UnitPixel);
+	}
+
+	HBITMAP hBm;
+	bmFinal.GetHBITMAP(Gdiplus::Color::Black, &hBm);
+	//设置到UI上
+	m_terrainTexGallery->GetImageManager()->SetIcons(*CBitmap::FromHandle(hBm), 0, 0, CSize(50, 50));
+	m_terrainTexGallery->SetItemSize(CSize(55, 55));
+
+	for (size_t i = 0; i<vecNames.size(); ++i)
+		m_terrainTexGallery->AddItem(i, i);
+}
+
+void CMainFrame::OnUpdateUI_GalleryLayerTex( CCmdUI* pCmdUI )
+{
+	if(!ManipulatorSystem.GetIsSceneReady())
+	{
+		pCmdUI->Enable(FALSE);
+		return;
+	}
+ 	pCmdUI->Enable(TRUE);
+}
+
+void CMainFrame::OnSelectLayerTex( NMHDR* pNMHDR, LRESULT* pResult )
+{
+	NMXTPCONTROL* tagNMCONTROL = (NMXTPCONTROL*)pNMHDR;
+	CXTPControlGallery* pGallery = DYNAMIC_DOWNCAST(CXTPControlGallery, tagNMCONTROL->pControl);
+	if (pGallery)
+	{
+		ManipulatorTerrain& manTerrain = ManipulatorSystem.GetTerrain();
+		CXTPControlGalleryItem* pItem = pGallery->GetItem(pGallery->GetSelectedItem());
+		if (pItem)
+		{
+			const int nCurLayer = manTerrain.GetCurEditLayer();
+			manTerrain.SetLayerTexture(nCurLayer, pItem->GetID());
+
+			//更新property控件
+			m_propertyTerrain->UpdateProperty(PropertyPaneTerrain::propLayerDiffuseMap0 + nCurLayer);
+			m_propertyTerrain->UpdateProperty(PropertyPaneTerrain::propLayerNormalMap0 + nCurLayer);
+		}
+		*pResult = TRUE; // Handled
+	}
+}
+
+void CMainFrame::OnUpdateUI_SplatSelectLayer( CCmdUI* pCmdUI )
+{
+	bool bEnable = (pCmdUI->m_nID - IDC_Terrain_Splat_Layer0) == ManipulatorSystem.GetTerrain().GetCurEditLayer();
+	pCmdUI->SetCheck(bEnable);
+	pCmdUI->Enable(TRUE);
+}
+
+void CMainFrame::OnSplatSelectLayer( UINT nID )
+{
+	ManipulatorSystem.GetTerrain().SetCurEditLayer(nID - IDC_Terrain_Splat_Layer0);
 }

@@ -1,3 +1,4 @@
+LoadUnloadResourceList
 #include "stdafx.h"
 #include "ManipulatorTerrain.h"
 #include <OgreStreamSerialiser.h>
@@ -17,6 +18,7 @@ ManipulatorTerrain::ManipulatorTerrain()
 ,m_pTerrain(nullptr)
 ,m_curBrushIndex(1)
 ,m_curEditMode(eTerrainEditMode_None)
+,m_curEditLayer(-1)
 {
 	m_pSceneMgr = Ogre::Root::getSingleton().getSceneManager(SCENE_MANAGER_NAME);
 	assert(m_pSceneMgr);
@@ -40,17 +42,42 @@ void ManipulatorTerrain::NewFlatTerrain()
 	// sync load since we want everything in place when we start
 	m_terrainGroup->loadTerrain(0, 0);
 
-// 	if (mTerrainsImported)
-// 	{
-// 		TerrainGroup::TerrainIterator ti = mTerrainGroup->getTerrainIterator();
-// 		while(ti.hasMoreElements())
-// 		{
-// 			Terrain* t = ti.getNext()->instance;
-// 			initBlendMaps(t);
-// 		}
-// 	}
+	//_InitBlendMap();
+
 	m_terrainGroup->freeTemporaryResources();
 	m_pTerrain = m_terrainGroup->getTerrain(0, 0);
+}
+
+void ManipulatorTerrain::_InitBlendMap()
+{
+	Ogre::TerrainLayerBlendMap* blendMap0 = m_pTerrain->getLayerBlendMap(1);
+	Ogre::TerrainLayerBlendMap* blendMap1 = m_pTerrain->getLayerBlendMap(2);
+	float minHeight0 = 70;
+	float fadeDist0 = 40;
+	float minHeight1 = 70;
+	float fadeDist1 = 15;
+	float* pBlend1 = blendMap1->getBlendPointer();
+	for (Ogre::uint16 y = 0; y < m_pTerrain->getLayerBlendMapSize(); ++y)
+	{
+		for (Ogre::uint16 x = 0; x < m_pTerrain->getLayerBlendMapSize(); ++x)
+		{
+			float tx, ty;
+
+			blendMap0->convertImageToTerrainSpace(x, y, &tx, &ty);
+			float height = m_pTerrain->getHeightAtTerrainPosition(tx, ty);
+			float val = (height - minHeight0) / fadeDist0;
+			val = Ogre::Math::Clamp(val, (float)0, (float)1);
+			//*pBlend0++ = val;
+
+			val = (height - minHeight1) / fadeDist1;
+			val = Ogre::Math::Clamp(val, (float)0, (float)1);
+			*pBlend1++ = val;
+		}
+	}
+	blendMap0->dirty();
+	blendMap1->dirty();
+	blendMap0->update();
+	blendMap1->update();
 }
 
 void ManipulatorTerrain::_ConfigureTerrainDefaults()
@@ -58,33 +85,47 @@ void ManipulatorTerrain::_ConfigureTerrainDefaults()
 // 	MaterialManager::getSingleton().setDefaultTextureFiltering(TFO_ANISOTROPIC);
 // 	MaterialManager::getSingleton().setDefaultAnisotropy(7);
 
-	// Configure global
 	m_terrainOption->setMaxPixelError(8);
-	// testing composite map
-	//m_terrainOption->setCompositeMapDistance(3000);
+	m_terrainOption->setCompositeMapDistance(3000);
 	//mTerrainGlobals->setUseRayBoxDistanceCalculation(true);
-	//mTerrainGlobals->getDefaultMaterialGenerator()->setDebugLevel(1);
-	//mTerrainGlobals->setLightMapSize(256);
+	//m_terrainOption->getDefaultMaterialGenerator()->setDebugLevel(1);
+	m_terrainOption->setLightMapSize(128);
 
 	//matProfile->setLightmapEnabled(false);
 	// Important to set these so that the terrain knows what to use for derived (non-realtime) data
 	//mTerrainGlobals->setLightMapDirection(l->getDerivedDirection());
 	m_terrainOption->setCompositeMapAmbient(m_pSceneMgr->getAmbientLight());
-	//mTerrainGlobals->setCompositeMapAmbient(ColourValue::Red);
 	//mTerrainGlobals->setCompositeMapDiffuse(l->getDiffuseColour());
 
 	// Configure default import settings for if we use imported image
 	Terrain::ImportData& defaultimp = m_terrainGroup->getDefaultImportSettings();
 	defaultimp.terrainSize = m_vertexPerSide;
 	defaultimp.worldSize = m_worldSize;
-	defaultimp.inputScale = 600;
+	defaultimp.inputScale = 1.0f;
 	defaultimp.minBatchSize = 17;
 	defaultimp.maxBatchSize = 65;
-	//默认给一层,不然是黑的
-	defaultimp.layerList.resize(1);
+
+	defaultimp.layerList.resize(TERRAIN_MAX_LAYER);
+	for (int iLayer=0; iLayer<TERRAIN_MAX_LAYER; ++iLayer)
+	{
+		defaultimp.layerList[iLayer].worldSize = 128;
+		defaultimp.layerList[iLayer].textureNames.clear();
+		defaultimp.layerList[iLayer].textureNames.clear();
+	}
+
+	//仅初始化地形纹理第1层
 	defaultimp.layerList[0].worldSize = 128;
 	defaultimp.layerList[0].textureNames.push_back("dirt_grayrocky_diffusespecular.dds");
 	defaultimp.layerList[0].textureNames.push_back("dirt_grayrocky_normalheight.dds");
+
+	//设置当前编辑层为0
+	m_curEditLayer = 0;
+}
+
+void ManipulatorTerrain::Shutdown()
+{
+	m_terrainGroup.reset();
+	m_terrainOption.reset();
 }
 
 void ManipulatorTerrain::Load( rapidxml::xml_node<>* XMLNode )
@@ -118,21 +159,6 @@ void ManipulatorTerrain::Load( rapidxml::xml_node<>* XMLNode )
 	m_terrainGroup->setOrigin(m_origPos);
 	m_terrainGroup->setResourceGroup("General");
 
-	//     rapidxml::xml_node<>* pElement;
-	//     rapidxml::xml_node<>* pPageElement;
-
-	//     // Process terrain pages (*)
-	//     pElement = XMLNode->first_node("terrainPages");
-	//     if(pElement)
-	//     {
-	//         pPageElement = pElement->first_node("terrainPage");
-	//         while(pPageElement)
-	//         {
-	//             processTerrainPage(pPageElement);
-	//             pPageElement = pPageElement->next_sibling("terrainPage");
-	//         }
-	//     }
-
 	//加载地形数据
 	std::wstring fullPath(ManipulatorSystem.GenerateSceneFullPath());
 	fullPath += L"terrain.dat";
@@ -140,12 +166,9 @@ void ManipulatorTerrain::Load( rapidxml::xml_node<>* XMLNode )
 	m_terrainGroup->loadTerrain(0, 0);
 	m_terrainGroup->freeTemporaryResources();
 	m_pTerrain = m_terrainGroup->getTerrain(0, 0);
-}
 
-void ManipulatorTerrain::Shutdown()
-{
-	m_terrainGroup.reset();
-	m_terrainOption.reset();
+	//设置当前编辑层为0
+	m_curEditLayer = 0;
 }
 
 void ManipulatorTerrain::Serialize( rapidxml::xml_document<>& doc, rapidxml::xml_node<>* XMLNode )
@@ -273,6 +296,10 @@ void ManipulatorTerrain::OnEdit( float dt )
 {
 	assert(m_curEditMode != eTerrainEditMode_None);
 
+	//第0层不能编辑BlendMap,应该从第1层开始
+	if(m_curEditMode == eTerrainEditMode_Splat && m_curEditLayer == 0)
+		return;
+
 	const Vector3 brushPos = m_brush[m_curBrushIndex]->GetPosition();
 	Vector3 tsPos;
 	m_pTerrain->getTerrainPosition(brushPos, &tsPos);
@@ -282,30 +309,126 @@ void ManipulatorTerrain::OnEdit( float dt )
 	brushSizeW /= m_worldSize;
 	brushSizeH /= m_worldSize;
 
-	// we need point coords
-	float terrainSize = (m_pTerrain->getSize() - 1);
-	long startx = (tsPos.x - brushSizeW / 2) * m_vertexPerSide;
-	long starty = (tsPos.y - brushSizeH / 2) * m_vertexPerSide;
-	long endx = (tsPos.x + brushSizeW / 2) * m_vertexPerSide;
-	long endy= (tsPos.y + brushSizeH / 2) * m_vertexPerSide;
+	int multiplier;
+	if(m_curEditMode == eTerrainEditMode_Deform)
+		multiplier = m_pTerrain->getSize() - 1;
+	else
+		multiplier = m_pTerrain->getLayerBlendMapSize();
+
+	long startx = (long)((tsPos.x - brushSizeW / 2) * multiplier);
+	long starty = (long)((tsPos.y - brushSizeH / 2) * multiplier);
+	long endx = (long)((tsPos.x + brushSizeW / 2) * multiplier);
+	long endy= (long)((tsPos.y + brushSizeH / 2) * multiplier);
 	startx = max(startx, 0L);
 	starty = max(starty, 0L);
-	endx = min(endx, (long)m_vertexPerSide);
-	endy = min(endy, (long)m_vertexPerSide);
+	endx = min(endx, (long)multiplier);
+	endy = min(endy, (long)multiplier);
 
+	Ogre::TerrainLayerBlendMap* layer = m_pTerrain->getLayerBlendMap(m_curEditLayer);
+	
 	for (long y = starty; y <= endy; ++y)
 	{
 		for (long x = startx; x <= endx; ++x)
 		{
-			float tsXdist = (x / m_vertexPerSide) - tsPos.x;
-			float tsYdist = (y / m_vertexPerSide)  - tsPos.y;
+			float tsXdist = (x / multiplier) - tsPos.x;
+			float tsYdist = (y / multiplier)  - tsPos.y;
 
-			float* heightData = m_pTerrain->getHeightData();
-			heightData[y*m_vertexPerSide+x] += 100.0f * dt;
+			if(m_curEditMode == eTerrainEditMode_Deform)
+			{
+				float* pData = m_pTerrain->getHeightData();
+				pData[y*m_vertexPerSide+x] += 100.0f * dt;
+
+			}
+			else
+			{
+				float* pData = layer->getBlendPointer();
+				size_t imgY = multiplier - y;
+				float newValue = pData[imgY*multiplier+x] + dt;
+				newValue = Ogre::Math::Clamp(newValue, 0.0f, 1.0f);
+				pData[imgY*multiplier+x] = newValue;
+			}
 		}
 	}
 	
-	Ogre::Rect rect(startx, starty, endx, endy);
-	m_pTerrain->dirtyRect(rect);
-	m_pTerrain->update();
+	
+	if(m_curEditMode == eTerrainEditMode_Deform)
+	{
+		Ogre::Rect rect(startx, starty, endx, endy);
+		m_pTerrain->dirtyRect(rect);
+		m_pTerrain->update();
+	}
+	else
+	{
+		size_t imgStartY = multiplier - starty;
+		size_t imgEndY = multiplier - endy;
+		Ogre::Rect rect(startx, min(imgStartY,imgEndY), endx, max(imgStartY,imgEndY));
+
+		layer->dirtyRect(rect);
+		layer->update();
+	}
 }
+
+const Ogre::StringVector& ManipulatorTerrain::GetAllLayerTexThumbnailNames()
+{
+	m_vecLayerTex.clear();
+
+	Ogre::FileInfoListPtr fileinfo = Ogre::ResourceGroupManager::getSingleton().findResourceFileInfo(
+		"TerrainTextures", "*.png");
+
+	int i = 0;
+	m_vecLayerTex.resize(fileinfo->size());
+	for (auto iter=fileinfo->begin(); iter!=fileinfo->end(); ++iter)
+	{
+		const Ogre::FileInfo& info = (*iter);
+		m_vecLayerTex[i++] = info.archive->getName() + "/" + info.filename;
+	}
+
+	return m_vecLayerTex;
+}
+
+void ManipulatorTerrain::SetLayerTexWorldSize(int nLayer, float fSize)
+{
+	assert(nLayer >=0 && nLayer<(int)m_pTerrain->getLayerCount());
+	m_pTerrain->setLayerWorldSize(nLayer, fSize);
+}
+
+float ManipulatorTerrain::GetLayerTexWorldSize( int nLayer )
+{
+	assert(nLayer >=0 && nLayer<(int)m_pTerrain->getLayerCount());
+	return m_pTerrain->getLayerWorldSize(nLayer);
+}
+
+void ManipulatorTerrain::SetLayerTexture( int nLayer, const std::string& diffuseMapName )
+{
+	assert(nLayer >=0 && nLayer<(int)m_pTerrain->getLayerCount());
+
+	Ogre::String name = diffuseMapName.substr(0, diffuseMapName.find("diffuse"));
+	
+	//diffuse map
+	m_pTerrain->setLayerTextureName(nLayer, 0, name + "diffusespecular.dds");
+	//normal map
+	m_pTerrain->setLayerTextureName(nLayer, 1, name + "normalheight.dds");
+}
+
+void ManipulatorTerrain::SetLayerTexture( int nLayer, int diffuseMapID )
+{
+	assert(nLayer >=0 && nLayer<(int)m_pTerrain->getLayerCount());
+
+	Ogre::String filename, path;
+	Ogre::StringUtil::splitFilename(m_vecLayerTex[diffuseMapID], filename, path);
+
+	SetLayerTexture(nLayer, filename);
+}
+
+const std::string ManipulatorTerrain::GetLayerDiffuseMap( int nLayer ) const
+{
+	assert(nLayer >=0 && nLayer<(int)m_pTerrain->getLayerCount());
+	return m_pTerrain->getLayerTextureName(nLayer, 0);
+}
+
+const std::string ManipulatorTerrain::GetLayerNormalMap( int nLayer ) const
+{
+	assert(nLayer >=0 && nLayer<(int)m_pTerrain->getLayerCount());
+	return m_pTerrain->getLayerTextureName(nLayer, 1);
+}
+

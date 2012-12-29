@@ -40,8 +40,8 @@ public:
 	void	Shutdown();
 	void	Load(rapidxml::xml_node<>* XMLNode);
 	void	Serialize(rapidxml::xml_document<>& doc, rapidxml::xml_node<>* XMLNode);
-
 	void	OnGizmoNodeReset();
+
 	float	GetHeightAt(const Ogre::Vector2& worldPos);
 	bool	GetRayIntersectPoint(const Ogre::Ray& worldRay, Ogre::Vector3& retPt);
 	float	GetWorldSize() const { return m_terrainGroup->getTerrainWorldSize(); }
@@ -71,15 +71,30 @@ public:
 	//splat
 	void	SetTerrainSplatEnabled(bool bEnable);
 	bool	GetTerrainSplatEnabled() { return m_curEditMode == eTerrainEditMode_Splat; }
+	const Ogre::StringVector& GetAllLayerTexThumbnailNames();
+
+	///设置获取Layer相关
+	void	SetLayerTexWorldSize(int nLayer, float fSize);
+	float	GetLayerTexWorldSize(int nLayer);
+	void	SetLayerTexture(int nLayer, const std::string& diffuseMapName);
+	void	SetLayerTexture(int nLayer, int diffuseID);
+	const std::string GetLayerDiffuseMap(int nLayer) const;
+	const std::string GetLayerNormalMap(int nLayer) const;
+
+	//设置当前编辑layer
+	void	SetCurEditLayer(int nLayer) { m_curEditLayer = nLayer; }
+	int		GetCurEditLayer() const { return m_curEditLayer; }
 
 private:
 	void	_ConfigureTerrainDefaults();
+	void	_InitBlendMap();
 
 private:
 	std::unique_ptr<TerrainGroup>			m_terrainGroup;
 	std::unique_ptr<TerrainGlobalOptions>	m_terrainOption;
 	Terrain*								m_pTerrain;			//目前仅有一块地形
 	Ogre::SceneManager*						m_pSceneMgr;
+	Ogre::StringVector						m_vecLayerTex;		//画刷可用的所有纹理名
 
 	int										m_vertexPerSide;	//地形每边的顶点数
 	float									m_worldSize;		//地形范围
@@ -88,6 +103,7 @@ private:
 	std::unique_ptr<Brush>					m_brush[2]; //0:cirle 1:square
 	int										m_curBrushIndex;
 	eTerrainEditMode						m_curEditMode;
+	int										m_curEditLayer;
 };
 
 

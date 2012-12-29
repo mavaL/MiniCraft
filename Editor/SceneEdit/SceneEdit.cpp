@@ -54,7 +54,7 @@ CSceneEditApp::CSceneEditApp()
 CSceneEditApp theApp;
 
 
-// CSceneEditApp 初始化
+ULONG_PTR g_gdiplusToken;
 
 BOOL CSceneEditApp::InitInstance()
 {
@@ -88,6 +88,10 @@ BOOL CSceneEditApp::InitInstance()
 	//初始化OLE
 	OleInitialize(NULL);
 
+	//初始化GDI+
+	Gdiplus::GdiplusStartupInput gdiplusStartupInput;
+	GdiplusStartup(&g_gdiplusToken, &gdiplusStartupInput, NULL);
+
 	CMainFrame* pFrame = new CMainFrame;
 	if (!pFrame)
 		return FALSE;
@@ -112,6 +116,7 @@ BOOL CSceneEditApp::InitInstance()
 	///////////////////////////初始化完毕,开始渲染...
 	pFrame->ShowWindow(SW_SHOW);
 	pFrame->UpdateWindow();
+	//pFrame->SetForegroundWindow();
 
 	pFrame->SetTimer(0, (UINT)TIME_PER_FRAME*1000, NULL);
 
@@ -120,6 +125,7 @@ BOOL CSceneEditApp::InitInstance()
 
 int CSceneEditApp::ExitInstance()
 {
+	//GdiplusShutdown(g_gdiplusToken);
 	OleUninitialize();
 	return CWinApp::ExitInstance();
 }

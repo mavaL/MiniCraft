@@ -69,6 +69,10 @@ void ManipulatorScene::SceneClose()
 	assert(pSceneMgr);
 	pSceneMgr->clearScene();
 	m_bIsSceneReay = false;
+
+	//回调事件
+	for (auto iter=m_listeners.begin(); iter!=m_listeners.end(); ++iter)
+		(*iter)->OnSceneClose();
 }
 
 void ManipulatorScene::Shutdown()
