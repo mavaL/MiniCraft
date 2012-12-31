@@ -38,6 +38,12 @@
 #include "rapidxml/rapidxml_utils.hpp"
 #include "rapidxml/rapidxml_print.hpp"
 
+//RecastÑ°Â·¿â
+#include "Recast/Recast.h"
+#include "DetourCrowd/DetourCrowd.h"
+#include "OgreDetourTileCache.h"
+#include "OgreDetourCrowd.h"
+
 using Ogre::String;
 using Ogre::Vector3;
 
@@ -63,6 +69,7 @@ using Ogre::Vector3;
 //GDI+
 #include <GdiPlus.h>
 #pragma comment(lib, "gdiplus.lib")
+
 
 
 #ifdef _UNICODE

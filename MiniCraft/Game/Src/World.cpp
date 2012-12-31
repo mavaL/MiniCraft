@@ -4,7 +4,7 @@
 #include "Unit.h"
 #include "OgreManager.h"
 #include <SdkCameraMan.h>
-
+#include "DotSceneLoader.h"
 
 
 World::World()
@@ -18,6 +18,9 @@ World::World()
 ,m_bFreeCamMode(false)
 ,m_pSceneQuery(nullptr)
 ,m_pRaySceneQuery(nullptr)
+,m_terrainGroup(nullptr)
+,m_terrainOption(nullptr)
+,m_pTerrain(nullptr)
 {
 
 }
@@ -49,44 +52,49 @@ void World::Init()
 	//场景中参与构建NavMesh的物体
 	std::vector<Entity*> vecNavEnt;	
 
-	Ogre::MeshManager::getSingleton().createPlane("FloorMesh", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
-		Ogre::Plane(Ogre::Vector3::UNIT_Y, 0), 100, 100, 10, 10, true, 1, 20, 20, Ogre::Vector3::UNIT_Z);
-	Ogre::Entity* ent = m_pSceneMgr->createEntity("entFloor", "FloorMesh");
-	ent->setMaterialName("Examples/BumpyMetal");
-	ent->setQueryFlags(eQueryType_WorldGeometry);
-	Ogre::SceneNode* node = m_pSceneMgr->getRootSceneNode()->createChildSceneNode("GroundNode");
-	node->attachObject(ent);
-	vecNavEnt.push_back(ent);
+	//加载测试场景Test.Scene
+	DotSceneLoader sceneLoader;
+	sceneLoader.parseDotScene("TestScene.Scene", "General", 
+		m_pSceneMgr, m_pSceneMgr->getRootSceneNode()->createChildSceneNode("SceneNode"));
 
-	ent = m_pSceneMgr->createEntity("highlanderhouse.01.mesh");
-	ent->setQueryFlags(eQueryType_WorldGeometry);
-	SceneNode* pHouseNode = m_pSceneMgr->getRootSceneNode()->createChildSceneNode(BASE_POS);
-	pHouseNode->attachObject(ent);
-	vecNavEnt.push_back(ent);
+	//初始化Recast库
+	OgreRecastConfigParams recastParams = OgreRecastConfigParams();
+// 	recastParams.setCellSize(1);
+// 	recastParams.setCellHeight(0.16f);
+// 	recastParams.setAgentMaxSlope(45);
+// 	recastParams.setAgentHeight(1.5f);
+// 	recastParams.setAgentMaxClimb(1.5f);
+// 	recastParams.setAgentRadius(0.6f);
+// 	recastParams.setEdgeMaxLen(2);
+// 	recastParams.setEdgeMaxError(1.3f);
+// 	recastParams.setVertsPerPoly(6);
+// 	recastParams.setRegionMinSize(2);
+// 	recastParams.setRegionMergeSize(3);
+// 	recastParams.setDetailSampleDist(6);
+// 	recastParams.setDetailSampleMaxError(1);
+	recastParams.setCellSize(1);
+	recastParams.setCellHeight(0.16f);
+	recastParams.setAgentMaxSlope(15);
+	recastParams.setAgentHeight(1.5f);
+	recastParams.setAgentMaxClimb(0.5f);
+	recastParams.setAgentRadius(0.6f);
+	recastParams.setEdgeMaxLen(2);
+	recastParams.setEdgeMaxError(1.3f);
+	recastParams.setVertsPerPoly(6);
+	recastParams.setRegionMinSize(2);
+	recastParams.setRegionMergeSize(3);
+	recastParams.setDetailSampleDist(6);
+	recastParams.setDetailSampleMaxError(1);
 
-	SceneNode* pMineNode = m_pSceneMgr->getRootSceneNode()->createChildSceneNode(RES_POS);
-	pMineNode->scale(0.04f, 0.04f, 0.04f);
-	m_pGold = m_pSceneMgr->createEntity("银矿脉.mesh");
-	m_pGold->setQueryFlags(eQueryType_WorldGeometry);
-	pMineNode->attachObject(m_pGold);
-	vecNavEnt.push_back(m_pGold);
-
-	//初始化Recast库,全局config非常重要,参见默认值
-	OgreRecastConfigParams initParams;
-	//initParams.setAgentRadius(0.2);
-	m_pRecast = new OgreRecast(m_pSceneMgr, initParams);
-
+	m_pRecast = new OgreRecast(m_pSceneMgr, recastParams);
 	m_pDetourTileCache = new OgreDetourTileCache(m_pRecast);
-	if(m_pDetourTileCache->TileCacheBuild(vecNavEnt)) 
-	{
-		m_pDetourTileCache->drawNavMesh();
-	} 
-	else 
-	{
-		Ogre::LogManager::getSingletonPtr()->logMessage("ERROR: could not generate useable navmesh from mesh using detourTileCache.");
-		return;
-	}
-	//m_pDetourTileCache->saveAll("NavMeshData");
+
+	//加载编辑器导出的导航网格数据
+	Ogre::DataStreamPtr stream = Ogre::ResourceGroupManager::getSingleton().openResource(
+		"NavMesh.Bin", "General", false);
+	assert(m_pDetourTileCache->loadAll(stream));
+
+ 	m_pDetourTileCache->drawNavMesh();
 
 	//初始化Detour寻路库
 	m_pDetourCrowd = new OgreDetourCrowd(m_pRecast);
@@ -94,10 +102,13 @@ void World::Init()
 
 void World::Shutdown()
 {
+	SAFE_DELETE(m_terrainGroup);
+	SAFE_DELETE(m_terrainOption);
 	SAFE_DELETE(m_pDetourCrowd);
 	SAFE_DELETE(m_pDetourTileCache);
 	SAFE_DELETE(m_pRecast);
 	SAFE_DELETE(m_cameraMan);
+	m_pTerrain = nullptr;
 
 	//重置脚本系统,为了销毁所有Unit
 	ScriptSystem::GetSingleton().Reset();
@@ -115,6 +126,44 @@ void World::Shutdown()
 
 	m_vecSelectUnis.clear();
 	m_vecUnits.clear();
+}
+
+void World::LoadTerrain( rapidxml::xml_node<>* XMLNode )
+{
+	m_terrainOption = new Ogre::TerrainGlobalOptions;
+
+	Ogre::Real worldSize = DotSceneLoader::getAttribReal(XMLNode, "worldSize");
+	int mapSize = Ogre::StringConverter::parseInt(XMLNode->first_attribute("mapSize")->value());
+	//bool colourmapEnabled = DotSceneLoader::getAttribBool(XMLNode, "colourmapEnabled");
+	//int colourMapTextureSize = Ogre::StringConverter::parseInt(XMLNode->first_attribute("colourMapTextureSize")->value());
+	//int compositeMapDistance = Ogre::StringConverter::parseInt(XMLNode->first_attribute("tuningCompositeMapDistance")->value());
+	int maxPixelError = Ogre::StringConverter::parseInt(XMLNode->first_attribute("tuningMaxPixelError")->value());
+
+	//     Ogre::Vector3 lightdir(0, -0.3, 0.75);
+	//     lightdir.normalise();
+	//     Ogre::Light* l = mSceneMgr->createLight("tstLight");
+	//     l->setType(Ogre::Light::LT_DIRECTIONAL);
+	//     l->setDirection(lightdir);
+	//     l->setDiffuseColour(Ogre::ColourValue(1.0, 1.0, 1.0));
+	//     l->setSpecularColour(Ogre::ColourValue(0.4, 0.4, 0.4));
+
+	m_terrainOption->setMaxPixelError((Ogre::Real)maxPixelError);
+	//m_terrainOption->setCompositeMapDistance((Ogre::Real)compositeMapDistance);
+	// mTerrainGlobalOptions->setLightMapDirection(lightdir);
+	m_terrainOption->setCompositeMapAmbient(m_pSceneMgr->getAmbientLight());
+	//mTerrainGlobalOptions->setCompositeMapDiffuse(l->getDiffuseColour());
+
+	//mSceneMgr->destroyLight("tstLight");
+
+	m_terrainGroup = new Ogre::TerrainGroup(m_pSceneMgr, Ogre::Terrain::ALIGN_X_Z, mapSize, worldSize);
+	m_terrainGroup->setOrigin(Ogre::Vector3::ZERO);
+	m_terrainGroup->setResourceGroup("General");
+
+	//加载地形数据
+	m_terrainGroup->defineTerrain(0, 0, "terrain.dat");
+	m_terrainGroup->loadTerrain(0, 0);
+	m_terrainGroup->freeTemporaryResources();
+	m_pTerrain = m_terrainGroup->getTerrain(0, 0);
 }
 
 void World::Update(float dt)
@@ -135,6 +184,7 @@ Unit* World::CreateUnit(const Ogre::Vector3& pos)
 	entName += Ogre::StringConverter::toString(newID);
 
 	Ogre::Entity* pEnt = m_pSceneMgr->createEntity(entName, "Sinbad.mesh");
+	ClampToTerrain(adjustPos);
 	Ogre::SceneNode* pNode = m_pSceneMgr->getRootSceneNode()->createChildSceneNode(adjustPos);
 
 	Unit* pNewUnit = new Unit(newID, pEnt, pNode, m_pRecast, m_pDetourCrowd);
@@ -230,4 +280,32 @@ void World::ClearAllUnitSelected()
 		m_vecSelectUnis[i]->SetSelected(false);
 
 	m_vecSelectUnis.clear();
+}
+
+void World::ClampToTerrain(Ogre::Vector3& pos)
+{
+	// Setup the scene query
+	Ogre::Ray queryRay(pos, Ogre::Vector3::NEGATIVE_UNIT_Y);
+
+	// Perform the scene query
+	Ogre::TerrainGroup::RayResult result = m_terrainGroup->rayIntersects(queryRay);
+	if(result.hit) 
+	{
+		Ogre::Real terrainHeight = result.position.y;
+		pos.y = terrainHeight;
+	} 
+	else
+	{
+		// Try querying terrain above character
+		queryRay.setOrigin(pos);
+		queryRay.setDirection(Ogre::Vector3::UNIT_Y);
+
+		// Perform scene query again
+		result = m_terrainGroup->rayIntersects(queryRay);
+		if(result.hit) 
+		{
+			Ogre::Real terrainHeight = result.position.y;
+			pos.y = terrainHeight;
+		}
+	}
 }

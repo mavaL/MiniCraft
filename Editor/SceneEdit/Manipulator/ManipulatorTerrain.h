@@ -24,6 +24,7 @@ using Ogre::TerrainGroup;
 
 class ManipulatorTerrain
 {
+	friend class ManipulatorNavMesh;
 public:
 	ManipulatorTerrain();
 	~ManipulatorTerrain() {}
@@ -90,7 +91,7 @@ private:
 	void	_InitBlendMap();
 
 private:
-	std::unique_ptr<TerrainGroup>			m_terrainGroup;
+	TerrainGroup*							m_terrainGroup;
 	std::unique_ptr<TerrainGlobalOptions>	m_terrainOption;
 	Terrain*								m_pTerrain;			//目前仅有一块地形
 	Ogre::SceneManager*						m_pSceneMgr;

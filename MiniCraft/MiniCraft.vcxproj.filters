@@ -55,6 +55,9 @@
     <Filter Include="Script">
       <UniqueIdentifier>{af5cb7dc-6b11-4246-9018-3e22d11243a0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="rapidxml">
+      <UniqueIdentifier>{f85173b9-8c83-49a6-8126-8ec6181b6acd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Include\AppState.h">
@@ -204,6 +207,21 @@
     <ClInclude Include="Game\Include\ScriptSystem.h">
       <Filter>Script</Filter>
     </ClInclude>
+    <ClInclude Include="Game\Include\DotSceneLoader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\rapidxml\rapidxml.hpp">
+      <Filter>rapidxml</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\rapidxml\rapidxml_iterators.hpp">
+      <Filter>rapidxml</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\rapidxml\rapidxml_print.hpp">
+      <Filter>rapidxml</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\rapidxml\rapidxml_utils.hpp">
+      <Filter>rapidxml</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game\Src\AppStateManager.cpp">
@@ -346,6 +364,9 @@
     </ClCompile>
     <ClCompile Include="Game\Src\ScriptSystem.cpp">
       <Filter>Script</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Src\DotSceneLoader.cpp">
+      <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

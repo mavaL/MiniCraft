@@ -34,6 +34,7 @@ public:
 	void	Init();
 	void	Update(float dt);
 	void	Shutdown();
+	void	LoadTerrain(rapidxml::xml_node<>* XMLNode);
 
 	Ogre::Camera*	GetCamera()	{ return m_pCamera; }
 	Unit*			CreateUnit(const Ogre::Vector3& pos);
@@ -60,6 +61,8 @@ public:
 	void			ClearAllUnitSelected();
 
 	const UnitContainer&	GetAllUnitSelected() { return m_vecSelectUnis; }
+	//将给定世界坐标通过射线投射夹持在地形上
+	void ClampToTerrain(Ogre::Vector3& pos);
 
 private:
 	UnitContainer				m_vecUnits;			//场景中的所有单位
@@ -78,6 +81,10 @@ private:
 	//调试观察用第三人称摄像机
 	OgreBites::SdkCameraMan*	m_cameraMan;
 	bool						m_bFreeCamMode;
+
+	Ogre::TerrainGroup*			m_terrainGroup;
+	Ogre::TerrainGlobalOptions*	m_terrainOption;
+	Ogre::Terrain*				m_pTerrain;
 };
 
 

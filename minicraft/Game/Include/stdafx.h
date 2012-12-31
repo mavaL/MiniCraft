@@ -4,6 +4,10 @@
 
 //Ogre
 #include <Ogre.h>
+#include <Terrain/OgreTerrain.h>
+#include <Terrain/OgreTerrainGroup.h>
+#include <Terrain/OgreTerrainQuadTreeNode.h>
+#include <Terrain/OgreTerrainMaterialGeneratorA.h>
 
 //OIS
 #include <OISEvents.h>
@@ -26,6 +30,11 @@
 #include <map>
 #include <list>
 #include <algorithm>
+
+//rapidxml
+#include "rapidxml/rapidxml.hpp"       
+#include "rapidxml/rapidxml_utils.hpp"
+#include "rapidxml/rapidxml_print.hpp"
 
 #include <Windows.h>
 

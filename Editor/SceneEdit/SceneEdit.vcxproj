@@ -42,7 +42,8 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)\..\MiniCraft\Build\Bin\$(Configuration)\</OutDir>
-    <IntDir>$(SolutionDir)\..\MiniCraft\Build\Intermediate\$(Configuration)\</IntDir>
+    <IntDir>$(SolutionDir)\..\MiniCraft\Build\Intermediate\SceneEdit\$(Configuration)\</IntDir>
+    <GenerateManifest>false</GenerateManifest>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -53,7 +54,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>./;../../MiniCraft/Dependency/OIS/include;../../MiniCraft/Dependency/Ogre/include/Terrain;../../MiniCraft/Dependency/Ogre/include;../Dependency/XTP/Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./;../../MiniCraft/Dependency/OIS/include;../../MiniCraft/Dependency/Ogre/include/Terrain;../../MiniCraft/Dependency/Ogre/include;../../MiniCraft/Dependency/OgreRecast/include;../Dependency/XTP/Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/Zm300 %(AdditionalOptions)</AdditionalOptions>
       <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
     </ClCompile>
@@ -113,6 +114,33 @@
     <None Include="res\SystemMenuLarge.png" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\MiniCraft\Dependency\OgreRecast\Include\DetourCrowd\DetourCrowd.h" />
+    <ClInclude Include="..\..\MiniCraft\Dependency\OgreRecast\Include\DetourCrowd\DetourLocalBoundary.h" />
+    <ClInclude Include="..\..\MiniCraft\Dependency\OgreRecast\Include\DetourCrowd\DetourObstacleAvoidance.h" />
+    <ClInclude Include="..\..\MiniCraft\Dependency\OgreRecast\Include\DetourCrowd\DetourPathCorridor.h" />
+    <ClInclude Include="..\..\MiniCraft\Dependency\OgreRecast\Include\DetourCrowd\DetourPathQueue.h" />
+    <ClInclude Include="..\..\MiniCraft\Dependency\OgreRecast\Include\DetourCrowd\DetourProximityGrid.h" />
+    <ClInclude Include="..\..\MiniCraft\Dependency\OgreRecast\Include\DetourTileCache\DetourTileCache.h" />
+    <ClInclude Include="..\..\MiniCraft\Dependency\OgreRecast\Include\DetourTileCache\DetourTileCacheBuilder.h" />
+    <ClInclude Include="..\..\MiniCraft\Dependency\OgreRecast\Include\Detour\DetourAlloc.h" />
+    <ClInclude Include="..\..\MiniCraft\Dependency\OgreRecast\Include\Detour\DetourAssert.h" />
+    <ClInclude Include="..\..\MiniCraft\Dependency\OgreRecast\Include\Detour\DetourCommon.h" />
+    <ClInclude Include="..\..\MiniCraft\Dependency\OgreRecast\Include\Detour\DetourNavMesh.h" />
+    <ClInclude Include="..\..\MiniCraft\Dependency\OgreRecast\Include\Detour\DetourNavMeshBuilder.h" />
+    <ClInclude Include="..\..\MiniCraft\Dependency\OgreRecast\Include\Detour\DetourNavMeshQuery.h" />
+    <ClInclude Include="..\..\MiniCraft\Dependency\OgreRecast\Include\Detour\DetourNode.h" />
+    <ClInclude Include="..\..\MiniCraft\Dependency\OgreRecast\Include\Detour\DetourStatus.h" />
+    <ClInclude Include="..\..\MiniCraft\Dependency\OgreRecast\Include\OgreDetourCrowd.h" />
+    <ClInclude Include="..\..\MiniCraft\Dependency\OgreRecast\Include\OgreDetourTileCache.h" />
+    <ClInclude Include="..\..\MiniCraft\Dependency\OgreRecast\Include\OgreRecast.h" />
+    <ClInclude Include="..\..\MiniCraft\Dependency\OgreRecast\Include\OgreRecastDefinitions.h" />
+    <ClInclude Include="..\..\MiniCraft\Dependency\OgreRecast\Include\OgreRecastNavmeshPruner.h" />
+    <ClInclude Include="..\..\MiniCraft\Dependency\OgreRecast\Include\RecastContrib\fastlz\fastlz.h" />
+    <ClInclude Include="..\..\MiniCraft\Dependency\OgreRecast\Include\RecastConvexHull.h" />
+    <ClInclude Include="..\..\MiniCraft\Dependency\OgreRecast\Include\RecastInputGeom.h" />
+    <ClInclude Include="..\..\MiniCraft\Dependency\OgreRecast\Include\Recast\Recast.h" />
+    <ClInclude Include="..\..\MiniCraft\Dependency\OgreRecast\Include\Recast\RecastAlloc.h" />
+    <ClInclude Include="..\..\MiniCraft\Dependency\OgreRecast\Include\Recast\RecastAssert.h" />
     <ClInclude Include="Action\ActionBase.h" />
     <ClInclude Include="Action\ActionNone.h" />
     <ClInclude Include="Action\ActionTerrainDeform.h" />
@@ -126,6 +154,7 @@
     <ClInclude Include="MainFrm.h" />
     <ClInclude Include="Manipulator\ManipulatorAction.h" />
     <ClInclude Include="Manipulator\ManipulatorEventCallback.h" />
+    <ClInclude Include="Manipulator\ManipulatorNavMesh.h" />
     <ClInclude Include="Manipulator\ManipulatorObject.h" />
     <ClInclude Include="Manipulator\ManipulatorScene.h" />
     <ClInclude Include="Manipulator\ManipulatorTerrain.h" />
@@ -145,6 +174,99 @@
     <ClInclude Include="View.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\MiniCraft\Dependency\OgreRecast\Src\DetourCrowd\DetourCrowd.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\MiniCraft\Dependency\OgreRecast\Src\DetourCrowd\DetourLocalBoundary.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\MiniCraft\Dependency\OgreRecast\Src\DetourCrowd\DetourObstacleAvoidance.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\MiniCraft\Dependency\OgreRecast\Src\DetourCrowd\DetourPathCorridor.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\MiniCraft\Dependency\OgreRecast\Src\DetourCrowd\DetourPathQueue.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\MiniCraft\Dependency\OgreRecast\Src\DetourCrowd\DetourProximityGrid.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\MiniCraft\Dependency\OgreRecast\Src\DetourTileCache\DetourTileCache.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\MiniCraft\Dependency\OgreRecast\Src\DetourTileCache\DetourTileCacheBuilder.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\MiniCraft\Dependency\OgreRecast\Src\Detour\DetourAlloc.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\MiniCraft\Dependency\OgreRecast\Src\Detour\DetourCommon.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\MiniCraft\Dependency\OgreRecast\Src\Detour\DetourNavMesh.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\MiniCraft\Dependency\OgreRecast\Src\Detour\DetourNavMeshBuilder.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\MiniCraft\Dependency\OgreRecast\Src\Detour\DetourNavMeshQuery.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\MiniCraft\Dependency\OgreRecast\Src\Detour\DetourNode.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\MiniCraft\Dependency\OgreRecast\Src\OgreDetourCrowd.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\MiniCraft\Dependency\OgreRecast\Src\OgreDetourTileCache.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\MiniCraft\Dependency\OgreRecast\Src\OgreRecast.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\MiniCraft\Dependency\OgreRecast\Src\OgreRecastNavmeshPruner.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\MiniCraft\Dependency\OgreRecast\Src\RecastContrib\fastlz\fastlz.c">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\MiniCraft\Dependency\OgreRecast\Src\RecastConvexHull.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\MiniCraft\Dependency\OgreRecast\Src\RecastInputGeom.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\MiniCraft\Dependency\OgreRecast\Src\Recast\Recast.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\MiniCraft\Dependency\OgreRecast\Src\Recast\RecastAlloc.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\MiniCraft\Dependency\OgreRecast\Src\Recast\RecastArea.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\MiniCraft\Dependency\OgreRecast\Src\Recast\RecastContour.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\MiniCraft\Dependency\OgreRecast\Src\Recast\RecastFilter.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\MiniCraft\Dependency\OgreRecast\Src\Recast\RecastLayers.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\MiniCraft\Dependency\OgreRecast\Src\Recast\RecastMesh.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\MiniCraft\Dependency\OgreRecast\Src\Recast\RecastMeshDetail.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\MiniCraft\Dependency\OgreRecast\Src\Recast\RecastRasterization.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\MiniCraft\Dependency\OgreRecast\Src\Recast\RecastRegion.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="Action\ActionTerrainDeform.cpp" />
     <ClCompile Include="Action\ActionTerrainSplat.cpp" />
     <ClCompile Include="Application.cpp" />
@@ -154,6 +276,7 @@
     <ClCompile Include="Gizmo.cpp" />
     <ClCompile Include="MainFrm.cpp" />
     <ClCompile Include="Manipulator\ManipulatorAction.cpp" />
+    <ClCompile Include="Manipulator\ManipulatorNavMesh.cpp" />
     <ClCompile Include="Manipulator\ManipulatorObject.cpp" />
     <ClCompile Include="Manipulator\ManipulatorScene.cpp" />
     <ClCompile Include="Manipulator\ManipulatorTerrain.cpp" />

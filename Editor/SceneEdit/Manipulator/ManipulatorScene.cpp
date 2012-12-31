@@ -14,10 +14,11 @@ ManipulatorScene::ManipulatorScene()
 	m_scenePath = path;
 	m_scenePath += L"\\..\\..\\..\\..\\Editor\\Scene\\";
 
-	m_manipulatorTerrain = new ManipulatorTerrain;
-	m_manipulatorObject = new ManipulatorObject;
 	m_sceneSerializer = new DotSceneSerialezer;
 	m_sceneLoader = new DotSceneLoader;
+	m_manipulatorTerrain = new ManipulatorTerrain;
+	m_manipulatorObject = new ManipulatorObject;
+	m_manipulatorNavMesh = new ManipulatorNavMesh;
 }
 
 ManipulatorScene::~ManipulatorScene()
@@ -79,6 +80,7 @@ void ManipulatorScene::Shutdown()
 {
 	SAFE_DELETE(m_manipulatorTerrain);
 	SAFE_DELETE(m_manipulatorObject);
+	SAFE_DELETE(m_manipulatorNavMesh);
 	SAFE_DELETE(m_sceneSerializer);
 	SAFE_DELETE(m_sceneLoader);
 }
@@ -98,6 +100,7 @@ void ManipulatorScene::OnGizmoNodeReset()
 {
 	m_manipulatorTerrain->OnGizmoNodeReset();
 	m_manipulatorObject->OnGizmoNodeReset();
+	m_manipulatorNavMesh->OnGizmoNodeReset();
 }
 
 

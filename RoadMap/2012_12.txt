@@ -3,3 +3,10 @@
 1. Resource selector, with thumbnail support. (100%)
 2. Placement of object, with S-R-T operation. (0%)	
 3. Terrain edit, like height modify, brush paint. (100%)
+
+[Navigation mesh pipeline]
+1.Edit scene in editor.
+2.Export .Obj file that contains geometry data which represent navigation mesh.
+3.Using Recast library's all-in-one tool to import the previous .Obj and tweak parameters.
+4.Export the final NavMesh data file which can be imported directly by game.
+5.Import NavMesh in game. 

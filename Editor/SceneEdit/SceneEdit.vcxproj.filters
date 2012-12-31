@@ -28,6 +28,45 @@
     <Filter Include="EditorAction">
       <UniqueIdentifier>{d11f9afa-1e67-4388-a448-db8bf6b8a699}</UniqueIdentifier>
     </Filter>
+    <Filter Include="OgreRecast">
+      <UniqueIdentifier>{6dfac22a-6800-40f7-baef-e4dcbd47d919}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="OgreRecast\Include">
+      <UniqueIdentifier>{d1ee8cd6-4fd6-46ec-bd1e-007bd8ce422c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="OgreRecast\Src">
+      <UniqueIdentifier>{5c4b2840-f286-44bb-a7ff-890917e011ea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="OgreRecast\Include\Detour">
+      <UniqueIdentifier>{5c05ba1c-6d79-4c96-8056-c5b297f0330e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="OgreRecast\Include\DetourCrowd">
+      <UniqueIdentifier>{a781d2fb-c0cf-4d08-b18c-9a42daad2307}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="OgreRecast\Include\DetourTileCache">
+      <UniqueIdentifier>{5258ac57-886d-42a1-8cd7-7deb19d49cb3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="OgreRecast\Include\Recast">
+      <UniqueIdentifier>{4e406bd8-1586-448e-b5b2-0b4d6da51269}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="OgreRecast\Include\RecastContrib">
+      <UniqueIdentifier>{f0a87928-71b2-4ced-81d7-ebec51b7aa54}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="OgreRecast\Src\Detour">
+      <UniqueIdentifier>{8fb03c6b-6e7c-4349-a8fc-aa65f93e60c3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="OgreRecast\Src\DetourCrowd">
+      <UniqueIdentifier>{9e283f52-bbb1-46e9-8f27-2ca82f790a71}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="OgreRecast\Src\DetourTileCache">
+      <UniqueIdentifier>{226946c6-12a6-4ab3-932b-7cbbe59721a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="OgreRecast\Src\Recast">
+      <UniqueIdentifier>{bd2e2d9c-e4a7-4e84-9c93-0381e57c5031}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="OgreRecast\Src\RecastContrib">
+      <UniqueIdentifier>{e4fee1b6-a1ae-4a56-8c84-794c195a7f0d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
@@ -141,6 +180,90 @@
     <ClInclude Include="Action\ActionTerrainSplat.h">
       <Filter>EditorAction</Filter>
     </ClInclude>
+    <ClInclude Include="Manipulator\ManipulatorNavMesh.h">
+      <Filter>Manipulator</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\MiniCraft\Dependency\OgreRecast\Include\OgreDetourCrowd.h">
+      <Filter>OgreRecast\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\MiniCraft\Dependency\OgreRecast\Include\OgreDetourTileCache.h">
+      <Filter>OgreRecast\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\MiniCraft\Dependency\OgreRecast\Include\OgreRecast.h">
+      <Filter>OgreRecast\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\MiniCraft\Dependency\OgreRecast\Include\OgreRecastDefinitions.h">
+      <Filter>OgreRecast\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\MiniCraft\Dependency\OgreRecast\Include\OgreRecastNavmeshPruner.h">
+      <Filter>OgreRecast\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\MiniCraft\Dependency\OgreRecast\Include\RecastConvexHull.h">
+      <Filter>OgreRecast\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\MiniCraft\Dependency\OgreRecast\Include\RecastInputGeom.h">
+      <Filter>OgreRecast\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\MiniCraft\Dependency\OgreRecast\Include\Detour\DetourAlloc.h">
+      <Filter>OgreRecast\Include\Detour</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\MiniCraft\Dependency\OgreRecast\Include\Detour\DetourAssert.h">
+      <Filter>OgreRecast\Include\Detour</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\MiniCraft\Dependency\OgreRecast\Include\Detour\DetourCommon.h">
+      <Filter>OgreRecast\Include\Detour</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\MiniCraft\Dependency\OgreRecast\Include\Detour\DetourNavMesh.h">
+      <Filter>OgreRecast\Include\Detour</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\MiniCraft\Dependency\OgreRecast\Include\Detour\DetourNavMeshBuilder.h">
+      <Filter>OgreRecast\Include\Detour</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\MiniCraft\Dependency\OgreRecast\Include\Detour\DetourNavMeshQuery.h">
+      <Filter>OgreRecast\Include\Detour</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\MiniCraft\Dependency\OgreRecast\Include\Detour\DetourNode.h">
+      <Filter>OgreRecast\Include\Detour</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\MiniCraft\Dependency\OgreRecast\Include\Detour\DetourStatus.h">
+      <Filter>OgreRecast\Include\Detour</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\MiniCraft\Dependency\OgreRecast\Include\DetourCrowd\DetourCrowd.h">
+      <Filter>OgreRecast\Include\DetourCrowd</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\MiniCraft\Dependency\OgreRecast\Include\DetourCrowd\DetourLocalBoundary.h">
+      <Filter>OgreRecast\Include\DetourCrowd</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\MiniCraft\Dependency\OgreRecast\Include\DetourCrowd\DetourObstacleAvoidance.h">
+      <Filter>OgreRecast\Include\DetourCrowd</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\MiniCraft\Dependency\OgreRecast\Include\DetourCrowd\DetourPathCorridor.h">
+      <Filter>OgreRecast\Include\DetourCrowd</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\MiniCraft\Dependency\OgreRecast\Include\DetourCrowd\DetourPathQueue.h">
+      <Filter>OgreRecast\Include\DetourCrowd</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\MiniCraft\Dependency\OgreRecast\Include\DetourCrowd\DetourProximityGrid.h">
+      <Filter>OgreRecast\Include\DetourCrowd</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\MiniCraft\Dependency\OgreRecast\Include\DetourTileCache\DetourTileCache.h">
+      <Filter>OgreRecast\Include\DetourTileCache</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\MiniCraft\Dependency\OgreRecast\Include\DetourTileCache\DetourTileCacheBuilder.h">
+      <Filter>OgreRecast\Include\DetourTileCache</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\MiniCraft\Dependency\OgreRecast\Include\RecastContrib\fastlz\fastlz.h">
+      <Filter>OgreRecast\Include\RecastContrib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\MiniCraft\Dependency\OgreRecast\Include\Recast\Recast.h">
+      <Filter>OgreRecast\Include\Recast</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\MiniCraft\Dependency\OgreRecast\Include\Recast\RecastAlloc.h">
+      <Filter>OgreRecast\Include\Recast</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\MiniCraft\Dependency\OgreRecast\Include\Recast\RecastAssert.h">
+      <Filter>OgreRecast\Include\Recast</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SceneEdit.cpp">
@@ -199,6 +322,102 @@
     </ClCompile>
     <ClCompile Include="Action\ActionTerrainSplat.cpp">
       <Filter>EditorAction</Filter>
+    </ClCompile>
+    <ClCompile Include="Manipulator\ManipulatorNavMesh.cpp">
+      <Filter>Manipulator</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\MiniCraft\Dependency\OgreRecast\Src\OgreDetourCrowd.cpp">
+      <Filter>OgreRecast\Src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\MiniCraft\Dependency\OgreRecast\Src\OgreDetourTileCache.cpp">
+      <Filter>OgreRecast\Src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\MiniCraft\Dependency\OgreRecast\Src\OgreRecast.cpp">
+      <Filter>OgreRecast\Src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\MiniCraft\Dependency\OgreRecast\Src\OgreRecastNavmeshPruner.cpp">
+      <Filter>OgreRecast\Src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\MiniCraft\Dependency\OgreRecast\Src\RecastConvexHull.cpp">
+      <Filter>OgreRecast\Src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\MiniCraft\Dependency\OgreRecast\Src\RecastInputGeom.cpp">
+      <Filter>OgreRecast\Src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\MiniCraft\Dependency\OgreRecast\Src\Detour\DetourAlloc.cpp">
+      <Filter>OgreRecast\Src\Detour</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\MiniCraft\Dependency\OgreRecast\Src\Detour\DetourCommon.cpp">
+      <Filter>OgreRecast\Src\Detour</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\MiniCraft\Dependency\OgreRecast\Src\Detour\DetourNavMesh.cpp">
+      <Filter>OgreRecast\Src\Detour</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\MiniCraft\Dependency\OgreRecast\Src\Detour\DetourNavMeshBuilder.cpp">
+      <Filter>OgreRecast\Src\Detour</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\MiniCraft\Dependency\OgreRecast\Src\Detour\DetourNavMeshQuery.cpp">
+      <Filter>OgreRecast\Src\Detour</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\MiniCraft\Dependency\OgreRecast\Src\Detour\DetourNode.cpp">
+      <Filter>OgreRecast\Src\Detour</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\MiniCraft\Dependency\OgreRecast\Src\DetourCrowd\DetourCrowd.cpp">
+      <Filter>OgreRecast\Src\DetourCrowd</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\MiniCraft\Dependency\OgreRecast\Src\DetourCrowd\DetourLocalBoundary.cpp">
+      <Filter>OgreRecast\Src\DetourCrowd</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\MiniCraft\Dependency\OgreRecast\Src\DetourCrowd\DetourObstacleAvoidance.cpp">
+      <Filter>OgreRecast\Src\DetourCrowd</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\MiniCraft\Dependency\OgreRecast\Src\DetourCrowd\DetourPathCorridor.cpp">
+      <Filter>OgreRecast\Src\DetourCrowd</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\MiniCraft\Dependency\OgreRecast\Src\DetourCrowd\DetourPathQueue.cpp">
+      <Filter>OgreRecast\Src\DetourCrowd</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\MiniCraft\Dependency\OgreRecast\Src\DetourCrowd\DetourProximityGrid.cpp">
+      <Filter>OgreRecast\Src\DetourCrowd</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\MiniCraft\Dependency\OgreRecast\Src\DetourTileCache\DetourTileCache.cpp">
+      <Filter>OgreRecast\Src\DetourTileCache</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\MiniCraft\Dependency\OgreRecast\Src\DetourTileCache\DetourTileCacheBuilder.cpp">
+      <Filter>OgreRecast\Src\DetourTileCache</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\MiniCraft\Dependency\OgreRecast\Src\RecastContrib\fastlz\fastlz.c">
+      <Filter>OgreRecast\Src\RecastContrib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\MiniCraft\Dependency\OgreRecast\Src\Recast\Recast.cpp">
+      <Filter>OgreRecast\Src\Recast</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\MiniCraft\Dependency\OgreRecast\Src\Recast\RecastAlloc.cpp">
+      <Filter>OgreRecast\Src\Recast</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\MiniCraft\Dependency\OgreRecast\Src\Recast\RecastArea.cpp">
+      <Filter>OgreRecast\Src\Recast</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\MiniCraft\Dependency\OgreRecast\Src\Recast\RecastContour.cpp">
+      <Filter>OgreRecast\Src\Recast</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\MiniCraft\Dependency\OgreRecast\Src\Recast\RecastFilter.cpp">
+      <Filter>OgreRecast\Src\Recast</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\MiniCraft\Dependency\OgreRecast\Src\Recast\RecastLayers.cpp">
+      <Filter>OgreRecast\Src\Recast</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\MiniCraft\Dependency\OgreRecast\Src\Recast\RecastMesh.cpp">
+      <Filter>OgreRecast\Src\Recast</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\MiniCraft\Dependency\OgreRecast\Src\Recast\RecastMeshDetail.cpp">
+      <Filter>OgreRecast\Src\Recast</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\MiniCraft\Dependency\OgreRecast\Src\Recast\RecastRegion.cpp">
+      <Filter>OgreRecast\Src\Recast</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\MiniCraft\Dependency\OgreRecast\Src\Recast\RecastRasterization.cpp">
+      <Filter>OgreRecast\Src\Recast</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

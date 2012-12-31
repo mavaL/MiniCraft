@@ -70,13 +70,24 @@ private:
 	void			OnSelectLayerTex(NMHDR* pNMHDR, LRESULT* pResult);
 	void			OnUpdateUI_SplatSelectLayer(CCmdUI* pCmdUI);
 	void			OnSplatSelectLayer(UINT nID);
+	//NavMesh
+	void			OnNavMeshGenerate();
+	void			OnNavMeshShow();
+	void			OnNavMeshSaveObj();
+	void			OnNavMeshSaveNavMesh();
+	void			OnUpdateUI_NavMeshShow(CCmdUI* pCmdUI);
+	void			OnUpdateUI_NavMeshGenerate(CCmdUI* pCmdUI);
+	void			OnUpdateUI_NavMeshSaveObj(CCmdUI* pCmdUI);
+	void			OnUpdateUI_NavMeshSaveNavMesh(CCmdUI* pCmdUI);
 
 private:
 	CXTPDockingPaneManager	m_paneManager;
 	CEditorView*			m_wndView;
 	CXTPTaskPanel			m_resourceSelector;
 	PropertyPaneTerrain*	m_propertyTerrain;
-	CXTPControlGalleryItems* m_terrainTexGallery;					
+	CXTPControlGalleryItems* m_terrainTexGallery;
+	CXTPDockingPane*		m_paneResSelector;
+	CXTPDockingPane*		m_paneProperty;
 };
 
 

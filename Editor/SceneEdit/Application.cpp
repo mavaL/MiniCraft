@@ -238,6 +238,8 @@ void Application::RenderAllMeshIcons(CImageList& retImageList, Ogre::StringVecto
 			CBitmap bm;
 			assert(bm.CreateBitmap(MESH_ICON_SIZE, MESH_ICON_SIZE, 1, PixelUtil::getNumElemBits(imageFormat), dataptr2));
 			retImageList.Add(&bm, RGB(0,0,0));
+
+			delete []dataptr2;
 		}
 		catch(...)
 		{

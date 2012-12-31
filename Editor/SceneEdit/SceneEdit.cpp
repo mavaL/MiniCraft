@@ -12,9 +12,6 @@ StringVectorPtr
 #include "Application.h"
 #include "EditorDefine.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 
 // CSceneEditApp

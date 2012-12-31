@@ -46,7 +46,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>.\Dependency\Lua5_1_4\src;.\Dependency\CEGUI\include;.\Dependency\boost;.\Dependency\OgreRecast\Include;.\Dependency\OIS\include;.\Dependency\Ogre\include;.\Game\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\Dependency\Lua5_1_4\src;.\Dependency\CEGUI\include;.\Dependency\boost;.\Dependency\OgreRecast\Include;.\Dependency\OIS\include;.\Dependency\Ogre\include;.\Game;.\Game\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <AdditionalOptions>/Zm143 %(AdditionalOptions)</AdditionalOptions>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -111,6 +111,7 @@
     <ClInclude Include="Game\Include\BattleState.h" />
     <ClInclude Include="Game\Include\Building.h" />
     <ClInclude Include="Game\Include\Command.h" />
+    <ClInclude Include="Game\Include\DotSceneLoader.h" />
     <ClInclude Include="Game\Include\GameDefine.h" />
     <ClInclude Include="Game\Include\GUIManager.h" />
     <ClInclude Include="Game\Include\InputManager.h" />
@@ -122,6 +123,10 @@
     <ClInclude Include="Game\Include\Unit.h" />
     <ClInclude Include="Game\Include\UnitState.h" />
     <ClInclude Include="Game\Include\World.h" />
+    <ClInclude Include="Game\rapidxml\rapidxml.hpp" />
+    <ClInclude Include="Game\rapidxml\rapidxml_iterators.hpp" />
+    <ClInclude Include="Game\rapidxml\rapidxml_print.hpp" />
+    <ClInclude Include="Game\rapidxml\rapidxml_utils.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Dependency\OgreRecast\Src\Character.cpp">
@@ -228,6 +233,7 @@
     <ClCompile Include="Game\Src\BattleState.cpp" />
     <ClCompile Include="Game\Src\Building.cpp" />
     <ClCompile Include="Game\Src\Command.cpp" />
+    <ClCompile Include="Game\Src\DotSceneLoader.cpp" />
     <ClCompile Include="Game\Src\GUIManager.cpp" />
     <ClCompile Include="Game\Src\InputManager.cpp" />
     <ClCompile Include="Game\Src\MiniCraft.cpp" />

@@ -13,9 +13,7 @@ String
 #include "Action/ActionBase.h"
 #include "UI/TerrainPropertyPane.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
+
 
 // CMainFrame
 
@@ -45,6 +43,14 @@ BEGIN_MESSAGE_MAP(CMainFrame, CXTPFrameWnd)
 	ON_XTP_EXECUTE(IDC_Terrain_LayerTexture, OnSelectLayerTex)
 	ON_UPDATE_COMMAND_UI_RANGE(IDC_Terrain_Splat_Layer0, IDC_Terrain_Splat_Layer4, OnUpdateUI_SplatSelectLayer)
 	ON_COMMAND_RANGE(IDC_Terrain_Splat_Layer0, IDC_Terrain_Splat_Layer4, OnSplatSelectLayer)
+	ON_COMMAND(IDC_NavMesh_Generate, OnNavMeshGenerate)
+	ON_COMMAND(IDC_NavMesh_Show, OnNavMeshShow)
+	ON_COMMAND(IDC_NavMesh_SaveObj, OnNavMeshSaveObj)
+	ON_COMMAND(IDC_NavMesh_SaveNavMesh, OnNavMeshSaveNavMesh)
+	ON_UPDATE_COMMAND_UI(IDC_NavMesh_Show, OnUpdateUI_NavMeshShow)
+	ON_UPDATE_COMMAND_UI(IDC_NavMesh_Generate, OnUpdateUI_NavMeshGenerate)
+	ON_UPDATE_COMMAND_UI(IDC_NavMesh_SaveObj, OnUpdateUI_NavMeshSaveObj)
+	ON_UPDATE_COMMAND_UI(IDC_NavMesh_SaveNavMesh, OnUpdateUI_NavMeshSaveNavMesh)
 END_MESSAGE_MAP()
 
 
@@ -54,6 +60,8 @@ CMainFrame::CMainFrame()
 :m_wndView(NULL)
 ,m_propertyTerrain(new PropertyPaneTerrain)
 ,m_terrainTexGallery(NULL)
+,m_paneResSelector(NULL)
+,m_paneProperty(NULL)
 {
 }
 
@@ -213,24 +221,33 @@ bool CMainFrame::_OnCreateRibbon()
 	
 	_CreateLayerTexIcon();
 
+	//RibbonHome - GroupNavMesh
+	pGroup = pTab->AddGroup(L"Navigation Mesh");
+	//RibbonHome - GroupNavMesh - Generate
+	pGroup->Add(xtpControlButton, IDC_NavMesh_Generate);
+	//RibbonHome - GroupNavMesh - Show
+	pGroup->Add(xtpControlButton, IDC_NavMesh_Show);
+	//RibbonHome - GroupNavMesh - Save
+	pGroup->Add(xtpControlButton, IDC_NavMesh_SaveObj);
+	pGroup->Add(xtpControlButton, IDC_NavMesh_SaveNavMesh);
+
 	return true;
 }
 
 void CMainFrame::_LoadIcon()
 {
-	CXTPCommandBars* pCommandBars = GetCommandBars();
+	CXTPImageManager* pImageMgr = GetCommandBars()->GetImageManager();
 
-	UINT uCommand = {IDB_GEAR};
-	pCommandBars->GetImageManager()->SetIcons(IDB_GEAR, &uCommand, 1, CSize(0, 0), xtpImageNormal);
+	UINT uiSystemMenu[] = { ID_FILE_NEW, ID_FILE_OPEN, ID_FILE_SAVE };	
+	pImageMgr->SetIcons(IDB_SYSTEMMENULARGE, uiSystemMenu, _countof(uiSystemMenu), CSize(32, 32));
 
-	UINT uiSystemMenu[] = { ID_FILE_NEW, ID_FILE_OPEN, ID_FILE_SAVE }; 
-	pCommandBars->GetImageManager()->SetIcons(IDB_SYSTEMMENULARGE, uiSystemMenu, _countof(uiSystemMenu), CSize(32, 32));
-
-	UINT iconDeform[] = { IDC_Terrain_Deform };
-	pCommandBars->GetImageManager()->SetIcons(IDB_Button, iconDeform, _countof(iconDeform), CSize(32, 32));
-
-	UINT iconSplat[] = { IDC_Terrain_Splat };
-	pCommandBars->GetImageManager()->SetIcons(IDB_Button, iconSplat, _countof(iconSplat), CSize(32, 32));
+	UINT uCommand = {IDB_GEAR};				pImageMgr->SetIcons(IDB_GEAR, &uCommand, 1, CSize(0, 0), xtpImageNormal);
+	UINT icon[1] = { IDC_Terrain_Deform };	pImageMgr->SetIcons(IDB_Button, icon, _countof(icon), CSize(32, 32));
+	icon[0] = IDC_Terrain_Splat;			pImageMgr->SetIcons(IDB_Button, icon, _countof(icon), CSize(32, 32));
+	icon[0] = IDC_NavMesh_Generate;			pImageMgr->SetIcons(IDB_Button, icon, _countof(icon), CSize(32, 32));
+	icon[0] = IDC_NavMesh_Show;				pImageMgr->SetIcons(IDB_Button, icon, _countof(icon), CSize(32, 32));
+	icon[0] = IDC_NavMesh_SaveObj;			pImageMgr->SetIcons(IDB_Button, icon, _countof(icon), CSize(32, 32));
+	icon[0] = IDC_NavMesh_SaveNavMesh;		pImageMgr->SetIcons(IDB_Button, icon, _countof(icon), CSize(32, 32));
 }
 
 BOOL CMainFrame::OnCreateClient( LPCREATESTRUCT lpcs, CCreateContext* pContext )
@@ -247,6 +264,14 @@ void CMainFrame::OnTimer( UINT_PTR nIDEvent )
 {
 	assert(nIDEvent == 0);
 
+	//之所以放在这里是因为不能随便放
+	static bool bInitLayout = false;
+	if (!bInitLayout)
+	{
+		m_paneManager.AttachPane(m_paneProperty, m_paneResSelector);
+		bInitLayout = true;
+	}
+
 	CSceneEditApp* app = (CSceneEditApp*)AfxGetApp();
 	if(!app->m_app.Update())
 		SendMessage(WM_CLOSE);
@@ -261,10 +286,10 @@ void CMainFrame::_CreateDockPane()
 	m_paneManager.SetAlphaDockingContext(TRUE);
 	m_paneManager.SetShowDockingContextStickers(TRUE);
 	m_paneManager.SetShowContentsWhileDragging(TRUE);
-	m_paneManager.SetDefaultPaneOptions(xtpPaneHasMenuButton);
+	m_paneManager.SetDefaultPaneOptions(xtpPaneNoHideable);
 
-	CXTPDockingPane* paneResSelector = m_paneManager.CreatePane(IDR_Pane_ResourceSelector, CRect(0, 0, 250, 120), xtpPaneDockRight);
-	m_paneManager.CreatePane(IDR_Pane_TerrainProperty, CRect(0, 0, 180, 140), xtpPaneDockRight, paneResSelector);
+	m_paneResSelector = m_paneManager.CreatePane(IDR_Pane_ResourceSelector, CRect(0, 0, 250, 120), xtpPaneDockRight);
+	m_paneProperty = m_paneManager.CreatePane(IDR_Pane_TerrainProperty, CRect(0, 0, 180, 140), xtpPaneDockRight);
 }
 
 LRESULT CMainFrame::_AttachDockPane( WPARAM wParam, LPARAM lParam )
@@ -560,12 +585,7 @@ void CMainFrame::_CreateLayerTexIcon()
 
 void CMainFrame::OnUpdateUI_GalleryLayerTex( CCmdUI* pCmdUI )
 {
-	if(!ManipulatorSystem.GetIsSceneReady())
-	{
-		pCmdUI->Enable(FALSE);
-		return;
-	}
- 	pCmdUI->Enable(TRUE);
+ 	pCmdUI->Enable(ManipulatorSystem.GetIsSceneReady());
 }
 
 void CMainFrame::OnSelectLayerTex( NMHDR* pNMHDR, LRESULT* pResult )
@@ -599,4 +619,51 @@ void CMainFrame::OnUpdateUI_SplatSelectLayer( CCmdUI* pCmdUI )
 void CMainFrame::OnSplatSelectLayer( UINT nID )
 {
 	ManipulatorSystem.GetTerrain().SetCurEditLayer(nID - IDC_Terrain_Splat_Layer0);
+}
+
+void CMainFrame::OnNavMeshGenerate()
+{
+	ManipulatorSystem.GetNavMesh().Generate();
+}
+
+void CMainFrame::OnNavMeshShow()
+{
+	bool bShow = !ManipulatorSystem.GetNavMesh().GetIsShowNavMesh();
+	ManipulatorSystem.GetNavMesh().ShowNavMesh(bShow);
+}
+
+void CMainFrame::OnUpdateUI_NavMeshShow( CCmdUI* pCmdUI )
+{
+	if (!ManipulatorSystem.GetNavMesh().HasGenerate())
+	{
+		pCmdUI->Enable(FALSE);
+		return;
+	}
+
+	pCmdUI->SetCheck(ManipulatorSystem.GetNavMesh().GetIsShowNavMesh());
+}
+
+void CMainFrame::OnUpdateUI_NavMeshGenerate( CCmdUI* pCmdUI )
+{
+	pCmdUI->Enable(ManipulatorSystem.GetIsSceneReady());
+}
+
+void CMainFrame::OnNavMeshSaveObj()
+{
+	ManipulatorSystem.GetNavMesh().SaveObj();
+}
+
+void CMainFrame::OnUpdateUI_NavMeshSaveObj( CCmdUI* pCmdUI )
+{
+	pCmdUI->Enable(ManipulatorSystem.GetNavMesh().HasGenerate());
+}
+
+void CMainFrame::OnNavMeshSaveNavMesh()
+{
+	ManipulatorSystem.GetNavMesh().SaveNavMesh();
+}
+
+void CMainFrame::OnUpdateUI_NavMeshSaveNavMesh( CCmdUI* pCmdUI )
+{
+	pCmdUI->Enable(ManipulatorSystem.GetNavMesh().HasGenerate());
 }

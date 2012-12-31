@@ -13,6 +13,7 @@
 #include "ManipulatorObject.h"
 #include "ManipulatorTerrain.h"
 #include "ManipulatorEventCallback.h"
+#include "ManipulatorNavMesh.h"
 
 namespace Ogre
 {
@@ -42,19 +43,22 @@ public:
 	void	Shutdown();
 	const std::wstring&	GetScenePath()	{ return m_scenePath; }
 	const std::wstring&	GetSceneName()	{ return m_sceneName; }
+	//包括场景文件夹的名字(带\\)
 	const std::wstring	GenerateSceneFullPath();
 
 	ManipulatorTerrain&	GetTerrain()	{ return *m_manipulatorTerrain; }
 	ManipulatorObject&	GetObject()		{ return *m_manipulatorObject; }
+	ManipulatorNavMesh&	GetNavMesh()	{ return *m_manipulatorNavMesh; }
 
 private:
 	std::wstring		m_scenePath;
 	std::wstring		m_sceneName;
 	bool				m_bIsSceneReay;
-	ManipulatorTerrain*	m_manipulatorTerrain;
-	ManipulatorObject*	m_manipulatorObject;
 	DotSceneSerialezer*	m_sceneSerializer;
 	DotSceneLoader*		m_sceneLoader;
+	ManipulatorTerrain*	m_manipulatorTerrain;
+	ManipulatorObject*	m_manipulatorObject;
+	ManipulatorNavMesh*	m_manipulatorNavMesh;
 };
 
 #define	ManipulatorSystem	ManipulatorScene::GetSingleton()

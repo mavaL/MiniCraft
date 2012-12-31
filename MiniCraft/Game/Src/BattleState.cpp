@@ -38,15 +38,15 @@ void CBattleState::enter()
 	world.Init();
 
 	//创建测试单位
-	Unit* pTestUnit = world.CreateUnit(Ogre::Vector3(10, 0, -10));
+	Unit* pTestUnit = world.CreateUnit(/*Ogre::Vector3(10, 0, -10)*/Ogre::Vector3::ZERO);
 	pTestUnit->SetState(eUnitState_Idle);
 
-	for(int i=0; i<9; ++i)
-	{
-		const Ogre::Vector3 randPos = world.GetRandomPositionOnNavmesh();
-		Unit* pTestUnit = world.CreateUnit(randPos);
-		pTestUnit->SetState(eUnitState_Idle);
-	}
+// 	for(int i=0; i<9; ++i)
+// 	{
+// 		const Ogre::Vector3 randPos = world.GetRandomPositionOnNavmesh();
+// 		Unit* pTestUnit = world.CreateUnit(randPos);
+// 		pTestUnit->SetState(eUnitState_Idle);
+// 	}
 
 	m_pSelectionQuad = new Ogre::Rectangle2D(true);
 	m_pSelectionQuad->setMaterial("SelectionQuad");
@@ -283,16 +283,16 @@ CommandBase* CBattleState::_ComputeCommand( Unit* pUnit, const Ogre::Vector3& ta
 	if(targetPos.x < -50 || targetPos.x > 50 || targetPos.z < -50 || targetPos.z > 50)
 		return nullptr;
 
-	static Ogre::Vector3 goldArea = World::GetSingleton().GetResAABB().getHalfSize();
-	if (targetPos.x >= -goldArea.x && 
-		targetPos.x <= goldArea.x &&
-		targetPos.y >= -goldArea.z &&
-		targetPos.y <= goldArea.z)
-	{
-		//采集资源
-		pCmd = new HarvestCommand(pUnit);
-	}
-	else
+// 	static Ogre::Vector3 goldArea = World::GetSingleton().GetResAABB().getHalfSize();
+// 	if (targetPos.x >= -goldArea.x && 
+// 		targetPos.x <= goldArea.x &&
+// 		targetPos.y >= -goldArea.z &&
+// 		targetPos.y <= goldArea.z)
+// 	{
+// 		//采集资源
+// 		pCmd = new HarvestCommand(pUnit);
+// 	}
+// 	else
 	{
 		//将目标点调整至有效
 		Ogre::Vector3 adjustPos(targetPos);

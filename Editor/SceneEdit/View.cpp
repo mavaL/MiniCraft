@@ -8,9 +8,6 @@
 #include "Manipulator/ManipulatorScene.h"
 #include "Manipulator/ManipulatorObject.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 
 // CEditorView

@@ -178,7 +178,8 @@ bool Unit::UpdatePathFinding( float dt )
 		OgreRecast::FloatAToOgreVect3(m_pAgent->npos, agentPos);
 
 		Ogre::Vector3 graphicPos(agentPos);
-		graphicPos.y = m_pNode->_getDerivedPosition().y;
+		World::GetSingleton().ClampToTerrain(graphicPos);
+		graphicPos.y += UNIT_OFFSET_TO_GROURD;
 
 		//sinbad.mesh的建模Z轴是反的
 		m_pNode->lookAt(graphicPos, Ogre::Node::TS_WORLD, Ogre::Vector3::UNIT_Z);

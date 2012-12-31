@@ -12,7 +12,8 @@ LoadUnloadResourceList
 
 
 ManipulatorTerrain::ManipulatorTerrain()
-:m_vertexPerSide(65)
+:m_terrainGroup(nullptr)
+,m_vertexPerSide(65)
 ,m_worldSize(128)
 ,m_origPos(Ogre::Vector3::ZERO)
 ,m_pTerrain(nullptr)
@@ -30,8 +31,9 @@ ManipulatorTerrain::ManipulatorTerrain()
 
 void ManipulatorTerrain::NewFlatTerrain()
 {
+	SAFE_DELETE(m_terrainGroup);
 	m_terrainOption.reset(new TerrainGlobalOptions);
-	m_terrainGroup.reset(new TerrainGroup(m_pSceneMgr, Terrain::ALIGN_X_Z, (Ogre::uint16)m_vertexPerSide, (float)m_worldSize));
+	m_terrainGroup = new TerrainGroup(m_pSceneMgr, Terrain::ALIGN_X_Z, (Ogre::uint16)m_vertexPerSide, (float)m_worldSize);
 	m_terrainGroup->setOrigin(m_origPos);
 
 	_ConfigureTerrainDefaults();
@@ -124,7 +126,7 @@ void ManipulatorTerrain::_ConfigureTerrainDefaults()
 
 void ManipulatorTerrain::Shutdown()
 {
-	m_terrainGroup.reset();
+	SAFE_DELETE(m_terrainGroup);
 	m_terrainOption.reset();
 }
 
@@ -155,7 +157,8 @@ void ManipulatorTerrain::Load( rapidxml::xml_node<>* XMLNode )
 
 	//mSceneMgr->destroyLight("tstLight");
 
-	m_terrainGroup.reset(new Ogre::TerrainGroup(m_pSceneMgr, Ogre::Terrain::ALIGN_X_Z, mapSize, worldSize));
+	SAFE_DELETE(m_terrainGroup);
+	m_terrainGroup = new Ogre::TerrainGroup(m_pSceneMgr, Ogre::Terrain::ALIGN_X_Z, mapSize, worldSize);
 	m_terrainGroup->setOrigin(m_origPos);
 	m_terrainGroup->setResourceGroup("General");
 
@@ -310,10 +313,16 @@ void ManipulatorTerrain::OnEdit( float dt )
 	brushSizeH /= m_worldSize;
 
 	int multiplier;
+	Ogre::TerrainLayerBlendMap* layer = nullptr;
 	if(m_curEditMode == eTerrainEditMode_Deform)
+	{
 		multiplier = m_pTerrain->getSize() - 1;
+	}
 	else
+	{
 		multiplier = m_pTerrain->getLayerBlendMapSize();
+		layer = m_pTerrain->getLayerBlendMap(m_curEditLayer);
+	}
 
 	long startx = (long)((tsPos.x - brushSizeW / 2) * multiplier);
 	long starty = (long)((tsPos.y - brushSizeH / 2) * multiplier);
@@ -323,8 +332,6 @@ void ManipulatorTerrain::OnEdit( float dt )
 	starty = max(starty, 0L);
 	endx = min(endx, (long)multiplier);
 	endy = min(endy, (long)multiplier);
-
-	Ogre::TerrainLayerBlendMap* layer = m_pTerrain->getLayerBlendMap(m_curEditLayer);
 	
 	for (long y = starty; y <= endy; ++y)
 	{
