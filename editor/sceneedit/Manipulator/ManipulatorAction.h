@@ -16,7 +16,9 @@ enum eActionType
 {
 	eActionType_None,
 	eActionType_TerrainDeform,
-	eActionType_TerrainSplat
+	eActionType_TerrainSplat,
+	eActionType_ObjectEdit,
+	eActionType_ObjectSelect
 };
 
 class ActionBase;

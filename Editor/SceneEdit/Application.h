@@ -44,7 +44,7 @@ public:
 
 private:
 	void		_InitOgre(int width, int height, HWND hwnd, HWND hParent);
-	bool		_UpdateInput(float dt);
+	void		_UpdateInput(float dt);
 	void		_CreateActionParam(const POINT& viewClientPt, SActionParam& retParam);
 
 	RenderWindow*		m_pRenderWnd;

@@ -2,6 +2,7 @@
 #include "Brush.h"
 #include "Gizmo.h"
 #include "EditorDefine.h"
+#include "Manipulator/ManipulatorScene.h"
 
 
 Brush::Brush()
@@ -57,7 +58,7 @@ void BrushSquare::SetPosition( const Ogre::Vector3& pos )
 
 void BrushSquare::OnGizmoNodeReset()
 {
-	m_pNode = Ogre::Root::getSingleton().getSceneManager(SCENE_MANAGER_NAME)->getRootSceneNode()->createChildSceneNode();
+	m_pNode = ManipulatorSystem.m_pSceneMgr->getRootSceneNode()->createChildSceneNode();
 	m_pNode->attachObject(m_pRenderable);
 	m_pNode->setVisible(false);
 }

@@ -13,6 +13,8 @@
 struct SActionParam 
 {
 	Ogre::Vector2	m_ptPixel;		//鼠标在View的坐标,像素度量
+	Ogre::Vector2	m_ptRelative;	//鼠标在View的坐标,相对度量
+	Ogre::Vector2	m_ptDeltaRel;	//鼠标在View的两帧之间的坐标偏移,相对度量
 	bool			m_bHitTerrain;	//鼠标所在点射线查询是否击中地形
 	Ogre::Vector3	m_ptTerrain;	//鼠标所在点相交的地形坐标
 };

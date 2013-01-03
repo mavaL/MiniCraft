@@ -21,6 +21,9 @@ Application::Application()
 void Application::Init( int width, int height, HWND hwnd, HWND hParent )
 {
 	_InitOgre(width, height, hwnd, hParent);
+	ManipulatorSystem.m_pSceneMgr = m_pSceneMgr;
+	ManipulatorSystem.m_pMainCamera = m_pMainCam;
+	ManipulatorSystem.Init();
 }
 
 void Application::_InitOgre(int width, int height, HWND hwnd, HWND hParent)
@@ -83,14 +86,17 @@ void Application::_InitOgre(int width, int height, HWND hwnd, HWND hParent)
 	Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 
 	m_pRenderWnd->setActive(true);
+
+	//默认查询掩码
+	Ogre::MovableObject::setDefaultQueryFlags(eQueryMask_Default);
 }
 
 bool Application::Update()
 {
-	if(!_UpdateInput(TIME_PER_FRAME))
-		return false;
+	_UpdateInput(TIME_PER_FRAME);
 
 	ManipulatorAction::GetSingleton().GetActiveActoin()->OnFrameMove(TIME_PER_FRAME);
+	ManipulatorSystem.OnFrameMove(TIME_PER_FRAME);
 
 	m_pRoot->renderOneFrame();
 
@@ -151,6 +157,7 @@ void Application::SceneClose()
 
 	//重置摄像机
 	m_pMainCam->setNearClipDistance(0.1f);
+	//m_pMainCam->setFOVy()
 	m_pMainCam->setFarClipDistance(500);
 	m_pMainCam->setPosition(0,100,0);
 	m_pMainCam->lookAt(0,0,20);
@@ -257,10 +264,11 @@ void Application::RenderAllMeshIcons(CImageList& retImageList, Ogre::StringVecto
 	TextureManager::getSingletonPtr()->remove(texture->getName());
 }
 
-bool Application::_UpdateInput(float dt)
+void Application::_UpdateInput(float dt)
 {
+	//取消当前编辑器激活状态
 	if(GetAsyncKeyState(VK_ESCAPE) < 0)
-		return false;
+		ManipulatorAction::GetSingleton().SetActiveAction(eActionType_None);
 
 	POINT curPos;
 	GetCursorPos(&curPos);
@@ -288,7 +296,6 @@ bool Application::_UpdateInput(float dt)
 	}
 
 	lastPos = curPos;
-	return true;
 }
 
 void Application::OnLButtonDown( const POINT& pt )
@@ -351,11 +358,18 @@ void Application::OnRButtonUp( const POINT& pt )
 void Application::_CreateActionParam( const POINT& viewClientPt, SActionParam& retParam )
 {
 	retParam.m_ptPixel = Ogre::Vector2((float)viewClientPt.x, (float)viewClientPt.y);
+	retParam.m_ptRelative.x = viewClientPt.x / (float)m_pRenderWnd->getWidth();
+	retParam.m_ptRelative.y = viewClientPt.y / (float)m_pRenderWnd->getHeight();
 
-	unsigned int vpWidth = m_pRenderWnd->getWidth();
-	unsigned int vpHeight = m_pRenderWnd->getHeight();
-	const Ogre::Ray ray = m_pMainCam->getCameraToViewportRay(viewClientPt.x/(float)vpWidth, viewClientPt.y/(float)vpHeight);
+	static Ogre::Vector2 lastPt = retParam.m_ptPixel;
+	retParam.m_ptDeltaRel = retParam.m_ptPixel - lastPt;
+	retParam.m_ptDeltaRel.x /= m_pRenderWnd->getWidth();
+	retParam.m_ptDeltaRel.y /= m_pRenderWnd->getHeight();
+
+	const Ogre::Ray ray = m_pMainCam->getCameraToViewportRay(retParam.m_ptRelative.x, retParam.m_ptRelative.y);
 	retParam.m_bHitTerrain = ManipulatorSystem.GetTerrain().GetRayIntersectPoint(ray, retParam.m_ptTerrain);
+
+	lastPt = retParam.m_ptPixel;
 }
 
 

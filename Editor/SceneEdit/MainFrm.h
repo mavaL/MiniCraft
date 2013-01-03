@@ -70,7 +70,7 @@ private:
 	void			OnSelectLayerTex(NMHDR* pNMHDR, LRESULT* pResult);
 	void			OnUpdateUI_SplatSelectLayer(CCmdUI* pCmdUI);
 	void			OnSplatSelectLayer(UINT nID);
-	//NavMesh
+	///NavMesh
 	void			OnNavMeshGenerate();
 	void			OnNavMeshShow();
 	void			OnNavMeshSaveObj();
@@ -79,6 +79,15 @@ private:
 	void			OnUpdateUI_NavMeshGenerate(CCmdUI* pCmdUI);
 	void			OnUpdateUI_NavMeshSaveObj(CCmdUI* pCmdUI);
 	void			OnUpdateUI_NavMeshSaveNavMesh(CCmdUI* pCmdUI);
+	///Object
+	void			OnObjectMove();
+	void			OnObjectRotate();
+	void			OnObjectScale();
+	void			OnObjectSelect();
+	void			OnUpdateUI_ObjectMove(CCmdUI* pCmdUI);
+	void			OnUpdateUI_ObjectRotate(CCmdUI* pCmdUI);
+	void			OnUpdateUI_ObjectScale(CCmdUI* pCmdUI);
+	void			OnUpdateUI_ObjectSelect(CCmdUI* pCmdUI);
 
 private:
 	CXTPDockingPaneManager	m_paneManager;

@@ -4,13 +4,18 @@
 #include "Action/ActionNone.h"
 #include "Action/ActionTerrainDeform.h"
 #include "Action/ActionTerrainSplat.h"
+#include "Action/ActionObjectEdit.h"
+#include "Action/ActionObjectSelect.h"
 
 
 ManipulatorAction::ManipulatorAction()
 {
+	//×¢²áËùÓÐAction
 	m_mapAction.insert(std::make_pair(eActionType_None, new ActionNone));
 	m_mapAction.insert(std::make_pair(eActionType_TerrainDeform, new ActionTerrainDeform));
 	m_mapAction.insert(std::make_pair(eActionType_TerrainSplat, new ActionTerrainSplat));
+	m_mapAction.insert(std::make_pair(eActionType_ObjectEdit, new ActionObjectEdit));
+	m_mapAction.insert(std::make_pair(eActionType_ObjectSelect, new ActionObjectSelect));
 
 	//³õÊ¼»¯±à¼­Æ÷×´Ì¬
 	m_pActiveAction = m_mapAction[eActionType_None];

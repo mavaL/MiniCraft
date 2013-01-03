@@ -1,7 +1,7 @@
 [Scene editor features]
 
 1. Resource selector, with thumbnail support. (100%)
-2. Placement of object, with S-R-T operation. (0%)	
+2. Placement of object, with S-R-T operation. (30%)	
 3. Terrain edit, like height modify, brush paint. (100%)
 
 [Navigation mesh pipeline]

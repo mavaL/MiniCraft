@@ -51,6 +51,14 @@ BEGIN_MESSAGE_MAP(CMainFrame, CXTPFrameWnd)
 	ON_UPDATE_COMMAND_UI(IDC_NavMesh_Generate, OnUpdateUI_NavMeshGenerate)
 	ON_UPDATE_COMMAND_UI(IDC_NavMesh_SaveObj, OnUpdateUI_NavMeshSaveObj)
 	ON_UPDATE_COMMAND_UI(IDC_NavMesh_SaveNavMesh, OnUpdateUI_NavMeshSaveNavMesh)
+	ON_COMMAND(IDC_Object_Move, OnObjectMove)
+	ON_COMMAND(IDC_Object_Rotate, OnObjectRotate)
+	ON_COMMAND(IDC_Object_Scale, OnObjectScale)
+	ON_COMMAND(IDC_Object_Select, OnObjectSelect)
+	ON_UPDATE_COMMAND_UI(IDC_Object_Move, OnUpdateUI_ObjectMove)
+	ON_UPDATE_COMMAND_UI(IDC_Object_Rotate, OnUpdateUI_ObjectRotate)
+	ON_UPDATE_COMMAND_UI(IDC_Object_Scale, OnUpdateUI_ObjectScale)
+	ON_UPDATE_COMMAND_UI(IDC_Object_Select, OnUpdateUI_ObjectSelect)
 END_MESSAGE_MAP()
 
 
@@ -181,8 +189,19 @@ bool CMainFrame::_OnCreateRibbon()
 	///RibbonHome
 	CXTPRibbonTab* pTab = pRibbonBar->AddTab(L"Home");
 
+	//RibbonHome - GroupObject
+	CXTPRibbonGroup* pGroup = pTab->AddGroup(L"Object");
+	//RibbonHome - GroupObject - Select
+	pGroup->Add(xtpControlButton, IDC_Object_Select);
+	//RibbonHome - GroupObject - Move
+	pGroup->Add(xtpControlButton, IDC_Object_Move);
+	//RibbonHome - GroupObject - Rotate
+	pGroup->Add(xtpControlButton, IDC_Object_Rotate);
+	//RibbonHome - GroupObject - Scale
+	pGroup->Add(xtpControlButton, IDC_Object_Scale);
+
 	///RibbonHome - GroupTerrainModify
-	CXTPRibbonGroup* pGroup = pTab->AddGroup(L"Terrain Modify");
+	pGroup = pTab->AddGroup(L"Terrain Modify");
 
 	//RibbonHome - GroupTerrainModify - Deform
 	pGroup->Add(xtpControlButton, IDC_Terrain_Deform);
@@ -248,6 +267,10 @@ void CMainFrame::_LoadIcon()
 	icon[0] = IDC_NavMesh_Show;				pImageMgr->SetIcons(IDB_Button, icon, _countof(icon), CSize(32, 32));
 	icon[0] = IDC_NavMesh_SaveObj;			pImageMgr->SetIcons(IDB_Button, icon, _countof(icon), CSize(32, 32));
 	icon[0] = IDC_NavMesh_SaveNavMesh;		pImageMgr->SetIcons(IDB_Button, icon, _countof(icon), CSize(32, 32));
+	icon[0] = IDC_Object_Move;				pImageMgr->SetIcons(IDB_Button, icon, _countof(icon), CSize(32, 32));
+	icon[0] = IDC_Object_Rotate;			pImageMgr->SetIcons(IDB_Button, icon, _countof(icon), CSize(32, 32));
+	icon[0] = IDC_Object_Scale;				pImageMgr->SetIcons(IDB_Button, icon, _countof(icon), CSize(32, 32));
+	icon[0] = IDC_Object_Select;			pImageMgr->SetIcons(IDB_Button, icon, _countof(icon), CSize(32, 32));
 }
 
 BOOL CMainFrame::OnCreateClient( LPCREATESTRUCT lpcs, CCreateContext* pContext )
@@ -666,4 +689,79 @@ void CMainFrame::OnNavMeshSaveNavMesh()
 void CMainFrame::OnUpdateUI_NavMeshSaveNavMesh( CCmdUI* pCmdUI )
 {
 	pCmdUI->Enable(ManipulatorSystem.GetNavMesh().HasGenerate());
+}
+
+void CMainFrame::OnObjectMove()
+{
+	bool bActive = ManipulatorSystem.GetObject().GetCurEditMode() == ManipulatorObject::eEditMode_Move;
+	bActive = !bActive;
+	eActionType action = bActive ? eActionType_ObjectEdit : eActionType_None;
+	ManipulatorAction::GetSingleton().SetActiveAction(action);
+	ManipulatorSystem.GetObject().SetCurEditMode(bActive?ManipulatorObject::eEditMode_Move:ManipulatorObject::eEditMode_None);
+}
+
+void CMainFrame::OnObjectRotate()
+{
+	bool bActive = ManipulatorSystem.GetObject().GetCurEditMode() == ManipulatorObject::eEditMode_Rotate;
+	bActive = !bActive;
+	eActionType action = bActive ? eActionType_ObjectEdit : eActionType_None;
+	ManipulatorAction::GetSingleton().SetActiveAction(action);
+	ManipulatorSystem.GetObject().SetCurEditMode(bActive?ManipulatorObject::eEditMode_Rotate:ManipulatorObject::eEditMode_None);
+}
+
+void CMainFrame::OnObjectScale()
+{
+	
+}
+
+void CMainFrame::OnUpdateUI_ObjectMove( CCmdUI* pCmdUI )
+{
+	if(!ManipulatorSystem.GetIsSceneReady())
+	{
+		pCmdUI->Enable(FALSE);
+		return;
+	}
+	pCmdUI->Enable(TRUE);
+
+	bool bActive = ManipulatorSystem.GetObject().GetCurEditMode() == ManipulatorObject::eEditMode_Move;
+	pCmdUI->SetCheck(bActive);
+}
+
+void CMainFrame::OnUpdateUI_ObjectRotate( CCmdUI* pCmdUI )
+{
+	if(!ManipulatorSystem.GetIsSceneReady())
+	{
+		pCmdUI->Enable(FALSE);
+		return;
+	}
+	pCmdUI->Enable(TRUE);
+
+	bool bActive = ManipulatorSystem.GetObject().GetCurEditMode() == ManipulatorObject::eEditMode_Rotate;
+	pCmdUI->SetCheck(bActive);
+}
+
+void CMainFrame::OnUpdateUI_ObjectScale( CCmdUI* pCmdUI )
+{
+
+}
+
+void CMainFrame::OnObjectSelect()
+{
+	bool bActive = ManipulatorSystem.GetObject().GetCurEditMode() == ManipulatorObject::eEditMode_Select;
+	bActive = !bActive;
+	eActionType action = bActive ? eActionType_ObjectSelect : eActionType_None;
+	ManipulatorAction::GetSingleton().SetActiveAction(action);
+}
+
+void CMainFrame::OnUpdateUI_ObjectSelect( CCmdUI* pCmdUI )
+{
+	if(!ManipulatorSystem.GetIsSceneReady())
+	{
+		pCmdUI->Enable(FALSE);
+		return;
+	}
+	pCmdUI->Enable(TRUE);
+
+	bool bActive = ManipulatorSystem.GetObject().GetCurEditMode() == ManipulatorObject::eEditMode_Select;
+	pCmdUI->SetCheck(bActive);
 }

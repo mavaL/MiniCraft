@@ -21,9 +21,6 @@ ManipulatorTerrain::ManipulatorTerrain()
 ,m_curEditMode(eTerrainEditMode_None)
 ,m_curEditLayer(-1)
 {
-	m_pSceneMgr = Ogre::Root::getSingleton().getSceneManager(SCENE_MANAGER_NAME);
-	assert(m_pSceneMgr);
-
 	m_brush[0].reset(new BrushCircle);
 	m_brush[1].reset(new BrushSquare);
 	m_brush[1]->SetDimension(10, 10);
@@ -33,7 +30,7 @@ void ManipulatorTerrain::NewFlatTerrain()
 {
 	SAFE_DELETE(m_terrainGroup);
 	m_terrainOption.reset(new TerrainGlobalOptions);
-	m_terrainGroup = new TerrainGroup(m_pSceneMgr, Terrain::ALIGN_X_Z, (Ogre::uint16)m_vertexPerSide, (float)m_worldSize);
+	m_terrainGroup = new TerrainGroup(ManipulatorSystem.m_pSceneMgr, Terrain::ALIGN_X_Z, (Ogre::uint16)m_vertexPerSide, (float)m_worldSize);
 	m_terrainGroup->setOrigin(m_origPos);
 
 	_ConfigureTerrainDefaults();
@@ -96,7 +93,7 @@ void ManipulatorTerrain::_ConfigureTerrainDefaults()
 	//matProfile->setLightmapEnabled(false);
 	// Important to set these so that the terrain knows what to use for derived (non-realtime) data
 	//mTerrainGlobals->setLightMapDirection(l->getDerivedDirection());
-	m_terrainOption->setCompositeMapAmbient(m_pSceneMgr->getAmbientLight());
+	m_terrainOption->setCompositeMapAmbient(ManipulatorSystem.m_pSceneMgr->getAmbientLight());
 	//mTerrainGlobals->setCompositeMapDiffuse(l->getDiffuseColour());
 
 	// Configure default import settings for if we use imported image
@@ -152,13 +149,13 @@ void ManipulatorTerrain::Load( rapidxml::xml_node<>* XMLNode )
 	m_terrainOption->setMaxPixelError((Ogre::Real)maxPixelError);
 	//m_terrainOption->setCompositeMapDistance((Ogre::Real)compositeMapDistance);
 	// mTerrainGlobalOptions->setLightMapDirection(lightdir);
-	m_terrainOption->setCompositeMapAmbient(m_pSceneMgr->getAmbientLight());
+	m_terrainOption->setCompositeMapAmbient(ManipulatorSystem.m_pSceneMgr->getAmbientLight());
 	//mTerrainGlobalOptions->setCompositeMapDiffuse(l->getDiffuseColour());
 
 	//mSceneMgr->destroyLight("tstLight");
 
 	SAFE_DELETE(m_terrainGroup);
-	m_terrainGroup = new Ogre::TerrainGroup(m_pSceneMgr, Ogre::Terrain::ALIGN_X_Z, mapSize, worldSize);
+	m_terrainGroup = new Ogre::TerrainGroup(ManipulatorSystem.m_pSceneMgr, Ogre::Terrain::ALIGN_X_Z, mapSize, worldSize);
 	m_terrainGroup->setOrigin(m_origPos);
 	m_terrainGroup->setResourceGroup("General");
 

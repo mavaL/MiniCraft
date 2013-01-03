@@ -23,5 +23,23 @@ const	int		RES_SELECTOR_COLUMN_WIDTH	=	80;
 const	String	MAIN_CAMERA_NAME	=	"MainCamera";
 const	int		TERRAIN_MAX_LAYER	=	5;	//最多5层地形纹理混合
 
+//场景查询掩码
+enum eQueryMask
+{
+	eQueryMask_Default	=	0,
+	eQueryMask_GizmoAxisX = 1 << 0,
+	eQueryMask_GizmoAxisY = 1 << 1,
+	eQueryMask_GizmoAxisZ = 1 << 2,
+	eQueryMask_Entity = 1 << 3
+};
+
+enum eAxis
+{
+	eAxis_X,
+	eAxis_Y,
+	eAxis_Z,
+	eAxis_None
+};
+
 
 #endif // EditorDefine_h__

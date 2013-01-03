@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "Gizmo.h"
+#include "EditorDefine.h"
 #include "Manipulator/ManipulatorScene.h"
 
 using namespace Ogre;
@@ -176,4 +177,128 @@ void GizmoCircle::InitRenderable()
 GizmoCircle::~GizmoCircle()
 {
 	DestroyRenderable();
+}
+
+/////////////////////////////////////////////////////////////////////////////
+GizmoAxis::GizmoAxis()
+:m_pObjGizmoNode(nullptr)
+,m_pAttachNode(nullptr)
+{
+	_Init();
+}
+
+GizmoAxis::~GizmoAxis()
+{
+	_Destroy();
+}
+
+void GizmoAxis::_Init()
+{
+	for (int i=0; i<3; ++i)
+	{
+		m_pAxis[i] = ManipulatorSystem.m_pSceneMgr->createEntity("Arrow1m.mesh");
+		m_pAxis[i]->setRenderQueueGroup(Ogre::RENDER_QUEUE_OVERLAY);
+	}
+
+	m_pAxis[0]->setMaterialName("RedEmissive");
+	m_pAxis[1]->setMaterialName("GreenEmissive");
+	m_pAxis[2]->setMaterialName("BlueEmissive");
+
+	//ÉèÖÃ²éÑ¯ÑÚÂë
+	m_pAxis[0]->setQueryFlags(eQueryMask_GizmoAxisX);
+	m_pAxis[1]->setQueryFlags(eQueryMask_GizmoAxisY);
+	m_pAxis[2]->setQueryFlags(eQueryMask_GizmoAxisZ);
+}
+
+void GizmoAxis::Attach( Ogre::SceneNode* pNode )
+{
+	if (m_pAttachNode)
+	{
+		m_pAttachNode->removeChild(m_pObjGizmoNode);
+		m_pAttachNode = nullptr;
+	}
+	m_pAttachNode = pNode;
+	m_pAttachNode->addChild(m_pObjGizmoNode);
+
+	m_pAttachNode->_update(true, false);
+
+	Node* xNode = m_pObjGizmoNode->getChild("GizmoXAixsNode");
+	Node* yNode = m_pObjGizmoNode->getChild("GizmoYAixsNode");
+	Node* zNode = m_pObjGizmoNode->getChild("GizmoZAixsNode");
+
+	xNode->resetToInitialState();
+	yNode->resetToInitialState();
+	zNode->resetToInitialState();
+
+	Vector3 scale(0.5f, 0.5f, 3);
+	//Scale
+	xNode->setScale(scale);
+	yNode->setScale(scale);
+	zNode->setScale(scale);
+	//Rotate
+	xNode->yaw(Ogre::Degree(90));
+	yNode->pitch(Ogre::Degree(-90));
+	float offset = Math::Abs(m_pAxis[0]->getBoundingBox().getMinimum().z);
+	//Translate
+	xNode->translate(Vector3(0,0,offset*scale.z), Node::TS_LOCAL);
+	yNode->translate(Vector3(0,0,offset*scale.z), Node::TS_LOCAL);
+	zNode->translate(Vector3(0,0,offset*scale.z), Node::TS_LOCAL);
+}
+
+void GizmoAxis::Show( bool bShow )
+{
+	m_pObjGizmoNode->setVisible(bShow);
+}
+
+void GizmoAxis::_Destroy()
+{
+	m_pAxis[0] = m_pAxis[1] = m_pAxis[2] = nullptr;
+}
+
+void GizmoAxis::Reset()
+{
+	_Destroy();
+	_Init();
+}
+
+void GizmoAxis::OnGizmoNodeReset()
+{
+	//Gizmo Node
+	m_pObjGizmoNode = ManipulatorSystem.m_pSceneMgr->getRootSceneNode()->createChildSceneNode("ObjectGizmoNode");
+
+	Ogre::SceneNode* pXNode = m_pObjGizmoNode->createChildSceneNode("GizmoXAixsNode");
+	Ogre::SceneNode* pYNode = m_pObjGizmoNode->createChildSceneNode("GizmoYAixsNode");
+	Ogre::SceneNode* pZNode = m_pObjGizmoNode->createChildSceneNode("GizmoZAixsNode");
+
+	pXNode->setInitialState();
+	pYNode->setInitialState();
+	pZNode->setInitialState();
+
+	pXNode->attachObject(m_pAxis[0]);
+	pYNode->attachObject(m_pAxis[1]);
+	pZNode->attachObject(m_pAxis[2]);
+
+	m_pObjGizmoNode->setVisible(false);
+
+	ManipulatorSystem.m_pSceneMgr->getRootSceneNode()->removeChild(m_pObjGizmoNode);
+
+	m_pAttachNode = nullptr;
+}
+
+void GizmoAxis::HighlightAxis( bool bHighlight, eAxis axis )
+{
+	assert(axis != eAxis_None);
+	if(bHighlight)
+	{
+		m_pAxis[axis]->setMaterialName("YellowEmissive");
+	}
+	else
+	{
+		switch (axis)
+		{
+		case 0: m_pAxis[axis]->setMaterialName("RedEmissive"); break;
+		case 1: m_pAxis[axis]->setMaterialName("GreenEmissive"); break;
+		case 2: m_pAxis[axis]->setMaterialName("BlueEmissive"); break;
+		}
+	}
 }

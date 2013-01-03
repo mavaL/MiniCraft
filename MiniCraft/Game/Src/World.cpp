@@ -59,19 +59,6 @@ void World::Init()
 
 	//³õÊ¼»¯Recast¿â
 	OgreRecastConfigParams recastParams = OgreRecastConfigParams();
-// 	recastParams.setCellSize(1);
-// 	recastParams.setCellHeight(0.16f);
-// 	recastParams.setAgentMaxSlope(45);
-// 	recastParams.setAgentHeight(1.5f);
-// 	recastParams.setAgentMaxClimb(1.5f);
-// 	recastParams.setAgentRadius(0.6f);
-// 	recastParams.setEdgeMaxLen(2);
-// 	recastParams.setEdgeMaxError(1.3f);
-// 	recastParams.setVertsPerPoly(6);
-// 	recastParams.setRegionMinSize(2);
-// 	recastParams.setRegionMergeSize(3);
-// 	recastParams.setDetailSampleDist(6);
-// 	recastParams.setDetailSampleMaxError(1);
 	recastParams.setCellSize(1);
 	recastParams.setCellHeight(0.16f);
 	recastParams.setAgentMaxSlope(15);
@@ -242,14 +229,12 @@ void World::GetAABBSceneQueryResult(const Ogre::AxisAlignedBox& box,
 	assert(m_pSceneQuery);
 
 	m_pSceneQuery->setBox(box);
+	m_pSceneQuery->setQueryMask(queryMask);
 	Ogre::SceneQueryResult& queryResults = m_pSceneQuery->execute();
 
 	auto movableList = queryResults.movables;
 	for (auto iter=movableList.begin(); iter!=movableList.end(); ++iter)
-	{
-		if((*iter)->getQueryFlags() & queryMask)
-			result.push_back(*iter);
-	}
+		result.push_back(*iter);
 }
 
 Ogre::MovableObject* World::GetRaySceneQueryResult( const Ogre::Ray& ray, int queryMask /*= 0xffffffff*/ )
@@ -257,15 +242,13 @@ Ogre::MovableObject* World::GetRaySceneQueryResult( const Ogre::Ray& ray, int qu
 	assert(m_pRaySceneQuery);
 
 	m_pRaySceneQuery->setRay(ray);
+	m_pRaySceneQuery->setQueryMask(queryMask);
 	const Ogre::RaySceneQueryResult& result = m_pRaySceneQuery->execute();
 
-	if(result.empty() || result[0].worldFragment)
+	if(result.empty())
 		return nullptr;
 
-	if(result[0].movable->getQueryFlags() & queryMask)
-		return result[0].movable;
-
-	return nullptr;
+	return result[0].movable;
 }
 
 void World::SetUnitSelected( int ID )

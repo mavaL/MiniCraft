@@ -94,7 +94,6 @@ private:
 	TerrainGroup*							m_terrainGroup;
 	std::unique_ptr<TerrainGlobalOptions>	m_terrainOption;
 	Terrain*								m_pTerrain;			//目前仅有一块地形
-	Ogre::SceneManager*						m_pSceneMgr;
 	Ogre::StringVector						m_vecLayerTex;		//画刷可用的所有纹理名
 
 	int										m_vertexPerSide;	//地形每边的顶点数

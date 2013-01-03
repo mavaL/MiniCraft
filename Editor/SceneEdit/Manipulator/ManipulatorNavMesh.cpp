@@ -10,9 +10,7 @@ ManipulatorNavMesh::ManipulatorNavMesh()
 ,m_debugRenderNode(nullptr)
 ,m_pInputGeom(nullptr)
 {
-	Ogre::SceneManager* pSceneMgr = Ogre::Root::getSingleton().getSceneManager(SCENE_MANAGER_NAME);
-	assert(pSceneMgr);
-	m_pRecast = new OgreRecast(pSceneMgr);
+	m_pRecast = new OgreRecast(ManipulatorSystem.m_pSceneMgr);
 	m_pDetourTileCache = new OgreDetourTileCache(m_pRecast);
 
 	ManipulatorScene::GetSingleton().AddCallback(this);
@@ -30,9 +28,6 @@ void ManipulatorNavMesh::Generate()
 	Reset();
 
 	ManipulatorTerrain& manTerrain = ManipulatorSystem.GetTerrain();
-	Ogre::SceneManager* pSceneMgr = Ogre::Root::getSingleton().getSceneManager(SCENE_MANAGER_NAME);
-	assert(pSceneMgr);
-
 	try
 	{
 		m_pInputGeom = new InputGeom(manTerrain.m_terrainGroup);
@@ -48,7 +43,7 @@ void ManipulatorNavMesh::Generate()
 	}
 
 	m_pDetourTileCache->drawNavMesh();
-	m_debugRenderNode = (Ogre::SceneNode*)pSceneMgr->getRootSceneNode()->getChild("RecastSN");
+	m_debugRenderNode = (Ogre::SceneNode*)ManipulatorSystem.m_pSceneMgr->getRootSceneNode()->getChild("RecastSN");
 	assert(m_debugRenderNode);
 
 	m_debugRenderNode->setVisible(false);
@@ -57,9 +52,6 @@ void ManipulatorNavMesh::Generate()
 
 void ManipulatorNavMesh::Reset()
 {
-	Ogre::SceneManager* pSceneMgr = Ogre::Root::getSingleton().getSceneManager(SCENE_MANAGER_NAME);
-	assert(pSceneMgr);
-
 	m_pRecast->RecastCleanup();
 	SAFE_DELETE(m_pInputGeom);
 
@@ -72,7 +64,7 @@ void ManipulatorNavMesh::Reset()
 	m_pRecast->m_pRecastSN->detachAllObjects();
 
 	for(size_t i=0; i<vecTobeDestroy.size(); ++i)
-		pSceneMgr->destroyMovableObject(vecTobeDestroy[i]);
+		ManipulatorSystem.m_pSceneMgr->destroyMovableObject(vecTobeDestroy[i]);
 	vecTobeDestroy.clear();
 
 	//÷ÿ–¬≈‰÷√Recast
@@ -149,9 +141,8 @@ void ManipulatorNavMesh::OnSceneClose()
 {
 	SAFE_DELETE(m_pDetourTileCache);
 	SAFE_DELETE(m_pRecast);
-	Ogre::SceneManager* pSceneMgr = Ogre::Root::getSingleton().getSceneManager(SCENE_MANAGER_NAME);
-	assert(pSceneMgr);
-	m_pRecast = new OgreRecast(pSceneMgr);
+	assert(ManipulatorSystem.m_pSceneMgr);
+	m_pRecast = new OgreRecast(ManipulatorSystem.m_pSceneMgr);
 	m_pDetourTileCache = new OgreDetourTileCache(m_pRecast);
 	Reset();
 }

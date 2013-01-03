@@ -31,6 +31,9 @@ class ManipulatorScene : public CSingleton<ManipulatorScene>, public Manipulator
 	DECLEAR_SINGLETON(ManipulatorScene);
 
 public:
+	Ogre::SceneManager*	m_pSceneMgr;
+	Ogre::Camera*		m_pMainCamera;
+
 	void	SceneNew(const std::wstring& sceneName);
 	void	SceneOpen(const std::wstring& filepath);
 	void	SceneSave();
@@ -40,6 +43,8 @@ public:
 	//重新绑定SceneNode(比如切换了场景)
 	void	OnGizmoNodeReset();
 
+	void	Init();
+	void	OnFrameMove(float dt);
 	void	Shutdown();
 	const std::wstring&	GetScenePath()	{ return m_scenePath; }
 	const std::wstring&	GetSceneName()	{ return m_sceneName; }

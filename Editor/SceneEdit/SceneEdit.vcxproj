@@ -143,6 +143,8 @@
     <ClInclude Include="..\..\MiniCraft\Dependency\OgreRecast\Include\Recast\RecastAssert.h" />
     <ClInclude Include="Action\ActionBase.h" />
     <ClInclude Include="Action\ActionNone.h" />
+    <ClInclude Include="Action\ActionObjectEdit.h" />
+    <ClInclude Include="Action\ActionObjectSelect.h" />
     <ClInclude Include="Action\ActionTerrainDeform.h" />
     <ClInclude Include="Action\ActionTerrainSplat.h" />
     <ClInclude Include="Application.h" />
@@ -267,6 +269,9 @@
     <ClCompile Include="..\..\MiniCraft\Dependency\OgreRecast\Src\Recast\RecastRegion.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Action\ActionNone.cpp" />
+    <ClCompile Include="Action\ActionObjectEdit.cpp" />
+    <ClCompile Include="Action\ActionObjectSelect.cpp" />
     <ClCompile Include="Action\ActionTerrainDeform.cpp" />
     <ClCompile Include="Action\ActionTerrainSplat.cpp" />
     <ClCompile Include="Application.cpp" />

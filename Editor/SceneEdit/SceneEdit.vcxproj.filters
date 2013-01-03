@@ -264,6 +264,12 @@
     <ClInclude Include="..\..\MiniCraft\Dependency\OgreRecast\Include\Recast\RecastAssert.h">
       <Filter>OgreRecast\Include\Recast</Filter>
     </ClInclude>
+    <ClInclude Include="Action\ActionObjectEdit.h">
+      <Filter>EditorAction</Filter>
+    </ClInclude>
+    <ClInclude Include="Action\ActionObjectSelect.h">
+      <Filter>EditorAction</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SceneEdit.cpp">
@@ -418,6 +424,15 @@
     </ClCompile>
     <ClCompile Include="..\..\MiniCraft\Dependency\OgreRecast\Src\Recast\RecastRasterization.cpp">
       <Filter>OgreRecast\Src\Recast</Filter>
+    </ClCompile>
+    <ClCompile Include="Action\ActionObjectEdit.cpp">
+      <Filter>EditorAction</Filter>
+    </ClCompile>
+    <ClCompile Include="Action\ActionNone.cpp">
+      <Filter>EditorAction</Filter>
+    </ClCompile>
+    <ClCompile Include="Action\ActionObjectSelect.cpp">
+      <Filter>EditorAction</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

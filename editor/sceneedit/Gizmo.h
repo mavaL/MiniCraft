@@ -9,6 +9,7 @@
 #ifndef Gizmo_h__
 #define Gizmo_h__
 
+#include "EditorDefine.h"
 
 //
 //矩形
@@ -53,6 +54,32 @@ public:
 public:
 	void	InitRenderable();
 	void	DestroyRenderable() {}
+};
+
+//
+//坐标轴,用于物体移动,缩放
+//
+class GizmoAxis
+{
+public:
+	GizmoAxis();
+	~GizmoAxis();
+
+public:
+	void	Attach(Ogre::SceneNode* pNode);
+	void	Show(bool bShow);
+	void	Reset();
+	void	OnGizmoNodeReset();
+	void	HighlightAxis(bool bHighlight, eAxis axis);
+
+private:
+	void	_Init();
+	void	_Destroy();
+
+private:
+	Ogre::SceneNode*	m_pObjGizmoNode;
+	Ogre::SceneNode*	m_pAttachNode;
+	Ogre::Entity*		m_pAxis[3];
 };
 
 

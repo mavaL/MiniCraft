@@ -8,12 +8,21 @@
 ManipulatorScene::ManipulatorScene()
 :m_sceneName(L"")
 ,m_bIsSceneReay(false)
+,m_pSceneMgr(nullptr)
+,m_pMainCamera(nullptr)
 {
 	WCHAR path[MAX_PATH];
 	::GetCurrentDirectory(MAX_PATH, path);
 	m_scenePath = path;
 	m_scenePath += L"\\..\\..\\..\\..\\Editor\\Scene\\";
+}
 
+ManipulatorScene::~ManipulatorScene()
+{
+	
+}
+void ManipulatorScene::Init()
+{
 	m_sceneSerializer = new DotSceneSerialezer;
 	m_sceneLoader = new DotSceneLoader;
 	m_manipulatorTerrain = new ManipulatorTerrain;
@@ -21,9 +30,13 @@ ManipulatorScene::ManipulatorScene()
 	m_manipulatorNavMesh = new ManipulatorNavMesh;
 }
 
-ManipulatorScene::~ManipulatorScene()
+void ManipulatorScene::Shutdown()
 {
-	
+	SAFE_DELETE(m_manipulatorTerrain);
+	SAFE_DELETE(m_manipulatorObject);
+	SAFE_DELETE(m_manipulatorNavMesh);
+	SAFE_DELETE(m_sceneSerializer);
+	SAFE_DELETE(m_sceneLoader);
 }
 
 void ManipulatorScene::SceneNew(const std::wstring& sceneName)
@@ -32,11 +45,11 @@ void ManipulatorScene::SceneNew(const std::wstring& sceneName)
 	m_manipulatorTerrain->NewFlatTerrain();
 	m_bIsSceneReay = true;
 
-	OnGizmoNodeReset();
-
 	//回调事件
 	for (auto iter=m_listeners.begin(); iter!=m_listeners.end(); ++iter)
 		(*iter)->OnSceneNew();
+
+	OnGizmoNodeReset();
 }
 
 void ManipulatorScene::SceneOpen(const std::wstring& filepath)
@@ -50,11 +63,11 @@ void ManipulatorScene::SceneOpen(const std::wstring& filepath)
 
 	m_bIsSceneReay = true;
 
-	OnGizmoNodeReset();
-
 	//回调事件
 	for (auto iter=m_listeners.begin(); iter!=m_listeners.end(); ++iter)
 		(*iter)->OnSceneOpen();
+
+	OnGizmoNodeReset();
 }
 
 void ManipulatorScene::SceneSave()
@@ -65,24 +78,12 @@ void ManipulatorScene::SceneSave()
 void ManipulatorScene::SceneClose()
 {
 	m_manipulatorTerrain->Shutdown();
-
-	Ogre::SceneManager* pSceneMgr = Ogre::Root::getSingleton().getSceneManager(SCENE_MANAGER_NAME);
-	assert(pSceneMgr);
-	pSceneMgr->clearScene();
+	m_pSceneMgr->clearScene();
 	m_bIsSceneReay = false;
 
 	//回调事件
 	for (auto iter=m_listeners.begin(); iter!=m_listeners.end(); ++iter)
 		(*iter)->OnSceneClose();
-}
-
-void ManipulatorScene::Shutdown()
-{
-	SAFE_DELETE(m_manipulatorTerrain);
-	SAFE_DELETE(m_manipulatorObject);
-	SAFE_DELETE(m_manipulatorNavMesh);
-	SAFE_DELETE(m_sceneSerializer);
-	SAFE_DELETE(m_sceneLoader);
 }
 
 const std::wstring ManipulatorScene::GenerateSceneFullPath()
@@ -101,6 +102,11 @@ void ManipulatorScene::OnGizmoNodeReset()
 	m_manipulatorTerrain->OnGizmoNodeReset();
 	m_manipulatorObject->OnGizmoNodeReset();
 	m_manipulatorNavMesh->OnGizmoNodeReset();
+}
+
+void ManipulatorScene::OnFrameMove( float dt )
+{
+	m_manipulatorObject->OnFrameMove(dt);
 }
 
 

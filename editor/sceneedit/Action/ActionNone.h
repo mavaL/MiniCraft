@@ -3,7 +3,7 @@
 	filename: 	F:\MiniCraft\Editor\SceneEdit\Action\ActionNone.h
 	author:		maval
 	
-	purpose:	表示无激活行为
+	purpose:	取消激活状态
 *********************************************************************/
 
 #ifndef ActionNone_h__
@@ -16,11 +16,7 @@
 class ActionNone : public ActionBase
 {
 public:
-	ActionNone() {}
-	~ActionNone() {}
-
-public:
-	virtual	void	Enter() {}
+	virtual	void	Enter();
 	virtual void	Leave() {}
 };
 
