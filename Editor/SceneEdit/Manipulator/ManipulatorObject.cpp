@@ -75,8 +75,8 @@ bool ManipulatorObject::AddEntity( const Ogre::String& meshname, const Ogre::Vec
 	newEntity->setQueryFlags(eQueryMask_Entity);
 
 	//激活物体移动状态
-	SetSelection(newEntity);
 	SetCurEditMode(eEditMode_Move);
+	SetSelection(newEntity);
 	ManipulatorAction::GetSingleton().SetActiveAction(eActionType_ObjectEdit);
 	
 	return true;
@@ -105,6 +105,7 @@ void ManipulatorObject::SetSelection( Ogre::Entity* pEnt )
 void ManipulatorObject::ShowEntityGizmo(Ogre::Entity* pEntity, bool bShow, eEditMode mode, bool bDrift/* = false*/)
 {
 	assert(pEntity);
+	assert(mode != eEditMode_None);
 
 	if (mode == eEditMode_Select)
 	{
@@ -120,15 +121,12 @@ void ManipulatorObject::ShowEntityGizmo(Ogre::Entity* pEntity, bool bShow, eEdit
 				pAABB->setMaterial("GreenEmissive_ZCheck");
 		}
 	}
-	else if (mode == eEditMode_Move)
+	else
 	{
-		//是否显示坐标轴
-		m_pGizmoAixs->Show(bShow);
+		//显示坐标轴
+		m_pGizmoAixs->Show(bShow, mode == eEditMode_Move || mode == eEditMode_Scale);
 		if (bShow)
 			m_pGizmoAixs->Attach(pEntity->getParentSceneNode());
-	}
-	else if (mode == eEditMode_Rotate)
-	{
 	}
 }
 
@@ -151,14 +149,6 @@ void ManipulatorObject::DoAABBSceneQuery( const Ogre::AxisAlignedBox& aabb, int 
 	Ogre::SceneQueryResult& queryResults = m_pAABBSceneQuery->execute();
 
 	auto movableList = queryResults.movables;
-}
-
-void ManipulatorObject::HighlightGizmoAxis( bool bHighlight, eAxis axis )
-{
-	if (m_curEditMode == eEditMode_Move)
-	{
-		m_pGizmoAixs->HighlightAxis(bHighlight, axis);
-	}
 }
 
 void ManipulatorObject::SelectionMove( const Ogre::Vector3& vecMove )

@@ -57,7 +57,7 @@ public:
 };
 
 //
-//坐标轴,用于物体移动,缩放
+//坐标轴和旋转轴
 //
 class GizmoAxis
 {
@@ -67,10 +67,13 @@ public:
 
 public:
 	void	Attach(Ogre::SceneNode* pNode);
-	void	Show(bool bShow);
+	void	Show(bool bShow, bool bMoveOrRotate);
 	void	Reset();
 	void	OnGizmoNodeReset();
-	void	HighlightAxis(bool bHighlight, eAxis axis);
+	void	HighlightAxis(bool bHighlight, eAxis axis, int mode);
+	void	Update(const Ogre::Ray& ray, int mode);
+	bool	IsActive() const { return m_curActiveAxis != eAxis_None; }
+	eAxis	GetActiveAxis() const { return m_curActiveAxis; }
 
 private:
 	void	_Init();
@@ -79,7 +82,10 @@ private:
 private:
 	Ogre::SceneNode*	m_pObjGizmoNode;
 	Ogre::SceneNode*	m_pAttachNode;
-	Ogre::Entity*		m_pAxis[3];
+	Ogre::Entity*		m_pAxisMove[3];		//坐标轴
+	Ogre::Entity*		m_pAxisRotate[3];	//旋转轴
+	Ogre::Plane			m_plane[3];			//辅助平面,用来检测拾取
+	eAxis				m_curActiveAxis;	//当前激活轴
 };
 
 

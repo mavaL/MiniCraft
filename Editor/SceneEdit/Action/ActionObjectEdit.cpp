@@ -2,11 +2,11 @@
 #include "ActionObjectEdit.h"
 #include "EditorDefine.h"
 #include "Manipulator/ManipulatorScene.h"
+#include "Gizmo.h"
+
 
 ActionObjectEdit::ActionObjectEdit()
-:m_bCanMove(false)
-,m_bLBDown(false)
-,m_curActiveAxis(eAxis_None)
+:m_bLBDown(false)
 {
 
 }
@@ -24,21 +24,26 @@ void ActionObjectEdit::Enter()
 void ActionObjectEdit::Leave()
 {
 	ManipulatorObject& manObject = ManipulatorSystem.GetObject();
-	//隐藏坐标轴
+	//隐藏gizmo
 	manObject.ShowEntityGizmo(manObject.GetSelection(), false, ManipulatorObject::eEditMode_Move);
+	manObject.ShowEntityGizmo(manObject.GetSelection(), false, ManipulatorObject::eEditMode_Rotate);
 	//隐藏包围盒
 	manObject.ShowEntityGizmo(manObject.GetSelection(), false, ManipulatorObject::eEditMode_Select);
-	manObject.SetCurEditMode(ManipulatorObject::eEditMode_None);
 }
 
 void ActionObjectEdit::OnMouseLButtonDown( const SActionParam& param )
 {
 	m_bLBDown = true;
-	if (m_bCanMove)
+	GizmoAxis* pGizmo = ManipulatorSystem.GetObject().GetGizmoAxis();
+	ManipulatorObject::eEditMode mode = ManipulatorSystem.GetObject().GetCurEditMode();
+	if (pGizmo->IsActive())
 	{
-		assert(m_curActiveAxis != eAxis_None);
+		assert(pGizmo->GetActiveAxis() != eAxis_None);
 		const Ogre::Ray ray = ManipulatorSystem.m_pMainCamera->getCameraToViewportRay(param.m_ptRelative.x, param.m_ptRelative.y);
-		m_vecAdjust = _ComputeTranslateVector(ray, m_curActiveAxis);
+		if(mode == ManipulatorObject::eEditMode_Move)
+			m_vecAdjust = _ComputeTranslateVector(ray, pGizmo->GetActiveAxis(), false);
+		else if(mode == ManipulatorObject::eEditMode_Scale)
+			m_vecAdjust = _ComputeTranslateVector(ray, pGizmo->GetActiveAxis(), true);
 	}
 }
 
@@ -50,49 +55,53 @@ void ActionObjectEdit::OnMouseLButtonUp( const SActionParam& param )
 void ActionObjectEdit::OnMouseMove( const SActionParam& param )
 {
 	ManipulatorObject& manObject = ManipulatorSystem.GetObject();
+	GizmoAxis* pGizmo = manObject.GetGizmoAxis();
 	const Ogre::Ray ray = ManipulatorSystem.m_pMainCamera->getCameraToViewportRay(param.m_ptRelative.x, param.m_ptRelative.y);
+	ManipulatorObject::eEditMode mode = manObject.GetCurEditMode();
 
-	if (m_bCanMove && m_bLBDown)
+	if (pGizmo->IsActive() && m_bLBDown)
 	{
-		//进行平移计算
-		Ogre::Entity* pSelEnt = ManipulatorSystem.GetObject().GetSelection();
+		//计算鼠标偏移量
+		Ogre::Entity* pSelEnt = manObject.GetSelection();
 		Ogre::Vector3 oldPos = pSelEnt->getParentSceneNode()->_getDerivedPosition();
-		Ogre::Vector3 newPos = _ComputeTranslateVector(ray, m_curActiveAxis) - m_vecAdjust + oldPos;
-		ManipulatorSystem.GetObject().GetSelection()->getParentSceneNode()->_setDerivedPosition(newPos);
+		Ogre::SceneNode* pNode = manObject.GetSelection()->getParentSceneNode();
+
+		if(mode == ManipulatorObject::eEditMode_Move)
+		{
+			Ogre::Vector3 delta = _ComputeTranslateVector(ray, pGizmo->GetActiveAxis(), false);
+			//移动
+			Ogre::Vector3 newPos = delta - m_vecAdjust + oldPos;
+			pNode->_setDerivedPosition(newPos);
+		}
+		else if (mode == ManipulatorObject::eEditMode_Rotate)
+		{
+			//旋转
+			switch (pGizmo->GetActiveAxis())
+			{
+			case eAxis_X: pNode->pitch(Ogre::Radian(param.m_ptDeltaRel.x * 15.0f)); break;
+			case eAxis_Y: pNode->yaw(Ogre::Radian(param.m_ptDeltaRel.x * 15.0f)); break;
+			case eAxis_Z: pNode->roll(Ogre::Radian(param.m_ptDeltaRel.x * 15.0f)); break;
+			}
+		}
+		else if (mode == ManipulatorObject::eEditMode_Scale)
+		{
+			//缩放
+			float scale = param.m_ptDeltaRel.x > 0 ? 1.2f : 0.8f;
+			switch (pGizmo->GetActiveAxis())
+			{
+			case eAxis_X: pNode->scale(scale, 1.0f, 1.0f); break;
+			case eAxis_Y: pNode->scale(1.0f, scale, 1.0f); break;
+			case eAxis_Z: pNode->scale(1.0f, 1.0f, scale); break;
+			}
+		}
 	}
 	else
 	{
-		Ogre::MovableObject* pMovable = manObject.DoRaySceneQuery(ray, 
-			eQueryMask_GizmoAxisX | eQueryMask_GizmoAxisY | eQueryMask_GizmoAxisZ);
-
-		if (pMovable)
-		{
-			//鼠标移到了某个轴上
-			if (m_curActiveAxis != eAxis_None)
-			{
-				manObject.HighlightGizmoAxis(false, m_curActiveAxis);
-				m_curActiveAxis = eAxis_None;
-			}
-
-			int mask = pMovable->getQueryFlags();
-			if(mask == eQueryMask_GizmoAxisX)		m_curActiveAxis = eAxis_X;
-			else if(mask == eQueryMask_GizmoAxisY)	m_curActiveAxis = eAxis_Y;
-			else if(mask == eQueryMask_GizmoAxisZ)	m_curActiveAxis = eAxis_Z;
-
-			manObject.HighlightGizmoAxis(true, m_curActiveAxis);
-			m_bCanMove = true;
-		}
-		else if(m_curActiveAxis != eAxis_None)
-		{
-			//鼠标不在任何轴上
-			manObject.HighlightGizmoAxis(false, m_curActiveAxis);
-			m_bCanMove = false;
-			m_curActiveAxis = eAxis_None;
-		}
+		pGizmo->Update(ray, mode);
 	}
 }
 
-const Ogre::Vector3 ActionObjectEdit::_ComputeTranslateVector(const Ogre::Ray& ray, eAxis axis)
+const Ogre::Vector3 ActionObjectEdit::_ComputeTranslateVector(const Ogre::Ray& ray, eAxis axis, bool bAxisLocal)
 {
 	using namespace Ogre;
 
@@ -111,9 +120,9 @@ const Ogre::Vector3 ActionObjectEdit::_ComputeTranslateVector(const Ogre::Ray& r
 	Vector3 vAxis = Vector3::ZERO;
 	switch (axis)
 	{
-	case eAxis_X: { vX = 10000.0f; vAxis = qOrient.xAxis(); } break;
-	case eAxis_Y: { vY = 10000.0f; vAxis = qOrient.yAxis(); } break;
-	case eAxis_Z: { vZ = 10000.0f; vAxis = qOrient.zAxis(); } break;
+	case eAxis_X: { vX = 10000.0f; vAxis = bAxisLocal ? Vector3::UNIT_X : qOrient.xAxis(); } break;
+	case eAxis_Y: { vY = 10000.0f; vAxis = bAxisLocal ? Vector3::UNIT_Y : qOrient.yAxis(); } break;
+	case eAxis_Z: { vZ = 10000.0f; vAxis = bAxisLocal ? Vector3::UNIT_Z : qOrient.zAxis(); } break;
 	}
 
 	Plane planeToUse;
@@ -134,6 +143,7 @@ const Ogre::Vector3 ActionObjectEdit::_ComputeTranslateVector(const Ogre::Ray& r
 	if (result.first)
 	{
 		Vector3 Proj = ray.getPoint(result.second) - oldPos;
+		vAxis.normalise();
 		Vector3 deltaPos = vAxis.dotProduct(Proj) * vAxis;
 
 		return deltaPos;

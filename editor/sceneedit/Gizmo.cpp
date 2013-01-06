@@ -183,6 +183,7 @@ GizmoCircle::~GizmoCircle()
 GizmoAxis::GizmoAxis()
 :m_pObjGizmoNode(nullptr)
 ,m_pAttachNode(nullptr)
+,m_curActiveAxis(eAxis_None)
 {
 	_Init();
 }
@@ -196,18 +197,19 @@ void GizmoAxis::_Init()
 {
 	for (int i=0; i<3; ++i)
 	{
-		m_pAxis[i] = ManipulatorSystem.m_pSceneMgr->createEntity("Arrow1m.mesh");
-		m_pAxis[i]->setRenderQueueGroup(Ogre::RENDER_QUEUE_OVERLAY);
+		m_pAxisMove[i] = ManipulatorSystem.m_pSceneMgr->createEntity("Arrow1m.mesh");
+		m_pAxisRotate[i] = ManipulatorSystem.m_pSceneMgr->createEntity("RotationRing.mesh");
+		m_pAxisMove[i]->setRenderQueueGroup(Ogre::RENDER_QUEUE_OVERLAY);
+		m_pAxisRotate[i]->setRenderQueueGroup(Ogre::RENDER_QUEUE_OVERLAY);
 	}
 
-	m_pAxis[0]->setMaterialName("RedEmissive");
-	m_pAxis[1]->setMaterialName("GreenEmissive");
-	m_pAxis[2]->setMaterialName("BlueEmissive");
+	m_pAxisMove[0]->setMaterialName("RedEmissive");
+	m_pAxisMove[1]->setMaterialName("GreenEmissive");
+	m_pAxisMove[2]->setMaterialName("BlueEmissive");
 
-	//设置查询掩码
-	m_pAxis[0]->setQueryFlags(eQueryMask_GizmoAxisX);
-	m_pAxis[1]->setQueryFlags(eQueryMask_GizmoAxisY);
-	m_pAxis[2]->setQueryFlags(eQueryMask_GizmoAxisZ);
+	m_pAxisRotate[0]->setMaterialName("RedEmissive");
+	m_pAxisRotate[1]->setMaterialName("GreenEmissive");
+	m_pAxisRotate[2]->setMaterialName("BlueEmissive");
 }
 
 void GizmoAxis::Attach( Ogre::SceneNode* pNode )
@@ -219,12 +221,14 @@ void GizmoAxis::Attach( Ogre::SceneNode* pNode )
 	}
 	m_pAttachNode = pNode;
 	m_pAttachNode->addChild(m_pObjGizmoNode);
-
 	m_pAttachNode->_update(true, false);
 
-	Node* xNode = m_pObjGizmoNode->getChild("GizmoXAixsNode");
-	Node* yNode = m_pObjGizmoNode->getChild("GizmoYAixsNode");
-	Node* zNode = m_pObjGizmoNode->getChild("GizmoZAixsNode");
+	m_curActiveAxis = eAxis_None;
+
+	//重置坐标轴
+	Node* xNode = m_pObjGizmoNode->getChild("GizmoMoveXAixsNode");
+	Node* yNode = m_pObjGizmoNode->getChild("GizmoMoveYAixsNode");
+	Node* zNode = m_pObjGizmoNode->getChild("GizmoMoveZAixsNode");
 
 	xNode->resetToInitialState();
 	yNode->resetToInitialState();
@@ -238,21 +242,50 @@ void GizmoAxis::Attach( Ogre::SceneNode* pNode )
 	//Rotate
 	xNode->yaw(Ogre::Degree(90));
 	yNode->pitch(Ogre::Degree(-90));
-	float offset = Math::Abs(m_pAxis[0]->getBoundingBox().getMinimum().z);
+	float offset = Math::Abs(m_pAxisMove[0]->getBoundingBox().getMinimum().z);
 	//Translate
 	xNode->translate(Vector3(0,0,offset*scale.z), Node::TS_LOCAL);
 	yNode->translate(Vector3(0,0,offset*scale.z), Node::TS_LOCAL);
 	zNode->translate(Vector3(0,0,offset*scale.z), Node::TS_LOCAL);
+
+	//重置旋转轴
+	xNode = m_pObjGizmoNode->getChild("GizmoRotateXAixsNode");
+	yNode = m_pObjGizmoNode->getChild("GizmoRotateYAixsNode");
+	zNode = m_pObjGizmoNode->getChild("GizmoRotateZAixsNode");
+
+	xNode->resetToInitialState();
+	yNode->resetToInitialState();
+	zNode->resetToInitialState();
+
+	//Scale
+	xNode->setScale(2,2,2);
+	yNode->setScale(2,2,2);
+	zNode->setScale(2,2,2);
+	//Rotate
+	xNode->roll(Ogre::Degree(90));
+	zNode->pitch(Ogre::Degree(90));
 }
 
-void GizmoAxis::Show( bool bShow )
+void GizmoAxis::Show( bool bShow, bool bMoveOrRotate )
 {
-	m_pObjGizmoNode->setVisible(bShow);
+	if (bMoveOrRotate)
+	{
+		m_pAxisMove[0]->setVisible(bShow);
+		m_pAxisMove[1]->setVisible(bShow);
+		m_pAxisMove[2]->setVisible(bShow);
+	}
+	else
+	{
+		m_pAxisRotate[0]->setVisible(bShow);
+		m_pAxisRotate[1]->setVisible(bShow);
+		m_pAxisRotate[2]->setVisible(bShow);
+	}
 }
 
 void GizmoAxis::_Destroy()
 {
-	m_pAxis[0] = m_pAxis[1] = m_pAxis[2] = nullptr;
+	m_pAxisMove[0] = m_pAxisMove[1] = m_pAxisMove[2] = nullptr;
+	m_pAxisRotate[0] = m_pAxisRotate[1] = m_pAxisRotate[2] = nullptr;
 }
 
 void GizmoAxis::Reset()
@@ -265,40 +298,170 @@ void GizmoAxis::OnGizmoNodeReset()
 {
 	//Gizmo Node
 	m_pObjGizmoNode = ManipulatorSystem.m_pSceneMgr->getRootSceneNode()->createChildSceneNode("ObjectGizmoNode");
+	m_pObjGizmoNode->setInheritScale(false);
 
-	Ogre::SceneNode* pXNode = m_pObjGizmoNode->createChildSceneNode("GizmoXAixsNode");
-	Ogre::SceneNode* pYNode = m_pObjGizmoNode->createChildSceneNode("GizmoYAixsNode");
-	Ogre::SceneNode* pZNode = m_pObjGizmoNode->createChildSceneNode("GizmoZAixsNode");
+	//坐标轴
+	Ogre::SceneNode* pXNode = m_pObjGizmoNode->createChildSceneNode("GizmoMoveXAixsNode");
+	Ogre::SceneNode* pYNode = m_pObjGizmoNode->createChildSceneNode("GizmoMoveYAixsNode");
+	Ogre::SceneNode* pZNode = m_pObjGizmoNode->createChildSceneNode("GizmoMoveZAixsNode");
 
 	pXNode->setInitialState();
 	pYNode->setInitialState();
 	pZNode->setInitialState();
 
-	pXNode->attachObject(m_pAxis[0]);
-	pYNode->attachObject(m_pAxis[1]);
-	pZNode->attachObject(m_pAxis[2]);
+	pXNode->attachObject(m_pAxisMove[0]);
+	pYNode->attachObject(m_pAxisMove[1]);
+	pZNode->attachObject(m_pAxisMove[2]);
 
-	m_pObjGizmoNode->setVisible(false);
+	//旋转轴
+	pXNode = m_pObjGizmoNode->createChildSceneNode("GizmoRotateXAixsNode");
+	pYNode = m_pObjGizmoNode->createChildSceneNode("GizmoRotateYAixsNode");
+	pZNode = m_pObjGizmoNode->createChildSceneNode("GizmoRotateZAixsNode");
+
+	pXNode->setInitialState();
+	pYNode->setInitialState();
+	pZNode->setInitialState();
+
+	pXNode->attachObject(m_pAxisRotate[0]);
+	pYNode->attachObject(m_pAxisRotate[1]);
+	pZNode->attachObject(m_pAxisRotate[2]);
+
+	m_pObjGizmoNode->setVisible(true);
+	Show(false, true);
+	Show(false, false);
 
 	ManipulatorSystem.m_pSceneMgr->getRootSceneNode()->removeChild(m_pObjGizmoNode);
 
 	m_pAttachNode = nullptr;
 }
 
-void GizmoAxis::HighlightAxis( bool bHighlight, eAxis axis )
+void GizmoAxis::HighlightAxis( bool bHighlight, eAxis axis, int mode )
 {
-	assert(axis != eAxis_None);
+	if(axis == eAxis_None)
+		return;
+
+	Ogre::Entity** ent = (mode == ManipulatorObject::eEditMode_Rotate ? m_pAxisRotate : m_pAxisMove);
+
 	if(bHighlight)
 	{
-		m_pAxis[axis]->setMaterialName("YellowEmissive");
+		ent[axis]->setMaterialName("YellowEmissive");
 	}
 	else
 	{
 		switch (axis)
 		{
-		case 0: m_pAxis[axis]->setMaterialName("RedEmissive"); break;
-		case 1: m_pAxis[axis]->setMaterialName("GreenEmissive"); break;
-		case 2: m_pAxis[axis]->setMaterialName("BlueEmissive"); break;
+		case 0: ent[axis]->setMaterialName("RedEmissive"); break;
+		case 1: ent[axis]->setMaterialName("GreenEmissive"); break;
+		case 2: ent[axis]->setMaterialName("BlueEmissive"); break;
+		}
+	}
+}
+
+void GizmoAxis::Update( const Ogre::Ray& ray, int mode )
+{
+	const static float axisLenSq = 16.0f;
+	const static float axisWidth = 0.1f;
+
+	const Ogre::Quaternion& orient = ManipulatorSystem.GetObject().GetSelection()->getParentSceneNode()->_getDerivedOrientation();
+	const Ogre::Vector3& pos = ManipulatorSystem.GetObject().GetSelection()->getParentSceneNode()->_getDerivedPosition();
+
+	//更新辅助平面
+	m_plane[eAxis_X].redefine(orient.xAxis(), pos);
+	m_plane[eAxis_Y].redefine(orient.yAxis(), pos);
+	m_plane[eAxis_Z].redefine(orient.zAxis(), pos);
+
+	bool collidePlane[3];
+	collidePlane[eAxis_X] = false;
+	collidePlane[eAxis_Y] = false;
+	collidePlane[eAxis_Z] = false;
+
+	if (m_curActiveAxis != eAxis_None)
+	{
+		HighlightAxis(false, m_curActiveAxis, mode);
+		m_curActiveAxis = eAxis_None;
+	}
+
+	if (mode == ManipulatorObject::eEditMode_Move ||
+		mode == ManipulatorObject::eEditMode_Scale	)
+	{
+		int intersecPlane = -1;
+		float minDistance = 10000.0f;
+		for (int i=0; i<3; ++i)
+		{
+			auto result = ray.intersects(m_plane[i]);
+			if (!result.first)
+				continue;
+
+			//以轴长为球径的粗判
+			Vector3 intersectPt = ray.getPoint(result.second);
+			if(intersectPt.squaredDistance(pos) > axisLenSq)
+				continue;
+
+			//射线可能与多个平面相交,取最近的
+			if (result.second < minDistance)
+			{
+				intersecPlane = i;
+				minDistance = result.second;
+			}
+		}
+
+		if (intersecPlane != -1)
+		{
+			for (int i=0; i<3; ++i)
+			{
+				if(i == intersecPlane)
+					continue;
+
+				//细判
+				float distance = m_plane[i].getDistance(ray.getPoint(minDistance));
+				if (distance <= axisWidth)
+				{
+					collidePlane[intersecPlane] = true;
+					collidePlane[i] = true;
+					break;
+				}
+			}
+		}
+
+		//高亮选中轴
+		if((collidePlane[eAxis_Y] || collidePlane[eAxis_Z]) && !collidePlane[eAxis_X])
+		{
+			//没有负半轴..
+			if(m_plane[eAxis_X].getDistance(ray.getPoint(minDistance)) > 0)
+				m_curActiveAxis = eAxis_X;
+		}
+		else if((collidePlane[eAxis_X] || collidePlane[eAxis_Y]) && !collidePlane[eAxis_Z])
+		{
+			if(m_plane[eAxis_Z].getDistance(ray.getPoint(minDistance)) > 0)
+				m_curActiveAxis = eAxis_Z;
+		}
+		else if((collidePlane[eAxis_X] || collidePlane[eAxis_Z]) && !collidePlane[eAxis_Y])
+		{
+			if(m_plane[eAxis_Y].getDistance(ray.getPoint(minDistance)) > 0)
+				m_curActiveAxis = eAxis_Y;
+		}
+
+		HighlightAxis(true, m_curActiveAxis, mode);
+	}
+	else if(mode == ManipulatorObject::eEditMode_Rotate)
+	{
+		static const float radius = m_pAxisRotate[0]->getWorldBoundingSphere(true).getRadius();
+		static const float minRadiusSq = (radius - 0.2f) * (radius - 0.2f);
+		static const float maxRadiusSq = (radius + 0.2f) * (radius + 0.2f);
+
+		for (int i=0; i<3; ++i)
+		{
+			auto result = ray.intersects(m_plane[i]);
+			if (!result.first)
+				continue;
+
+			float distanceSq = pos.squaredDistance(ray.getPoint(result.second));
+			if (distanceSq > minRadiusSq && distanceSq < maxRadiusSq)
+			{
+				m_curActiveAxis = (eAxis)i;
+				HighlightAxis(true, m_curActiveAxis, mode);
+				break;
+			}
 		}
 	}
 }

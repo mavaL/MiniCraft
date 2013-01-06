@@ -696,8 +696,8 @@ void CMainFrame::OnObjectMove()
 	bool bActive = ManipulatorSystem.GetObject().GetCurEditMode() == ManipulatorObject::eEditMode_Move;
 	bActive = !bActive;
 	eActionType action = bActive ? eActionType_ObjectEdit : eActionType_None;
-	ManipulatorAction::GetSingleton().SetActiveAction(action);
 	ManipulatorSystem.GetObject().SetCurEditMode(bActive?ManipulatorObject::eEditMode_Move:ManipulatorObject::eEditMode_None);
+	ManipulatorAction::GetSingleton().SetActiveAction(action);
 }
 
 void CMainFrame::OnObjectRotate()
@@ -705,13 +705,17 @@ void CMainFrame::OnObjectRotate()
 	bool bActive = ManipulatorSystem.GetObject().GetCurEditMode() == ManipulatorObject::eEditMode_Rotate;
 	bActive = !bActive;
 	eActionType action = bActive ? eActionType_ObjectEdit : eActionType_None;
-	ManipulatorAction::GetSingleton().SetActiveAction(action);
 	ManipulatorSystem.GetObject().SetCurEditMode(bActive?ManipulatorObject::eEditMode_Rotate:ManipulatorObject::eEditMode_None);
+	ManipulatorAction::GetSingleton().SetActiveAction(action);
 }
 
 void CMainFrame::OnObjectScale()
 {
-	
+	bool bActive = ManipulatorSystem.GetObject().GetCurEditMode() == ManipulatorObject::eEditMode_Scale;
+	bActive = !bActive;
+	eActionType action = bActive ? eActionType_ObjectEdit : eActionType_None;
+	ManipulatorSystem.GetObject().SetCurEditMode(bActive?ManipulatorObject::eEditMode_Scale:ManipulatorObject::eEditMode_None);
+	ManipulatorAction::GetSingleton().SetActiveAction(action);
 }
 
 void CMainFrame::OnUpdateUI_ObjectMove( CCmdUI* pCmdUI )
@@ -742,7 +746,15 @@ void CMainFrame::OnUpdateUI_ObjectRotate( CCmdUI* pCmdUI )
 
 void CMainFrame::OnUpdateUI_ObjectScale( CCmdUI* pCmdUI )
 {
+	if(!ManipulatorSystem.GetIsSceneReady())
+	{
+		pCmdUI->Enable(FALSE);
+		return;
+	}
+	pCmdUI->Enable(TRUE);
 
+	bool bActive = ManipulatorSystem.GetObject().GetCurEditMode() == ManipulatorObject::eEditMode_Scale;
+	pCmdUI->SetCheck(bActive);
 }
 
 void CMainFrame::OnObjectSelect()

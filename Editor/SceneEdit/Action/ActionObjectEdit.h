@@ -29,13 +29,11 @@ public:
 	virtual void	OnMouseMove(const SActionParam& param);
 
 private:
-	bool	m_bCanMove;
-	bool	m_bLBDown;
-	eAxis	m_curActiveAxis;
-	Ogre::Vector3 m_vecAdjust;
+	bool			m_bLBDown;
+	Ogre::Vector3	m_vecAdjust;
 
 	//³éÈ¡×ÔOgitor
-	const Ogre::Vector3	_ComputeTranslateVector(const Ogre::Ray& ray, eAxis axis);
+	const Ogre::Vector3	_ComputeTranslateVector(const Ogre::Ray& ray, eAxis axis, bool bAxisLocal);
 };
 
 

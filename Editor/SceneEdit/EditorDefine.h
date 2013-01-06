@@ -27,10 +27,7 @@ const	int		TERRAIN_MAX_LAYER	=	5;	//最多5层地形纹理混合
 enum eQueryMask
 {
 	eQueryMask_Default	=	0,
-	eQueryMask_GizmoAxisX = 1 << 0,
-	eQueryMask_GizmoAxisY = 1 << 1,
-	eQueryMask_GizmoAxisZ = 1 << 2,
-	eQueryMask_Entity = 1 << 3
+	eQueryMask_Entity = 1 << 0
 };
 
 enum eAxis

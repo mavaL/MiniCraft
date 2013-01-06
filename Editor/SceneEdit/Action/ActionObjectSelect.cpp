@@ -17,7 +17,6 @@ void ActionObjectSelect::Enter()
 
 void ActionObjectSelect::Leave()
 {
-	ManipulatorSystem.GetObject().SetCurEditMode(ManipulatorObject::eEditMode_None);
 }
 
 void ActionObjectSelect::OnMouseLButtonUp( const SActionParam& param )

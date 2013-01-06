@@ -52,7 +52,7 @@ public:
 	void		SelectionMove(const Ogre::Vector3& vecMove);
 	//根据操作模式,显示物体相应的Gizmo
 	void		ShowEntityGizmo(Ogre::Entity* pEntity, bool bShow, eEditMode mode, bool bDrift = false);
-	void		HighlightGizmoAxis(bool bHighlight, eAxis axis);
+	GizmoAxis*	GetGizmoAxis() const { return m_pGizmoAixs; }
 	void		OnGizmoNodeReset();
 	//射线查询
 	Ogre::MovableObject* DoRaySceneQuery(const Ogre::Ray& ray, int queryMask = 0xffffffff);

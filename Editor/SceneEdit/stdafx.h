@@ -63,6 +63,17 @@ using Ogre::Vector3;
 #define min(a,b)            (((a) < (b)) ? (a) : (b))
 #endif
 
+template<typename T>
+T GetSign(T val)
+{
+	if (val == 0)
+	{
+		return 0;
+	}
+	return val > 0 ? 1 : -1;
+}
+
+
 //XTP
 #include <XTToolkitPro.h>
 
