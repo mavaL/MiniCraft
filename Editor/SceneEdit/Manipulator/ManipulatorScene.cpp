@@ -3,6 +3,7 @@
 #include "../DotSceneLoader.h"
 #include "ManipulatorScene.h"
 #include "../EditorDefine.h"
+#include "Utility.h"
 
 
 ManipulatorScene::ManipulatorScene()
@@ -46,8 +47,7 @@ void ManipulatorScene::SceneNew(const std::wstring& sceneName)
 	m_bIsSceneReay = true;
 
 	//回调事件
-	for (auto iter=m_listeners.begin(); iter!=m_listeners.end(); ++iter)
-		(*iter)->OnSceneNew();
+	Excute([](ManipulatorSceneEventCallback* callback){ callback->OnSceneNew(); });
 
 	OnGizmoNodeReset();
 }
@@ -58,14 +58,12 @@ void ManipulatorScene::SceneOpen(const std::wstring& filepath)
 	Ogre::StringUtil::splitFullFilename(fullpath, basename, extname, path);
 
 	m_sceneName = Utility::EngineToUnicode(basename);
-
 	m_sceneLoader->parseDotScene(fullpath);
-
+	
 	m_bIsSceneReay = true;
 
 	//回调事件
-	for (auto iter=m_listeners.begin(); iter!=m_listeners.end(); ++iter)
-		(*iter)->OnSceneOpen();
+	Excute([](ManipulatorSceneEventCallback* callback){ callback->OnSceneOpen(); });
 
 	OnGizmoNodeReset();
 }
@@ -82,8 +80,7 @@ void ManipulatorScene::SceneClose()
 	m_bIsSceneReay = false;
 
 	//回调事件
-	for (auto iter=m_listeners.begin(); iter!=m_listeners.end(); ++iter)
-		(*iter)->OnSceneClose();
+	Excute([](ManipulatorSceneEventCallback* callback){ callback->OnSceneClose(); });
 }
 
 const std::wstring ManipulatorScene::GenerateSceneFullPath()

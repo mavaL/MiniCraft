@@ -37,6 +37,8 @@ void ManipulatorObject::OnSceneClose()
 {
 	m_curEditMode = eEditMode_None; 
 	m_pSelectEntity = nullptr;
+	m_objects.clear();
+	m_navMeshFlag.clear();
 }
 
 void ManipulatorObject::OnSceneNew()
@@ -49,7 +51,8 @@ void ManipulatorObject::OnSceneOpen()
 	m_pGizmoAixs->Reset();
 }
 
-bool ManipulatorObject::AddEntity( const Ogre::String& meshname, const Ogre::Vector3& worldPos )
+Ogre::Entity* ManipulatorObject::AddEntity( const Ogre::String& meshname, const Ogre::Vector3& worldPos, 
+	const Ogre::Quaternion& orient, const Ogre::Vector3& scale )
 {
 	static int counter = 0;
 
@@ -58,9 +61,10 @@ bool ManipulatorObject::AddEntity( const Ogre::String& meshname, const Ogre::Vec
 
 	Ogre::Entity* newEntity = ManipulatorSystem.m_pSceneMgr->createEntity(entName, meshname);
 	if(!newEntity)
-		return false;
+		return nullptr;
 
-	Ogre::SceneNode* pNode = ManipulatorSystem.m_pSceneMgr->getRootSceneNode()->createChildSceneNode(worldPos);
+	Ogre::SceneNode* pNode = ManipulatorSystem.m_pSceneMgr->getRootSceneNode()->createChildSceneNode(worldPos, orient);
+	pNode->setScale(scale);
 	pNode->attachObject(newEntity);
 
 	//每个Entity创建一个包围盒节点
@@ -71,18 +75,18 @@ bool ManipulatorObject::AddEntity( const Ogre::String& meshname, const Ogre::Vec
 	aabbNode->attachObject(aabb);
 	aabbNode->setVisible(false);
 
+	_UpdateAABBOfEntity(newEntity);
+
 	//设置查询掩码
 	newEntity->setQueryFlags(eQueryMask_Entity);
 
-	//激活物体移动状态
-	SetCurEditMode(eEditMode_Move);
-	SetSelection(newEntity);
-	ManipulatorAction::GetSingleton().SetActiveAction(eActionType_ObjectEdit);
+	m_objects.push_back(newEntity);
+	m_navMeshFlag.insert(std::make_pair(newEntity, false));
 	
-	return true;
+	return newEntity;
 }
 
-bool ManipulatorObject::AddEntity( const Ogre::String& meshname, const Ogre::Vector2& screenPos )
+Ogre::Entity* ManipulatorObject::AddEntity( const Ogre::String& meshname, const Ogre::Vector2& screenPos )
 {
 	Ogre::Ray ray = ManipulatorSystem.m_pMainCamera->getCameraToViewportRay(screenPos.x, screenPos.y);
 
@@ -90,7 +94,7 @@ bool ManipulatorObject::AddEntity( const Ogre::String& meshname, const Ogre::Vec
 	if (ManipulatorSystem.GetTerrain().GetRayIntersectPoint(ray, pt))
 		return AddEntity(meshname, pt);
 
-	return true;
+	return nullptr;
 }
 
 void ManipulatorObject::SetSelection( Ogre::Entity* pEnt )
@@ -100,6 +104,9 @@ void ManipulatorObject::SetSelection( Ogre::Entity* pEnt )
 	assert(pEnt && pEnt->getParentNode());
 	ShowEntityGizmo(pEnt, true, m_curEditMode, false);
 	m_pSelectEntity = pEnt;
+
+	//回调事件
+	Excute([this](ManipulatorObjectEventCallback* callback){ callback->OnObjectPropertyChanged(m_pSelectEntity); });
 }
 
 void ManipulatorObject::ShowEntityGizmo(Ogre::Entity* pEntity, bool bShow, eEditMode mode, bool bDrift/* = false*/)
@@ -151,10 +158,55 @@ void ManipulatorObject::DoAABBSceneQuery( const Ogre::AxisAlignedBox& aabb, int 
 	auto movableList = queryResults.movables;
 }
 
-void ManipulatorObject::SelectionMove( const Ogre::Vector3& vecMove )
+void ManipulatorObject::SelectionSetPosition( const Ogre::Vector3& vecMove )
 {
 	assert(m_pSelectEntity);
-	m_pSelectEntity->getParentSceneNode()->translate(vecMove, Ogre::Node::TS_LOCAL);
+	m_pSelectEntity->getParentSceneNode()->_setDerivedPosition(vecMove);
+
+	//回调事件
+	Excute([this](ManipulatorObjectEventCallback* callback){ callback->OnObjectPropertyChanged(m_pSelectEntity); });
+}
+
+void ManipulatorObject::SelectionRotate( float radian )
+{
+	assert(m_pSelectEntity);
+
+	switch (m_pGizmoAixs->GetActiveAxis())
+	{
+	case eAxis_X: m_pSelectEntity->getParentSceneNode()->pitch(Ogre::Radian(radian)); break;
+	case eAxis_Y: m_pSelectEntity->getParentSceneNode()->yaw(Ogre::Radian(radian)); break;
+	case eAxis_Z: m_pSelectEntity->getParentSceneNode()->roll(Ogre::Radian(radian)); break;
+	}
+
+	//回调事件
+	Excute([this](ManipulatorObjectEventCallback* callback){ callback->OnObjectPropertyChanged(m_pSelectEntity); });
+}
+
+void ManipulatorObject::SelectionScale( const Ogre::Vector3& scaleMultiplier )
+{
+	assert(m_pSelectEntity);
+	m_pSelectEntity->getParentSceneNode()->scale(scaleMultiplier);
+
+	//回调事件
+	Excute([this](ManipulatorObjectEventCallback* callback){ callback->OnObjectPropertyChanged(m_pSelectEntity); });
+}
+
+void ManipulatorObject::SelectionSetOrientation( const Ogre::Quaternion& orient )
+{
+	assert(m_pSelectEntity);
+	m_pSelectEntity->getParentSceneNode()->_setDerivedOrientation(orient);
+
+	//回调事件
+	Excute([this](ManipulatorObjectEventCallback* callback){ callback->OnObjectPropertyChanged(m_pSelectEntity); });
+}
+
+void ManipulatorObject::SelectionSetScale( const Ogre::Vector3 scale )
+{
+	assert(m_pSelectEntity);
+	m_pSelectEntity->getParentSceneNode()->setScale(scale);
+
+	//回调事件
+	Excute([this](ManipulatorObjectEventCallback* callback){ callback->OnObjectPropertyChanged(m_pSelectEntity); });
 }
 
 void ManipulatorObject::ClearSelection()
@@ -165,6 +217,9 @@ void ManipulatorObject::ClearSelection()
 		ShowEntityGizmo(m_pSelectEntity, false, eEditMode_Select);
 		ShowEntityGizmo(m_pSelectEntity, false, eEditMode_Move);
 		m_pSelectEntity = nullptr;
+
+		//回调事件
+		Excute([this](ManipulatorObjectEventCallback* callback){ callback->OnObjectPropertyChanged(m_pSelectEntity); });
 	}
 }
 
@@ -172,15 +227,7 @@ void ManipulatorObject::OnFrameMove( float dt )
 {
 	//更新选中物体的包围盒
 	if (m_pSelectEntity)
-	{
-		Ogre::SceneNode* aabbNode = dynamic_cast<Ogre::SceneNode*>(
-			m_pSelectEntity->getParentSceneNode()->getChild(m_pSelectEntity->getName()));
-		Ogre::WireBoundingBox* pAABB = GetEntityAABBGizmo(m_pSelectEntity);
-		pAABB->setupBoundingBox(m_pSelectEntity->getWorldBoundingBox(true));
-		//避免被裁减
-		(const_cast<Ogre::AxisAlignedBox&>(pAABB->getBoundingBox())).setInfinite();
-		aabbNode->_updateBounds();
-	}
+		_UpdateAABBOfEntity(m_pSelectEntity);
 }
 
 Ogre::WireBoundingBox* ManipulatorObject::GetEntityAABBGizmo(Ogre::Entity* pEntity)
@@ -189,5 +236,59 @@ Ogre::WireBoundingBox* ManipulatorObject::GetEntityAABBGizmo(Ogre::Entity* pEnti
 	Ogre::SceneNode* aabbNode = dynamic_cast<Ogre::SceneNode*>(pEntity->getParentSceneNode()->getChild(pEntity->getName()));
 	return dynamic_cast<Ogre::WireBoundingBox*>(aabbNode->getAttachedObject(0));
 }
+
+void ManipulatorObject::Load( rapidxml::xml_node<>* XMLNode )
+{
+	Ogre::SceneManager* pSceneMgr = ManipulatorSystem.m_pSceneMgr;
+	size_t count = Ogre::StringConverter::parseUnsignedInt(XMLNode->first_attribute("count")->value());
+	rapidxml::xml_node<>* curObjNode = XMLNode->first_node();
+
+	for (size_t i=0; i< count; ++i)
+	{
+		const String strMesh = curObjNode->first_attribute("meshname")->value();
+		const bool bIsNavMesh = Ogre::StringConverter::parseBool(curObjNode->first_attribute("isnavmesh")->value());
+		const Ogre::Vector3 pos = Ogre::StringConverter::parseVector3(curObjNode->first_attribute("position")->value());
+		const Ogre::Quaternion orient = Ogre::StringConverter::parseQuaternion(curObjNode->first_attribute("orientation")->value());
+		const Ogre::Vector3 scale = Ogre::StringConverter::parseVector3(curObjNode->first_attribute("scale")->value());
+
+		Ogre::Entity* pNewEnt = AddEntity(strMesh, pos, orient, scale);
+		assert(pNewEnt);
+
+		SetObjectNavMeshFlag(pNewEnt, bIsNavMesh);
+
+		curObjNode = curObjNode->next_sibling();
+	}
+}
+
+void ManipulatorObject::_UpdateAABBOfEntity( Ogre::Entity* pEntity )
+{
+	assert(pEntity);
+
+	Ogre::SceneNode* aabbNode = dynamic_cast<Ogre::SceneNode*>(
+		pEntity->getParentSceneNode()->getChild(pEntity->getName()));
+	Ogre::WireBoundingBox* pAABB = GetEntityAABBGizmo(pEntity);
+	pAABB->setupBoundingBox(pEntity->getWorldBoundingBox(true));
+	//避免被裁减
+	(const_cast<Ogre::AxisAlignedBox&>(pAABB->getBoundingBox())).setInfinite();
+	aabbNode->_updateBounds();
+}
+
+void ManipulatorObject::SetObjectNavMeshFlag( Ogre::Entity* pEntity, bool bIsNavMesh )
+{
+	auto iter = m_navMeshFlag.find(pEntity);
+	assert(iter != m_navMeshFlag.end());
+	iter->second = bIsNavMesh;
+}
+
+bool ManipulatorObject::GetObjectNavMeshFlag( Ogre::Entity* pEntity ) const
+{
+	auto iter = m_navMeshFlag.find(pEntity);
+	assert(iter != m_navMeshFlag.end());
+	return iter->second;
+}
+
+
+
+
 
 

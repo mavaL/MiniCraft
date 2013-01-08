@@ -1,11 +1,23 @@
-#pragma once
+/********************************************************************
+	created:	9:1:2013   1:49
+	filename: 	F:\MiniCraft\Editor\SceneEdit\Utility.h
+	author:		maval
+	
+	purpose:	杂七杂八
+*********************************************************************/
+
 #ifndef Utility_h__
 #define Utility_h__
 
 #include <string>
 
+#ifndef SAFE_DELETE
 #define SAFE_DELETE(p) { if(p) { delete p; p=NULL; } }
+#endif
+
+#ifndef SAFE_DELETE_ARRAY
 #define SAFE_DELETE_ARRAY(a) { if(p) { delete []p; p=NULL; } }
+#endif
 
 namespace Utility
 {
@@ -13,8 +25,36 @@ namespace Utility
 	std::wstring	EngineToUnicode(const std::string& src);
 	std::string		UnicodeToEngine(const WCHAR* src);
 	std::string		UnicodeToEngine(const std::wstring& src);
+
+	//截取至小数点后两位
+	std::wstring	FloatToString_CutPrecision(float f);
+	std::wstring	StringCutPrecision(const CString& strFloat);
+
+	//获取数值正负号
+	template<typename T>
+	T GetSign(T val)
+	{
+		if (val == 0)
+		{
+			return 0;
+		}
+		return val > 0 ? 1 : -1;
+	}
+
 }
 
+//编译期断言
+template<bool> struct Static_Assert;
+template<> struct Static_Assert<true> {};
+
+//注册proerty
+#define PROPERTY_REG(category, type, name, value, id)	\
+{	\
+	CXTPPropertyGridItem* pItem = category->AddChildItem(new CXTPPropertyGridItem##type(name, value));	\
+	pItem->SetID(id);								\
+	pItem->SetReadOnly(TRUE);						\
+	m_mapItem.insert(std::make_pair(id, pItem));	\
+}
 
 
 #endif // Utility_h__

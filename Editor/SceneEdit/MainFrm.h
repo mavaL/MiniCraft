@@ -4,8 +4,9 @@
 
 class CEditorView;
 class PropertyPaneTerrain;
+class PropertyPaneObject;
 
-class CMainFrame : public CXTPFrameWnd, public ManipulatorSceneEventCallback
+class CMainFrame : public CXTPFrameWnd, public ManipulatorSceneEventCallback, public ManipulatorObjectEventCallback
 {
 	
 public:
@@ -21,6 +22,8 @@ public:
 	virtual	void	OnSceneNew();
 	virtual	void	OnSceneOpen();
 	virtual void	OnSceneClose();
+
+	virtual void	OnObjectPropertyChanged(Ogre::Entity*);
 	
 #ifdef _DEBUG
 	virtual void	AssertValid() const;
@@ -80,23 +83,20 @@ private:
 	void			OnUpdateUI_NavMeshSaveObj(CCmdUI* pCmdUI);
 	void			OnUpdateUI_NavMeshSaveNavMesh(CCmdUI* pCmdUI);
 	///Object
-	void			OnObjectMove();
-	void			OnObjectRotate();
-	void			OnObjectScale();
-	void			OnObjectSelect();
-	void			OnUpdateUI_ObjectMove(CCmdUI* pCmdUI);
-	void			OnUpdateUI_ObjectRotate(CCmdUI* pCmdUI);
-	void			OnUpdateUI_ObjectScale(CCmdUI* pCmdUI);
-	void			OnUpdateUI_ObjectSelect(CCmdUI* pCmdUI);
+	template<int mode> void OnObjectEdit();
+	template<int mode> void	OnUpdateUI_ObjectEdit(CCmdUI* pCmdUI);
 
 private:
 	CXTPDockingPaneManager	m_paneManager;
 	CEditorView*			m_wndView;
-	CXTPTaskPanel			m_resourceSelector;
-	PropertyPaneTerrain*	m_propertyTerrain;
-	CXTPControlGalleryItems* m_terrainTexGallery;
-	CXTPDockingPane*		m_paneResSelector;
-	CXTPDockingPane*		m_paneProperty;
+	CXTPTaskPanel			m_resourceSelector;		//mesh选择控件
+	PropertyPaneTerrain*	m_propertyTerrain;		//地形属性面板
+	CXTPControlGalleryItems* m_terrainTexGallery;	//地形纹理控件
+	PropertyPaneObject*		m_propertyObject;		//物体属性面板
+
+	CXTPDockingPane*		m_paneResSelector;		
+	CXTPDockingPane*		m_paneTerrain;
+	CXTPDockingPane*		m_paneObject;
 };
 
 

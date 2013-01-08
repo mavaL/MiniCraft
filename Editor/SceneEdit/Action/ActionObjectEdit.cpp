@@ -61,38 +61,34 @@ void ActionObjectEdit::OnMouseMove( const SActionParam& param )
 
 	if (pGizmo->IsActive() && m_bLBDown)
 	{
-		//计算鼠标偏移量
-		Ogre::Entity* pSelEnt = manObject.GetSelection();
-		Ogre::Vector3 oldPos = pSelEnt->getParentSceneNode()->_getDerivedPosition();
-		Ogre::SceneNode* pNode = manObject.GetSelection()->getParentSceneNode();
+		Ogre::Vector3 oldPos = manObject.GetSelection()->getParentSceneNode()->_getDerivedPosition();
 
 		if(mode == ManipulatorObject::eEditMode_Move)
 		{
+			//计算鼠标偏移量
 			Ogre::Vector3 delta = _ComputeTranslateVector(ray, pGizmo->GetActiveAxis(), false);
 			//移动
 			Ogre::Vector3 newPos = delta - m_vecAdjust + oldPos;
-			pNode->_setDerivedPosition(newPos);
+			manObject.SelectionSetPosition(newPos);
 		}
 		else if (mode == ManipulatorObject::eEditMode_Rotate)
 		{
 			//旋转
-			switch (pGizmo->GetActiveAxis())
-			{
-			case eAxis_X: pNode->pitch(Ogre::Radian(param.m_ptDeltaRel.x * 15.0f)); break;
-			case eAxis_Y: pNode->yaw(Ogre::Radian(param.m_ptDeltaRel.x * 15.0f)); break;
-			case eAxis_Z: pNode->roll(Ogre::Radian(param.m_ptDeltaRel.x * 15.0f)); break;
-			}
+			manObject.SelectionRotate(param.m_ptDeltaRel.x * 15.0f);
 		}
 		else if (mode == ManipulatorObject::eEditMode_Scale)
 		{
 			//缩放
-			float scale = param.m_ptDeltaRel.x > 0 ? 1.2f : 0.8f;
+			Ogre::Vector3 scale(1, 1, 1); 
+			float axisScale = param.m_ptDeltaRel.x > 0 ? 1.1f : 0.9f;
+
 			switch (pGizmo->GetActiveAxis())
 			{
-			case eAxis_X: pNode->scale(scale, 1.0f, 1.0f); break;
-			case eAxis_Y: pNode->scale(1.0f, scale, 1.0f); break;
-			case eAxis_Z: pNode->scale(1.0f, 1.0f, scale); break;
+			case eAxis_X: scale.x = axisScale; break;
+			case eAxis_Y: scale.y = axisScale; break;
+			case eAxis_Z: scale.z = axisScale; break;
 			}
+			manObject.SelectionScale(scale);
 		}
 	}
 	else

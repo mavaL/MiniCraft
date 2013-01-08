@@ -10,7 +10,6 @@
 #define TerrainPropertyPane_h__
 
 
-#include "../resource.h"
 #include "PropertiesPane.h"
 
 

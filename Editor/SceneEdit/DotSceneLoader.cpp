@@ -119,12 +119,7 @@ void DotSceneLoader::processScene(rapidxml::xml_node<>* XMLRoot)
 //     pElement = XMLRoot->first_node("environment");
 //     if(pElement)
 //         processEnvironment(pElement);
-// 
-//     // Process nodes (?)
-//     pElement = XMLRoot->first_node("nodes");
-//     if(pElement)
-//         processNodes(pElement);
-// 
+
 //     // Process externals (?)
 //     pElement = XMLRoot->first_node("externals");
 //     if(pElement)
@@ -156,10 +151,16 @@ void DotSceneLoader::processScene(rapidxml::xml_node<>* XMLRoot)
 //         pElement = pElement->next_sibling("camera");
 //     }
 
-    // Process terrain (?)
+    //terrain
     pElement = XMLRoot->first_node("terrain");
-    if(pElement)
-        processTerrain(pElement);
+	assert(pElement);
+	processTerrain(pElement);
+
+	//objects
+	pElement = XMLRoot->first_node("objects");
+	assert(pElement);
+
+	ManipulatorSystem.GetObject().Load(pElement);	
 }
 
 void DotSceneLoader::processNodes(rapidxml::xml_node<>* XMLNode)

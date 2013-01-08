@@ -12,11 +12,16 @@ ActionObjectSelect::ActionObjectSelect()
 
 void ActionObjectSelect::Enter()
 {
-	ManipulatorSystem.GetObject().SetCurEditMode(ManipulatorObject::eEditMode_Select);
+	ManipulatorSystem.GetObject().ClearSelection();
 }
 
 void ActionObjectSelect::Leave()
 {
+	if (m_driftSelection)
+	{
+		ManipulatorSystem.GetObject().ShowEntityGizmo(m_driftSelection, false, ManipulatorObject::eEditMode_Select);
+		m_driftSelection = nullptr;
+	}
 }
 
 void ActionObjectSelect::OnMouseLButtonUp( const SActionParam& param )
@@ -42,7 +47,7 @@ void ActionObjectSelect::OnMouseMove( const SActionParam& param )
 	const Ray ray = ManipulatorSystem.m_pMainCamera->getCameraToViewportRay(param.m_ptRelative.x, param.m_ptRelative.y);
 	Entity* pCurDriftEnt = dynamic_cast<Entity*>(manObject.DoRaySceneQuery(ray, eQueryMask_Entity));
 
-	if(pCurDriftEnt == manObject.GetSelection())
+	if(manObject.GetSelection() && pCurDriftEnt == manObject.GetSelection())
 		return;
 
 	//更新drift物体包围盒指示器

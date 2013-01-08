@@ -12,19 +12,25 @@
 
 ////////////////////////////////////////////////////////////////////////
 ///逻辑事件回调器
-template<class T>
-class ManipulatorCallbackManager
+template<class TBase>
+class ManipulatorCallbackManager : public TBase
 {
 public:
 	ManipulatorCallbackManager() {}
 	virtual ~ManipulatorCallbackManager() {}
 
 public:
-	void	AddCallback(T* pCB);
-	void	RemoveCallback(T* pCB);
+	void	AddCallback(TBase* pCB);
+	void	RemoveCallback(TBase* pCB);
+	//对所有注册的监听者执行回调
+	//这样写是为了解除派生类对m_listeners的耦合
+	template<class Func> void	Excute(Func&& fun)
+	{
+		std::for_each(m_listeners.begin(), m_listeners.end(), fun);
+	}
 
-protected:
-	typedef std::list<T*>	lstListeners;
+private:
+	typedef std::list<TBase*>	lstListeners;
 	lstListeners	m_listeners;
 };
 
@@ -40,6 +46,7 @@ template<class T> void ManipulatorCallbackManager<T>::RemoveCallback( T* pCB )
 	assert(iter != m_listeners.end() && "The callback didn't registered!");
 	m_listeners.erase(iter);
 }
+
 
 ////////////////////////////////////////////////////////////////////////
 ///ManipulatorEvent回调基类
@@ -57,6 +64,14 @@ public:
 	virtual	void	OnSceneNew() {}
 	virtual	void	OnSceneOpen() {}
 	virtual void	OnSceneClose() {}
+};
+
+////////////////////////////////////////////////////////////////////////
+///ManipulatorObject回调事件
+class ManipulatorObjectEventCallback : public ManipulatorEventCallbackBase
+{
+public:
+	virtual	void	OnObjectPropertyChanged(Ogre::Entity* pEntiy) {}
 };
 
 

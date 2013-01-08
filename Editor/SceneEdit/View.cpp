@@ -5,9 +5,10 @@
 #include "stdafx.h"
 #include "SceneEdit.h"
 #include "View.h"
+#include "Utility.h"
 #include "Manipulator/ManipulatorScene.h"
 #include "Manipulator/ManipulatorObject.h"
-
+#include "Manipulator/ManipulatorAction.h"
 
 
 // CEditorView
@@ -92,8 +93,15 @@ BOOL CEditorView::OnDrop( COleDataObject* pDataObject, DROPEFFECT dropEffect, CP
 	pos.y /= (rect.bottom-rect.top);
 
 	//创建物体
-	if(!ManipulatorSystem.GetObject().AddEntity(Utility::UnicodeToEngine(meshname), pos))
+	ManipulatorObject& manObject = ManipulatorSystem.GetObject();
+	Ogre::Entity* pEnt = manObject.AddEntity(Utility::UnicodeToEngine(meshname), pos);
+	if(!pEnt)
 		return FALSE;
+
+	//激活物体移动状态
+	manObject.SetCurEditMode(ManipulatorObject::eEditMode_Move);
+	manObject.SetSelection(pEnt);
+	ManipulatorAction::GetSingleton().SetActiveAction(eActionType_ObjectEdit);
 
 	return TRUE;
 }

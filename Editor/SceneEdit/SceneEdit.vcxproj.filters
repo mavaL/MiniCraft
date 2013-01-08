@@ -270,6 +270,12 @@
     <ClInclude Include="Action\ActionObjectSelect.h">
       <Filter>EditorAction</Filter>
     </ClInclude>
+    <ClInclude Include="UI\ObjectPropertyPane.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\XTPCustomPropertyGridItem.h">
+      <Filter>UI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SceneEdit.cpp">
@@ -433,6 +439,12 @@
     </ClCompile>
     <ClCompile Include="Action\ActionObjectSelect.cpp">
       <Filter>EditorAction</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\ObjectPropertyPane.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\XTPCustomPropertyGridItem.cpp">
+      <Filter>UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

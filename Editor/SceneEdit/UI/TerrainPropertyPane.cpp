@@ -1,7 +1,9 @@
 #include "stdafx.h"
+#include "Utility.h"
 #include "TerrainPropertyPane.h"
 #include "Manipulator/ManipulatorScene.h"
 #include "EditorDefine.h"
+
 
 
 BEGIN_MESSAGE_MAP(PropertyPaneTerrain, CPropertiesPane)
@@ -9,16 +11,6 @@ BEGIN_MESSAGE_MAP(PropertyPaneTerrain, CPropertiesPane)
 	ON_WM_CREATE()
 	ON_MESSAGE(XTPWM_PROPERTYGRID_NOTIFY, OnGridNotify)
 END_MESSAGE_MAP()
-
-
-//×¢²áproerty
-#define PROPERTY_REG(category, type, name, value, id)	\
-{	\
-	CXTPPropertyGridItem* pItem = category->AddChildItem(new CXTPPropertyGridItem##type(name, value));	\
-	pItem->SetID(id);								\
-	pItem->SetReadOnly(TRUE);						\
-	m_mapItem.insert(std::make_pair(id, pItem));	\
-}
 
 
 int PropertyPaneTerrain::OnCreate( LPCREATESTRUCT lpCreateStruct )

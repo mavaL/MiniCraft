@@ -30,4 +30,27 @@ namespace Utility
 	{
 		return UnicodeToEngine(src.c_str());
 	}
+
+	std::wstring FloatToString_CutPrecision( float f )
+	{
+		std::wstring str = Utility::EngineToUnicode(Ogre::StringConverter::toString(f));
+		return StringCutPrecision(str.c_str());
+	}
+
+	std::wstring StringCutPrecision( const CString& strFloat )
+	{
+		assert(Ogre::StringConverter::parseReal(UnicodeToEngine(strFloat), 10000) != 10000 && "Error! Input string invalid.");
+
+		std::wstring str = strFloat;
+		size_t cutPos = str.find('.');
+		if(cutPos != std::wstring::npos)
+		{
+			cutPos += 3;
+			if (cutPos < str.length()-1)
+				str = str.substr(0, cutPos);
+		}
+
+		return str;
+	}
+
 }

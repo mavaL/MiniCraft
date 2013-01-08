@@ -8,11 +8,12 @@ String
 #include "MainFrm.h"
 #include "View.h"
 #include "EditorDefine.h"
+#include "Utility.h"
 #include "Manipulator/ManipulatorScene.h"
 #include "Manipulator/ManipulatorAction.h"
 #include "Action/ActionBase.h"
 #include "UI/TerrainPropertyPane.h"
-
+#include "UI/ObjectPropertyPane.h"
 
 
 // CMainFrame
@@ -51,33 +52,33 @@ BEGIN_MESSAGE_MAP(CMainFrame, CXTPFrameWnd)
 	ON_UPDATE_COMMAND_UI(IDC_NavMesh_Generate, OnUpdateUI_NavMeshGenerate)
 	ON_UPDATE_COMMAND_UI(IDC_NavMesh_SaveObj, OnUpdateUI_NavMeshSaveObj)
 	ON_UPDATE_COMMAND_UI(IDC_NavMesh_SaveNavMesh, OnUpdateUI_NavMeshSaveNavMesh)
-	ON_COMMAND(IDC_Object_Move, OnObjectMove)
-	ON_COMMAND(IDC_Object_Rotate, OnObjectRotate)
-	ON_COMMAND(IDC_Object_Scale, OnObjectScale)
-	ON_COMMAND(IDC_Object_Select, OnObjectSelect)
-	ON_UPDATE_COMMAND_UI(IDC_Object_Move, OnUpdateUI_ObjectMove)
-	ON_UPDATE_COMMAND_UI(IDC_Object_Rotate, OnUpdateUI_ObjectRotate)
-	ON_UPDATE_COMMAND_UI(IDC_Object_Scale, OnUpdateUI_ObjectScale)
-	ON_UPDATE_COMMAND_UI(IDC_Object_Select, OnUpdateUI_ObjectSelect)
+	ON_COMMAND(IDC_Object_Move, OnObjectEdit<ManipulatorObject::eEditMode_Move>)
+	ON_COMMAND(IDC_Object_Rotate, OnObjectEdit<ManipulatorObject::eEditMode_Rotate>)
+	ON_COMMAND(IDC_Object_Scale, OnObjectEdit<ManipulatorObject::eEditMode_Scale>)
+	ON_COMMAND(IDC_Object_Select, OnObjectEdit<ManipulatorObject::eEditMode_Select>)
+	ON_UPDATE_COMMAND_UI(IDC_Object_Move, OnUpdateUI_ObjectEdit<ManipulatorObject::eEditMode_Move>)
+	ON_UPDATE_COMMAND_UI(IDC_Object_Rotate, OnUpdateUI_ObjectEdit<ManipulatorObject::eEditMode_Rotate>)
+	ON_UPDATE_COMMAND_UI(IDC_Object_Scale, OnUpdateUI_ObjectEdit<ManipulatorObject::eEditMode_Scale>)
+	ON_UPDATE_COMMAND_UI(IDC_Object_Select, OnUpdateUI_ObjectEdit<ManipulatorObject::eEditMode_Select>)
 END_MESSAGE_MAP()
 
-
-// CMainFrame ¹¹Ôì/Îö¹¹
 
 CMainFrame::CMainFrame()
 :m_wndView(NULL)
 ,m_propertyTerrain(new PropertyPaneTerrain)
 ,m_terrainTexGallery(NULL)
 ,m_paneResSelector(NULL)
-,m_paneProperty(NULL)
+,m_paneTerrain(NULL)
+,m_propertyObject(new PropertyPaneObject)
+,m_paneObject(NULL)
 {
 }
 
 CMainFrame::~CMainFrame()
 {
-	ManipulatorSystem.RemoveCallback(this);
 	SAFE_DELETE(m_propertyTerrain);
 	SAFE_DELETE(m_wndView);
+	SAFE_DELETE(m_propertyObject);
 }
 
 int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
@@ -137,6 +138,9 @@ BOOL CMainFrame::OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERINFO*
 
 void CMainFrame::OnClose()
 {
+	ManipulatorSystem.GetObject().RemoveCallback(this);
+	ManipulatorScene::GetSingleton().RemoveCallback(this);
+
 	KillTimer(0);
 
 	CSceneEditApp* app = (CSceneEditApp*)AfxGetApp();
@@ -291,7 +295,8 @@ void CMainFrame::OnTimer( UINT_PTR nIDEvent )
 	static bool bInitLayout = false;
 	if (!bInitLayout)
 	{
-		m_paneManager.AttachPane(m_paneProperty, m_paneResSelector);
+		m_paneManager.AttachPane(m_paneTerrain, m_paneResSelector);
+		m_paneManager.AttachPane(m_paneObject, m_paneResSelector);
 		bInitLayout = true;
 	}
 
@@ -312,7 +317,8 @@ void CMainFrame::_CreateDockPane()
 	m_paneManager.SetDefaultPaneOptions(xtpPaneNoHideable);
 
 	m_paneResSelector = m_paneManager.CreatePane(IDR_Pane_ResourceSelector, CRect(0, 0, 250, 120), xtpPaneDockRight);
-	m_paneProperty = m_paneManager.CreatePane(IDR_Pane_TerrainProperty, CRect(0, 0, 180, 140), xtpPaneDockRight);
+	m_paneTerrain = m_paneManager.CreatePane(IDR_Pane_TerrainProperty, CRect(0, 0, 250, 120), xtpPaneDockRight);
+	m_paneObject = m_paneManager.CreatePane(IDR_Pane_ObjectProperty, CRect(0, 0, 250, 120), xtpPaneDockRight);
 }
 
 LRESULT CMainFrame::_AttachDockPane( WPARAM wParam, LPARAM lParam )
@@ -331,6 +337,10 @@ LRESULT CMainFrame::_AttachDockPane( WPARAM wParam, LPARAM lParam )
 
 			case IDR_Pane_TerrainProperty:
 				pPane->Attach(m_propertyTerrain);
+				break;
+
+			case IDR_Pane_ObjectProperty:
+				pPane->Attach(m_propertyObject);
 				break;
 
 			default: assert(0);
@@ -409,12 +419,16 @@ bool CMainFrame::CreateEditorMainUI()
 	if(!_CreateMeshPanel(iconList, meshNames))
 		return FALSE;
 
-	m_propertyTerrain->Create(L"STATIC", NULL, WS_CHILD|WS_VISIBLE|WS_CLIPCHILDREN|WS_CLIPSIBLINGS, CXTPEmptyRect(), this, 0);
+	m_propertyTerrain->Create(L"STATIC", NULL, WS_CHILD|WS_VISIBLE|WS_CLIPCHILDREN|WS_CLIPSIBLINGS, CXTPEmptyRect(), this, IDR_Pane_TerrainProperty);
+	m_propertyObject->Create(L"STATIC", NULL, WS_CHILD|WS_VISIBLE|WS_CLIPCHILDREN|WS_CLIPSIBLINGS, CXTPEmptyRect(), this, IDR_Pane_ObjectProperty);
+
 	m_propertyTerrain->m_wndPropertyGrid.SetTheme(xtpGridThemeVisualStudio2010);
+	m_propertyObject->m_wndPropertyGrid.SetTheme(xtpGridThemeVisualStudio2010);
 
 	_CreateDockPane();
 
-	ManipulatorSystem.AddCallback(this);
+	ManipulatorScene::GetSingleton().AddCallback(this);
+	ManipulatorSystem.GetObject().AddCallback(this);
 
 	return true;
 }
@@ -434,6 +448,7 @@ void CMainFrame::OnSceneOpen()
 void CMainFrame::OnSceneClose()
 {
 	m_propertyTerrain->EnableMutableProperty(FALSE);
+	m_propertyObject->EnableMutableProperty(FALSE);
 }
 
 void CMainFrame::OnUpdateUI_TerrainBrushSize1( CCmdUI* pCmdUI )
@@ -691,89 +706,49 @@ void CMainFrame::OnUpdateUI_NavMeshSaveNavMesh( CCmdUI* pCmdUI )
 	pCmdUI->Enable(ManipulatorSystem.GetNavMesh().HasGenerate());
 }
 
-void CMainFrame::OnObjectMove()
-{
-	bool bActive = ManipulatorSystem.GetObject().GetCurEditMode() == ManipulatorObject::eEditMode_Move;
-	bActive = !bActive;
-	eActionType action = bActive ? eActionType_ObjectEdit : eActionType_None;
-	ManipulatorSystem.GetObject().SetCurEditMode(bActive?ManipulatorObject::eEditMode_Move:ManipulatorObject::eEditMode_None);
-	ManipulatorAction::GetSingleton().SetActiveAction(action);
-}
-
-void CMainFrame::OnObjectRotate()
-{
-	bool bActive = ManipulatorSystem.GetObject().GetCurEditMode() == ManipulatorObject::eEditMode_Rotate;
-	bActive = !bActive;
-	eActionType action = bActive ? eActionType_ObjectEdit : eActionType_None;
-	ManipulatorSystem.GetObject().SetCurEditMode(bActive?ManipulatorObject::eEditMode_Rotate:ManipulatorObject::eEditMode_None);
-	ManipulatorAction::GetSingleton().SetActiveAction(action);
-}
-
-void CMainFrame::OnObjectScale()
-{
-	bool bActive = ManipulatorSystem.GetObject().GetCurEditMode() == ManipulatorObject::eEditMode_Scale;
-	bActive = !bActive;
-	eActionType action = bActive ? eActionType_ObjectEdit : eActionType_None;
-	ManipulatorSystem.GetObject().SetCurEditMode(bActive?ManipulatorObject::eEditMode_Scale:ManipulatorObject::eEditMode_None);
-	ManipulatorAction::GetSingleton().SetActiveAction(action);
-}
-
-void CMainFrame::OnUpdateUI_ObjectMove( CCmdUI* pCmdUI )
+template<int mode>
+void CMainFrame::OnUpdateUI_ObjectEdit( CCmdUI* pCmdUI )
 {
 	if(!ManipulatorSystem.GetIsSceneReady())
 	{
 		pCmdUI->Enable(FALSE);
 		return;
 	}
-	pCmdUI->Enable(TRUE);
 
-	bool bActive = ManipulatorSystem.GetObject().GetCurEditMode() == ManipulatorObject::eEditMode_Move;
+	if(mode == ManipulatorObject::eEditMode_Select)
+		pCmdUI->Enable(TRUE);
+	else
+		pCmdUI->Enable(ManipulatorSystem.GetObject().GetSelection() != nullptr);
+
+	bool bActive = ManipulatorSystem.GetObject().GetCurEditMode() == mode;
 	pCmdUI->SetCheck(bActive);
 }
 
-void CMainFrame::OnUpdateUI_ObjectRotate( CCmdUI* pCmdUI )
+template<int mode>
+void CMainFrame::OnObjectEdit()
 {
-	if(!ManipulatorSystem.GetIsSceneReady())
-	{
-		pCmdUI->Enable(FALSE);
-		return;
-	}
-	pCmdUI->Enable(TRUE);
-
-	bool bActive = ManipulatorSystem.GetObject().GetCurEditMode() == ManipulatorObject::eEditMode_Rotate;
-	pCmdUI->SetCheck(bActive);
-}
-
-void CMainFrame::OnUpdateUI_ObjectScale( CCmdUI* pCmdUI )
-{
-	if(!ManipulatorSystem.GetIsSceneReady())
-	{
-		pCmdUI->Enable(FALSE);
-		return;
-	}
-	pCmdUI->Enable(TRUE);
-
-	bool bActive = ManipulatorSystem.GetObject().GetCurEditMode() == ManipulatorObject::eEditMode_Scale;
-	pCmdUI->SetCheck(bActive);
-}
-
-void CMainFrame::OnObjectSelect()
-{
-	bool bActive = ManipulatorSystem.GetObject().GetCurEditMode() == ManipulatorObject::eEditMode_Select;
+	bool bActive = ManipulatorSystem.GetObject().GetCurEditMode() == mode;
 	bActive = !bActive;
-	eActionType action = bActive ? eActionType_ObjectSelect : eActionType_None;
+
+	eActionType action;
+	if(mode == ManipulatorObject::eEditMode_Select)
+		action = bActive ? eActionType_ObjectSelect : eActionType_None;
+	else 
+		action = bActive ? eActionType_ObjectEdit : eActionType_None;
+
+	ManipulatorSystem.GetObject().SetCurEditMode((ManipulatorObject::eEditMode)mode);
 	ManipulatorAction::GetSingleton().SetActiveAction(action);
 }
 
-void CMainFrame::OnUpdateUI_ObjectSelect( CCmdUI* pCmdUI )
+void CMainFrame::OnObjectPropertyChanged( Ogre::Entity* )
 {
-	if(!ManipulatorSystem.GetIsSceneReady())
+	if(!ManipulatorSystem.GetObject().GetSelection())
 	{
-		pCmdUI->Enable(FALSE);
-		return;
+		m_propertyObject->EnableMutableProperty(FALSE);
 	}
-	pCmdUI->Enable(TRUE);
-
-	bool bActive = ManipulatorSystem.GetObject().GetCurEditMode() == ManipulatorObject::eEditMode_Select;
-	pCmdUI->SetCheck(bActive);
+	else
+	{
+		m_propertyObject->UpdateAllFromEngine();
+		m_propertyObject->EnableMutableProperty(TRUE);
+	}	
 }

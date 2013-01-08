@@ -2,6 +2,7 @@
 #include "ManipulatorNavMesh.h"
 #include "EditorDefine.h"
 #include "ManipulatorScene.h"
+#include "Utility.h"
 
 
 ManipulatorNavMesh::ManipulatorNavMesh()

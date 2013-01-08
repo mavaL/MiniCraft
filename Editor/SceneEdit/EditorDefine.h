@@ -3,13 +3,11 @@
 	filename: 	F:\MiniCraft\Editor\SceneEdit\EditorDefine.h
 	author:		maval
 	
-	purpose:	常量参数配置
+	purpose:	常量定义
 *********************************************************************/
 
 #ifndef EditorDefine_h__
 #define EditorDefine_h__
-
-
 
 
 const	float	SCENE_VERSION	=	0.1f;	//当前.scene版本号,注意与客户端同步

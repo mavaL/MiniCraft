@@ -24,7 +24,6 @@
 #include <afxwin.h>         // MFC 核心组件和标准组件
 #include <afxext.h>         // MFC 扩展
 
-#include "Utility.h"
 
 //Ogre
 #include <Ogre.h>
@@ -62,16 +61,6 @@ using Ogre::Vector3;
 #ifndef min
 #define min(a,b)            (((a) < (b)) ? (a) : (b))
 #endif
-
-template<typename T>
-T GetSign(T val)
-{
-	if (val == 0)
-	{
-		return 0;
-	}
-	return val > 0 ? 1 : -1;
-}
 
 
 //XTP
