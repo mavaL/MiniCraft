@@ -1,0 +1,17 @@
+material SelectionQuad
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+            scene_blend src_colour one_minus_src_colour
+            depth_check off
+            
+            texture_unit
+            {
+                texture green1x1.png
+            }
+		}
+	}
+}

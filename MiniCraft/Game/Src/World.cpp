@@ -135,7 +135,8 @@ void World::LoadTerrain( rapidxml::xml_node<>* XMLNode )
 	//     l->setSpecularColour(Ogre::ColourValue(0.4, 0.4, 0.4));
 
 	m_terrainOption->setMaxPixelError((Ogre::Real)maxPixelError);
-	//m_terrainOption->setCompositeMapDistance((Ogre::Real)compositeMapDistance);
+	m_terrainOption->setCompositeMapDistance(3000);
+	m_terrainOption->setUseRayBoxDistanceCalculation(true);
 	// mTerrainGlobalOptions->setLightMapDirection(lightdir);
 	m_terrainOption->setCompositeMapAmbient(m_pSceneMgr->getAmbientLight());
 	//mTerrainGlobalOptions->setCompositeMapDiffuse(l->getDiffuseColour());

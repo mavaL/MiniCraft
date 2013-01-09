@@ -44,6 +44,7 @@ public:
 	eEditMode	GetCurEditMode() const { return m_curEditMode; }
 	void		SetCurEditMode(eEditMode mode) { m_curEditMode = mode; }
 	const ObjectContainer&	GetAllObjects() const { return m_objects; }
+	const ObjectNavMeshFlagMap&	GetObjNavMeshFlagMap() const { return m_navMeshFlag; }
 
 	//´´½¨Entity
 	Ogre::Entity* AddEntity(const Ogre::String& meshname, const Ogre::Vector3& worldPos, 

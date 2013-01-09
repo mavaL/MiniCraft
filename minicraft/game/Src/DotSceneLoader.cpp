@@ -143,8 +143,31 @@ void DotSceneLoader::processScene(rapidxml::xml_node<>* XMLRoot)
 
     // Process terrain (?)
     pElement = XMLRoot->first_node("terrain");
-    if(pElement)
-        processTerrain(pElement);
+    assert(pElement);
+	processTerrain(pElement);
+
+	pElement = XMLRoot->first_node("objects");
+	assert(pElement);
+
+	size_t count = Ogre::StringConverter::parseUnsignedInt(pElement->first_attribute("count")->value());
+	rapidxml::xml_node<>* curObjNode = pElement->first_node();
+
+	for (size_t i=0; i< count; ++i)
+	{
+		const Ogre::String strMesh = curObjNode->first_attribute("meshname")->value();
+		const Ogre::Vector3 pos = Ogre::StringConverter::parseVector3(curObjNode->first_attribute("position")->value());
+		const Ogre::Quaternion orient = Ogre::StringConverter::parseQuaternion(curObjNode->first_attribute("orientation")->value());
+		const Ogre::Vector3 scale = Ogre::StringConverter::parseVector3(curObjNode->first_attribute("scale")->value());
+
+		Ogre::Entity* entity = mSceneMgr->createEntity(strMesh);
+		assert(entity);
+
+		Ogre::SceneNode* pNode = mSceneMgr->getRootSceneNode()->createChildSceneNode(pos, orient);
+		pNode->setScale(scale);
+		pNode->attachObject(entity);
+
+		curObjNode = curObjNode->next_sibling();
+	}
 }
 
 void DotSceneLoader::processNodes(rapidxml::xml_node<>* XMLNode)

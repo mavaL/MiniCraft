@@ -1,1 +1,8 @@
-coming soon.
+1.Study on map editor of RTS games like War3, MegaGlest, Spring.
+In order to learn how a RTS map editor should be and how to implement it.	[0%]
+
+2.Improve rendering appearance continuously(Shadow, lightmap and so on).	[0%]
+
+3.Implement fog of war.								[0%]
+
+4.Build maps by imitating maps of War3 and MegaGlest. 				[0%]

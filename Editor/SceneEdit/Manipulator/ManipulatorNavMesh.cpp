@@ -31,7 +31,16 @@ void ManipulatorNavMesh::Generate()
 	ManipulatorTerrain& manTerrain = ManipulatorSystem.GetTerrain();
 	try
 	{
-		m_pInputGeom = new InputGeom(manTerrain.m_terrainGroup);
+		//获取参与构建NavMesh的物体
+		const auto& objFlagMap = ManipulatorSystem.GetObject().GetObjNavMeshFlagMap();
+		std::vector<Ogre::Entity*> vecNavMeshEnt;
+		for (auto iter=objFlagMap.begin(); iter!=objFlagMap.end(); ++iter)
+		{
+			if(iter->second)
+				vecNavMeshEnt.push_back(iter->first);
+		}
+
+		m_pInputGeom = new InputGeom(manTerrain.m_terrainGroup, vecNavMeshEnt);
 		//pGeom->debugMesh(pSceneMgr);
 
 		if(!m_pDetourTileCache->TileCacheBuild(m_pInputGeom))

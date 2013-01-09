@@ -86,9 +86,9 @@ void ManipulatorTerrain::_ConfigureTerrainDefaults()
 
 	m_terrainOption->setMaxPixelError(8);
 	m_terrainOption->setCompositeMapDistance(3000);
-	//mTerrainGlobals->setUseRayBoxDistanceCalculation(true);
+	m_terrainOption->setUseRayBoxDistanceCalculation(true);
 	//m_terrainOption->getDefaultMaterialGenerator()->setDebugLevel(1);
-	m_terrainOption->setLightMapSize(128);
+	m_terrainOption->setLightMapSize(512);
 
 	//matProfile->setLightmapEnabled(false);
 	// Important to set these so that the terrain knows what to use for derived (non-realtime) data
@@ -147,7 +147,8 @@ void ManipulatorTerrain::Load( rapidxml::xml_node<>* XMLNode )
 	//     l->setSpecularColour(Ogre::ColourValue(0.4, 0.4, 0.4));
 
 	m_terrainOption->setMaxPixelError((Ogre::Real)maxPixelError);
-	//m_terrainOption->setCompositeMapDistance((Ogre::Real)compositeMapDistance);
+	m_terrainOption->setCompositeMapDistance(3000);
+	m_terrainOption->setUseRayBoxDistanceCalculation(true);
 	// mTerrainGlobalOptions->setLightMapDirection(lightdir);
 	m_terrainOption->setCompositeMapAmbient(ManipulatorSystem.m_pSceneMgr->getAmbientLight());
 	//mTerrainGlobalOptions->setCompositeMapDiffuse(l->getDiffuseColour());
