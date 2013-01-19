@@ -14,6 +14,7 @@
 #include "ManipulatorTerrain.h"
 #include "ManipulatorEventCallback.h"
 #include "ManipulatorNavMesh.h"
+#include "ManipulatorCamera.h"
 
 namespace Ogre
 {
@@ -51,9 +52,10 @@ public:
 	//包括场景文件夹的名字(带\\)
 	const std::wstring	GenerateSceneFullPath();
 
-	ManipulatorTerrain&	GetTerrain()	{ return *m_manipulatorTerrain; }
-	ManipulatorObject&	GetObject()		{ return *m_manipulatorObject; }
-	ManipulatorNavMesh&	GetNavMesh()	{ return *m_manipulatorNavMesh; }
+	ManipulatorTerrain&		GetTerrain()	{ return *m_manipulatorTerrain; }
+	ManipulatorObject&		GetObject()		{ return *m_manipulatorObject; }
+	ManipulatorNavMesh&		GetNavMesh()	{ return *m_manipulatorNavMesh; }
+	ManipulatorCamera&		GetCamera()		{ return *m_manipulatorCamera; }
 
 private:
 	std::wstring		m_scenePath;
@@ -64,6 +66,7 @@ private:
 	ManipulatorTerrain*	m_manipulatorTerrain;
 	ManipulatorObject*	m_manipulatorObject;
 	ManipulatorNavMesh*	m_manipulatorNavMesh;
+	ManipulatorCamera*	m_manipulatorCamera;
 };
 
 #define	ManipulatorSystem	ManipulatorScene::GetSingleton()

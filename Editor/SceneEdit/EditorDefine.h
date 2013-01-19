@@ -36,5 +36,12 @@ enum eAxis
 	eAxis_None
 };
 
+//ÉãÏñ»úÀàĞÍ
+enum eCameraType
+{
+	eCameraType_RTS,
+	eCameraType_ModelViewer
+};
+
 
 #endif // EditorDefine_h__

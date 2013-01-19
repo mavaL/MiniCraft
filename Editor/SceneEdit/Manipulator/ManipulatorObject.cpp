@@ -4,12 +4,15 @@
 #include "ManipulatorScene.h"
 #include "ManipulatorAction.h"
 #include "Gizmo.h"
+#include "Utility.h"
 #include <OgreWireBoundingBox.h>
 
 
 ManipulatorObject::ManipulatorObject()
 :m_curEditMode(eEditMode_None)
 ,m_pSelectEntity(nullptr)
+,m_pAnimEntity(nullptr)
+,m_pAnimState(nullptr)
 {
 	ManipulatorScene::GetSingleton().AddCallback(this);
 	m_pGizmoAixs = new GizmoAxis;
@@ -37,6 +40,8 @@ void ManipulatorObject::OnSceneClose()
 {
 	m_curEditMode = eEditMode_None; 
 	m_pSelectEntity = nullptr;
+	m_pAnimEntity = nullptr;
+	m_pAnimState = nullptr;
 	m_objects.clear();
 	m_navMeshFlag.clear();
 }
@@ -106,7 +111,7 @@ void ManipulatorObject::SetSelection( Ogre::Entity* pEnt )
 	m_pSelectEntity = pEnt;
 
 	//回调事件
-	Excute([this](ManipulatorObjectEventCallback* callback){ callback->OnObjectPropertyChanged(m_pSelectEntity); });
+	Excute([this](ManipulatorObjectEventCallback* callback){ callback->OnObjectSetSelection(m_pSelectEntity); });
 }
 
 void ManipulatorObject::ShowEntityGizmo(Ogre::Entity* pEntity, bool bShow, eEditMode mode, bool bDrift/* = false*/)
@@ -216,10 +221,11 @@ void ManipulatorObject::ClearSelection()
 		//隐藏所有gizmo
 		ShowEntityGizmo(m_pSelectEntity, false, eEditMode_Select);
 		ShowEntityGizmo(m_pSelectEntity, false, eEditMode_Move);
+		Ogre::Entity* pSelection = m_pSelectEntity;
 		m_pSelectEntity = nullptr;
 
 		//回调事件
-		Excute([this](ManipulatorObjectEventCallback* callback){ callback->OnObjectPropertyChanged(m_pSelectEntity); });
+		Excute([=,this](ManipulatorObjectEventCallback* callback){ callback->OnObjectClearSelection(pSelection); });
 	}
 }
 
@@ -228,6 +234,10 @@ void ManipulatorObject::OnFrameMove( float dt )
 	//更新选中物体的包围盒
 	if (m_pSelectEntity)
 		_UpdateAABBOfEntity(m_pSelectEntity);
+
+	//更新动画
+	if(m_pAnimState)
+		m_pAnimState->addTime(dt);
 }
 
 Ogre::WireBoundingBox* ManipulatorObject::GetEntityAABBGizmo(Ogre::Entity* pEntity)
@@ -285,6 +295,48 @@ bool ManipulatorObject::GetObjectNavMeshFlag( Ogre::Entity* pEntity ) const
 	auto iter = m_navMeshFlag.find(pEntity);
 	assert(iter != m_navMeshFlag.end());
 	return iter->second;
+}
+
+std::vector<std::wstring> ManipulatorObject::GetAnimationNames( Ogre::Entity* pEntity ) const
+{
+	assert(pEntity);
+	std::vector<std::wstring> vecRet;
+	Ogre::Skeleton* pSkeleton = pEntity->getSkeleton();
+
+	vecRet.push_back(L"None");
+
+	//没有可用动画
+	if(!pSkeleton || pSkeleton->getNumAnimations()==0)
+		return vecRet;
+
+	for(size_t i=0; i<pSkeleton->getNumAnimations(); ++i)
+		vecRet.push_back(Utility::EngineToUnicode(pSkeleton->getAnimation(i)->getName()));
+
+	return vecRet;
+}
+
+void ManipulatorObject::PlayAnimation( Ogre::Entity* pEntity, int animIndex )
+{
+	assert(pEntity);
+
+	//停止之前的动画
+	if (m_pAnimState)
+	{
+		m_pAnimState->setEnabled(false);
+		m_pAnimEntity = nullptr;
+		m_pAnimState = nullptr;
+	}
+
+	if (animIndex != -1)
+	{
+		const Ogre::String& animName = pEntity->getSkeleton()->getAnimation(animIndex)->getName();
+		m_pAnimEntity = pEntity;
+		m_pAnimState = pEntity->getAnimationState(animName);
+		assert(m_pAnimState);
+
+		m_pAnimState->setEnabled(true);
+		m_pAnimState->setLoop(true);
+	}
 }
 
 

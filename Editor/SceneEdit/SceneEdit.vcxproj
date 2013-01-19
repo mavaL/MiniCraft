@@ -155,6 +155,7 @@
     <ClInclude Include="Gizmo.h" />
     <ClInclude Include="MainFrm.h" />
     <ClInclude Include="Manipulator\ManipulatorAction.h" />
+    <ClInclude Include="Manipulator\ManipulatorCamera.h" />
     <ClInclude Include="Manipulator\ManipulatorEventCallback.h" />
     <ClInclude Include="Manipulator\ManipulatorNavMesh.h" />
     <ClInclude Include="Manipulator\ManipulatorObject.h" />
@@ -283,6 +284,7 @@
     <ClCompile Include="Gizmo.cpp" />
     <ClCompile Include="MainFrm.cpp" />
     <ClCompile Include="Manipulator\ManipulatorAction.cpp" />
+    <ClCompile Include="Manipulator\ManipulatorCamera..cpp" />
     <ClCompile Include="Manipulator\ManipulatorNavMesh.cpp" />
     <ClCompile Include="Manipulator\ManipulatorObject.cpp" />
     <ClCompile Include="Manipulator\ManipulatorScene.cpp" />

@@ -11,7 +11,6 @@
 
 #include <Ogre.h>
 
-
 using namespace Ogre;
 
 struct SActionParam;
@@ -41,6 +40,7 @@ public:
 	void		OnRButtonDown(const POINT& pt);
 	void		OnRButtonUp(const POINT& pt);
 	void		OnMouseMove(const POINT& pt);
+	void		OnMouseWheel(short nNotch);
 
 private:
 	void		_InitOgre(int width, int height, HWND hwnd, HWND hParent);
@@ -49,9 +49,6 @@ private:
 
 	RenderWindow*		m_pRenderWnd;
 	Root*				m_pRoot;
-	Camera*				m_pMainCam;
-	SceneManager*		m_pSceneMgr;
-	bool				m_bRBDown;
 };
 
 

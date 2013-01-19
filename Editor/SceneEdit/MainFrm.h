@@ -23,6 +23,8 @@ public:
 	virtual	void	OnSceneOpen();
 	virtual void	OnSceneClose();
 
+	virtual void	OnObjectSetSelection(Ogre::Entity* pObject);
+	virtual void	OnObjectClearSelection(Ogre::Entity* pObject);
 	virtual void	OnObjectPropertyChanged(Ogre::Entity*);
 	
 #ifdef _DEBUG
@@ -85,6 +87,9 @@ private:
 	///Object
 	template<int mode> void OnObjectEdit();
 	template<int mode> void	OnUpdateUI_ObjectEdit(CCmdUI* pCmdUI);
+	///Animation
+	void			OnUpdateUI_AnimNames(CCmdUI* pCmdUI);
+	void			OnAnimSelectChange(NMHDR* pNMHDR, LRESULT* pResult);
 
 private:
 	CXTPDockingPaneManager	m_paneManager;
@@ -93,6 +98,7 @@ private:
 	PropertyPaneTerrain*	m_propertyTerrain;		//地形属性面板
 	CXTPControlGalleryItems* m_terrainTexGallery;	//地形纹理控件
 	PropertyPaneObject*		m_propertyObject;		//物体属性面板
+	CXTPRibbonTab*			m_animTab;
 
 	CXTPDockingPane*		m_paneResSelector;		
 	CXTPDockingPane*		m_paneTerrain;

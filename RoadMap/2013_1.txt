@@ -1,5 +1,7 @@
 1.Study on map editor of RTS games like War3, MegaGlest, Spring.
-In order to learn how a RTS map editor should be and how to implement it.	[0%]
+In order to learn how a RTS map editor should be and how to implement it.	[30%]
+
+Since I have figure out how to make use of StarCraft2 resources with Ogre, I decide to imitate the SC2 editor and game~~
 
 2.Improve rendering appearance continuously(Shadow, lightmap and so on).	[0%]
 

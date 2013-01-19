@@ -276,6 +276,9 @@
     <ClInclude Include="UI\XTPCustomPropertyGridItem.h">
       <Filter>UI</Filter>
     </ClInclude>
+    <ClInclude Include="Manipulator\ManipulatorCamera.h">
+      <Filter>Manipulator</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SceneEdit.cpp">
@@ -445,6 +448,9 @@
     </ClCompile>
     <ClCompile Include="UI\XTPCustomPropertyGridItem.cpp">
       <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Manipulator\ManipulatorCamera..cpp">
+      <Filter>Manipulator</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

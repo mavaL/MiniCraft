@@ -71,7 +71,9 @@ public:
 class ManipulatorObjectEventCallback : public ManipulatorEventCallbackBase
 {
 public:
-	virtual	void	OnObjectPropertyChanged(Ogre::Entity* pEntiy) {}
+	virtual void	OnObjectSetSelection(Ogre::Entity* pObject) {}
+	virtual void	OnObjectClearSelection(Ogre::Entity* pObject) {}
+	virtual	void	OnObjectPropertyChanged(Ogre::Entity* pObject) {}
 };
 
 

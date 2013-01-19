@@ -29,6 +29,8 @@ void ManipulatorScene::Init()
 	m_manipulatorTerrain = new ManipulatorTerrain;
 	m_manipulatorObject = new ManipulatorObject;
 	m_manipulatorNavMesh = new ManipulatorNavMesh;
+	assert(m_pMainCamera);
+	m_manipulatorCamera = new ManipulatorCamera(m_pMainCamera);
 }
 
 void ManipulatorScene::Shutdown()

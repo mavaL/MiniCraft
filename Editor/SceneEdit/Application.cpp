@@ -10,19 +10,13 @@
 
 Application::Application()
 :m_pRoot(nullptr)
-,m_pMainCam(nullptr)
-,m_pSceneMgr(nullptr)
 ,m_pRenderWnd(nullptr)
-,m_bRBDown(false)
 {
-
 }
 
 void Application::Init( int width, int height, HWND hwnd, HWND hParent )
 {
 	_InitOgre(width, height, hwnd, hParent);
-	ManipulatorSystem.m_pSceneMgr = m_pSceneMgr;
-	ManipulatorSystem.m_pMainCamera = m_pMainCam;
 	ManipulatorSystem.Init();
 }
 
@@ -66,19 +60,20 @@ void Application::_InitOgre(int width, int height, HWND hwnd, HWND hParent)
 
 	m_pRoot->initialise(false);
 
-	m_pSceneMgr = m_pRoot->createSceneManager(ST_GENERIC, SCENE_MANAGER_NAME);
-	m_pMainCam = m_pSceneMgr->createCamera(MAIN_CAMERA_NAME);
+	Ogre::SceneManager* pSceneMgr = m_pRoot->createSceneManager(ST_GENERIC, SCENE_MANAGER_NAME);
+	Ogre::Camera* pCamera = pSceneMgr->createCamera(MAIN_CAMERA_NAME);
+
+	ManipulatorSystem.m_pSceneMgr = pSceneMgr;
+	ManipulatorSystem.m_pMainCamera = pCamera;
 
 	NameValuePairList params;
 	params["externalWindowHandle"] = StringConverter::toString((unsigned int)hwnd);
 	params["parentWindowHandle"] = StringConverter::toString((unsigned int)hParent);
 	m_pRenderWnd = m_pRoot->createRenderWindow("MainWindow", width, height, false, &params);
 
-	Viewport* vp = m_pRenderWnd->addViewport(m_pMainCam);
+	Viewport* vp = m_pRenderWnd->addViewport(pCamera);
 	vp->setBackgroundColour(Ogre::ColourValue(0,0,0));
-	m_pMainCam->setAspectRatio((Ogre::Real)vp->getActualWidth() / (Ogre::Real)vp->getActualHeight());
-	m_pMainCam->setNearClipDistance(5);
-	m_pMainCam->setFixedYawAxis(true);
+	pCamera->setAspectRatio((Ogre::Real)vp->getActualWidth() / (Ogre::Real)vp->getActualHeight());
 
 	// Set default mipmap level (NB some APIs ignore this)
 	Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);
@@ -154,22 +149,15 @@ void Application::SceneSave()
 void Application::SceneClose()
 {
 	ManipulatorSystem.SceneClose();
-
-	//重置摄像机
-	m_pMainCam->setNearClipDistance(0.1f);
-	//m_pMainCam->setFOVy()
-	m_pMainCam->setFarClipDistance(500);
-	m_pMainCam->setPosition(0,100,0);
-	m_pMainCam->lookAt(0,0,20);
 }
 
 void Application::OnViewportResized()
 {
-	if (m_pMainCam)
+	if (ManipulatorSystem.m_pMainCamera)
 	{	
 		//设备丢失
 		m_pRenderWnd->windowMovedOrResized();	
-		m_pMainCam->setAspectRatio(m_pRenderWnd->getWidth()/(float)m_pRenderWnd->getHeight()); 
+		ManipulatorSystem.m_pMainCamera->setAspectRatio(m_pRenderWnd->getWidth()/(float)m_pRenderWnd->getHeight()); 
 		//reset 设备
 		m_pRenderWnd->update();	
 	}
@@ -269,33 +257,6 @@ void Application::_UpdateInput(float dt)
 	//取消当前编辑器激活状态
 	if(GetAsyncKeyState(VK_ESCAPE) < 0)
 		ManipulatorAction::GetSingleton().SetActiveAction(eActionType_None);
-
-	POINT curPos;
-	GetCursorPos(&curPos);
-
-	static POINT lastPos = curPos;
-
-	Vector3	vecMove(Vector3::ZERO);
-	//处理摄像机移动
-	if(GetAsyncKeyState('W') < 0)
-		vecMove.z = -1;
-	else if(GetAsyncKeyState('S') < 0)
-		vecMove.z =  1;
-	if(GetAsyncKeyState('A') < 0)
-		vecMove.x = -1;
-	else if(GetAsyncKeyState('D') < 0)
-		vecMove.x =  1;
-
-	m_pMainCam->moveRelative(vecMove * dt * 50);
-
-	//处理摄像机方向
-	if(m_bRBDown)
-	{
-		m_pMainCam->yaw(Ogre::Radian((lastPos.x-curPos.x)*dt*0.5f));
-		m_pMainCam->pitch(Ogre::Radian((lastPos.y-curPos.y)*dt*0.5f));
-	}
-
-	lastPos = curPos;
 }
 
 void Application::OnLButtonDown( const POINT& pt )
@@ -307,6 +268,8 @@ void Application::OnLButtonDown( const POINT& pt )
 	_CreateActionParam(pt, param);
 
 	ManipulatorAction::GetSingleton().GetActiveActoin()->OnMouseLButtonDown(param);
+
+	ManipulatorSystem.GetCamera().OnLButtonDown(param);
 }
 
 void Application::OnLButtonUp( const POINT& pt )
@@ -318,6 +281,8 @@ void Application::OnLButtonUp( const POINT& pt )
 	_CreateActionParam(pt, param);
 
 	ManipulatorAction::GetSingleton().GetActiveActoin()->OnMouseLButtonUp(param);
+
+	ManipulatorSystem.GetCamera().OnLButtonUp(param);
 }
 
 void Application::OnMouseMove( const POINT& pt )
@@ -329,6 +294,8 @@ void Application::OnMouseMove( const POINT& pt )
 	_CreateActionParam(pt, param);
 
 	ManipulatorAction::GetSingleton().GetActiveActoin()->OnMouseMove(param);
+
+	ManipulatorSystem.GetCamera().OnMouseMove(param);
 }
 
 void Application::OnRButtonDown( const POINT& pt )
@@ -340,7 +307,8 @@ void Application::OnRButtonDown( const POINT& pt )
 	_CreateActionParam(pt, param);
 
 	ManipulatorAction::GetSingleton().GetActiveActoin()->OnMouseRButtonDown(param);
-	m_bRBDown = true;
+
+	ManipulatorSystem.GetCamera().OnRButtonDown(param);
 }
 
 void Application::OnRButtonUp( const POINT& pt )
@@ -352,7 +320,16 @@ void Application::OnRButtonUp( const POINT& pt )
 	_CreateActionParam(pt, param);
 
 	ManipulatorAction::GetSingleton().GetActiveActoin()->OnMouseRButtonDown(param);
-	m_bRBDown = false;
+
+	ManipulatorSystem.GetCamera().OnRButtonUp(param);
+}
+
+void Application::OnMouseWheel( short nNotch )
+{
+	if(!ManipulatorSystem.GetIsSceneReady())
+		return;
+
+	ManipulatorSystem.GetCamera().OnMouseWheel(nNotch);
 }
 
 void Application::_CreateActionParam( const POINT& viewClientPt, SActionParam& retParam )
@@ -366,10 +343,12 @@ void Application::_CreateActionParam( const POINT& viewClientPt, SActionParam& r
 	retParam.m_ptDeltaRel.x /= m_pRenderWnd->getWidth();
 	retParam.m_ptDeltaRel.y /= m_pRenderWnd->getHeight();
 
-	const Ogre::Ray ray = m_pMainCam->getCameraToViewportRay(retParam.m_ptRelative.x, retParam.m_ptRelative.y);
+	const Ogre::Ray ray = ManipulatorSystem.m_pMainCamera->getCameraToViewportRay(retParam.m_ptRelative.x, retParam.m_ptRelative.y);
 	retParam.m_bHitTerrain = ManipulatorSystem.GetTerrain().GetRayIntersectPoint(ray, retParam.m_ptTerrain);
 
 	lastPt = retParam.m_ptPixel;
 }
+
+
 
 

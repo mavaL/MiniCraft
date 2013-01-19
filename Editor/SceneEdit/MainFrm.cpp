@@ -60,6 +60,8 @@ BEGIN_MESSAGE_MAP(CMainFrame, CXTPFrameWnd)
 	ON_UPDATE_COMMAND_UI(IDC_Object_Rotate, OnUpdateUI_ObjectEdit<ManipulatorObject::eEditMode_Rotate>)
 	ON_UPDATE_COMMAND_UI(IDC_Object_Scale, OnUpdateUI_ObjectEdit<ManipulatorObject::eEditMode_Scale>)
 	ON_UPDATE_COMMAND_UI(IDC_Object_Select, OnUpdateUI_ObjectEdit<ManipulatorObject::eEditMode_Select>)
+	ON_UPDATE_COMMAND_UI(IDC_Animation_Names, OnUpdateUI_AnimNames)
+	ON_NOTIFY(CBN_SELCHANGE, IDC_Animation_Names, OnAnimSelectChange)
 END_MESSAGE_MAP()
 
 
@@ -71,6 +73,7 @@ CMainFrame::CMainFrame()
 ,m_paneTerrain(NULL)
 ,m_propertyObject(new PropertyPaneObject)
 ,m_paneObject(NULL)
+,m_animTab(NULL)
 {
 }
 
@@ -751,4 +754,69 @@ void CMainFrame::OnObjectPropertyChanged( Ogre::Entity* )
 		m_propertyObject->UpdateAllFromEngine();
 		m_propertyObject->EnableMutableProperty(TRUE);
 	}	
+}
+
+void CMainFrame::OnObjectSetSelection( Ogre::Entity* pObject )
+{
+	assert(pObject);
+	m_propertyObject->UpdateAllFromEngine();
+	m_propertyObject->EnableMutableProperty(TRUE);
+
+	//如果带骨骼动画,则显示动画Ribbon
+	if (pObject->getSkeleton())
+	{
+		CXTPRibbonBar* pRibbonBar = dynamic_cast<CXTPRibbonBar*>(GetCommandBars()->GetAt(0));
+		m_animTab = pRibbonBar->AddTab(L"Animation");
+		m_animTab->SetContextTab(xtpRibbonTabContextColorRed, L"Animation");
+
+		//骨骼动画列表
+		CXTPRibbonGroup* pGroup = m_animTab->AddGroup(L"Anim");
+		CXTPControlComboBox* pCtrlAnimNames = dynamic_cast<CXTPControlComboBox*>(pGroup->Add(xtpControlComboBox, IDC_Animation_Names));
+		pCtrlAnimNames->SetDropDownListStyle();
+		pCtrlAnimNames->SetWidth(150);
+
+		ManipulatorObject& manObject = ManipulatorSystem.GetObject();
+		auto vecNames = manObject.GetAnimationNames(pObject);
+		for(size_t i=0; i<vecNames.size(); ++i)
+			pCtrlAnimNames->AddString(vecNames[i].c_str());
+		
+		pCtrlAnimNames->SetCurSel(0);
+		m_animTab->Select();
+
+		//改变摄像机模式
+		ManipulatorSystem.GetCamera().SetType(eCameraType_ModelViewer);
+		ManipulatorSystem.GetCamera().SetModelViewerTarget(pObject);
+	}
+}
+
+void CMainFrame::OnObjectClearSelection( Ogre::Entity* pObject )
+{
+	assert(pObject);
+	m_propertyObject->EnableMutableProperty(FALSE);
+
+	if (pObject->getSkeleton())
+	{
+		//隐藏动画Ribbon
+		CXTPRibbonBar* pRibbonBar = dynamic_cast<CXTPRibbonBar*>(GetCommandBars()->GetAt(0));
+		pRibbonBar->RemoveTab(m_animTab->GetIndex());
+		m_animTab = nullptr;
+
+		//改变摄像机模式
+		ManipulatorSystem.GetCamera().SetType(eCameraType_RTS);
+	}
+}
+
+void CMainFrame::OnUpdateUI_AnimNames( CCmdUI* pCmdUI )
+{
+	pCmdUI->Enable(TRUE);
+}
+
+void CMainFrame::OnAnimSelectChange( NMHDR* pNMHDR, LRESULT* pResult )
+{
+	NMXTPCONTROL* tagNMCONTROL = (NMXTPCONTROL*)pNMHDR;
+	CXTPControlComboBox* pControl = DYNAMIC_DOWNCAST(CXTPControlComboBox, tagNMCONTROL->pControl);
+
+	//根据选择索引播放动画
+	ManipulatorObject& manObject = ManipulatorSystem.GetObject();
+	manObject.PlayAnimation(manObject.GetSelection(), pControl->GetCurSel() - 1);
 }

@@ -26,6 +26,7 @@ CEditorView::~CEditorView()
 IMPLEMENT_DYNCREATE(CEditorView, CView)
 
 BEGIN_MESSAGE_MAP(CEditorView, CWnd)
+	ON_WM_MOUSEWHEEL()
 	ON_WM_PAINT()
 	ON_WM_SIZE()
 	ON_WM_CREATE()
@@ -98,10 +99,19 @@ BOOL CEditorView::OnDrop( COleDataObject* pDataObject, DROPEFFECT dropEffect, CP
 	if(!pEnt)
 		return FALSE;
 
-	//激活物体移动状态
-	manObject.SetCurEditMode(ManipulatorObject::eEditMode_Move);
-	manObject.SetSelection(pEnt);
-	ManipulatorAction::GetSingleton().SetActiveAction(eActionType_ObjectEdit);
+	if(pEnt->getSkeleton())
+	{
+		manObject.SetCurEditMode(ManipulatorObject::eEditMode_Select);
+		manObject.SetSelection(pEnt);
+		pEnt->getParentSceneNode()->yaw(Ogre::Radian(Ogre::Math::PI));
+	}
+	else
+	{
+		//激活物体移动状态
+		manObject.SetCurEditMode(ManipulatorObject::eEditMode_Move);
+		manObject.SetSelection(pEnt);
+		ManipulatorAction::GetSingleton().SetActiveAction(eActionType_ObjectEdit);
+	}
 
 	return TRUE;
 }
@@ -119,6 +129,7 @@ void CEditorView::OnLButtonDown( UINT nFlags, CPoint point )
 void CEditorView::OnLButtonUp( UINT nFlags, CPoint point )
 {
 	(dynamic_cast<CSceneEditApp*>(AfxGetApp()))->m_app.OnLButtonUp(point);
+	SetFocus();
 }
 
 void CEditorView::OnMouseMove( UINT nFlags, CPoint point )
@@ -134,5 +145,11 @@ void CEditorView::OnRButtonDown( UINT nFlags, CPoint point )
 void CEditorView::OnRButtonUp( UINT nFlags, CPoint point )
 {
 	(dynamic_cast<CSceneEditApp*>(AfxGetApp()))->m_app.OnRButtonUp(point);
+}
+
+BOOL CEditorView::OnMouseWheel( UINT nFlags, short zDelta, CPoint pt )
+{
+	(dynamic_cast<CSceneEditApp*>(AfxGetApp()))->m_app.OnMouseWheel(-zDelta / WHEEL_DELTA);
+	return TRUE;
 }
 
