@@ -45,16 +45,16 @@ void World::Init()
 	m_cameraMan = new OgreBites::SdkCameraMan(m_pCamera);
 	m_cameraMan->setStyle(OgreBites::CS_FREELOOK);
 
-	//45度俯角
-	m_pCamera->setPosition(0, 15, 0);
-	m_pCamera->lookAt(0, 0, 10);
+	//RTS锁死视角
+	m_pCamera->setPosition(0, 35, 0);
+	m_pCamera->lookAt(0, 0, 8.75f);
 
 	//场景中参与构建NavMesh的物体
 	std::vector<Entity*> vecNavEnt;	
 
 	//加载测试场景Test.Scene
 	DotSceneLoader sceneLoader;
-	sceneLoader.parseDotScene("TestScene.Scene", "General", 
+	sceneLoader.parseDotScene("MyStarCraft.Scene", "General", 
 		m_pSceneMgr, m_pSceneMgr->getRootSceneNode()->createChildSceneNode("SceneNode"));
 
 	//初始化Recast库
@@ -81,7 +81,7 @@ void World::Init()
 		"NavMesh.Bin", "General", false);
 	assert(m_pDetourTileCache->loadAll(stream));
 
- 	m_pDetourTileCache->drawNavMesh();
+ 	//m_pDetourTileCache->drawNavMesh();
 
 	//初始化Detour寻路库
 	m_pDetourCrowd = new OgreDetourCrowd(m_pRecast);

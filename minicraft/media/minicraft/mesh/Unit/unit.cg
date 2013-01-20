@@ -1,0 +1,11 @@
+float4 main(
+    in float2 texCoord: TEXCOORD0,
+    uniform float4 TeamColor,
+	uniform sampler2D colorMap : register(s0)
+	) : COLOR
+{
+   float4 diffuse = tex2D(colorMap, texCoord);
+   float4 final = diffuse * diffuse.a + TeamColor * (1 - diffuse.a);
+
+   return final;
+}

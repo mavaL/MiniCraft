@@ -37,16 +37,16 @@ void CBattleState::enter()
 	World& world = World::GetSingleton();
 	world.Init();
 
-	//创建测试单位
-	Unit* pTestUnit = world.CreateUnit(/*Ogre::Vector3(10, 0, -10)*/Ogre::Vector3::ZERO);
-	pTestUnit->SetState(eUnitState_Idle);
-
-// 	for(int i=0; i<9; ++i)
-// 	{
-// 		const Ogre::Vector3 randPos = world.GetRandomPositionOnNavmesh();
-// 		Unit* pTestUnit = world.CreateUnit(randPos);
-// 		pTestUnit->SetState(eUnitState_Idle);
-// 	}
+// 	//创建测试单位
+// 	Unit* pTestUnit = world.CreateUnit(/*Ogre::Vector3(10, 0, -10)*/Ogre::Vector3::ZERO);
+// 	pTestUnit->SetState(eUnitState_Idle);
+// 
+// // 	for(int i=0; i<9; ++i)
+// // 	{
+// // 		const Ogre::Vector3 randPos = world.GetRandomPositionOnNavmesh();
+// // 		Unit* pTestUnit = world.CreateUnit(randPos);
+// // 		pTestUnit->SetState(eUnitState_Idle);
+// // 	}
 
 	m_pSelectionQuad = new Ogre::Rectangle2D(true);
 	m_pSelectionQuad->setMaterial("SelectionQuad");

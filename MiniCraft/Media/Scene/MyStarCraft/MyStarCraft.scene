@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<scene formatVersion="0.1">
+	<terrain worldSize="128" mapSize="65" tuningMaxPixelError="8"/>
+	<objects count="10">
+		<entity meshname="Barracks_0.mesh" isnavmesh="true" position="22.6764 0 -5.87968" orientation="0.375465 0 0.926837 0" scale="1 1 1"/>
+		<entity meshname="Barracks_0.mesh" isnavmesh="true" position="41.0011 0 -24.2718" orientation="0.333513 0 0.942746 0" scale="1 1 1"/>
+		<entity meshname="Barracks_0.mesh" isnavmesh="true" position="21.2572 0 -25.1684" orientation="0.35158 0 0.936158 0" scale="1 1 1"/>
+		<entity meshname="Barracks_0.mesh" isnavmesh="true" position="41.7344 0 -5.91515" orientation="0.365634 0 0.930759 0" scale="1 1 1"/>
+		<entity meshname="CommandCenter_1.mesh" isnavmesh="true" position="30.7159 0 -14.3455" orientation="0.00669377 0 -0.999978 0" scale="1.5 1.5 1.5"/>
+		<entity meshname="UltraliskCavern_2.mesh" isnavmesh="true" position="-33.8381 0 -13.6236" orientation="0.381406 0 0.924428 0" scale="2 2 2"/>
+		<entity meshname="SpawningPool_0.mesh" isnavmesh="true" position="-24.86 0 -21.712" orientation="1 0 0 0" scale="1 1 1"/>
+		<entity meshname="SpawningPool_0.mesh" isnavmesh="true" position="-44.3819 0 -21.5826" orientation="1 0 0 0" scale="1 1 1"/>
+		<entity meshname="SpawningPool_0.mesh" isnavmesh="true" position="-23.5959 0 -5.1378" orientation="1 0 0 0" scale="1 1 1"/>
+		<entity meshname="SpawningPool_0.mesh" isnavmesh="true" position="-45.0739 0 -5.71225" orientation="1 0 0 0" scale="1 1 1"/>
+	</objects>
+</scene>
+

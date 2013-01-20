@@ -131,7 +131,7 @@ void Application::SceneOpen()
 	CFileDialog dlgFile(TRUE);	
 	dlgFile.GetOFN().lpstrFilter = L"*.scene";
 	dlgFile.GetOFN().lpstrDefExt = L"scene";
-	dlgFile.GetOFN().lpstrInitialDir = path; 
+	//dlgFile.GetOFN().lpstrInitialDir = path; 
 	dlgFile.GetOFN().lpstrTitle = L"Open Scene"; 
 
 	if(IDOK == dlgFile.DoModal())

@@ -1,0 +1,33 @@
+fragment_program unit_red_ps cg
+{
+	source unit.cg
+	entry_point main
+	profiles ps_2_0 arbfp1
+}
+
+material marine
+{
+	technique Map#2
+	{
+		pass Map#3
+		{
+			//暂时没有光照
+			lighting off
+
+			vertex_program_ref Ogre/BasicVertexPrograms/AmbientOneTexture
+			{
+				param_named_auto worldViewProj worldviewproj_matrix
+			}
+			fragment_program_ref unit_red_ps
+			{
+				param_named TeamColor float4 1 0 0 1
+			}
+
+			texture_unit Map#4
+			{
+				texture marine_diffuse.dds
+				filtering linear linear linear
+			}
+		}
+	}
+}
