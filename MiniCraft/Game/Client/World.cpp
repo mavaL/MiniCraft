@@ -5,8 +5,12 @@
 #include "OgreManager.h"
 #include <SdkCameraMan.h>
 #include "DotSceneLoader.h"
+#include "ObjectManager.h"
 
 
+SGlobalEnvironment	g_Environment;
+
+////////////////////////////////////////////////////////////////
 World::World()
 :m_pRecast(nullptr)
 ,m_pDetourTileCache(nullptr)
@@ -85,10 +89,16 @@ void World::Init()
 
 	//初始化Detour寻路库
 	m_pDetourCrowd = new OgreDetourCrowd(m_pRecast);
+
+	g_Environment.m_pSceneMgr = m_pSceneMgr;
+	g_Environment.m_pRecast = m_pRecast;
+	g_Environment.m_pCrowd = m_pDetourCrowd;
 }
 
 void World::Shutdown()
 {
+	ObjectManager::GetSingleton().DestroyAll();
+
 	SAFE_DELETE(m_terrainGroup);
 	SAFE_DELETE(m_terrainOption);
 	SAFE_DELETE(m_pDetourCrowd);
@@ -96,9 +106,6 @@ void World::Shutdown()
 	SAFE_DELETE(m_pRecast);
 	SAFE_DELETE(m_cameraMan);
 	m_pTerrain = nullptr;
-
-	//重置脚本系统,为了销毁所有Unit
-	ScriptSystem::GetSingleton().Reset();
 
 	m_pSceneMgr->destroyQuery(m_pSceneQuery);
 	m_pSceneMgr->destroyQuery(m_pRaySceneQuery);
@@ -112,7 +119,8 @@ void World::Shutdown()
 	m_pCamera = nullptr;
 
 	m_vecSelectUnis.clear();
-	m_vecUnits.clear();
+
+	g_Environment.Reset();
 }
 
 void World::LoadTerrain( rapidxml::xml_node<>* XMLNode )
@@ -158,35 +166,7 @@ void World::Update(float dt)
 {
 	m_pDetourCrowd->updateTick(dt);
 
-	for(size_t i=0; i<m_vecUnits.size(); ++i)
-		m_vecUnits[i]->Update(dt);
-}
-
-Unit* World::CreateUnit(const Ogre::Vector3& pos)
-{
-	Ogre::Vector3 adjustPos(pos);
-	assert(ClampPosToNavMesh(adjustPos));
-
-	int newID = (int)m_vecUnits.size();
-	Ogre::String entName(Unit::ENTITY_NAME_PREFIX);
-	entName += Ogre::StringConverter::toString(newID);
-
-	Ogre::Entity* pEnt = m_pSceneMgr->createEntity(entName, "Sinbad.mesh");
-	ClampToTerrain(adjustPos);
-	Ogre::SceneNode* pNode = m_pSceneMgr->getRootSceneNode()->createChildSceneNode(adjustPos);
-
-	Unit* pNewUnit = new Unit(newID, pEnt, pNode, m_pRecast, m_pDetourCrowd);
-	assert(pNewUnit);
-
-	m_vecUnits.push_back(pNewUnit);
-
-	return pNewUnit;
-}
-
-Unit* World::GetUnitFromID( int ID )
-{
-	assert(ID >= 0 && ID < (int)m_vecUnits.size());
-	return m_vecUnits[ID];
+	ObjectManager::GetSingleton().UpdateAll(dt);
 }
 
 bool World::ClampPosToNavMesh( Ogre::Vector3& wPos )
@@ -252,18 +232,18 @@ Ogre::MovableObject* World::GetRaySceneQueryResult( const Ogre::Ray& ray, int qu
 	return result[0].movable;
 }
 
-void World::SetUnitSelected( int ID )
+void World::SetObjectSelected( int ID )
 {
-	m_vecUnits[ID]->SetSelected(true);
-	m_vecSelectUnis.push_back(m_vecUnits[ID]);
+// 	m_vecUnits[ID]->SetSelected(true);
+// 	m_vecSelectUnis.push_back(m_vecUnits[ID]);
 }
 
-void World::ClearAllUnitSelected()
+void World::ClearSelectedState()
 {
-	for (size_t i=0; i<m_vecSelectUnis.size(); ++i)
-		m_vecSelectUnis[i]->SetSelected(false);
-
-	m_vecSelectUnis.clear();
+// 	for (size_t i=0; i<m_vecSelectUnis.size(); ++i)
+// 		m_vecSelectUnis[i]->SetSelected(false);
+// 
+// 	m_vecSelectUnis.clear();
 }
 
 void World::ClampToTerrain(Ogre::Vector3& pos)

@@ -3,6 +3,22 @@
 
 #include "Singleton.h"
 
+class Object;
+class OgreRecast;
+class OgreDetourCrowd;
+
+//常用成员全局环境
+struct SGlobalEnvironment 
+{
+	SGlobalEnvironment() { Reset(); }
+	void	Reset() { m_pSceneMgr=nullptr; m_pRecast=nullptr; m_pCrowd=nullptr; } 
+
+	Ogre::SceneManager* m_pSceneMgr;
+	OgreRecast*			m_pRecast;
+	OgreDetourCrowd*	m_pCrowd;
+};
+
+extern SGlobalEnvironment	g_Environment;
 
 enum eQueryType
 {
@@ -16,11 +32,7 @@ namespace OgreBites
 	class SdkCameraMan;
 }
 
-class Unit;
-class OgreRecast;
-class OgreDetourCrowd;
-
-typedef	std::vector<Unit*>	UnitContainer;
+typedef	std::vector<Object*>	SelectedContainer;
 /************************************************************************/
 /*								世界管理器                                */
 /************************************************************************/
@@ -37,8 +49,6 @@ public:
 	void	LoadTerrain(rapidxml::xml_node<>* XMLNode);
 
 	Ogre::Camera*	GetCamera()	{ return m_pCamera; }
-	Unit*			CreateUnit(const Ogre::Vector3& pos);
-	Unit*			GetUnitFromID(int ID);
 	const Ogre::AxisAlignedBox&	GetResAABB() const { return m_pGold->getWorldBoundingBox(); }
 	Ogre::Vector3	GetRandomPositionOnNavmesh();
 
@@ -54,19 +64,17 @@ public:
 
 	//尝试调整世界坐标在有效的NavMesh上
 	bool			ClampPosToNavMesh(Ogre::Vector3& wPos);
-
-	//设置单位为选中状态
-	void			SetUnitSelected(int ID);
+	//设置对象为选中状态
+	void			SetObjectSelected(int ID);
 	//清除所有选中状态
-	void			ClearAllUnitSelected();
+	void			ClearSelectedState();
 
-	const UnitContainer&	GetAllUnitSelected() { return m_vecSelectUnis; }
+	const SelectedContainer&	GetSelectedObjects() { return m_vecSelectUnis; }
 	//将给定世界坐标通过射线投射夹持在地形上
 	void ClampToTerrain(Ogre::Vector3& pos);
 
 private:
-	UnitContainer				m_vecUnits;			//场景中的所有单位
-	UnitContainer				m_vecSelectUnis;	//所有选中单位
+	SelectedContainer			m_vecSelectUnis;	//所有选中单位
 	Ogre::SceneManager*			m_pSceneMgr;
 	Ogre::Camera*				m_pCamera;
 	Ogre::Entity*				m_pGold;

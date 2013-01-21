@@ -5,8 +5,9 @@ material SelectionQuad
 		pass
 		{
 			lighting off
-            scene_blend src_colour one_minus_src_colour
+            scene_blend one_minus_src_colour src_colour
             depth_check off
+			depth_write off
             
             texture_unit
             {

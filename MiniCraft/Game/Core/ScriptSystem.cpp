@@ -112,6 +112,12 @@ float ScriptSystem::Get_Float( int index )
 	return (float)lua_tonumber(m_pLuaState, index);
 }
 
+bool ScriptSystem::Get_Bool( int index )
+{
+	assert(lua_isboolean(m_pLuaState, index));
+	return (bool)lua_toboolean(m_pLuaState, index);
+}
+
 void ScriptSystem::Push_Bool( bool b )
 {
 	lua_pushboolean(m_pLuaState, b);

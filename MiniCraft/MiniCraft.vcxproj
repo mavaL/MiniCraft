@@ -46,7 +46,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>.\Dependency\Lua5_1_4\src;.\Dependency\CEGUI\include;.\Dependency\boost;.\Dependency\OgreRecast\Include;.\Dependency\OIS\include;.\Dependency\Ogre\include;.\Game;.\Game\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\Dependency\Lua5_1_4\src;.\Dependency\CEGUI\include;.\Dependency\boost;.\Dependency\OgreRecast\Include;.\Dependency\OIS\include;.\Dependency\Ogre\include;.\Game;.\Game\Client;.\Game\Core;.\Game\Client\Object;.\Game\Client\AI;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <AdditionalOptions>/Zm143 %(AdditionalOptions)</AdditionalOptions>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -105,24 +105,29 @@
     <ClInclude Include="Dependency\OgreRecast\Include\Recast\RecastAlloc.h" />
     <ClInclude Include="Dependency\OgreRecast\Include\Recast\RecastAssert.h" />
     <ClInclude Include="Dependency\OgreRecast\Include\TestCharacter.h" />
-    <ClInclude Include="Game\Include\Application.h" />
-    <ClInclude Include="Game\Include\AppState.h" />
-    <ClInclude Include="Game\Include\AppStateManager.h" />
-    <ClInclude Include="Game\Include\BattleState.h" />
-    <ClInclude Include="Game\Include\Building.h" />
-    <ClInclude Include="Game\Include\Command.h" />
-    <ClInclude Include="Game\Include\DotSceneLoader.h" />
-    <ClInclude Include="Game\Include\GameDefine.h" />
-    <ClInclude Include="Game\Include\GUIManager.h" />
-    <ClInclude Include="Game\Include\InputManager.h" />
-    <ClInclude Include="Game\Include\luna.h" />
-    <ClInclude Include="Game\Include\OgreManager.h" />
-    <ClInclude Include="Game\Include\ScriptSystem.h" />
-    <ClInclude Include="Game\Include\Singleton.h" />
-    <ClInclude Include="Game\Include\stdafx.h" />
-    <ClInclude Include="Game\Include\Unit.h" />
-    <ClInclude Include="Game\Include\UnitState.h" />
-    <ClInclude Include="Game\Include\World.h" />
+    <ClInclude Include="Game\Client\AI\AIComponent.h" />
+    <ClInclude Include="Game\Client\AI\Command.h" />
+    <ClInclude Include="Game\Client\AI\UnitState.h" />
+    <ClInclude Include="Game\Client\BattleState.h" />
+    <ClInclude Include="Game\Client\DotSceneLoader.h" />
+    <ClInclude Include="Game\Client\GameDefine.h" />
+    <ClInclude Include="Game\Client\Object\Building.h" />
+    <ClInclude Include="Game\Client\Object\Faction.h" />
+    <ClInclude Include="Game\Client\Object\ObjectBase.h" />
+    <ClInclude Include="Game\Client\Object\ObjectFactory.h" />
+    <ClInclude Include="Game\Client\Object\ObjectManager.h" />
+    <ClInclude Include="Game\Client\Object\Unit.h" />
+    <ClInclude Include="Game\Client\stdafx.h" />
+    <ClInclude Include="Game\Client\World.h" />
+    <ClInclude Include="Game\Core\Application.h" />
+    <ClInclude Include="Game\Core\AppState.h" />
+    <ClInclude Include="Game\Core\AppStateManager.h" />
+    <ClInclude Include="Game\Core\GUIManager.h" />
+    <ClInclude Include="Game\Core\InputManager.h" />
+    <ClInclude Include="Game\Core\luna.h" />
+    <ClInclude Include="Game\Core\OgreManager.h" />
+    <ClInclude Include="Game\Core\ScriptSystem.h" />
+    <ClInclude Include="Game\Core\Singleton.h" />
     <ClInclude Include="Game\rapidxml\rapidxml.hpp" />
     <ClInclude Include="Game\rapidxml\rapidxml_iterators.hpp" />
     <ClInclude Include="Game\rapidxml\rapidxml_print.hpp" />
@@ -228,23 +233,28 @@
     <ClCompile Include="Dependency\OgreRecast\Src\Recast\RecastRegion.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="Game\Src\Application.cpp" />
-    <ClCompile Include="Game\Src\AppStateManager.cpp" />
-    <ClCompile Include="Game\Src\BattleState.cpp" />
-    <ClCompile Include="Game\Src\Building.cpp" />
-    <ClCompile Include="Game\Src\Command.cpp" />
-    <ClCompile Include="Game\Src\DotSceneLoader.cpp" />
-    <ClCompile Include="Game\Src\GUIManager.cpp" />
-    <ClCompile Include="Game\Src\InputManager.cpp" />
-    <ClCompile Include="Game\Src\MiniCraft.cpp" />
-    <ClCompile Include="Game\Src\OgreManager.cpp" />
-    <ClCompile Include="Game\Src\ScriptSystem.cpp" />
-    <ClCompile Include="Game\Src\stdafx.cpp">
+    <ClCompile Include="Game\Client\AI\AIComponent.cpp" />
+    <ClCompile Include="Game\Client\AI\Command.cpp" />
+    <ClCompile Include="Game\Client\AI\UnitState.cpp" />
+    <ClCompile Include="Game\Client\BattleState.cpp" />
+    <ClCompile Include="Game\Client\DotSceneLoader.cpp" />
+    <ClCompile Include="Game\Client\Object\Building.cpp" />
+    <ClCompile Include="Game\Client\Object\Faction.cpp" />
+    <ClCompile Include="Game\Client\Object\ObjectBase.cpp" />
+    <ClCompile Include="Game\Client\Object\ObjectFactory.cpp" />
+    <ClCompile Include="Game\Client\Object\ObjectManager.cpp" />
+    <ClCompile Include="Game\Client\Object\Unit.cpp" />
+    <ClCompile Include="Game\Client\stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="Game\Src\Unit.cpp" />
-    <ClCompile Include="Game\Src\UnitState.cpp" />
-    <ClCompile Include="Game\Src\World.cpp" />
+    <ClCompile Include="Game\Client\World.cpp" />
+    <ClCompile Include="Game\Core\Application.cpp" />
+    <ClCompile Include="Game\Core\AppStateManager.cpp" />
+    <ClCompile Include="Game\Core\GUIManager.cpp" />
+    <ClCompile Include="Game\Core\InputManager.cpp" />
+    <ClCompile Include="Game\Core\MiniCraft.cpp" />
+    <ClCompile Include="Game\Core\OgreManager.cpp" />
+    <ClCompile Include="Game\Core\ScriptSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="UnitState.lua" />

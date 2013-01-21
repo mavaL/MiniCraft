@@ -109,7 +109,7 @@ private:
   static int gc_T(lua_State *L) {
     userdataType *ud = static_cast<userdataType*>(lua_touserdata(L, 1));
     T *obj = ud->pT;
-    delete obj;  // call destructor for T objects
+    //delete obj;  //屏蔽销毁对象操作,应该由对象管理器负责
     return 0;
   }
 

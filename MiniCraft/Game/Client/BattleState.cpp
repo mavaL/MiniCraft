@@ -37,7 +37,9 @@ void CBattleState::enter()
 	World& world = World::GetSingleton();
 	world.Init();
 
-// 	//创建测试单位
+	//TODO: 测试代码
+
+
 // 	Unit* pTestUnit = world.CreateUnit(/*Ogre::Vector3(10, 0, -10)*/Ogre::Vector3::ZERO);
 // 	pTestUnit->SetState(eUnitState_Idle);
 // 
@@ -51,7 +53,7 @@ void CBattleState::enter()
 	m_pSelectionQuad = new Ogre::Rectangle2D(true);
 	m_pSelectionQuad->setMaterial("SelectionQuad");
 	(const_cast<Ogre::AxisAlignedBox&>(m_pSelectionQuad->getBoundingBox())).setInfinite();
-	m_pQuadNode = Ogre::Root::getSingleton().getSceneManager(SCENE_MANAGER_NAME)->getRootSceneNode()->createChildSceneNode("SelectionQuadNode");
+	m_pQuadNode = g_Environment.m_pSceneMgr->getRootSceneNode()->createChildSceneNode("SelectionQuadNode");
 	m_pQuadNode->attachObject(m_pSelectionQuad);
 	m_pQuadNode->setVisible(false);
 	
@@ -139,17 +141,17 @@ bool CBattleState::OnInputSys_MousePressed( const OIS::MouseEvent& arg, OIS::Mou
 		m_LBDownPos = ray.getPoint(result.second);
 		m_bLBDown = true;
 	}
-	else if (id == OIS::MB_Right)
-	{
-		const UnitContainer& selectedUnits = world.GetAllUnitSelected();
-		for (size_t i=0; i<selectedUnits.size(); ++i)
-		{
-			CommandBase* pCmd = _ComputeCommand(selectedUnits[i], ray.getPoint(result.second));
-			if(pCmd)
-				selectedUnits[i]->GiveCommand(*pCmd);
-			delete pCmd;
-		}
-	}        
+// 	else if (id == OIS::MB_Right)
+// 	{
+// 		const SelectedContainer& selectedUnits = world.GetSelectedObjects();
+// 		for (size_t i=0; i<selectedUnits.size(); ++i)
+// 		{
+// 			CommandBase* pCmd = _ComputeCommand(selectedUnits[i], ray.getPoint(result.second));
+// 			if(pCmd)
+// 				selectedUnits[i]->GiveCommand(*pCmd);
+// 			delete pCmd;
+// 		}
+// 	}        
 
 	return true;
 }
@@ -159,7 +161,7 @@ bool CBattleState::OnInputSys_MouseReleased( const OIS::MouseEvent& arg, OIS::Mo
 	if (id == OIS::MB_Left)
 	{
 		World& world = World::GetSingleton();
-		world.ClearAllUnitSelected();
+		world.ClearSelectedState();
 		m_pQuadNode->setVisible(false);
 
 		float screenX = arg.state.X.abs / (float)arg.state.width;
@@ -206,7 +208,7 @@ bool CBattleState::OnInputSys_MouseReleased( const OIS::MouseEvent& arg, OIS::Mo
 			const Ogre::String strID(&entName[strlen(Unit::ENTITY_NAME_PREFIX.c_str())]);
 			int unitID = Ogre::StringConverter::parseInt(strID, -1);
 
-			world.SetUnitSelected(unitID);
+			world.SetObjectSelected(unitID);
 		}
 	}
 

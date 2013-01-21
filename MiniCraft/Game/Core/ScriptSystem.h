@@ -25,6 +25,7 @@ public:
 	const Ogre::String	Get_String(int index);
 	int					Get_Int(int index);
 	float				Get_Float(int index);
+	bool				Get_Bool(int index);
 
 	void				Push_Bool(bool b);
 	void				Push_Float(float f);

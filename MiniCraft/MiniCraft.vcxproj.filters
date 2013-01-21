@@ -1,14 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="源文件">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="头文件">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
-    </Filter>
     <Filter Include="资源文件">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
@@ -52,38 +44,23 @@
     <Filter Include="OgreRecast\Src\RecastContrib">
       <UniqueIdentifier>{152671a0-75be-45b6-89f8-9416d2067949}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Script">
-      <UniqueIdentifier>{af5cb7dc-6b11-4246-9018-3e22d11243a0}</UniqueIdentifier>
-    </Filter>
     <Filter Include="rapidxml">
       <UniqueIdentifier>{f85173b9-8c83-49a6-8126-8ec6181b6acd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Core">
+      <UniqueIdentifier>{2a5a042f-ccb3-49d6-86a6-db00d9a75467}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Client">
+      <UniqueIdentifier>{9f10a3c6-13b5-446d-bbd0-6ce31b684e40}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Client\Object">
+      <UniqueIdentifier>{020a74dd-dd10-4ce1-8f11-5fa943069379}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Client\AI">
+      <UniqueIdentifier>{1dead6f4-a841-4003-9123-7cd0d1ed3bd0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Game\Include\AppState.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Include\AppStateManager.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Include\BattleState.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Include\stdafx.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Include\Application.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Include\InputManager.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Include\Singleton.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Include\OgreManager.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="Dependency\OgreRecast\Include\ConvexShapeObstacle.h">
       <Filter>OgreRecast\Include</Filter>
     </ClInclude>
@@ -180,36 +157,6 @@
     <ClInclude Include="Dependency\OgreRecast\Include\TestCharacter.h">
       <Filter>OgreRecast\Include\RecastContrib</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Include\Building.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Include\Command.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Include\Unit.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Include\GUIManager.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Include\UnitState.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Include\GameDefine.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Include\World.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Include\luna.h">
-      <Filter>Script</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Include\ScriptSystem.h">
-      <Filter>Script</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Include\DotSceneLoader.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="Game\rapidxml\rapidxml.hpp">
       <Filter>rapidxml</Filter>
     </ClInclude>
@@ -222,29 +169,77 @@
     <ClInclude Include="Game\rapidxml\rapidxml_utils.hpp">
       <Filter>rapidxml</Filter>
     </ClInclude>
+    <ClInclude Include="Game\Core\Application.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Core\AppState.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Core\AppStateManager.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Core\GUIManager.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Core\InputManager.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Core\luna.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Core\OgreManager.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Core\ScriptSystem.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Core\Singleton.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Client\BattleState.h">
+      <Filter>Client</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Client\DotSceneLoader.h">
+      <Filter>Client</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Client\GameDefine.h">
+      <Filter>Client</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Client\World.h">
+      <Filter>Client</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Client\stdafx.h">
+      <Filter>Client</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Client\Object\Building.h">
+      <Filter>Client\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Client\Object\Faction.h">
+      <Filter>Client\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Client\Object\ObjectBase.h">
+      <Filter>Client\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Client\Object\ObjectFactory.h">
+      <Filter>Client\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Client\Object\ObjectManager.h">
+      <Filter>Client\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Client\Object\Unit.h">
+      <Filter>Client\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Client\AI\Command.h">
+      <Filter>Client\AI</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Client\AI\UnitState.h">
+      <Filter>Client\AI</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Client\AI\AIComponent.h">
+      <Filter>Client\AI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Game\Src\AppStateManager.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Src\BattleState.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Src\MiniCraft.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Src\stdafx.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Src\Application.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Src\InputManager.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Src\OgreManager.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="Dependency\OgreRecast\Src\Obstacle.cpp">
       <Filter>OgreRecast\Src</Filter>
     </ClCompile>
@@ -344,29 +339,65 @@
     <ClCompile Include="Dependency\OgreRecast\Src\Character.cpp">
       <Filter>OgreRecast\Src</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Src\Building.cpp">
-      <Filter>源文件</Filter>
+    <ClCompile Include="Game\Core\Application.cpp">
+      <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Src\Command.cpp">
-      <Filter>源文件</Filter>
+    <ClCompile Include="Game\Core\AppStateManager.cpp">
+      <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Src\Unit.cpp">
-      <Filter>源文件</Filter>
+    <ClCompile Include="Game\Core\GUIManager.cpp">
+      <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Src\GUIManager.cpp">
-      <Filter>源文件</Filter>
+    <ClCompile Include="Game\Core\InputManager.cpp">
+      <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Src\UnitState.cpp">
-      <Filter>源文件</Filter>
+    <ClCompile Include="Game\Core\MiniCraft.cpp">
+      <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Src\World.cpp">
-      <Filter>源文件</Filter>
+    <ClCompile Include="Game\Core\OgreManager.cpp">
+      <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Src\ScriptSystem.cpp">
-      <Filter>Script</Filter>
+    <ClCompile Include="Game\Core\ScriptSystem.cpp">
+      <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Src\DotSceneLoader.cpp">
-      <Filter>源文件</Filter>
+    <ClCompile Include="Game\Client\BattleState.cpp">
+      <Filter>Client</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Client\DotSceneLoader.cpp">
+      <Filter>Client</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Client\World.cpp">
+      <Filter>Client</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Client\stdafx.cpp">
+      <Filter>Client</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Client\Object\Building.cpp">
+      <Filter>Client\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Client\Object\Faction.cpp">
+      <Filter>Client\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Client\Object\ObjectBase.cpp">
+      <Filter>Client\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Client\Object\ObjectFactory.cpp">
+      <Filter>Client\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Client\Object\ObjectManager.cpp">
+      <Filter>Client\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Client\Object\Unit.cpp">
+      <Filter>Client\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Client\AI\Command.cpp">
+      <Filter>Client\AI</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Client\AI\UnitState.cpp">
+      <Filter>Client\AI</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Client\AI\AIComponent.cpp">
+      <Filter>Client\AI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
