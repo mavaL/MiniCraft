@@ -37,15 +37,18 @@ void DotSceneSerialezer::Serialize( const Ogre::String& path, const Ogre::String
 
 	for (auto iter=objects.begin(); iter!=objects.end(); ++iter)
 	{
-		Ogre::Entity* pObj = *iter;
+		Ogre::Entity* pObj = iter->first;
 		xml_node<>* objNode =   doc.allocate_node(node_element, "entity");
 
 		//meshname
 		const String& strMesh = pObj->getMesh()->getName();
 		objNode->append_attribute(doc.allocate_attribute("meshname", doc.allocate_string(strMesh.c_str())));
 		//add to navmesh
-		const String& strIsNavMesh = Ogre::StringConverter::toString(ManipulatorSystem.GetObject().GetObjectNavMeshFlag(pObj));
+		const String& strIsNavMesh = Ogre::StringConverter::toString((iter->second)->m_bAddToNavmesh);
 		objNode->append_attribute(doc.allocate_attribute("isnavmesh", doc.allocate_string(strIsNavMesh.c_str())));
+		//is building
+		const String& strIsBuilding = Ogre::StringConverter::toString((iter->second)->m_bIsBuilding);
+		objNode->append_attribute(doc.allocate_attribute("isbuilding", doc.allocate_string(strIsBuilding.c_str())));
 		//position
 		String strPos = Ogre::StringConverter::toString(pObj->getParentSceneNode()->_getDerivedPosition());
 		objNode->append_attribute(doc.allocate_attribute("position", doc.allocate_string(strPos.c_str())));

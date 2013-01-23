@@ -20,12 +20,6 @@ struct SGlobalEnvironment
 
 extern SGlobalEnvironment	g_Environment;
 
-enum eQueryType
-{
-	eQueryType_Default	=	1<<0,
-	eQueryType_WorldGeometry	=	1<<1,
-	eQueryType_Unit		=	1<<2
-};
 
 namespace OgreBites
 {

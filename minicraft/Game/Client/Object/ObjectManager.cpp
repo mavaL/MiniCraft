@@ -9,7 +9,7 @@ ObjectManager::ObjectManager()
 	//注册所有对象工厂
 	m_factories.insert(std::make_pair(eObjectType_Faction, new FactionFactory));
  	m_factories.insert(std::make_pair(eObjectType_Unit, new UnitFactory));
-// 	m_factories.insert(std::make_pair(eObjectType_Building, new FactionFactory));
+ 	m_factories.insert(std::make_pair(eObjectType_Building, new BuildingFactory));
 }
 
 ObjectManager::~ObjectManager()

@@ -116,6 +116,7 @@
     <ClInclude Include="Game\Client\Object\ObjectBase.h" />
     <ClInclude Include="Game\Client\Object\ObjectFactory.h" />
     <ClInclude Include="Game\Client\Object\ObjectManager.h" />
+    <ClInclude Include="Game\Client\Object\SelectableObject.h" />
     <ClInclude Include="Game\Client\Object\Unit.h" />
     <ClInclude Include="Game\Client\stdafx.h" />
     <ClInclude Include="Game\Client\World.h" />
@@ -243,6 +244,7 @@
     <ClCompile Include="Game\Client\Object\ObjectBase.cpp" />
     <ClCompile Include="Game\Client\Object\ObjectFactory.cpp" />
     <ClCompile Include="Game\Client\Object\ObjectManager.cpp" />
+    <ClCompile Include="Game\Client\Object\SelectableObject.cpp" />
     <ClCompile Include="Game\Client\Object\Unit.cpp" />
     <ClCompile Include="Game\Client\stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

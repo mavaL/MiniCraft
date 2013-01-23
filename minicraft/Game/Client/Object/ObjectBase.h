@@ -38,8 +38,8 @@ public:
 	~RenderableObject() {}
 
 public:
-	virtual	void	CreateRenderInstance(const Ogre::String& meshname) = 0;
-	virtual void	DestroyRenderInstance() = 0;
+	virtual	void	CreateRenderInstance(const STRING& meshname) = 0;
+	virtual void	DestroyRenderInstance();
 	virtual void	SetPosition(const POS& pos);
 	virtual void	SetOrientation(const ORIENT& orient);
 	virtual void	SetScale(const SCALE& scale);

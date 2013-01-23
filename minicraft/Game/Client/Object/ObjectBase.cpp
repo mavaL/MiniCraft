@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "ObjectBase.h"
+#include "World.h"
 
 Object::Object()
 {
@@ -9,7 +10,8 @@ Object::Object()
 
 ///////////////////////////////////////////////////////////////////////
 RenderableObject::RenderableObject()
-:m_pEntity(nullptr)
+:Object()
+,m_pEntity(nullptr)
 ,m_pSceneNode(nullptr)
 ,m_bRenderableReady(false)
 {
@@ -44,6 +46,22 @@ const ORIENT& RenderableObject::GetOrientation() const
 const SCALE& RenderableObject::GetScale() const
 {
 	return m_pSceneNode->_getDerivedScale();
+}
+
+void RenderableObject::DestroyRenderInstance()
+{
+	if (m_pSceneNode)
+	{
+		g_Environment.m_pSceneMgr->destroySceneNode(m_pSceneNode);
+		m_pSceneNode = nullptr;
+	}
+	if (m_pEntity)
+	{
+		g_Environment.m_pSceneMgr->destroyEntity(m_pEntity);
+		m_pEntity = nullptr;
+	}
+
+	m_bRenderableReady = false;
 }
 
 

@@ -1,14 +1,14 @@
+SelectionCircleCache
 #include "stdafx.h"
 #include "GameDefine.h"
+#include <SdkCameraMan.h>
 #include "BattleState.h"
 #include "OgreManager.h"
 #include "Unit.h"
 #include "Command.h"
 #include "UnitState.h"
 #include "World.h"
-#include <SdkCameraMan.h>
-
-
+#include "Building.h"
 
 
 std::string CBattleState::StateName = "BattleState";
@@ -183,7 +183,7 @@ bool CBattleState::OnInputSys_MouseReleased( const OIS::MouseEvent& arg, OIS::Mo
 		Ogre::Vector3 mouseUpPos(ray.getPoint(result.second));
 		if(mouseUpPos.positionEquals(m_LBDownPos, 0.1f))
 		{
-			Ogre::MovableObject* pObject = world.GetRaySceneQueryResult(ray, eQueryType_Unit);
+			Ogre::MovableObject* pObject = world.GetRaySceneQueryResult(ray, eQueryType_SelectableObject);
 			if (pObject)
 				vecResult.push_back(pObject);
 		}
@@ -196,16 +196,22 @@ bool CBattleState::OnInputSys_MouseReleased( const OIS::MouseEvent& arg, OIS::Mo
 			aabb.setMaximum(std::max(m_LBDownPos.x, mouseUpPos.x), std::max(m_LBDownPos.y + 100, mouseUpPos.y + 100),
 				std::max(m_LBDownPos.z, mouseUpPos.z));
 
-			world.GetAABBSceneQueryResult(aabb, vecResult, eQueryType_Unit);
+			world.GetAABBSceneQueryResult(aabb, vecResult, eQueryType_SelectableObject);
 		}
 
 		//单位设置为选中状态
+		static int UNIT_NAME_PREFIX_LEN = strlen(Unit::ENTITY_NAME_PREFIX.c_str());
+		static int BUILDING_NAME_PREFIX_LEN = strlen(Building::BUILDING_NAME_PREFIX.c_str());
+
 		for(size_t i=0; i<vecResult.size(); ++i)
 		{
-			const Ogre::String& entName = vecResult[i]->getName();
-			assert(entName.find_first_of(Unit::ENTITY_NAME_PREFIX) != Ogre::String::npos);
+			STRING strID;
+			const STRING& entName = vecResult[i]->getName();
+			if(entName.substr(0, UNIT_NAME_PREFIX_LEN) == Unit::ENTITY_NAME_PREFIX)
+				strID = entName.substr(UNIT_NAME_PREFIX_LEN);
+			else if(entName.substr(0, BUILDING_NAME_PREFIX_LEN) == Building::BUILDING_NAME_PREFIX)
+				strID = entName.substr(BUILDING_NAME_PREFIX_LEN);
 
-			const Ogre::String strID(&entName[strlen(Unit::ENTITY_NAME_PREFIX.c_str())]);
 			int unitID = Ogre::StringConverter::parseInt(strID, -1);
 
 			world.SetObjectSelected(unitID);

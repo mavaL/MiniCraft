@@ -37,7 +37,7 @@ bool COgreManager::Init()
 	cf.load(ResourceCfg);
 	// Go through all sections & settings in the file
 	Ogre::ConfigFile::SectionIterator seci = cf.getSectionIterator();
-	Ogre::String secName, typeName, archName;
+	STRING secName, typeName, archName;
 	while (seci.hasMoreElements())
 	{
 		secName = seci.peekNextKey();

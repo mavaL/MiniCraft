@@ -29,6 +29,7 @@ public:
 	Object*		CreateObject(eObjectType type);
 	void		DestroyAll();
 	void		UpdateAll(float dt);
+	Object*		GetObject(int ID) { assert(m_objects[ID]); return m_objects[ID]; }
 
 private:
 	FactoryContainer	m_factories;

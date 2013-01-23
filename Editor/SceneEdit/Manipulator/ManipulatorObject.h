@@ -14,8 +14,15 @@
 
 class GizmoAxis;
 
-typedef std::list<Ogre::Entity*> ObjectContainer;
-typedef std::unordered_map<Ogre::Entity*, bool> ObjectNavMeshFlagMap;
+///物体信息封装结构
+struct SObjectInfo 
+{
+	SObjectInfo():	m_bAddToNavmesh(false),m_bIsBuilding(false) {}
+	bool			m_bAddToNavmesh;	//是否参与NavMesh构建
+	bool			m_bIsBuilding;
+};
+
+typedef std::unordered_map<Ogre::Entity*, SObjectInfo*> ObjectContainer;
 
 class ManipulatorObject : public ManipulatorSceneEventCallback, public ManipulatorCallbackManager<ManipulatorObjectEventCallback>
 {
@@ -44,7 +51,6 @@ public:
 	eEditMode	GetCurEditMode() const { return m_curEditMode; }
 	void		SetCurEditMode(eEditMode mode) { m_curEditMode = mode; }
 	const ObjectContainer&	GetAllObjects() const { return m_objects; }
-	const ObjectNavMeshFlagMap&	GetObjNavMeshFlagMap() const { return m_navMeshFlag; }
 
 	//创建Entity
 	Ogre::Entity* AddEntity(const Ogre::String& meshname, const Ogre::Vector3& worldPos, 
@@ -69,6 +75,8 @@ public:
 	void		OnGizmoNodeReset();
 	void		SetObjectNavMeshFlag(Ogre::Entity* pEntity, bool bIsNavMesh);
 	bool		GetObjectNavMeshFlag(Ogre::Entity* pEntity) const;
+	void		SetObjectIsBuilding(Ogre::Entity* pEntity, bool bIsBuilding);
+	bool		GetObjectIsBuilding(Ogre::Entity* pEntity) const;
 
 	//射线查询
 	Ogre::MovableObject* DoRaySceneQuery(const Ogre::Ray& ray, int queryMask = 0xffffffff);
@@ -83,7 +91,6 @@ private:
 
 private:
 	ObjectContainer	m_objects;			//场景中的所有摆放物体
-	ObjectNavMeshFlagMap m_navMeshFlag;	//各物体是否参与NavMesh构建
 	eEditMode		m_curEditMode;
 	Ogre::Entity*	m_pSelectEntity;	//当前选中物体
 	GizmoAxis*		m_pGizmoAixs;		//坐标轴指示器

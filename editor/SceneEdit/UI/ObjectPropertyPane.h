@@ -29,6 +29,7 @@ public:
 		propOrientation,
 		propScale,
 		propAddToNavmesh,
+		propIsBuilding,
 		propMutableItemEnd,
 		propEnd = propMutableItemEnd,
 

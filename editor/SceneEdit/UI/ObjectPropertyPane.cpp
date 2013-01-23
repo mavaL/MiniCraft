@@ -31,6 +31,7 @@ int PropertyPaneObject::OnCreate( LPCREATESTRUCT lpCreateStruct )
 	PROPERTY_REG(pCategory,	Vec4	, L"Orientation"		, Ogre::Vector4(0,0,0,1), propOrientation	);
 	PROPERTY_REG(pCategory,	Vec3	, L"Scale"				, Ogre::Vector3(1,1,1)	, propScale			);
 	PROPERTY_REG(pCategory, Bool	, L"Add to NavMesh"		, false					, propAddToNavmesh	);
+	PROPERTY_REG(pCategory, Bool	, L"Is Building"		, false					, propIsBuilding	);
 	pCategory->Expand();
 
 	(dynamic_cast<CXTPPropertyGridItemVec3*>(m_mapItem[propPosition]))->SetChildItemID(propPosX, propPosY, propPosZ);
@@ -109,6 +110,13 @@ LRESULT PropertyPaneObject::OnGridNotify( WPARAM wParam, LPARAM lParam )
 		}
 		break;
 
+		case propIsBuilding:
+		{
+			CXTPPropertyGridItemBool* pItemNav = dynamic_cast<CXTPPropertyGridItemBool*>(pItem);
+			manObject.SetObjectIsBuilding(manObject.GetSelection(), pItemNav->GetBool());
+		}
+		break;
+
 		default: assert(0);
 		}
 
@@ -151,6 +159,7 @@ void PropertyPaneObject::UpdateProperty( int id )
 	case propScaleZ:		id = propScale;
 	case propScale:			strNewValue = Ogre::StringConverter::toString(pNode->_getDerivedScale()); break;
 	case propAddToNavmesh:	strNewValue = Ogre::StringConverter::toString(ManipulatorSystem.GetObject().GetObjectNavMeshFlag(curSel)); break;
+	case propIsBuilding:	strNewValue = Ogre::StringConverter::toString(ManipulatorSystem.GetObject().GetObjectIsBuilding(curSel)); break;
 	default: assert(0);
 	}
 	

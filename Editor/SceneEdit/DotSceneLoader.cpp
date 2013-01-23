@@ -94,7 +94,7 @@ void DotSceneLoader::parseDotScene(const Ogre::String& fullpath)
 	float fVersion = Ogre::StringConverter::parseReal(version);
     if(version  == "" || fVersion != SCENE_VERSION)
     {
-        assert(0);
+        assert(0 && ".scene file format incorrect!");
 		delete []pBuffer;
         return;
     }

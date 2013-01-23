@@ -27,12 +27,11 @@ Luna<Unit>::RegType Unit::methods[] =
 	{0,0}
 };
 
-const Ogre::String Unit::UNIT_TABLE_NAME	=	"UnitTable";
-const Ogre::String Unit::ENTITY_NAME_PREFIX	=	"EntUnit";
+const STRING Unit::UNIT_TABLE_NAME	=	"UnitTable";
+const STRING Unit::ENTITY_NAME_PREFIX	=	"EntUnit";
 
 Unit::Unit()
-:RenderableObject()
-,m_bSelected(false)
+:SelectableObject()
 ,m_pAI(nullptr)
 ,m_pAnimState(nullptr)
 {
@@ -50,7 +49,7 @@ void Unit::Update( float dt )
 	m_pAI->Update(dt);
 }
 
-void Unit::PlayAnimation( const Ogre::String& animName, bool bLoop )
+void Unit::PlayAnimation( const STRING& animName, bool bLoop )
 {
 	//停止当前动画
 	StopAnimation();
@@ -71,7 +70,7 @@ void Unit::StopAnimation()
 int Unit::PlayAnimation( lua_State* L )
 {
 	bool bLoop = ScriptSystem::GetSingleton().Get_Bool(-1);
-	const Ogre::String topAnimName = ScriptSystem::GetSingleton().Get_String(-2);
+	const STRING topAnimName = ScriptSystem::GetSingleton().Get_String(-2);
 	PlayAnimation(topAnimName, bLoop);
 
 	return 0;
@@ -153,7 +152,7 @@ int Unit::AttachRes( lua_State* L )
 	float y = system.Get_Float(-3);
 	float z = system.Get_Float(-2);
 	float fScale = system.Get_Float(-1);
-	const Ogre::String meshname = system.Get_String(-5);
+	const STRING meshname = system.Get_String(-5);
 
 // 	//创建背负资源
 // 	if(m_pResEnt == nullptr)
@@ -195,43 +194,21 @@ void Unit::SetDestPos( const Ogre::Vector3& destPos )
 	m_destPos = adjustPos;
 }
 
-void Unit::SetSelected( bool bSelected )
-{
-	m_pSceneNode->showBoundingBox(bSelected);
-	m_bSelected = bSelected;
-}
-
-void Unit::CreateRenderInstance(const Ogre::String& meshname)
+void Unit::CreateRenderInstance(const STRING& meshname)
 {
 	DestroyRenderInstance();
 
 	m_pSceneNode = g_Environment.m_pSceneMgr->getRootSceneNode()->createChildSceneNode();
 
 	//设定名字
-	Ogre::String entName(Unit::ENTITY_NAME_PREFIX);
+	STRING entName(ENTITY_NAME_PREFIX);
 	entName += Ogre::StringConverter::toString(GetID());
 
 	m_pEntity = g_Environment.m_pSceneMgr->createEntity(entName, meshname);
-	m_pEntity->setQueryFlags(eQueryType_Unit);
+	m_pEntity->setQueryFlags(eQueryType_SelectableObject);
 	m_pSceneNode->attachObject(m_pEntity);
 
 	m_bRenderableReady = true;
-}
-
-void Unit::DestroyRenderInstance()
-{
-	if (m_pSceneNode)
-	{
-		g_Environment.m_pSceneMgr->destroySceneNode(m_pSceneNode);
-		m_pSceneNode = nullptr;
-	}
-	if (m_pEntity)
-	{
-		g_Environment.m_pSceneMgr->destroyEntity(m_pEntity);
-		m_pEntity = nullptr;
-	}
-
-	m_bRenderableReady = false;
 }
 
 void Unit::SetPosition( const POS& pos )

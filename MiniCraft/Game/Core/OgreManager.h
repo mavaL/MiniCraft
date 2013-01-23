@@ -2,7 +2,7 @@
 #define OGRE_MANAGER_H
 
 #include "Singleton.h"
-
+#include "GameDefine.h"
 
 /*------------------------------------------------
 				 OGRE图形模块封装类

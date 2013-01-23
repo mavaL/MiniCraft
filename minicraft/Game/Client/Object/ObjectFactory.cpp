@@ -2,6 +2,7 @@
 #include "ObjectFactory.h"
 #include "Faction.h"
 #include "Unit.h"
+#include "Building.h"
 
 
 /////////////////////////////////////////////////////////////
@@ -23,6 +24,18 @@ Object* UnitFactory::CreateInstance()
 }
 
 void UnitFactory::DestroyInstance( Object* pObject )
+{
+	assert(pObject);
+	delete pObject;
+}
+
+/////////////////////////////////////////////////////////////
+Object* BuildingFactory::CreateInstance()
+{
+	return new Building;
+}
+
+void BuildingFactory::DestroyInstance( Object* pObject )
 {
 	assert(pObject);
 	delete pObject;

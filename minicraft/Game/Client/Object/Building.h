@@ -1,27 +1,29 @@
-#ifndef BUILDING_H
-#define BUILDING_H
+/********************************************************************
+	created:	24:1:2013   0:34
+	filename: 	F:\MiniCraft\MiniCraft\Game\Client\Object\Building.h
+	author:		maval
+	
+	purpose:	建筑类
+*********************************************************************/
 
+#ifndef Building_h__
+#define Building_h__
 
+#include "SelectableObject.h"
 
-namespace Ogre
-{
-	class Entity;
-}
-
-
-/************************************************************************/
-/*								建筑类	                                */
-/************************************************************************/
-
-class Building
+class Building : public SelectableObject
 {
 public:
-	Building() {}
+	Building():SelectableObject() {}
 	~Building() {}
 
-private:
-	Ogre::Entity*	m_pEntity;
+	const static STRING BUILDING_NAME_PREFIX;
+
+public:
+	virtual eObjectType GetType() const { return eObjectType_Building; }
+	virtual void	Update(float dt) {}
+	virtual	void	CreateRenderInstance(const STRING& meshname);
 };
 
 
-#endif
+#endif // Building_h__

@@ -9,6 +9,7 @@
 #include <vector>
 
 #include "rapidxml/rapidxml.hpp"
+#include "GameDefine.h"
 
     // Forward declarations
     namespace Ogre
@@ -30,12 +31,12 @@
     class nodeProperty
     {
     public:
-        Ogre::String nodeName;
-        Ogre::String propertyNm;
-        Ogre::String valueName;
-        Ogre::String typeName;
+        STRING nodeName;
+        STRING propertyNm;
+        STRING valueName;
+        STRING typeName;
 
-        nodeProperty(const Ogre::String &node, const Ogre::String &propertyName, const Ogre::String &value, const Ogre::String &type)
+        nodeProperty(const STRING &node, const STRING &propertyName, const STRING &value, const STRING &type)
             : nodeName(node), propertyNm(propertyName), valueName(value), typeName(type) {}
     };
 
@@ -47,20 +48,20 @@
         DotSceneLoader();
         virtual ~DotSceneLoader();
 
-        void parseDotScene(const Ogre::String &SceneName, const Ogre::String &groupName, 
+        void parseDotScene(const STRING &SceneName, const STRING &groupName, 
 			Ogre::SceneManager *yourSceneMgr, Ogre::SceneNode *pAttachNode);
-        Ogre::String getProperty(const Ogre::String &ndNm, const Ogre::String &prop);
+        STRING getProperty(const STRING &ndNm, const STRING &prop);
 
         std::vector<nodeProperty> nodeProperties;
-        std::vector<Ogre::String> staticObjects;
-        std::vector<Ogre::String> dynamicObjects;
+        std::vector<STRING> staticObjects;
+        std::vector<STRING> dynamicObjects;
 //         std::vector<Forests::PagedGeometry *> mPGHandles;
 //         std::vector<Forests::TreeLoader3D *> mTreeHandles;
 //         Forests::GrassLoader* mGrassLoaderHandle;                /** Handle to Forests::GrassLoader object */
 
-		static Ogre::String getAttrib(rapidxml::xml_node<>* XMLNode, const Ogre::String &parameter, const Ogre::String &defaultValue = "");
-		static Ogre::Real getAttribReal(rapidxml::xml_node<>* XMLNode, const Ogre::String &parameter, Ogre::Real defaultValue = 0);
-		static bool getAttribBool(rapidxml::xml_node<>* XMLNode, const Ogre::String &parameter, bool defaultValue = false);
+		static STRING getAttrib(rapidxml::xml_node<>* XMLNode, const STRING &parameter, const STRING &defaultValue = "");
+		static Ogre::Real getAttribReal(rapidxml::xml_node<>* XMLNode, const STRING &parameter, Ogre::Real defaultValue = 0);
+		static bool getAttribBool(rapidxml::xml_node<>* XMLNode, const STRING &parameter, bool defaultValue = false);
 
 		static Ogre::Vector3 parseVector3(rapidxml::xml_node<>* XMLNode);
 		static Ogre::Quaternion parseQuaternion(rapidxml::xml_node<>* XMLNode);
@@ -103,8 +104,8 @@
 
         Ogre::SceneManager *mSceneMgr;
         Ogre::SceneNode *mAttachNode;
-        Ogre::String m_sGroupName;
-        Ogre::String m_sPrependNode;
+        STRING m_sGroupName;
+        STRING m_sPrependNode;
         Ogre::Vector3 mTerrainPosition;
         Ogre::Vector3 mLightDirection;
 

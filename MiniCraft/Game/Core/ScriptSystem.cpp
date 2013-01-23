@@ -82,7 +82,7 @@ void ScriptSystem::CallStack( lua_State* L, int n )
 	}
 }
 
-void ScriptSystem::DoFile( const Ogre::String& filename )
+void ScriptSystem::DoFile( const STRING& filename )
 {
 	lua_pushcclosure(m_pLuaState, OnError, 0);
 	int errfunc = lua_gettop(m_pLuaState);
@@ -93,10 +93,10 @@ void ScriptSystem::DoFile( const Ogre::String& filename )
 		PrintError(m_pLuaState, "%s", lua_tostring(m_pLuaState, -1));
 }
 
-const Ogre::String ScriptSystem::Get_String(int index)
+const STRING ScriptSystem::Get_String(int index)
 {
 	assert(lua_isstring(m_pLuaState, index));
-	return Ogre::String(lua_tostring(m_pLuaState, index));
+	return STRING(lua_tostring(m_pLuaState, index));
 }
 
 

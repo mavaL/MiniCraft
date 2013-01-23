@@ -3,6 +3,8 @@
 #include "DotSceneLoader.h"
 #include "GameDefine.h"
 #include "World.h"
+#include "ObjectManager.h"
+#include "ObjectBase.h"
 
 
 // #include "PagedGeometry.h"
@@ -39,7 +41,7 @@ DotSceneLoader::~DotSceneLoader()
 //     mPGHandles.clear();
 }
 
-void ParseStringVector(Ogre::String &str, Ogre::StringVector &list)
+void ParseStringVector(STRING &str, Ogre::StringVector &list)
 {
     list.clear();
     Ogre::StringUtil::trim(str,true,true);
@@ -58,7 +60,7 @@ void ParseStringVector(Ogre::String &str, Ogre::StringVector &list)
         list.push_back(str);
 }
 
-void DotSceneLoader::parseDotScene(const Ogre::String &SceneName, const Ogre::String &groupName, 
+void DotSceneLoader::parseDotScene(const STRING &SceneName, const STRING &groupName, 
 	Ogre::SceneManager *yourSceneMgr, Ogre::SceneNode *pAttachNode)
 {
 	assert(yourSceneMgr && pAttachNode);
@@ -79,7 +81,7 @@ void DotSceneLoader::parseDotScene(const Ogre::String &SceneName, const Ogre::St
     XMLRoot = XMLDoc.first_node("scene");
 
     // Validate the File
-	Ogre::String version = getAttrib(XMLRoot, "formatVersion", "");
+	STRING version = getAttrib(XMLRoot, "formatVersion", "");
 	float fVersion = Ogre::StringConverter::parseReal(version);
     if(version  == "" || fVersion != SCENE_VERSION)
     {
@@ -154,17 +156,31 @@ void DotSceneLoader::processScene(rapidxml::xml_node<>* XMLRoot)
 
 	for (size_t i=0; i< count; ++i)
 	{
-		const Ogre::String strMesh = curObjNode->first_attribute("meshname")->value();
+		const STRING strMesh = curObjNode->first_attribute("meshname")->value();
 		const Ogre::Vector3 pos = Ogre::StringConverter::parseVector3(curObjNode->first_attribute("position")->value());
 		const Ogre::Quaternion orient = Ogre::StringConverter::parseQuaternion(curObjNode->first_attribute("orientation")->value());
 		const Ogre::Vector3 scale = Ogre::StringConverter::parseVector3(curObjNode->first_attribute("scale")->value());
+		const bool bIsBuilding = Ogre::StringConverter::parseBool(curObjNode->first_attribute("isbuilding")->value());
 
-		Ogre::Entity* entity = mSceneMgr->createEntity(strMesh);
-		assert(entity);
+		if (bIsBuilding)
+		{
+			//建筑物对象
+			RenderableObject* pObject = dynamic_cast<RenderableObject*>(ObjectManager::GetSingleton().CreateObject(eObjectType_Building));
+			pObject->CreateRenderInstance(strMesh);
+			pObject->SetScale(scale);
+			pObject->SetOrientation(orient);
+			pObject->SetPosition(pos);
+		}
+		else
+		{
+			//非游戏对象,不纳入逻辑管理,只渲染
+			Ogre::Entity* entity = mSceneMgr->createEntity(strMesh);
+			assert(entity);
 
-		Ogre::SceneNode* pNode = mSceneMgr->getRootSceneNode()->createChildSceneNode(pos, orient);
-		pNode->setScale(scale);
-		pNode->attachObject(entity);
+			Ogre::SceneNode* pNode = mSceneMgr->getRootSceneNode()->createChildSceneNode(pos, orient);
+			pNode->setScale(scale);
+			pNode->attachObject(entity);
+		}	
 
 		curObjNode = curObjNode->next_sibling();
 	}
@@ -270,7 +286,7 @@ void DotSceneLoader::processTerrain(rapidxml::xml_node<>* XMLNode)
 
 void DotSceneLoader::processTerrainPage(rapidxml::xml_node<>* XMLNode)
 {
-//     Ogre::String name = getAttrib(XMLNode, "name");
+//     STRING name = getAttrib(XMLNode, "name");
 //     int pageX = Ogre::StringConverter::parseInt(XMLNode->first_attribute("pageX")->value());
 //     int pageY = Ogre::StringConverter::parseInt(XMLNode->first_attribute("pageY")->value());
 //     mPGPageSize       = Ogre::StringConverter::parseInt(XMLNode->first_attribute("pagedGeometryPageSize")->value());
@@ -301,7 +317,7 @@ void DotSceneLoader::processTerrainPage(rapidxml::xml_node<>* XMLNode)
 
 void DotSceneLoader::processGrassLayers(rapidxml::xml_node<>* XMLNode)
 {
-//     Ogre::String dMapName = getAttrib(XMLNode, "densityMap");
+//     STRING dMapName = getAttrib(XMLNode, "densityMap");
 //     mTerrainGlobalOptions->setVisibilityFlags(Ogre::StringConverter::parseUnsignedInt(XMLNode->first_attribute("visibilityFlags")->value()));
 // 
 //     // create a temporary camera
@@ -331,7 +347,7 @@ void DotSceneLoader::processGrassLayers(rapidxml::xml_node<>* XMLNode)
 //     rapidxml::xml_node<>* pElement = XMLNode->first_node("grassLayer");
 //     rapidxml::xml_node<>* pSubElement;
 //     Forests::GrassLayer* gLayer;
-//     Ogre::String tempStr;
+//     STRING tempStr;
 //     while(pElement)
 //     {
 //         // grassLayer
@@ -416,15 +432,15 @@ void DotSceneLoader::processOctree(rapidxml::xml_node<>* XMLNode)
 void DotSceneLoader::processLight(rapidxml::xml_node<>* XMLNode, Ogre::SceneNode *pParent)
 {
     // Process attributes
-    Ogre::String name = getAttrib(XMLNode, "name");
-    Ogre::String id = getAttrib(XMLNode, "id");
+    STRING name = getAttrib(XMLNode, "name");
+    STRING id = getAttrib(XMLNode, "id");
 
     // Create the light
     Ogre::Light *pLight = mSceneMgr->createLight(name);
     if(pParent)
         pParent->attachObject(pLight);
 
-    Ogre::String sValue = getAttrib(XMLNode, "type");
+    STRING sValue = getAttrib(XMLNode, "type");
     if(sValue == "point")
         pLight->setType(Ogre::Light::LT_POINT);
     else if(sValue == "directional")
@@ -487,11 +503,11 @@ void DotSceneLoader::processLight(rapidxml::xml_node<>* XMLNode, Ogre::SceneNode
 void DotSceneLoader::processCamera(rapidxml::xml_node<>* XMLNode, Ogre::SceneNode *pParent)
 {
     // Process attributes
-    Ogre::String name = getAttrib(XMLNode, "name");
-    Ogre::String id = getAttrib(XMLNode, "id");
+    STRING name = getAttrib(XMLNode, "name");
+    STRING id = getAttrib(XMLNode, "id");
     Ogre::Real fov = getAttribReal(XMLNode, "fov", 45);
     Ogre::Real aspectRatio = getAttribReal(XMLNode, "aspectRatio", 1.3333);
-    Ogre::String projectionType = getAttrib(XMLNode, "projectionType", "perspective");
+    STRING projectionType = getAttrib(XMLNode, "projectionType", "perspective");
 
     // Create the camera
     Ogre::Camera *pCamera = mSceneMgr->createCamera(name);
@@ -570,7 +586,7 @@ void DotSceneLoader::processCamera(rapidxml::xml_node<>* XMLNode, Ogre::SceneNod
 void DotSceneLoader::processNode(rapidxml::xml_node<>* XMLNode, Ogre::SceneNode *pParent)
 {
     // Construct the node's name
-    Ogre::String name = m_sPrependNode + getAttrib(XMLNode, "name");
+    STRING name = m_sPrependNode + getAttrib(XMLNode, "name");
 
     // Create the scene node
     Ogre::SceneNode *pNode;
@@ -592,7 +608,7 @@ void DotSceneLoader::processNode(rapidxml::xml_node<>* XMLNode, Ogre::SceneNode 
     }
 
     // Process other attributes
-    Ogre::String id = getAttrib(XMLNode, "id");
+    STRING id = getAttrib(XMLNode, "id");
     bool isTarget = getAttribBool(XMLNode, "isTarget");
 
     rapidxml::xml_node<>* pElement;
@@ -706,10 +722,10 @@ void DotSceneLoader::processLookTarget(rapidxml::xml_node<>* XMLNode, Ogre::Scen
     //! @todo Is this correct? Cause I don't have a clue actually
 
     // Process attributes
-    Ogre::String nodeName = getAttrib(XMLNode, "nodeName");
+    STRING nodeName = getAttrib(XMLNode, "nodeName");
 
     Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_PARENT;
-    Ogre::String sValue = getAttrib(XMLNode, "relativeTo");
+    STRING sValue = getAttrib(XMLNode, "relativeTo");
     if(sValue == "local")
         relativeTo = Ogre::Node::TS_LOCAL;
     else if(sValue == "parent")
@@ -751,7 +767,7 @@ void DotSceneLoader::processLookTarget(rapidxml::xml_node<>* XMLNode, Ogre::Scen
 void DotSceneLoader::processTrackTarget(rapidxml::xml_node<>* XMLNode, Ogre::SceneNode *pParent)
 {
     // Process attributes
-    Ogre::String nodeName = getAttrib(XMLNode, "nodeName");
+    STRING nodeName = getAttrib(XMLNode, "nodeName");
 
     rapidxml::xml_node<>* pElement;
 
@@ -782,10 +798,10 @@ void DotSceneLoader::processTrackTarget(rapidxml::xml_node<>* XMLNode, Ogre::Sce
 void DotSceneLoader::processEntity(rapidxml::xml_node<>* XMLNode, Ogre::SceneNode *pParent)
 {
     // Process attributes
-    Ogre::String name = getAttrib(XMLNode, "name");
-    Ogre::String id = getAttrib(XMLNode, "id");
-    Ogre::String meshFile = getAttrib(XMLNode, "meshFile");
-    Ogre::String materialFile = getAttrib(XMLNode, "materialFile");
+    STRING name = getAttrib(XMLNode, "name");
+    STRING id = getAttrib(XMLNode, "id");
+    STRING meshFile = getAttrib(XMLNode, "meshFile");
+    STRING materialFile = getAttrib(XMLNode, "materialFile");
     bool isStatic = getAttribBool(XMLNode, "static", false);;
     bool castShadows = getAttribBool(XMLNode, "castShadows", true);
 
@@ -849,8 +865,8 @@ void DotSceneLoader::processEntity(rapidxml::xml_node<>* XMLNode, Ogre::SceneNod
 void DotSceneLoader::processSubEntity(rapidxml::xml_node<>* XMLNode, Ogre::Entity *pEntity){
     rapidxml::xml_node<>* pElement;
     int index = 0;
-    Ogre::String materialName;
-    Ogre::String sIndex;
+    STRING materialName;
+    STRING sIndex;
 
     // Process subentity
     pElement = XMLNode->first_node("subentity");
@@ -879,9 +895,9 @@ void DotSceneLoader::processSubEntity(rapidxml::xml_node<>* XMLNode, Ogre::Entit
 void DotSceneLoader::processParticleSystem(rapidxml::xml_node<>* XMLNode, Ogre::SceneNode *pParent)
 {
     // Process attributes
-    Ogre::String name = getAttrib(XMLNode, "name");
-    Ogre::String id = getAttrib(XMLNode, "id");
-    Ogre::String file = getAttrib(XMLNode, "file");
+    STRING name = getAttrib(XMLNode, "name");
+    STRING id = getAttrib(XMLNode, "id");
+    STRING file = getAttrib(XMLNode, "file");
 
     // Create the particle system
     try
@@ -902,7 +918,7 @@ void DotSceneLoader::processBillboardSet(rapidxml::xml_node<>* XMLNode, Ogre::Sc
 
 void DotSceneLoader::processPlane(rapidxml::xml_node<>* XMLNode, Ogre::SceneNode *pParent)
 {
-    Ogre::String name = getAttrib(XMLNode, "name");
+    STRING name = getAttrib(XMLNode, "name");
     Ogre::Real distance = getAttribReal(XMLNode, "distance");
     Ogre::Real width = getAttribReal(XMLNode, "width");
     Ogre::Real height = getAttribReal(XMLNode, "height");
@@ -911,7 +927,7 @@ void DotSceneLoader::processPlane(rapidxml::xml_node<>* XMLNode, Ogre::SceneNode
     int numTexCoordSets = Ogre::StringConverter::parseInt(getAttrib(XMLNode, "numTexCoordSets"));
     Ogre::Real uTile = getAttribReal(XMLNode, "uTile");
     Ogre::Real vTile = getAttribReal(XMLNode, "vTile");
-    Ogre::String material = getAttrib(XMLNode, "material");
+    STRING material = getAttrib(XMLNode, "material");
     bool hasNormals = getAttribBool(XMLNode, "hasNormals");
     Ogre::Vector3 normal = parseVector3(XMLNode->first_node("normal"));
     Ogre::Vector3 up = parseVector3(XMLNode->first_node("upVector"));
@@ -938,8 +954,8 @@ typedef std::vector<PGInstanceInfo> PGInstanceList;
 
 void DotSceneLoader::processPagedGeometry(rapidxml::xml_node<>* XMLNode, Ogre::SceneNode *pParent)
 {
-//     Ogre::String filename = "../Projects/SampleScene3/" + getAttrib(XMLNode, "fileName");
-//     Ogre::String model = getAttrib(XMLNode, "model");
+//     STRING filename = "../Projects/SampleScene3/" + getAttrib(XMLNode, "fileName");
+//     STRING model = getAttrib(XMLNode, "model");
 //     Ogre::Real pagesize = getAttribReal(XMLNode, "pageSize");
 //     Ogre::Real batchdistance = getAttribReal(XMLNode, "batchDistance");
 //     Ogre::Real impostordistance = getAttribReal(XMLNode, "impostorDistance");
@@ -973,7 +989,7 @@ void DotSceneLoader::processPagedGeometry(rapidxml::xml_node<>* XMLNode, Ogre::S
 //     while(!stream.eof())
 //     {
 //         stream.getline(res, 128);
-//         Ogre::String resStr(res);
+//         STRING resStr(res);
 // 
 //         ParseStringVector(resStr, list);
 // 
@@ -1024,7 +1040,7 @@ void DotSceneLoader::processFog(rapidxml::xml_node<>* XMLNode)
     Ogre::Real linearEnd = getAttribReal(XMLNode, "end", 1.0);
 
     Ogre::FogMode mode = Ogre::FOG_NONE;
-    Ogre::String sMode = getAttrib(XMLNode, "mode");
+    STRING sMode = getAttrib(XMLNode, "mode");
     if(sMode == "none")
         mode = Ogre::FOG_NONE;
     else if(sMode == "exp")
@@ -1051,7 +1067,7 @@ void DotSceneLoader::processFog(rapidxml::xml_node<>* XMLNode)
 void DotSceneLoader::processSkyBox(rapidxml::xml_node<>* XMLNode)
 {
     // Process attributes
-    Ogre::String material = getAttrib(XMLNode, "material", "BaseWhite");
+    STRING material = getAttrib(XMLNode, "material", "BaseWhite");
     Ogre::Real distance = getAttribReal(XMLNode, "distance", 5000);
     bool drawFirst = getAttribBool(XMLNode, "drawFirst", true);
     bool active = getAttribBool(XMLNode, "active", false);
@@ -1073,7 +1089,7 @@ void DotSceneLoader::processSkyBox(rapidxml::xml_node<>* XMLNode)
 void DotSceneLoader::processSkyDome(rapidxml::xml_node<>* XMLNode)
 {
     // Process attributes
-    Ogre::String material = XMLNode->first_attribute("material")->value();
+    STRING material = XMLNode->first_attribute("material")->value();
     Ogre::Real curvature = getAttribReal(XMLNode, "curvature", 10);
     Ogre::Real tiling = getAttribReal(XMLNode, "tiling", 8);
     Ogre::Real distance = getAttribReal(XMLNode, "distance", 4000);
@@ -1097,7 +1113,7 @@ void DotSceneLoader::processSkyDome(rapidxml::xml_node<>* XMLNode)
 void DotSceneLoader::processSkyPlane(rapidxml::xml_node<>* XMLNode)
 {
     // Process attributes
-    Ogre::String material = getAttrib(XMLNode, "material");
+    STRING material = getAttrib(XMLNode, "material");
     Ogre::Real planeX = getAttribReal(XMLNode, "planeX", 0);
     Ogre::Real planeY = getAttribReal(XMLNode, "planeY", -1);
     Ogre::Real planeZ = getAttribReal(XMLNode, "planeX", 0);
@@ -1147,7 +1163,7 @@ void DotSceneLoader::processLightAttenuation(rapidxml::xml_node<>* XMLNode, Ogre
 }
 
 
-Ogre::String DotSceneLoader::getAttrib(rapidxml::xml_node<>* XMLNode, const Ogre::String &attrib, const Ogre::String &defaultValue)
+STRING DotSceneLoader::getAttrib(rapidxml::xml_node<>* XMLNode, const STRING &attrib, const STRING &defaultValue)
 {
     if(XMLNode->first_attribute(attrib.c_str()))
         return XMLNode->first_attribute(attrib.c_str())->value();
@@ -1155,7 +1171,7 @@ Ogre::String DotSceneLoader::getAttrib(rapidxml::xml_node<>* XMLNode, const Ogre
         return defaultValue;
 }
 
-Ogre::Real DotSceneLoader::getAttribReal(rapidxml::xml_node<>* XMLNode, const Ogre::String &attrib, Ogre::Real defaultValue)
+Ogre::Real DotSceneLoader::getAttribReal(rapidxml::xml_node<>* XMLNode, const STRING &attrib, Ogre::Real defaultValue)
 {
     if(XMLNode->first_attribute(attrib.c_str()))
         return Ogre::StringConverter::parseReal(XMLNode->first_attribute(attrib.c_str())->value());
@@ -1163,12 +1179,12 @@ Ogre::Real DotSceneLoader::getAttribReal(rapidxml::xml_node<>* XMLNode, const Og
         return defaultValue;
 }
 
-bool DotSceneLoader::getAttribBool(rapidxml::xml_node<>* XMLNode, const Ogre::String &attrib, bool defaultValue)
+bool DotSceneLoader::getAttribBool(rapidxml::xml_node<>* XMLNode, const STRING &attrib, bool defaultValue)
 {
     if(!XMLNode->first_attribute(attrib.c_str()))
         return defaultValue;
 
-    if(Ogre::String(XMLNode->first_attribute(attrib.c_str())->value()) == "true")
+    if(STRING(XMLNode->first_attribute(attrib.c_str())->value()) == "true")
         return true;
 
     return false;
@@ -1249,7 +1265,7 @@ Ogre::ColourValue DotSceneLoader::parseColour(rapidxml::xml_node<>* XMLNode)
     );
 }
 
-Ogre::String DotSceneLoader::getProperty(const Ogre::String &ndNm, const Ogre::String &prop)
+STRING DotSceneLoader::getProperty(const STRING &ndNm, const STRING &prop)
 {
     for ( unsigned int i = 0 ; i < nodeProperties.size(); i++ )
     {
@@ -1264,6 +1280,6 @@ Ogre::String DotSceneLoader::getProperty(const Ogre::String &ndNm, const Ogre::S
 
 void DotSceneLoader::processUserDataReference(rapidxml::xml_node<>* XMLNode, Ogre::Entity *pEntity)
 {
-    Ogre::String str = XMLNode->first_attribute("id")->value();
+    STRING str = XMLNode->first_attribute("id")->value();
     pEntity->setUserAny(Ogre::Any(str));
 }

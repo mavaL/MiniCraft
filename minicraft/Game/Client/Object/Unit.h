@@ -10,7 +10,7 @@
 #define Unit_h__
 
 
-#include "ObjectBase.h"
+#include "SelectableObject.h"
 #include "ScriptSystem.h"
 
 
@@ -18,7 +18,7 @@ struct lua_State;
 class AIComponent;
 
 
-class Unit : public RenderableObject
+class Unit : public SelectableObject
 {
 public:
 	Unit();
@@ -28,13 +28,12 @@ public:
 	static const char className[];
 	static Luna<Unit>::RegType methods[];
 
-	const static Ogre::String UNIT_TABLE_NAME;
-	const static Ogre::String ENTITY_NAME_PREFIX;
+	const static STRING UNIT_TABLE_NAME;
+	const static STRING ENTITY_NAME_PREFIX;
 
 public:
 	virtual eObjectType GetType() const { return eObjectType_Unit; }
-	virtual	void	CreateRenderInstance(const Ogre::String& meshname);
-	virtual void	DestroyRenderInstance();
+	virtual	void	CreateRenderInstance(const STRING& meshname);
 	virtual void	SetPosition(const POS& pos);
 	virtual void	Update(float dt);
 
@@ -44,9 +43,8 @@ public:
 
 	void			SetDestPos(const Ogre::Vector3& destPos);
 	const Ogre::Vector3& GetDestPos() const	{ return m_destPos; }
-	void			SetSelected(bool bSelected);
 	
-	void			PlayAnimation(const Ogre::String& animName, bool bLoop);
+	void			PlayAnimation(const STRING& animName, bool bLoop);
 	void			StopAnimation();
 
 public:
@@ -65,7 +63,6 @@ public:
 private:
 	AIComponent*		m_pAI;			//AI组件
 	Ogre::Vector3		m_destPos;
-	bool				m_bSelected;
 	Ogre::AnimationState* m_pAnimState;	//当前播放动画
 	
 };

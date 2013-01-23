@@ -45,5 +45,14 @@ public:
 	virtual void		DestroyInstance(Object* pObject);
 };
 
+////////////////////////////////////////////////////////////
+class BuildingFactory : public ObjectFactory
+{
+public:
+	virtual eObjectType GetType() const { return eObjectType_Building; }
+	virtual Object*		CreateInstance();
+	virtual void		DestroyInstance(Object* pObject);
+};
+
 
 #endif // ObjectFactory_h__

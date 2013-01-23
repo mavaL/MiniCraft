@@ -36,6 +36,8 @@ void World::Init()
 	m_pSceneMgr = Ogre::Root::getSingleton().createSceneManager(Ogre::ST_GENERIC, SCENE_MANAGER_NAME);
 	m_pSceneMgr->setAmbientLight(ColourValue(1.0f, 1.0f, 1.0f));
 
+	g_Environment.m_pSceneMgr = m_pSceneMgr;
+
 	m_pSceneQuery = m_pSceneMgr->createAABBQuery(AxisAlignedBox());
 	m_pRaySceneQuery = m_pSceneMgr->createRayQuery(Ray());
 	m_pRaySceneQuery->setSortByDistance(true);
@@ -90,7 +92,6 @@ void World::Init()
 	//³õÊ¼»¯DetourÑ°Â·¿â
 	m_pDetourCrowd = new OgreDetourCrowd(m_pRecast);
 
-	g_Environment.m_pSceneMgr = m_pSceneMgr;
 	g_Environment.m_pRecast = m_pRecast;
 	g_Environment.m_pCrowd = m_pDetourCrowd;
 }
@@ -234,16 +235,20 @@ Ogre::MovableObject* World::GetRaySceneQueryResult( const Ogre::Ray& ray, int qu
 
 void World::SetObjectSelected( int ID )
 {
-// 	m_vecUnits[ID]->SetSelected(true);
-// 	m_vecSelectUnis.push_back(m_vecUnits[ID]);
+	SelectableObject* pObject = dynamic_cast<SelectableObject*>(ObjectManager::GetSingleton().GetObject(ID));
+	pObject->SetSelected(true);
+	m_vecSelectUnis.push_back(pObject);
 }
 
 void World::ClearSelectedState()
 {
-// 	for (size_t i=0; i<m_vecSelectUnis.size(); ++i)
-// 		m_vecSelectUnis[i]->SetSelected(false);
-// 
-// 	m_vecSelectUnis.clear();
+	for (size_t i=0; i<m_vecSelectUnis.size(); ++i)
+	{
+		SelectableObject* pObject = dynamic_cast<SelectableObject*>(m_vecSelectUnis[i]);
+		pObject->SetSelected(false);
+	}
+
+	m_vecSelectUnis.clear(); 
 }
 
 void World::ClampToTerrain(Ogre::Vector3& pos)

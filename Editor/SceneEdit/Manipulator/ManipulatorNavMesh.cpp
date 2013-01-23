@@ -32,11 +32,11 @@ void ManipulatorNavMesh::Generate()
 	try
 	{
 		//获取参与构建NavMesh的物体
-		const auto& objFlagMap = ManipulatorSystem.GetObject().GetObjNavMeshFlagMap();
+		const auto& objects = ManipulatorSystem.GetObject().GetAllObjects();
 		std::vector<Ogre::Entity*> vecNavMeshEnt;
-		for (auto iter=objFlagMap.begin(); iter!=objFlagMap.end(); ++iter)
+		for (auto iter=objects.begin(); iter!=objects.end(); ++iter)
 		{
-			if(iter->second)
+			if((iter->second)->m_bAddToNavmesh)
 				vecNavMeshEnt.push_back(iter->first);
 		}
 

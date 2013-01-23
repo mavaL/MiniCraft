@@ -3,6 +3,7 @@
 
 #include "Singleton.h"
 #include "luna.h"
+#include "GameDefine.h"
 
 
 /************************************************************************/
@@ -22,7 +23,7 @@ public:
 
 public:
 	///栈通信
-	const Ogre::String	Get_String(int index);
+	const STRING		Get_String(int index);
 	int					Get_Int(int index);
 	float				Get_Float(int index);
 	bool				Get_Bool(int index);
@@ -32,11 +33,11 @@ public:
 	void				Push_Int(int i);
 
 	///执行脚本
-	void				DoFile(const Ogre::String& filename);
+	void				DoFile(const STRING& filename);
 
 	//绑定C++对象到lua的对象数组(table)中,如table Unit[0] = userdata0, Unit[1] = ...
 	template<class T>
-	void	BindObjectToLua(const Ogre::String& tableName, int index, T* pObject)
+	void	BindObjectToLua(const STRING& tableName, int index, T* pObject)
 	{
 		Luna<T>::userdataType *ud = static_cast<Luna<T>::userdataType*>(lua_newuserdata(m_pLuaState, sizeof(Luna<T>::userdataType)));
 		assert(ud);

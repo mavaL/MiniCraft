@@ -25,7 +25,7 @@ void CAppStateManager::manageAppState(const std::string& stateName, CAppState* s
 	catch(std::exception&)
 	{
 // 		delete state;
-// 		throw Ogre::Exception(Ogre::Exception::ERR_INTERNAL_ERROR, "Error while trying to manage a new CAppState\n" + Ogre::String(e.what()), "CAppStateManager.cpp (39)");
+// 		throw Ogre::Exception(Ogre::Exception::ERR_INTERNAL_ERROR, "Error while trying to manage a new CAppState\n" + STRING(e.what()), "CAppStateManager.cpp (39)");
 	}
 }
 

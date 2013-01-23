@@ -42,8 +42,10 @@ void ManipulatorObject::OnSceneClose()
 	m_pSelectEntity = nullptr;
 	m_pAnimEntity = nullptr;
 	m_pAnimState = nullptr;
+
+	for(auto iter=m_objects.begin(); iter!=m_objects.end(); ++iter)
+		delete iter->second;
 	m_objects.clear();
-	m_navMeshFlag.clear();
 }
 
 void ManipulatorObject::OnSceneNew()
@@ -85,8 +87,7 @@ Ogre::Entity* ManipulatorObject::AddEntity( const Ogre::String& meshname, const 
 	//ÉèÖÃ²éÑ¯ÑÚÂë
 	newEntity->setQueryFlags(eQueryMask_Entity);
 
-	m_objects.push_back(newEntity);
-	m_navMeshFlag.insert(std::make_pair(newEntity, false));
+	m_objects.insert(std::make_pair(newEntity, new SObjectInfo));
 	
 	return newEntity;
 }
@@ -257,6 +258,7 @@ void ManipulatorObject::Load( rapidxml::xml_node<>* XMLNode )
 	{
 		const String strMesh = curObjNode->first_attribute("meshname")->value();
 		const bool bIsNavMesh = Ogre::StringConverter::parseBool(curObjNode->first_attribute("isnavmesh")->value());
+		const bool bIsBuilding = Ogre::StringConverter::parseBool(curObjNode->first_attribute("isbuilding")->value());
 		const Ogre::Vector3 pos = Ogre::StringConverter::parseVector3(curObjNode->first_attribute("position")->value());
 		const Ogre::Quaternion orient = Ogre::StringConverter::parseQuaternion(curObjNode->first_attribute("orientation")->value());
 		const Ogre::Vector3 scale = Ogre::StringConverter::parseVector3(curObjNode->first_attribute("scale")->value());
@@ -265,6 +267,7 @@ void ManipulatorObject::Load( rapidxml::xml_node<>* XMLNode )
 		assert(pNewEnt);
 
 		SetObjectNavMeshFlag(pNewEnt, bIsNavMesh);
+		SetObjectIsBuilding(pNewEnt, bIsBuilding);
 
 		curObjNode = curObjNode->next_sibling();
 	}
@@ -285,16 +288,18 @@ void ManipulatorObject::_UpdateAABBOfEntity( Ogre::Entity* pEntity )
 
 void ManipulatorObject::SetObjectNavMeshFlag( Ogre::Entity* pEntity, bool bIsNavMesh )
 {
-	auto iter = m_navMeshFlag.find(pEntity);
-	assert(iter != m_navMeshFlag.end());
-	iter->second = bIsNavMesh;
+	auto iter = m_objects.find(pEntity);
+	assert(iter != m_objects.end());
+
+	(iter->second)->m_bAddToNavmesh = bIsNavMesh;
 }
 
 bool ManipulatorObject::GetObjectNavMeshFlag( Ogre::Entity* pEntity ) const
 {
-	auto iter = m_navMeshFlag.find(pEntity);
-	assert(iter != m_navMeshFlag.end());
-	return iter->second;
+	auto iter = m_objects.find(pEntity);
+	assert(iter != m_objects.end());
+
+	return (iter->second)->m_bAddToNavmesh;
 }
 
 std::vector<std::wstring> ManipulatorObject::GetAnimationNames( Ogre::Entity* pEntity ) const
@@ -337,6 +342,22 @@ void ManipulatorObject::PlayAnimation( Ogre::Entity* pEntity, int animIndex )
 		m_pAnimState->setEnabled(true);
 		m_pAnimState->setLoop(true);
 	}
+}
+
+void ManipulatorObject::SetObjectIsBuilding( Ogre::Entity* pEntity, bool bIsBuilding )
+{
+	auto iter = m_objects.find(pEntity);
+	assert(iter != m_objects.end());
+
+	(iter->second)->m_bIsBuilding = bIsBuilding;
+}
+
+bool ManipulatorObject::GetObjectIsBuilding( Ogre::Entity* pEntity ) const
+{
+	auto iter = m_objects.find(pEntity);
+	assert(iter != m_objects.end());
+
+	return (iter->second)->m_bIsBuilding;
 }
 
 
