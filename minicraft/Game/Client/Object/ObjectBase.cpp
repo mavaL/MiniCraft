@@ -64,4 +64,21 @@ void RenderableObject::DestroyRenderInstance()
 	m_bRenderableReady = false;
 }
 
+void RenderableObject::CreateRenderInstance( const STRING& meshname )
+{
+	DestroyRenderInstance();
+
+	m_pSceneNode = g_Environment.m_pSceneMgr->getRootSceneNode()->createChildSceneNode();
+
+	//Éè¶¨Ãû×Ö
+	STRING entName = GetNamePrefix();	
+	entName += Ogre::StringConverter::toString(GetID());
+
+	m_pEntity = g_Environment.m_pSceneMgr->createEntity(entName, meshname);
+	m_pEntity->setQueryFlags(eQueryType_SelectableObject);
+	m_pSceneNode->attachObject(m_pEntity);
+
+	m_bRenderableReady = true;
+}
+
 

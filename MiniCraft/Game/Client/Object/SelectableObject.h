@@ -26,6 +26,9 @@ public:
 	void	SetSelected(bool bSelected);
 	bool	GetSelected() const { return m_bSelected; }
 
+	//!!在Ogre Root销毁前必须调用
+	static void	ReleaseMeshCache();
+
 private:
 	Ogre::MeshPtr	_CreateSelectionCircleMesh(const Ogre::MeshPtr& objMesh);
 

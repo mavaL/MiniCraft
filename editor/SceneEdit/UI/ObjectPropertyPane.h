@@ -30,6 +30,7 @@ public:
 		propScale,
 		propAddToNavmesh,
 		propIsBuilding,
+		propIsResource,
 		propMutableItemEnd,
 		propEnd = propMutableItemEnd,
 

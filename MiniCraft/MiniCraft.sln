@@ -13,6 +13,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OgreRecast", "..\..\OgreCro
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SceneEdit", "..\Editor\SceneEdit\SceneEdit.vcxproj", "{F2B2D7A0-6DBB-4C53-9C3B-6B1A36EE807B}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Plugin_OctreeSceneManager", "..\..\Ogre_1_8_0\build\PlugIns\OctreeSceneManager\Plugin_OctreeSceneManager.vcxproj", "{18B36B88-E7D2-466D-BDB7-72AD2B9F11DF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -137,6 +139,24 @@ Global
 		{F2B2D7A0-6DBB-4C53-9C3B-6B1A36EE807B}.Unicode Release|Win32.ActiveCfg = Release|Win32
 		{F2B2D7A0-6DBB-4C53-9C3B-6B1A36EE807B}.Unicode Release|Win32.Build.0 = Release|Win32
 		{F2B2D7A0-6DBB-4C53-9C3B-6B1A36EE807B}.Unicode Release|x64.ActiveCfg = Release|Win32
+		{18B36B88-E7D2-466D-BDB7-72AD2B9F11DF}.Debug|Win32.ActiveCfg = Debug|Win32
+		{18B36B88-E7D2-466D-BDB7-72AD2B9F11DF}.Debug|Win32.Build.0 = Debug|Win32
+		{18B36B88-E7D2-466D-BDB7-72AD2B9F11DF}.Debug|x64.ActiveCfg = Debug|Win32
+		{18B36B88-E7D2-466D-BDB7-72AD2B9F11DF}.MinSizeRel|Win32.ActiveCfg = MinSizeRel|Win32
+		{18B36B88-E7D2-466D-BDB7-72AD2B9F11DF}.MinSizeRel|Win32.Build.0 = MinSizeRel|Win32
+		{18B36B88-E7D2-466D-BDB7-72AD2B9F11DF}.MinSizeRel|x64.ActiveCfg = MinSizeRel|Win32
+		{18B36B88-E7D2-466D-BDB7-72AD2B9F11DF}.Release|Win32.ActiveCfg = Release|Win32
+		{18B36B88-E7D2-466D-BDB7-72AD2B9F11DF}.Release|Win32.Build.0 = Release|Win32
+		{18B36B88-E7D2-466D-BDB7-72AD2B9F11DF}.Release|x64.ActiveCfg = Release|Win32
+		{18B36B88-E7D2-466D-BDB7-72AD2B9F11DF}.RelWithDebInfo|Win32.ActiveCfg = RelWithDebInfo|Win32
+		{18B36B88-E7D2-466D-BDB7-72AD2B9F11DF}.RelWithDebInfo|Win32.Build.0 = RelWithDebInfo|Win32
+		{18B36B88-E7D2-466D-BDB7-72AD2B9F11DF}.RelWithDebInfo|x64.ActiveCfg = RelWithDebInfo|Win32
+		{18B36B88-E7D2-466D-BDB7-72AD2B9F11DF}.Unicode Debug|Win32.ActiveCfg = Debug|Win32
+		{18B36B88-E7D2-466D-BDB7-72AD2B9F11DF}.Unicode Debug|Win32.Build.0 = Debug|Win32
+		{18B36B88-E7D2-466D-BDB7-72AD2B9F11DF}.Unicode Debug|x64.ActiveCfg = Debug|Win32
+		{18B36B88-E7D2-466D-BDB7-72AD2B9F11DF}.Unicode Release|Win32.ActiveCfg = Release|Win32
+		{18B36B88-E7D2-466D-BDB7-72AD2B9F11DF}.Unicode Release|Win32.Build.0 = Release|Win32
+		{18B36B88-E7D2-466D-BDB7-72AD2B9F11DF}.Unicode Release|x64.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

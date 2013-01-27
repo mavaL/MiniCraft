@@ -1,0 +1,51 @@
+material Console_Terrain
+{
+	technique Map#1
+	{
+		pass Map#2
+		{
+			ambient 0.698039 0.698039 0.698039 1
+			diffuse 0.698039 0.698039 0.698039 1
+			specular 0.898039 0.898039 0.898039 1 20
+
+			texture_unit Map#3
+			{
+				texture ConsoleTerran_diff.dds
+				filtering linear linear linear
+			}
+		}
+	}
+}
+
+material Console_Protoss
+{
+	technique Map#1
+	{
+		pass Map#2
+		{
+			ambient 0.698039 0.698039 0.698039 1
+			diffuse 0.698039 0.698039 0.698039 1
+			specular 0.898039 0.898039 0.898039 1 20
+
+			texture_unit Map#3
+			{
+				texture ConsoleProtoss_diff.dds
+				filtering linear linear linear
+			}
+		}
+	}
+}
+
+material ConsoleBlack
+{
+	technique Map#1
+	{
+		pass Map#2
+		{
+			ambient 0.0 0.0 0.0 
+			diffuse 0.0 0.0 0.0 
+			specular 0.0 0.0 0.0 0.0
+            emissive 0.0 0.0 0.0
+		}
+	}
+}

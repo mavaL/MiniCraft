@@ -29,11 +29,11 @@ public:
 	static Luna<Unit>::RegType methods[];
 
 	const static STRING UNIT_TABLE_NAME;
-	const static STRING ENTITY_NAME_PREFIX;
+	const static STRING sNamePrefix;
 
 public:
 	virtual eObjectType GetType() const { return eObjectType_Unit; }
-	virtual	void	CreateRenderInstance(const STRING& meshname);
+	virtual const STRING& GetNamePrefix() const { return sNamePrefix; }
 	virtual void	SetPosition(const POS& pos);
 	virtual void	Update(float dt);
 

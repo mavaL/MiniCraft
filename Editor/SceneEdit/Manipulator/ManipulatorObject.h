@@ -17,9 +17,10 @@ class GizmoAxis;
 ///物体信息封装结构
 struct SObjectInfo 
 {
-	SObjectInfo():	m_bAddToNavmesh(false),m_bIsBuilding(false) {}
+	SObjectInfo():	m_bAddToNavmesh(false),m_bIsBuilding(false),m_bIsResource(false) {}
 	bool			m_bAddToNavmesh;	//是否参与NavMesh构建
 	bool			m_bIsBuilding;
+	bool			m_bIsResource;
 };
 
 typedef std::unordered_map<Ogre::Entity*, SObjectInfo*> ObjectContainer;
@@ -77,6 +78,8 @@ public:
 	bool		GetObjectNavMeshFlag(Ogre::Entity* pEntity) const;
 	void		SetObjectIsBuilding(Ogre::Entity* pEntity, bool bIsBuilding);
 	bool		GetObjectIsBuilding(Ogre::Entity* pEntity) const;
+	void		SetObjectIsResource(Ogre::Entity* pEntity, bool bIsResource);
+	bool		GetObjectIsResource(Ogre::Entity* pEntity) const;
 
 	//射线查询
 	Ogre::MovableObject* DoRaySceneQuery(const Ogre::Ray& ray, int queryMask = 0xffffffff);

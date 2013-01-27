@@ -10,6 +10,7 @@ ObjectManager::ObjectManager()
 	m_factories.insert(std::make_pair(eObjectType_Faction, new FactionFactory));
  	m_factories.insert(std::make_pair(eObjectType_Unit, new UnitFactory));
  	m_factories.insert(std::make_pair(eObjectType_Building, new BuildingFactory));
+	m_factories.insert(std::make_pair(eObjectType_Resource, new ResourceFactory));
 }
 
 ObjectManager::~ObjectManager()

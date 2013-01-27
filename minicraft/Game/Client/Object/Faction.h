@@ -18,9 +18,12 @@ class Faction : public Object
 public:
 	Faction();
 	~Faction() {}
+
+	static const STRING sNamePrefix;
 	
 public:
 	virtual eObjectType GetType() const { return eObjectType_Faction; }
+	virtual const STRING& GetNamePrefix() const { return sNamePrefix; }
 	virtual	void		Update(float dt) {}
 
 public:

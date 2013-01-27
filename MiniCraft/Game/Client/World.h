@@ -66,6 +66,8 @@ public:
 	const SelectedContainer&	GetSelectedObjects() { return m_vecSelectUnis; }
 	//将给定世界坐标通过射线投射夹持在地形上
 	void ClampToTerrain(Ogre::Vector3& pos);
+	//像一个公告板一样更新控制台UI
+	void			UpdateConsoleUITransform(float dt);
 
 private:
 	SelectedContainer			m_vecSelectUnis;	//所有选中单位
@@ -87,6 +89,14 @@ private:
 	Ogre::TerrainGroup*			m_terrainGroup;
 	Ogre::TerrainGlobalOptions*	m_terrainOption;
 	Ogre::Terrain*				m_pTerrain;
+
+	//UI console for test
+	Ogre::SceneNode*			m_pUISceneNode1;
+	Ogre::SceneNode*			m_pUISceneNode2;
+	Ogre::SceneNode*			m_pUISceneNode3;
+	Ogre::SceneNode*			m_pUISceneNode4;
+	Ogre::AnimationState*		m_pConsoleAnim1;
+	Ogre::AnimationState*		m_pConsoleAnim2;
 };
 
 

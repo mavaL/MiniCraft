@@ -17,12 +17,12 @@ public:
 	Building():SelectableObject() {}
 	~Building() {}
 
-	const static STRING BUILDING_NAME_PREFIX;
+	static const STRING sNamePrefix;
 
 public:
 	virtual eObjectType GetType() const { return eObjectType_Building; }
+	virtual const STRING& GetNamePrefix() const {  return sNamePrefix; }
 	virtual void	Update(float dt) {}
-	virtual	void	CreateRenderInstance(const STRING& meshname);
 };
 
 

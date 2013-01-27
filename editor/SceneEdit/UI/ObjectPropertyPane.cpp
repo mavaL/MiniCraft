@@ -32,6 +32,7 @@ int PropertyPaneObject::OnCreate( LPCREATESTRUCT lpCreateStruct )
 	PROPERTY_REG(pCategory,	Vec3	, L"Scale"				, Ogre::Vector3(1,1,1)	, propScale			);
 	PROPERTY_REG(pCategory, Bool	, L"Add to NavMesh"		, false					, propAddToNavmesh	);
 	PROPERTY_REG(pCategory, Bool	, L"Is Building"		, false					, propIsBuilding	);
+	PROPERTY_REG(pCategory, Bool	, L"Is Resource"		, false					, propIsResource	);
 	pCategory->Expand();
 
 	(dynamic_cast<CXTPPropertyGridItemVec3*>(m_mapItem[propPosition]))->SetChildItemID(propPosX, propPosY, propPosZ);
@@ -105,17 +106,24 @@ LRESULT PropertyPaneObject::OnGridNotify( WPARAM wParam, LPARAM lParam )
 
 		case propAddToNavmesh:
 		{
-			CXTPPropertyGridItemBool* pItemNav = dynamic_cast<CXTPPropertyGridItemBool*>(pItem);
-			manObject.SetObjectNavMeshFlag(manObject.GetSelection(), pItemNav->GetBool());
+			CXTPPropertyGridItemBool* pItemBool = dynamic_cast<CXTPPropertyGridItemBool*>(pItem);
+			manObject.SetObjectNavMeshFlag(manObject.GetSelection(), pItemBool->GetBool());
 		}
 		break;
 
 		case propIsBuilding:
 		{
-			CXTPPropertyGridItemBool* pItemNav = dynamic_cast<CXTPPropertyGridItemBool*>(pItem);
-			manObject.SetObjectIsBuilding(manObject.GetSelection(), pItemNav->GetBool());
+			CXTPPropertyGridItemBool* pItemBool = dynamic_cast<CXTPPropertyGridItemBool*>(pItem);
+			manObject.SetObjectIsBuilding(manObject.GetSelection(), pItemBool->GetBool());
 		}
 		break;
+
+		case propIsResource:
+			{
+				CXTPPropertyGridItemBool* pItemBool = dynamic_cast<CXTPPropertyGridItemBool*>(pItem);
+				manObject.SetObjectIsResource(manObject.GetSelection(), pItemBool->GetBool());
+			}
+			break;
 
 		default: assert(0);
 		}
@@ -160,6 +168,7 @@ void PropertyPaneObject::UpdateProperty( int id )
 	case propScale:			strNewValue = Ogre::StringConverter::toString(pNode->_getDerivedScale()); break;
 	case propAddToNavmesh:	strNewValue = Ogre::StringConverter::toString(ManipulatorSystem.GetObject().GetObjectNavMeshFlag(curSel)); break;
 	case propIsBuilding:	strNewValue = Ogre::StringConverter::toString(ManipulatorSystem.GetObject().GetObjectIsBuilding(curSel)); break;
+	case propIsResource:	strNewValue = Ogre::StringConverter::toString(ManipulatorSystem.GetObject().GetObjectIsResource(curSel)); break;
 	default: assert(0);
 	}
 	

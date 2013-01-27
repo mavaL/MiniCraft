@@ -333,10 +333,16 @@ void SelectableObject::SetSelected( bool bSelected )
 
 	//创建场景节点
 	Ogre::Entity* pEntity = g_Environment.m_pSceneMgr->createEntity((iter->second));
-	pEntity->setMaterialName("SelectionCircle");
 	m_pSelCircleNode = m_pSceneNode->createChildSceneNode();
 	m_pSelCircleNode->attachObject(pEntity);
 	m_pSelCircleNode->setVisible(bSelected);
+
+	//设置材质
+	eObjectType type = GetType();
+	if(type == eObjectType_Unit || type == eObjectType_Building)
+		pEntity->setMaterialName("SelectionCircleAlly");
+	else if(type == eObjectType_Resource)
+		pEntity->setMaterialName("SelectionCircleNeutral");
 }
 
 Ogre::MeshPtr SelectableObject::_CreateSelectionCircleMesh(const Ogre::MeshPtr& objMesh)
@@ -447,6 +453,13 @@ Ogre::MeshPtr SelectableObject::_CreateSelectionCircleMesh(const Ogre::MeshPtr& 
 			}
 
 	return buffer.transformToMesh(objMesh->getName()+"_SelectionCircle");
+}
+
+void SelectableObject::ReleaseMeshCache()
+{
+	for(auto iter=m_selCircleCache.begin(); iter!=m_selCircleCache.end(); ++iter)
+		(iter->second).setNull();
+	m_selCircleCache.clear();
 }
 
 

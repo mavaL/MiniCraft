@@ -241,6 +241,9 @@
     <ClInclude Include="Dependency\OgreRecast\Include\TestCharacter.h">
       <Filter>OgreRecast\Include\RecastContrib</Filter>
     </ClInclude>
+    <ClInclude Include="Game\Client\Object\Resource.h">
+      <Filter>Client\Object</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game\Core\Application.cpp">
@@ -404,6 +407,9 @@
     </ClCompile>
     <ClCompile Include="Dependency\OgreRecast\Src\RecastContrib\fastlz\fastlz.c">
       <Filter>OgreRecast\Src\RecastContrib</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Client\Object\Resource.cpp">
+      <Filter>Client\Object</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

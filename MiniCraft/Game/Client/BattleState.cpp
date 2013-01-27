@@ -1,4 +1,3 @@
-SelectionCircleCache
 #include "stdafx.h"
 #include "GameDefine.h"
 #include <SdkCameraMan.h>
@@ -9,6 +8,7 @@ SelectionCircleCache
 #include "UnitState.h"
 #include "World.h"
 #include "Building.h"
+#include "Resource.h"
 
 
 std::string CBattleState::StateName = "BattleState";
@@ -111,6 +111,8 @@ void CBattleState::update(float timeSinceLastFrame)
 		if(m_bCamMoveUp)	pCam->move(Ogre::Vector3(0, 0, timeSinceLastFrame*40));
 		if(m_bCamMoveDown)	pCam->move(Ogre::Vector3(0, 0, -timeSinceLastFrame*40));
 	}
+
+	world.UpdateConsoleUITransform(timeSinceLastFrame);
 }
 
 bool CBattleState::OnInputSys_MousePressed( const OIS::MouseEvent& arg, OIS::MouseButtonID id )
@@ -200,20 +202,10 @@ bool CBattleState::OnInputSys_MouseReleased( const OIS::MouseEvent& arg, OIS::Mo
 		}
 
 		//单位设置为选中状态
-		static int UNIT_NAME_PREFIX_LEN = strlen(Unit::ENTITY_NAME_PREFIX.c_str());
-		static int BUILDING_NAME_PREFIX_LEN = strlen(Building::BUILDING_NAME_PREFIX.c_str());
-
 		for(size_t i=0; i<vecResult.size(); ++i)
 		{
-			STRING strID;
-			const STRING& entName = vecResult[i]->getName();
-			if(entName.substr(0, UNIT_NAME_PREFIX_LEN) == Unit::ENTITY_NAME_PREFIX)
-				strID = entName.substr(UNIT_NAME_PREFIX_LEN);
-			else if(entName.substr(0, BUILDING_NAME_PREFIX_LEN) == Building::BUILDING_NAME_PREFIX)
-				strID = entName.substr(BUILDING_NAME_PREFIX_LEN);
-
-			int unitID = Ogre::StringConverter::parseInt(strID, -1);
-
+			Ogre::Entity* pEntity = dynamic_cast<Ogre::Entity*>(vecResult[i]);
+			int unitID = _GetIDFromName(pEntity);
 			world.SetObjectSelected(unitID);
 		}
 	}
@@ -310,4 +302,22 @@ CommandBase* CBattleState::_ComputeCommand( Unit* pUnit, const Ogre::Vector3& ta
 	}
 
 	return pCmd;
+}
+
+int CBattleState::_GetIDFromName( Ogre::Entity* pEntity ) const
+{
+	static int UNIT_NAME_PREFIX_LEN = strlen(Unit::sNamePrefix.c_str());
+	static int BUILDING_NAME_PREFIX_LEN = strlen(Building::sNamePrefix.c_str());
+	static int RESOURCE_NAME_PREFIX_LEN = strlen(Resource::sNamePrefix.c_str());
+
+	STRING strID;
+	const STRING& entName = pEntity->getName();
+	if(entName.substr(0, UNIT_NAME_PREFIX_LEN) == Unit::sNamePrefix)
+		strID = entName.substr(UNIT_NAME_PREFIX_LEN);
+	else if(entName.substr(0, BUILDING_NAME_PREFIX_LEN) == Building::sNamePrefix)
+		strID = entName.substr(BUILDING_NAME_PREFIX_LEN);
+	else if(entName.substr(0, RESOURCE_NAME_PREFIX_LEN) == Resource::sNamePrefix)
+		strID = entName.substr(RESOURCE_NAME_PREFIX_LEN);
+
+	return Ogre::StringConverter::parseInt(strID, -1);
 }

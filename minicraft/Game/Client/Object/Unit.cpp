@@ -6,6 +6,8 @@
 #include "Command.h"
 
 
+const STRING Unit::sNamePrefix = "EntResource";
+
 //**** Define stuff for the Lua Class ****//
 // Define the Lua ClassName
 const char Unit::className[] = "Unit";
@@ -28,7 +30,6 @@ Luna<Unit>::RegType Unit::methods[] =
 };
 
 const STRING Unit::UNIT_TABLE_NAME	=	"UnitTable";
-const STRING Unit::ENTITY_NAME_PREFIX	=	"EntUnit";
 
 Unit::Unit()
 :SelectableObject()
@@ -192,23 +193,6 @@ void Unit::SetDestPos( const Ogre::Vector3& destPos )
 	World::GetSingleton().ClampPosToNavMesh(adjustPos);
 	
 	m_destPos = adjustPos;
-}
-
-void Unit::CreateRenderInstance(const STRING& meshname)
-{
-	DestroyRenderInstance();
-
-	m_pSceneNode = g_Environment.m_pSceneMgr->getRootSceneNode()->createChildSceneNode();
-
-	//Éè¶¨Ãû×Ö
-	STRING entName(ENTITY_NAME_PREFIX);
-	entName += Ogre::StringConverter::toString(GetID());
-
-	m_pEntity = g_Environment.m_pSceneMgr->createEntity(entName, meshname);
-	m_pEntity->setQueryFlags(eQueryType_SelectableObject);
-	m_pSceneNode->attachObject(m_pEntity);
-
-	m_bRenderableReady = true;
 }
 
 void Unit::SetPosition( const POS& pos )

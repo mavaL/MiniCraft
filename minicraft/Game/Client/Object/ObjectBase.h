@@ -20,8 +20,9 @@ public:
 	virtual ~Object() {}
 
 public:
-	int		GetID() const { return m_ID; }
+	int					GetID() const { return m_ID; }
 	virtual eObjectType GetType() const = 0;
+	virtual const STRING& GetNamePrefix() const = 0;
 	virtual	void		Update(float dt) = 0;
 
 private:
@@ -38,7 +39,7 @@ public:
 	~RenderableObject() {}
 
 public:
-	virtual	void	CreateRenderInstance(const STRING& meshname) = 0;
+	virtual	void	CreateRenderInstance(const STRING& meshname);
 	virtual void	DestroyRenderInstance();
 	virtual void	SetPosition(const POS& pos);
 	virtual void	SetOrientation(const ORIENT& orient);
@@ -56,5 +57,7 @@ protected:
 	Ogre::SceneNode*	m_pSceneNode;
 	bool				m_bRenderableReady;	//渲染实例是否已创建
 };
+
+
 
 #endif // ObjectBase_h__

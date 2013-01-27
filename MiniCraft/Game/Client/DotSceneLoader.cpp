@@ -161,11 +161,13 @@ void DotSceneLoader::processScene(rapidxml::xml_node<>* XMLRoot)
 		const Ogre::Quaternion orient = Ogre::StringConverter::parseQuaternion(curObjNode->first_attribute("orientation")->value());
 		const Ogre::Vector3 scale = Ogre::StringConverter::parseVector3(curObjNode->first_attribute("scale")->value());
 		const bool bIsBuilding = Ogre::StringConverter::parseBool(curObjNode->first_attribute("isbuilding")->value());
+		const bool bIsResource = Ogre::StringConverter::parseBool(curObjNode->first_attribute("isresource")->value());
 
-		if (bIsBuilding)
+		if (bIsBuilding || bIsResource)
 		{
 			//建筑物对象
-			RenderableObject* pObject = dynamic_cast<RenderableObject*>(ObjectManager::GetSingleton().CreateObject(eObjectType_Building));
+			RenderableObject* pObject = dynamic_cast<RenderableObject*>(ObjectManager::GetSingleton().
+				CreateObject(bIsBuilding ? eObjectType_Building : eObjectType_Resource));
 			pObject->CreateRenderInstance(strMesh);
 			pObject->SetScale(scale);
 			pObject->SetOrientation(orient);
