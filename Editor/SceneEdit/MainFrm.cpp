@@ -14,6 +14,7 @@ String
 #include "Action/ActionBase.h"
 #include "UI/TerrainPropertyPane.h"
 #include "UI/ObjectPropertyPane.h"
+#include "UI/DialogGameDataBuilding.h"
 
 
 // CMainFrame
@@ -62,6 +63,8 @@ BEGIN_MESSAGE_MAP(CMainFrame, CXTPFrameWnd)
 	ON_UPDATE_COMMAND_UI(IDC_Object_Select, OnUpdateUI_ObjectEdit<ManipulatorObject::eEditMode_Select>)
 	ON_UPDATE_COMMAND_UI(IDC_Animation_Names, OnUpdateUI_AnimNames)
 	ON_NOTIFY(CBN_SELCHANGE, IDC_Animation_Names, OnAnimSelectChange)
+	ON_COMMAND(IDC_GameData_Building, OnDataBuilding)
+	ON_UPDATE_COMMAND_UI(IDC_GameData_Building, OnUpdateUI_DataBuilding)
 END_MESSAGE_MAP()
 
 
@@ -257,6 +260,14 @@ bool CMainFrame::_OnCreateRibbon()
 	pGroup->Add(xtpControlButton, IDC_NavMesh_SaveObj);
 	pGroup->Add(xtpControlButton, IDC_NavMesh_SaveNavMesh);
 
+	///RibbonGameData
+	pTab = pRibbonBar->AddTab(L"Game Data");
+
+	//RibbonGameData - GroupData
+	pGroup = pTab->AddGroup(L"Data");
+	//RibbonGameData - GroupData - Building
+	pGroup->Add(xtpControlButton, IDC_GameData_Building);
+	
 	return true;
 }
 
@@ -278,6 +289,7 @@ void CMainFrame::_LoadIcon()
 	icon[0] = IDC_Object_Rotate;			pImageMgr->SetIcons(IDB_Button, icon, _countof(icon), CSize(32, 32));
 	icon[0] = IDC_Object_Scale;				pImageMgr->SetIcons(IDB_Button, icon, _countof(icon), CSize(32, 32));
 	icon[0] = IDC_Object_Select;			pImageMgr->SetIcons(IDB_Button, icon, _countof(icon), CSize(32, 32));
+	icon[0] = IDC_GameData_Building;		pImageMgr->SetIcons(IDB_Button, icon, _countof(icon), CSize(32, 32));
 }
 
 BOOL CMainFrame::OnCreateClient( LPCREATESTRUCT lpcs, CCreateContext* pContext )
@@ -417,7 +429,7 @@ bool CMainFrame::CreateEditorMainUI()
 
 	CImageList iconList;
 	Ogre::StringVectorPtr meshNames;
-	(dynamic_cast<CSceneEditApp*>(AfxGetApp()))->m_app.RenderAllMeshIcons(iconList, meshNames);
+	ManipulatorSystem.GetResource().RenderAllMeshIcons(iconList, meshNames);
 
 	if(!_CreateMeshPanel(iconList, meshNames))
 		return FALSE;
@@ -429,6 +441,8 @@ bool CMainFrame::CreateEditorMainUI()
 	m_propertyObject->m_wndPropertyGrid.SetTheme(xtpGridThemeVisualStudio2010);
 
 	_CreateDockPane();
+
+	ManipulatorSystem.GetResource().PrepareAllIcons();
 
 	ManipulatorScene::GetSingleton().AddCallback(this);
 	ManipulatorSystem.GetObject().AddCallback(this);
@@ -819,4 +833,31 @@ void CMainFrame::OnAnimSelectChange( NMHDR* pNMHDR, LRESULT* pResult )
 	//根据选择索引播放动画
 	ManipulatorObject& manObject = ManipulatorSystem.GetObject();
 	manObject.PlayAnimation(manObject.GetSelection(), pControl->GetCurSel() - 1);
+}
+
+void CMainFrame::OnUpdateUI_DataBuilding( CCmdUI* pCmdUI )
+{
+	pCmdUI->Enable(TRUE);
+	pCmdUI->SetCheck(m_dlgVisibleFlags[IDD_DlgGameDataBuilding]);
+}
+
+void CMainFrame::OnDataBuilding()
+{
+	static bool bInit = false;
+	static DialogGameDataBuilding s_Dlg;
+	if (!bInit)
+	{
+		s_Dlg.Create(IDD_DlgGameDataBuilding);
+		s_Dlg.ShowWindow(SW_HIDE);
+
+		//对话框可见标志存入容器
+		m_dlgVisibleFlags.insert(std::make_pair(IDD_DlgGameDataBuilding, false));
+
+		bInit = true;
+	}
+	
+	bool bCurVisible = !m_dlgVisibleFlags[IDD_DlgGameDataBuilding];
+	s_Dlg.ShowWindow(bCurVisible ? SW_SHOW : SW_HIDE);
+	s_Dlg.UpdateWindow();
+	m_dlgVisibleFlags[IDD_DlgGameDataBuilding] = bCurVisible;
 }

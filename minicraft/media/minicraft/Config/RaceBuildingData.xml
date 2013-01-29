@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<Building>
+  <Terran name="CommandCenter" iconname="btn-building-terran-commandcenter.dds" meshname="CommandCenter_1.mesh"/>
+  <Terran name="Barracks" iconname="btn-building-terran-barracks.dds" meshname="Barracks_0.mesh"/>
+  <Zerg name="Hatchery" iconname="btn-building-zerg-hatchery.dds" meshname="Hatchery_1.mesh"/>
+  <Zerg name="SpawningPool" iconname="btn-building-zerg-spawningpool.dds" meshname="SpawningPool_0.mesh"/>
+</Building>
+

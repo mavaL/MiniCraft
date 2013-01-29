@@ -15,6 +15,8 @@
 #include "ManipulatorEventCallback.h"
 #include "ManipulatorNavMesh.h"
 #include "ManipulatorCamera.h"
+#include "ManipulatorEditorResource.h"
+#include "ManipulatorGameData.h"
 
 namespace Ogre
 {
@@ -56,6 +58,8 @@ public:
 	ManipulatorObject&		GetObject()		{ return *m_manipulatorObject; }
 	ManipulatorNavMesh&		GetNavMesh()	{ return *m_manipulatorNavMesh; }
 	ManipulatorCamera&		GetCamera()		{ return *m_manipulatorCamera; }
+	ManipulatorResource&	GetResource()	{ return *m_manipulatorResource; }
+	ManipulatorGameData&	GetGameData()	{ return *m_manipulatorGameData; }
 
 private:
 	std::wstring		m_scenePath;
@@ -67,6 +71,8 @@ private:
 	ManipulatorObject*	m_manipulatorObject;
 	ManipulatorNavMesh*	m_manipulatorNavMesh;
 	ManipulatorCamera*	m_manipulatorCamera;
+	ManipulatorResource* m_manipulatorResource;
+	ManipulatorGameData* m_manipulatorGameData;
 };
 
 #define	ManipulatorSystem	ManipulatorScene::GetSingleton()

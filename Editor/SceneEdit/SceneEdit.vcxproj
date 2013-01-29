@@ -156,7 +156,9 @@
     <ClInclude Include="MainFrm.h" />
     <ClInclude Include="Manipulator\ManipulatorAction.h" />
     <ClInclude Include="Manipulator\ManipulatorCamera.h" />
+    <ClInclude Include="Manipulator\ManipulatorEditorResource.h" />
     <ClInclude Include="Manipulator\ManipulatorEventCallback.h" />
+    <ClInclude Include="Manipulator\ManipulatorGameData.h" />
     <ClInclude Include="Manipulator\ManipulatorNavMesh.h" />
     <ClInclude Include="Manipulator\ManipulatorObject.h" />
     <ClInclude Include="Manipulator\ManipulatorScene.h" />
@@ -170,6 +172,7 @@
     <ClInclude Include="Singleton.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="UI\DialogGameDataBuilding.h" />
     <ClInclude Include="UI\DialogSceneNew.h" />
     <ClInclude Include="UI\ObjectPropertyPane.h" />
     <ClInclude Include="UI\PropertiesPane.h" />
@@ -285,6 +288,8 @@
     <ClCompile Include="MainFrm.cpp" />
     <ClCompile Include="Manipulator\ManipulatorAction.cpp" />
     <ClCompile Include="Manipulator\ManipulatorCamera..cpp" />
+    <ClCompile Include="Manipulator\ManipulatorEditorResource.cpp" />
+    <ClCompile Include="Manipulator\ManipulatorGameData.cpp" />
     <ClCompile Include="Manipulator\ManipulatorNavMesh.cpp" />
     <ClCompile Include="Manipulator\ManipulatorObject.cpp" />
     <ClCompile Include="Manipulator\ManipulatorScene.cpp" />
@@ -294,6 +299,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="UI\DialogGameDataBuilding.cpp" />
     <ClCompile Include="UI\DialogSceneNew.cpp" />
     <ClCompile Include="UI\ObjectPropertyPane.cpp" />
     <ClCompile Include="UI\PropertiesPane.cpp" />
@@ -312,4 +318,9 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties RESOURCE_FILE="SceneEdit.rc" />
+    </VisualStudio>
+  </ProjectExtensions>
 </Project>

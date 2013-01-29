@@ -1,0 +1,7 @@
+float4 main(
+    in float2 texCoord: TEXCOORD0,
+	uniform sampler2D colorMap : register(s0)
+	) : COLOR
+{
+	return tex2D(colorMap, texCoord);
+}

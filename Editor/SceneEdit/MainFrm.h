@@ -90,6 +90,9 @@ private:
 	///Animation
 	void			OnUpdateUI_AnimNames(CCmdUI* pCmdUI);
 	void			OnAnimSelectChange(NMHDR* pNMHDR, LRESULT* pResult);
+	///GameData
+	void			OnUpdateUI_DataBuilding(CCmdUI* pCmdUI);
+	void			OnDataBuilding();		
 
 private:
 	CXTPDockingPaneManager	m_paneManager;
@@ -103,6 +106,9 @@ private:
 	CXTPDockingPane*		m_paneResSelector;		
 	CXTPDockingPane*		m_paneTerrain;
 	CXTPDockingPane*		m_paneObject;
+
+	typedef std::unordered_map<int, bool> DialogVisibleFlags;
+	DialogVisibleFlags		m_dlgVisibleFlags;
 };
 
 

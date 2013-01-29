@@ -16,8 +16,8 @@ const float			SCENE_VERSION		=	0.2f;	//当前.scene版本号,注意与编辑器同步
 //游戏种族:人族,神族,虫族
 enum eGameRace
 {
-	eGameRace_Terrain,
-	eGameRace_Protoss,
+	eGameRace_Terran,
+	//eGameRace_Protoss,
 	eGameRace_Zerg
 };
 

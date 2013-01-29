@@ -279,6 +279,15 @@
     <ClInclude Include="Manipulator\ManipulatorCamera.h">
       <Filter>Manipulator</Filter>
     </ClInclude>
+    <ClInclude Include="Manipulator\ManipulatorEditorResource.h">
+      <Filter>Manipulator</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\DialogGameDataBuilding.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Manipulator\ManipulatorGameData.h">
+      <Filter>Manipulator</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SceneEdit.cpp">
@@ -450,6 +459,15 @@
       <Filter>UI</Filter>
     </ClCompile>
     <ClCompile Include="Manipulator\ManipulatorCamera..cpp">
+      <Filter>Manipulator</Filter>
+    </ClCompile>
+    <ClCompile Include="Manipulator\ManipulatorEditorResource.cpp">
+      <Filter>Manipulator</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\DialogGameDataBuilding.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Manipulator\ManipulatorGameData.cpp">
       <Filter>Manipulator</Filter>
     </ClCompile>
   </ItemGroup>

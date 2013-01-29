@@ -31,6 +31,8 @@ void ManipulatorScene::Init()
 	m_manipulatorNavMesh = new ManipulatorNavMesh;
 	assert(m_pMainCamera);
 	m_manipulatorCamera = new ManipulatorCamera(m_pMainCamera);
+	m_manipulatorResource = new ManipulatorResource;
+	m_manipulatorGameData = new ManipulatorGameData;
 }
 
 void ManipulatorScene::Shutdown()
@@ -38,6 +40,9 @@ void ManipulatorScene::Shutdown()
 	SAFE_DELETE(m_manipulatorTerrain);
 	SAFE_DELETE(m_manipulatorObject);
 	SAFE_DELETE(m_manipulatorNavMesh);
+	SAFE_DELETE(m_manipulatorCamera);
+	SAFE_DELETE(m_manipulatorResource);
+	SAFE_DELETE(m_manipulatorGameData);
 	SAFE_DELETE(m_sceneSerializer);
 	SAFE_DELETE(m_sceneLoader);
 }

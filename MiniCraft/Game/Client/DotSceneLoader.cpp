@@ -72,10 +72,10 @@ void DotSceneLoader::parseDotScene(const STRING &SceneName, const STRING &groupN
     rapidxml::xml_node<>* XMLRoot;
 
     Ogre::DataStreamPtr stream = Ogre::ResourceGroupManager::getSingleton().openResource(SceneName, groupName );
-    char* scene = strdup(stream->getAsString().c_str());
+    char* szData = strdup(stream->getAsString().c_str());
 
 	//½âÎö
-    XMLDoc.parse<0>(scene);
+    XMLDoc.parse<0>(szData);
 
     // Grab the scene node
     XMLRoot = XMLDoc.first_node("scene");
@@ -89,13 +89,10 @@ void DotSceneLoader::parseDotScene(const STRING &SceneName, const STRING &groupN
         return;
     }
 
-//     // figure out where to attach any nodes we create
-//     mAttachNode = pAttachNode;
-//     if(!mAttachNode)
-//         mAttachNode = mSceneMgr->getRootSceneNode();
-
     // Process the scene
     processScene(XMLRoot);
+
+	free(szData);
 }
 
 void DotSceneLoader::processScene(rapidxml::xml_node<>* XMLRoot)

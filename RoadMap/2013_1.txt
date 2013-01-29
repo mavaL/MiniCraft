@@ -4,9 +4,9 @@ In order to learn how a RTS map editor should be and how to implement it.
 Conclusion : Since I have figure out how to make use of StarCraft2 resources with Ogre, I decide to imitate the SC2 editor and game~~
 
 2.Improve rendering appearance continuously(Shadow, lightmap and so on).	[0%]
+Conclusion: Delay to next month.
 
 3.Implement fog of war.								[0%]
+Conclusion: Delay to next month.
 
 4.Build maps by imitating maps of SC2.
-
-5.Game client logic architecture.						[5%]

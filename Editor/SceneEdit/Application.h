@@ -6,12 +6,14 @@
 	purpose:	编辑器应用程序框架类
 *********************************************************************/
 
+#ifndef Application_h__
+#define Application_h__
 
-#pragma once
-
-#include <Ogre.h>
-
-using namespace Ogre;
+namespace Ogre
+{
+	class RenderWindow;
+	class Root;
+}
 
 struct SActionParam;
 
@@ -27,8 +29,6 @@ public:
 	void		Shutdown();
 	//渲染视口大小改变,进行相应处理
 	void		OnViewportResized();
-	//RTT渲染所有mesh的图标,返回Icon列表和mesh名字列表
-	void		RenderAllMeshIcons(CImageList& retImageList, Ogre::StringVectorPtr& retMeshNames);
 
 	void		SceneNew();
 	void		SceneOpen();
@@ -47,8 +47,10 @@ private:
 	void		_UpdateInput(float dt);
 	void		_CreateActionParam(const POINT& viewClientPt, SActionParam& retParam);
 
-	RenderWindow*		m_pRenderWnd;
-	Root*				m_pRoot;
+	Ogre::RenderWindow*	m_pRenderWnd;
+	Ogre::Root*			m_pRoot;
 };
+
+#endif // Application_h__
 
 
