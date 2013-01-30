@@ -17,7 +17,7 @@ class ManipulatorResource
 
 public:
 	ManipulatorResource() {}
-	~ManipulatorResource() {}
+	~ManipulatorResource();
 
 public:
 	//RTT渲染所有mesh的图标,返回Icon列表和mesh名字列表

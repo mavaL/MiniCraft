@@ -4,6 +4,13 @@
 #include "Utility.h"
 
 
+ManipulatorResource::~ManipulatorResource()
+{
+	for(auto iter=m_icons.begin(); iter!=m_icons.end(); ++iter)
+		delete iter->second;
+	m_icons.clear();
+}
+
 void ManipulatorResource::RenderAllMeshIcons( CImageList& retImageList, Ogre::StringVectorPtr& retMeshNames )
 {
 	using namespace Ogre;
@@ -98,7 +105,6 @@ void ManipulatorResource::PrepareAllIcons()
 	using namespace Ogre;
 
 	//准备工作...
-	const int iconSize = 64;
 	const int origSize = 76;
 	StringVectorPtr iconFiles = ResourceGroupManager::getSingleton().findResourceNames("Icon", "*.dds");
 	Rectangle2D fullScreenQuad(true);
@@ -122,10 +128,6 @@ void ManipulatorResource::PrepareAllIcons()
 	SceneMgr->getRootSceneNode()->attachObject(&fullScreenQuad);
 	(const_cast<AxisAlignedBox&>(fullScreenQuad.getBoundingBox())).setInfinite();
 
-	unsigned char dataptr[origSize * origSize * 4]; 
-	unsigned char *dataptr2;
-	PixelBox pb(origSize, origSize, 1, imageFormat, dataptr);
-
 	for (size_t i=0; i<iconFiles->size(); ++i)
 	{
 		const Ogre::String& filename = iconFiles->at(i);
@@ -133,17 +135,16 @@ void ManipulatorResource::PrepareAllIcons()
 		//开始渲染
 		try
 		{
+			unsigned char* dataptr = new unsigned char[origSize * origSize * 4]; 
+			PixelBox pb(origSize, origSize, 1, imageFormat, dataptr);
+
 			rttTex->update();
 			rttTex->copyContentsToMemory(pb, RenderTarget::FB_FRONT);
-
-			dataptr2 = new unsigned char[iconSize*iconSize*PixelUtil::getNumElemBytes(imageFormat)];
-			PixelBox pb2(iconSize,iconSize,1,imageFormat, dataptr2);
-			Image::scale(pb,pb2);
 			//图像加入容器
-			Gdiplus::Bitmap* pIcon = new Gdiplus::Bitmap(iconSize, iconSize, iconSize*4, PixelFormat32bppARGB, dataptr2);
+			Gdiplus::Bitmap* pIcon = new Gdiplus::Bitmap(origSize, origSize, origSize*4, PixelFormat32bppARGB, dataptr);
 			m_icons.insert(std::make_pair(Utility::EngineToUnicode(filename), pIcon));
 
-			delete []dataptr2;
+			//delete []dataptr;	//TODO: 这里不能释放,不然Bitmap出问题
 		}
 		catch(...)
 		{

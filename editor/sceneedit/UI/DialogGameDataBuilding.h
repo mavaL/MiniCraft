@@ -29,8 +29,8 @@ private:
 	afx_msg void	OnSwitchZerg();
 	afx_msg void	OnPaint();
 	afx_msg void	OnBuildingSelChange();
-
-private:
+	afx_msg void	OnSlotSelChange();
+	afx_msg void	OnAbilitySelChange();
 };
 
 
