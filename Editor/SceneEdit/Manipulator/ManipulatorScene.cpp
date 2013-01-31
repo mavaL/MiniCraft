@@ -12,10 +12,6 @@ ManipulatorScene::ManipulatorScene()
 ,m_pSceneMgr(nullptr)
 ,m_pMainCamera(nullptr)
 {
-	WCHAR path[MAX_PATH];
-	::GetCurrentDirectory(MAX_PATH, path);
-	m_scenePath = path;
-	m_scenePath += L"\\..\\..\\..\\..\\Editor\\Scene\\";
 }
 
 ManipulatorScene::~ManipulatorScene()
@@ -24,6 +20,11 @@ ManipulatorScene::~ManipulatorScene()
 }
 void ManipulatorScene::Init()
 {
+	Ogre::StringVectorPtr loc = Ogre::ResourceGroupManager::getSingleton().findResourceLocation("Scene", "*Scene");
+	assert(!loc->empty());
+	m_scenePath = Utility::EngineToUnicode(loc->at(0));
+	m_scenePath += L"\\";
+
 	m_sceneSerializer = new DotSceneSerialezer;
 	m_sceneLoader = new DotSceneLoader;
 	m_manipulatorTerrain = new ManipulatorTerrain;
@@ -78,6 +79,7 @@ void ManipulatorScene::SceneOpen(const std::wstring& filepath)
 void ManipulatorScene::SceneSave()
 {
 	m_sceneSerializer->Serialize(Utility::UnicodeToEngine(m_scenePath+m_sceneName), Utility::UnicodeToEngine(m_sceneName));
+	m_manipulatorGameData->SaveAllXml();
 }
 
 void ManipulatorScene::SceneClose()

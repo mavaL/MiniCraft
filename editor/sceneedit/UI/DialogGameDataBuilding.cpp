@@ -1,12 +1,11 @@
 #include "stdafx.h"
 #include "DialogGameDataBuilding.h"
-#include "Manipulator/ManipulatorScene.h"
 #include "Utility.h"
 
 
 BEGIN_MESSAGE_MAP(DialogGameDataBuilding, CDialog)
-	ON_COMMAND(IDC_DlgBuilding_SwitchT, OnSwitchTerran)
-	ON_COMMAND(IDC_DlgBuilding_SwitchZ, OnSwitchZerg)
+	ON_COMMAND(IDC_DlgBuilding_SwitchT, OnSwitchRace<eGameRace_Terran>)
+	ON_COMMAND(IDC_DlgBuilding_SwitchZ, OnSwitchRace<eGameRace_Zerg>)
 	ON_WM_PAINT()
 	ON_CBN_SELCHANGE(IDC_DlgBuilding_NameList, OnBuildingSelChange)
 	ON_CBN_SELCHANGE(IDC_DlgBuilding_SlotList, OnSlotSelChange)
@@ -15,6 +14,7 @@ END_MESSAGE_MAP()
 
 DialogGameDataBuilding::DialogGameDataBuilding()
 :CDialog(DialogGameDataBuilding::IDD)
+,m_curEditRace((eGameRace)-1)
 {
 
 }
@@ -24,57 +24,62 @@ BOOL DialogGameDataBuilding::OnInitDialog()
 	BOOL ret = CDialog::OnInitDialog();
 
 	//初始化slot列表控件
-	const int totalSlotCnt = 15;
 	CComboBox* pSlotList = (CComboBox*)GetDlgItem(IDC_DlgBuilding_SlotList);
-	for (int i=0; i<totalSlotCnt; ++i)
+	for (int i=0; i<MAX_ABILITY_SLOT; ++i)
 	{
 		std::wstring strIndex = Utility::EngineToUnicode(Ogre::StringConverter::toString(i+1));
 		pSlotList->AddString(strIndex.c_str());
-
-// 		CWnd* pSlot = GetDlgItem(IDC_DlgBuilding_Slot1 + i);
-// 		pSlot->SetWindowPos(nullptr, 0, 0, 32, 32, SWP_NOMOVE);
 	}
 
 	//初始化ability列表控件
 	CComboBox* pAbilityList = (CComboBox*)GetDlgItem(IDC_DlgBuilding_AbilList);
 	const auto vecNames = ManipulatorSystem.GetGameData().GetAbilityNames();
+
+	pAbilityList->AddString(L"None");
 	for (size_t i=0; i<vecNames.size(); ++i)
 		pAbilityList->AddString(vecNames[i].c_str());
+
+	//防止Slot控件被剪裁
+	CWnd* pSlotFrame = GetDlgItem(IDC_DlgBuilding_SlotFrame);
+	pSlotFrame->ModifyStyle(0, WS_CLIPSIBLINGS, 0);
+
+	GetDlgItem(IDC_DlgBuilding_NameList)->EnableWindow(FALSE);
+	GetDlgItem(IDC_DlgBuilding_SlotList)->EnableWindow(FALSE);
+	GetDlgItem(IDC_DlgBuilding_AbilList)->EnableWindow(FALSE);
 
 	return ret;
 }
 
-void DialogGameDataBuilding::OnSwitchTerran()
+template<int race>
+void DialogGameDataBuilding::OnSwitchRace()
 {
 	CComboBox* pCtrl = (CComboBox*)GetDlgItem(IDC_DlgBuilding_NameList);
 	pCtrl->ResetContent();
 	pCtrl->SetCurSel(-1);
 
-	const auto vecNames = ManipulatorSystem.GetGameData().GetRaceBuildingNames(eGameRace_Terran);
+	const auto vecNames = ManipulatorSystem.GetGameData().GetRaceBuildingNames((eGameRace)race);
 	for(size_t i=0; i<vecNames.size(); ++i)
 		pCtrl->AddString(vecNames[i].c_str());
-}
 
-void DialogGameDataBuilding::OnSwitchZerg()
-{
-	CComboBox* pCtrl = (CComboBox*)GetDlgItem(IDC_DlgBuilding_NameList);
-	pCtrl->ResetContent();
-	pCtrl->SetCurSel(-1);
+	CComboBox* pSlotList = (CComboBox*)GetDlgItem(IDC_DlgBuilding_SlotList);
+	CComboBox* pAbilList = (CComboBox*)GetDlgItem(IDC_DlgBuilding_AbilList);
+	pSlotList->SetCurSel(-1);
+	pAbilList->SetCurSel(-1);
 
-	const auto vecNames = ManipulatorSystem.GetGameData().GetRaceBuildingNames(eGameRace_Zerg);
-	for(size_t i=0; i<vecNames.size(); ++i)
-		pCtrl->AddString(vecNames[i].c_str());
+	m_curEditRace = (eGameRace)race;
+	GetDlgItem(IDC_DlgBuilding_NameList)->EnableWindow(TRUE);
+	Invalidate();
 }
 
 void DialogGameDataBuilding::OnPaint()
 {
 	CDialog::OnPaint();
 
-	CComboBox* pCtrl = (CComboBox*)GetDlgItem(IDC_DlgBuilding_NameList);
-	int iCurSel = pCtrl->GetCurSel();
-	if(iCurSel == -1)
+	std::wstring buildingName;
+	if(!_GetCurBuildingName(buildingName))
 		return;
 
+	ManipulatorGameData& manGameData = ManipulatorSystem.GetGameData();
 	CPaintDC dc(this);
 	{
 		//绘制建筑物图标
@@ -84,24 +89,21 @@ void DialogGameDataBuilding::OnPaint()
 
 		Gdiplus::Graphics g(wnd->GetDC()->GetSafeHdc());
 		eGameRace race = IsDlgButtonChecked(IDC_DlgBuilding_SwitchT) ? eGameRace_Terran : eGameRace_Zerg;
-		CString strCurSel;
-		pCtrl->GetLBText(iCurSel, strCurSel);
-		const SBuildingData* pData = ManipulatorSystem.GetGameData().GetBuildingData(race, (LPCTSTR)strCurSel);
+		const SBuildingData* pData = manGameData.GetBuildingData(race, buildingName.c_str());
 		Gdiplus::Bitmap* bm = ManipulatorSystem.GetResource().GetIcon(pData->m_iconName);
 		g.DrawImage(bm, 0, 0, 0, 0, bm->GetWidth(), bm->GetHeight(), Gdiplus::UnitPixel);
 	}
 
 	//高亮选中slot
 	{
-		CComboBox* pSlotList = (CComboBox*)GetDlgItem(IDC_DlgBuilding_SlotList);
-		int curSelSlot = pSlotList->GetCurSel();
-		if (curSelSlot != -1)
+		int iCurSlot = -1;
+		if (_GetCurSlot(iCurSlot))
 		{
 			CWnd* pSlotFrame = GetDlgItem(IDC_DlgBuilding_SlotFrame);
 			pSlotFrame->Invalidate();
 			pSlotFrame->UpdateWindow();
 
-			CWnd* pSlot = GetDlgItem(IDC_DlgBuilding_Slot1 + curSelSlot);
+			CWnd* pSlot = GetDlgItem(IDC_DlgBuilding_Slot1 + iCurSlot);
 			RECT rc;
 			pSlot->GetClientRect(&rc);
 			pSlot->ClientToScreen(&rc);
@@ -115,37 +117,123 @@ void DialogGameDataBuilding::OnPaint()
 
 	//绘制各slot ability
 	{
-		CComboBox* pCtrl = (CComboBox*)GetDlgItem(IDC_DlgBuilding_AbilList);
-		int iCurSel = pCtrl->GetCurSel();
-		if(iCurSel != -1)
+		std::wstring curSelBuilding;
+		if(!_GetCurBuildingName(curSelBuilding))
+			return;
+		
+		const SBuildingData* pBuildingData = manGameData.GetBuildingData(m_curEditRace, curSelBuilding);
+		for (int i=0; i<MAX_ABILITY_SLOT; ++i)
 		{
-			CWnd* pSlotFrame = GetDlgItem(IDC_DlgBuilding_SlotFrame);
-			pSlotFrame->Invalidate();
-			pSlotFrame->UpdateWindow();
+			const SAbilityData* pAbilData = manGameData.GetAbilityData(pBuildingData->m_vecAbilities[i]);
+			if(!pAbilData)
+				continue;
 
-			CString strCurSel;
-			pCtrl->GetLBText(iCurSel, strCurSel);
-			const SAbilityData* pData = ManipulatorSystem.GetGameData().GetAbilityData((LPCTSTR)strCurSel);
-			Gdiplus::Bitmap* bm = ManipulatorSystem.GetResource().GetIcon(pData->m_iconName);
-			Gdiplus::Graphics graphSlot(GetDlgItem(IDC_DlgBuilding_Slot1)->GetDC()->GetSafeHdc());
-			Gdiplus::Status xx = graphSlot.DrawImage(bm, 0, 0, 0, 0, bm->GetWidth(), bm->GetHeight(), Gdiplus::UnitPixel);
-			int i = 0;
-		}
+			CWnd* pSlot = GetDlgItem(IDC_DlgBuilding_Slot1+i);
+			pSlot->Invalidate();
+			pSlot->UpdateWindow();
+
+			RECT rc;
+			pSlot->GetClientRect(&rc);
+			Gdiplus::Rect rcDest(0, 0, rc.right-rc.left, rc.bottom-rc.top);
+			Gdiplus::Bitmap* bm = ManipulatorSystem.GetResource().GetIcon(pAbilData->m_iconName);
+			Gdiplus::Graphics graphSlot(pSlot->GetDC()->GetSafeHdc());
+			graphSlot.DrawImage(bm, rcDest, 0, 0, bm->GetWidth(), bm->GetHeight(), Gdiplus::UnitPixel);
+		}	
 	}
 }
 
 void DialogGameDataBuilding::OnBuildingSelChange()
 {
+	CComboBox* pSlotList = (CComboBox*)GetDlgItem(IDC_DlgBuilding_SlotList);
+	CComboBox* pAbilList = (CComboBox*)GetDlgItem(IDC_DlgBuilding_AbilList);
+	pSlotList->SetCurSel(-1);
+	pAbilList->SetCurSel(-1);
+	GetDlgItem(IDC_DlgBuilding_SlotList)->EnableWindow(TRUE);
 	Invalidate();
 }
 
 void DialogGameDataBuilding::OnSlotSelChange()
 {
+	std::wstring curSelBuilding;
+	if(!_GetCurBuildingName(curSelBuilding))
+		return;
+
+	int iCurSlot;
+	_GetCurSlot(iCurSlot);
+
+	ManipulatorGameData& manGameData = ManipulatorSystem.GetGameData();
+	const SBuildingData* pBuildingData = manGameData.GetBuildingData(m_curEditRace, curSelBuilding);
+	const auto abilNames = ManipulatorSystem.GetGameData().GetAbilityNames();
+
+	CComboBox* pAbilList = (CComboBox*)GetDlgItem(IDC_DlgBuilding_AbilList);
+	auto iter = std::find(abilNames.begin(), abilNames.end(), pBuildingData->m_vecAbilities[iCurSlot]);
+	if(iter == abilNames.end())
+	{
+		pAbilList->SetCurSel(0);
+	}
+	else
+	{
+		size_t distance = std::distance(abilNames.begin(), iter);
+		pAbilList->SetCurSel(distance + 1);
+	}
+
+	GetDlgItem(IDC_DlgBuilding_AbilList)->EnableWindow(TRUE);
 	Invalidate();
 }
 
 void DialogGameDataBuilding::OnAbilitySelChange()
-{
+{	
+	std::wstring curSelBuilding;
+	if(!_GetCurBuildingName(curSelBuilding))
+		return;
+
+	int iCurSlot;
+	if(!_GetCurSlot(iCurSlot))
+		return;
+
+	std::wstring curSelAbil;
+	if(!_GetCurAbilityName(curSelAbil))
+		return;
+
+	ManipulatorSystem.GetGameData().SetBuildingAbility(m_curEditRace, curSelBuilding, iCurSlot, 
+		curSelAbil == L"None" ? L"" : curSelAbil);
 
 	Invalidate();
+}
+
+bool DialogGameDataBuilding::_GetCurBuildingName(std::wstring& retName) const
+{
+	CComboBox* pBuildingList = (CComboBox*)GetDlgItem(IDC_DlgBuilding_NameList);
+	int curAbil = pBuildingList->GetCurSel();
+	if (curAbil != -1)
+	{
+		CString strCurSel;
+		pBuildingList->GetLBText(curAbil, strCurSel);
+		retName = strCurSel;
+
+		return true;
+	}
+	return false;
+}
+
+bool DialogGameDataBuilding::_GetCurAbilityName(std::wstring& retName) const
+{
+	CComboBox* pAbilList = (CComboBox*)GetDlgItem(IDC_DlgBuilding_AbilList);
+	int curAbil = pAbilList->GetCurSel();
+	if (curAbil != -1)
+	{
+		CString strCurSel;
+		pAbilList->GetLBText(curAbil, strCurSel);
+		retName = strCurSel;
+
+		return true;
+	}
+	return false;
+}
+
+bool DialogGameDataBuilding::_GetCurSlot( int& retIndex ) const
+{
+	CComboBox* pSlotList = (CComboBox*)GetDlgItem(IDC_DlgBuilding_SlotList);	
+	retIndex = pSlotList->GetCurSel();
+	return retIndex != -1;
 }

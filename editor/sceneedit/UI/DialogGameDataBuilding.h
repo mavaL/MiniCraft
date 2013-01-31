@@ -10,6 +10,7 @@
 #define DialogGameDataBuilding_h__
 
 #include "../resource.h"
+#include "Manipulator/ManipulatorScene.h"
 
 
 class DialogGameDataBuilding : public CDialog
@@ -25,12 +26,19 @@ protected:
 
 private:
 	DECLARE_MESSAGE_MAP()
-	afx_msg void	OnSwitchTerran();
-	afx_msg void	OnSwitchZerg();
+	template<int race> afx_msg void	OnSwitchRace();
 	afx_msg void	OnPaint();
 	afx_msg void	OnBuildingSelChange();
 	afx_msg void	OnSlotSelChange();
 	afx_msg void	OnAbilitySelChange();
+
+private:
+	bool			_GetCurBuildingName(std::wstring& retName) const;
+	bool			_GetCurAbilityName(std::wstring& retName) const;
+	bool			_GetCurSlot(int& retIndex) const;
+
+private:
+	eGameRace		m_curEditRace;
 };
 
 
