@@ -19,8 +19,9 @@ struct SObjectInfo
 {
 	SObjectInfo():	m_bAddToNavmesh(false),m_bIsBuilding(false),m_bIsResource(false) {}
 	bool			m_bAddToNavmesh;	//是否参与NavMesh构建
-	bool			m_bIsBuilding;
-	bool			m_bIsResource;
+	bool			m_bIsBuilding;		//是否是游戏建筑
+	std::string		m_buildingName;		//若是建筑,建筑名称
+	bool			m_bIsResource;		//是否是游戏资源
 };
 
 typedef std::unordered_map<Ogre::Entity*, SObjectInfo*> ObjectContainer;
@@ -78,6 +79,8 @@ public:
 	bool		GetObjectNavMeshFlag(Ogre::Entity* pEntity) const;
 	void		SetObjectIsBuilding(Ogre::Entity* pEntity, bool bIsBuilding);
 	bool		GetObjectIsBuilding(Ogre::Entity* pEntity) const;
+	void		SetObjectBuildingName(Ogre::Entity* pEntity, const std::string& name);
+	const std::string&		GetObjectBuildingName(Ogre::Entity* pEntity) const;
 	void		SetObjectIsResource(Ogre::Entity* pEntity, bool bIsResource);
 	bool		GetObjectIsResource(Ogre::Entity* pEntity) const;
 

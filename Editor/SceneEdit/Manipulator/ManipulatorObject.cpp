@@ -259,6 +259,7 @@ void ManipulatorObject::Load( rapidxml::xml_node<>* XMLNode )
 		const String strMesh = curObjNode->first_attribute("meshname")->value();
 		const bool bIsNavMesh = Ogre::StringConverter::parseBool(curObjNode->first_attribute("isnavmesh")->value());
 		const bool bIsBuilding = Ogre::StringConverter::parseBool(curObjNode->first_attribute("isbuilding")->value());
+		const String strBuildingName = curObjNode->first_attribute("buildingname")->value();
 		const bool bIsResource = Ogre::StringConverter::parseBool(curObjNode->first_attribute("isresource")->value());
 		const Ogre::Vector3 pos = Ogre::StringConverter::parseVector3(curObjNode->first_attribute("position")->value());
 		const Ogre::Quaternion orient = Ogre::StringConverter::parseQuaternion(curObjNode->first_attribute("orientation")->value());
@@ -270,6 +271,7 @@ void ManipulatorObject::Load( rapidxml::xml_node<>* XMLNode )
 		SetObjectNavMeshFlag(pNewEnt, bIsNavMesh);
 		SetObjectIsBuilding(pNewEnt, bIsBuilding);
 		SetObjectIsResource(pNewEnt, bIsResource);
+		SetObjectBuildingName(pNewEnt, strBuildingName);
 
 		curObjNode = curObjNode->next_sibling();
 	}
@@ -376,6 +378,22 @@ bool ManipulatorObject::GetObjectIsResource( Ogre::Entity* pEntity ) const
 	assert(iter != m_objects.end());
 
 	return (iter->second)->m_bIsResource;
+}
+
+void ManipulatorObject::SetObjectBuildingName( Ogre::Entity* pEntity, const std::string& name )
+{
+	auto iter = m_objects.find(pEntity);
+	assert(iter != m_objects.end());
+
+	(iter->second)->m_buildingName = name;
+}
+
+const std::string& ManipulatorObject::GetObjectBuildingName( Ogre::Entity* pEntity ) const
+{
+	auto iter = m_objects.find(pEntity);
+	assert(iter != m_objects.end());
+
+	return (iter->second)->m_buildingName;
 }
 
 

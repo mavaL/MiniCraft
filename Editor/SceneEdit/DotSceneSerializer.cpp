@@ -49,6 +49,9 @@ void DotSceneSerialezer::Serialize( const Ogre::String& path, const Ogre::String
 		//is building
 		const String& strIsBuilding = Ogre::StringConverter::toString((iter->second)->m_bIsBuilding);
 		objNode->append_attribute(doc.allocate_attribute("isbuilding", doc.allocate_string(strIsBuilding.c_str())));
+		//building name
+		if(strIsBuilding == "true")
+			objNode->append_attribute(doc.allocate_attribute("buildingname", doc.allocate_string((iter->second)->m_buildingName.c_str())));
 		//is resource
 		const String& strIsResource = Ogre::StringConverter::toString((iter->second)->m_bIsResource);
 		objNode->append_attribute(doc.allocate_attribute("isresource", doc.allocate_string(strIsResource.c_str())));

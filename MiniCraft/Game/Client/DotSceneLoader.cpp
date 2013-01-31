@@ -5,6 +5,7 @@
 #include "World.h"
 #include "ObjectManager.h"
 #include "ObjectBase.h"
+#include "Building.h"
 
 
 // #include "PagedGeometry.h"
@@ -169,6 +170,13 @@ void DotSceneLoader::processScene(rapidxml::xml_node<>* XMLRoot)
 			pObject->SetScale(scale);
 			pObject->SetOrientation(orient);
 			pObject->SetPosition(pos);
+
+			if(bIsBuilding)
+			{
+				const STRING strBuildingName = curObjNode->first_attribute("buildingname")->value();
+				Building* pBuilding = dynamic_cast<Building*>(pObject);
+				pBuilding->SetBuildingName(strBuildingName);
+			}
 		}
 		else
 		{

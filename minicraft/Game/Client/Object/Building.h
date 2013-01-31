@@ -14,7 +14,7 @@
 class Building : public SelectableObject
 {
 public:
-	Building():SelectableObject() {}
+	Building():SelectableObject(),m_buildingName("") {}
 	~Building() {}
 
 	static const STRING sNamePrefix;
@@ -23,6 +23,12 @@ public:
 	virtual eObjectType GetType() const { return eObjectType_Building; }
 	virtual const STRING& GetNamePrefix() const {  return sNamePrefix; }
 	virtual void	Update(float dt) {}
+
+public:
+	void			SetBuildingName(const STRING& name) { m_buildingName = name; }
+
+private:
+	STRING	m_buildingName;
 };
 
 

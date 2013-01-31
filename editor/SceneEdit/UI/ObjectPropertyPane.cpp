@@ -32,12 +32,26 @@ int PropertyPaneObject::OnCreate( LPCREATESTRUCT lpCreateStruct )
 	PROPERTY_REG(pCategory,	Vec3	, L"Scale"				, Ogre::Vector3(1,1,1)	, propScale			);
 	PROPERTY_REG(pCategory, Bool	, L"Add to NavMesh"		, false					, propAddToNavmesh	);
 	PROPERTY_REG(pCategory, Bool	, L"Is Building"		, false					, propIsBuilding	);
+	PROPERTY_REG(pCategory,			, L"Building Name"		, L""					, propBuildingName	);
 	PROPERTY_REG(pCategory, Bool	, L"Is Resource"		, false					, propIsResource	);
 	pCategory->Expand();
 
 	(dynamic_cast<CXTPPropertyGridItemVec3*>(m_mapItem[propPosition]))->SetChildItemID(propPosX, propPosY, propPosZ);
 	(dynamic_cast<CXTPPropertyGridItemVec4*>(m_mapItem[propOrientation]))->SetChildItemID(propOrientX, propOrientY, propOrientZ, propOrientW);
 	(dynamic_cast<CXTPPropertyGridItemVec3*>(m_mapItem[propScale]))->SetChildItemID(propScaleX, propScaleY, propScaleZ);
+
+	//初始化建筑物名称列表
+	for (int iRace=0; iRace<eGameRace_Count; ++iRace)
+	{
+		const auto vecNames = ManipulatorSystem.GetGameData().GetRaceBuildingNames((eGameRace)iRace);
+		CXTPPropertyGridItemConstraints* pList = m_mapItem[propBuildingName]->GetConstraints();
+		for (size_t iBuilding=0; iBuilding<vecNames.size(); ++iBuilding)
+		{
+			pList->AddConstraint(vecNames[iBuilding].c_str());
+		}
+	}
+	m_mapItem[propBuildingName]->SetFlags(xtpGridItemHasComboButton);
+	m_mapItem[propBuildingName]->SetReadOnly(TRUE);
 
 	return 0;
 }
@@ -114,9 +128,18 @@ LRESULT PropertyPaneObject::OnGridNotify( WPARAM wParam, LPARAM lParam )
 		case propIsBuilding:
 		{
 			CXTPPropertyGridItemBool* pItemBool = dynamic_cast<CXTPPropertyGridItemBool*>(pItem);
-			manObject.SetObjectIsBuilding(manObject.GetSelection(), pItemBool->GetBool());
+			BOOL bIsBuilding = pItemBool->GetBool();
+			manObject.SetObjectIsBuilding(manObject.GetSelection(), bIsBuilding);
+			m_mapItem[propBuildingName]->SetReadOnly(!bIsBuilding);
 		}
 		break;
+
+		case propBuildingName:
+			{
+				std::string name = Utility::UnicodeToEngine(pItem->GetValue());
+				manObject.SetObjectBuildingName(manObject.GetSelection(), name);
+			}
+			break;
 
 		case propIsResource:
 			{
@@ -168,6 +191,7 @@ void PropertyPaneObject::UpdateProperty( int id )
 	case propScale:			strNewValue = Ogre::StringConverter::toString(pNode->_getDerivedScale()); break;
 	case propAddToNavmesh:	strNewValue = Ogre::StringConverter::toString(ManipulatorSystem.GetObject().GetObjectNavMeshFlag(curSel)); break;
 	case propIsBuilding:	strNewValue = Ogre::StringConverter::toString(ManipulatorSystem.GetObject().GetObjectIsBuilding(curSel)); break;
+	case propBuildingName:	strNewValue = ManipulatorSystem.GetObject().GetObjectBuildingName(curSel); break;
 	case propIsResource:	strNewValue = Ogre::StringConverter::toString(ManipulatorSystem.GetObject().GetObjectIsResource(curSel)); break;
 	default: assert(0);
 	}
@@ -180,6 +204,9 @@ void PropertyPaneObject::EnableMutableProperty( BOOL bEnable )
 {
 	for(int i=propMutableItemStart; i<propMutableItemEnd; ++i)
 		m_mapItem[i]->SetReadOnly(!bEnable);
+
+	CXTPPropertyGridItemBool* pItem = dynamic_cast<CXTPPropertyGridItemBool*>(m_mapItem[propIsBuilding]);
+	m_mapItem[propBuildingName]->SetReadOnly(!pItem->GetBool());
 }
 
 Ogre::Vector3 PropertyPaneObject::_UpdateVec3ItemProperty(CXTPPropertyGridItemVec3* pItem)
