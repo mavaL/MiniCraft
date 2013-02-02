@@ -59,6 +59,9 @@
     <Filter Include="OgreRecast\Src\RecastContrib">
       <UniqueIdentifier>{414e6cea-2389-45a9-af89-3e662186a137}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Client\UI">
+      <UniqueIdentifier>{8cd7c6ce-59c5-4679-a3dc-9a8f3a6a6675}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\rapidxml\rapidxml.hpp">
@@ -244,6 +247,9 @@
     <ClInclude Include="Game\Client\Object\Resource.h">
       <Filter>Client\Object</Filter>
     </ClInclude>
+    <ClInclude Include="Game\Client\UI\CommandPanel.h">
+      <Filter>Client\UI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game\Core\Application.cpp">
@@ -410,6 +416,9 @@
     </ClCompile>
     <ClCompile Include="Game\Client\Object\Resource.cpp">
       <Filter>Client\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Client\UI\CommandPanel.cpp">
+      <Filter>Client\UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

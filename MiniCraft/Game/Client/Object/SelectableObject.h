@@ -29,10 +29,12 @@ public:
 	//!!在Ogre Root销毁前必须调用
 	static void	ReleaseMeshCache();
 
-private:
-	Ogre::MeshPtr	_CreateSelectionCircleMesh(const Ogre::MeshPtr& objMesh);
+protected:
+	//子类进行被选中行为的特化
+	virtual	void	OnSelected(bool bSelected) {}
 
 private:
+	Ogre::MeshPtr	_CreateSelectionCircleMesh(const Ogre::MeshPtr& objMesh);
 	static SelectionCircleCache	m_selCircleCache;	//cache每种单位的选中框mesh
 
 	bool						m_bSelected;		//该对象是否被选中

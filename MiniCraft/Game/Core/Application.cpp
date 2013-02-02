@@ -80,6 +80,7 @@ void Applicaton::Run()
 void Applicaton::Shutdown()
 {
 	ScriptSystem::GetSingleton().Shutdown();
+	m_guiMgr->Shutdown();
 	m_stateMgr->shutdown();	
 	m_inputMgr->Shutdown();
 	m_ogreMgr->Shutdown();

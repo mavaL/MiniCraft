@@ -2,6 +2,7 @@
 #include "GUIManager.h"
 #include "RendererModules\Ogre\CEGUIOgreRenderer.h"
 #include "OgreManager.h"
+#include "CommandPanel.h"
 
 using namespace CEGUI;
 
@@ -9,6 +10,7 @@ using namespace CEGUI;
 CGUIManager::CGUIManager(void)
 : m_pRenderer(NULL)
 ,m_pSystem(NULL)
+,m_pCmdPanel(NULL)
 {
 }
 
@@ -53,15 +55,16 @@ bool CGUIManager::Init()
 
 	 m_pRenderer->getDefaultRenderingRoot().clearGeometry(CEGUI::RQ_OVERLAY);
 
-// 	const CEGUI::Rect scrn(CEGUI::Vector2(0, 0), m_pRenderer->getDisplaySize());
-// 	m_pGeometryBuffer = &m_pRenderer->createGeometryBuffer();
-// 	m_pGeometryBuffer->setClippingRegion(scrn);
+	m_pCmdPanel = new UiCommandPanel;
+	m_pCmdPanel->Init();
 
 	return true;
 }
 
 void CGUIManager::Shutdown()
 {
+	m_pCmdPanel->Destroy();
+	SAFE_DELETE(m_pCmdPanel);
 	if (m_pRenderer)
 	{
 		OgreRenderer::destroySystem();
@@ -136,4 +139,20 @@ bool CGUIManager::OnInputSys_MouseReleased( const OIS::MouseEvent &arg, OIS::Mou
 bool CGUIManager::OnInputSys_MouseMove( const OIS::MouseEvent &arg )
 {
 	return m_pSystem->injectMouseMove(static_cast<float>(arg.state.X.rel), static_cast<float>(arg.state.Y.rel));
+}
+
+CEGUI::Window* CGUIManager::LoadWindowLayout( const STRING& name )
+{
+	return WindowManager::getSingleton().loadWindowLayout(name);
+}
+
+void CGUIManager::SetGUISheet( CEGUI::Window* pWnd )
+{
+	m_pSystem->setGUISheet(pWnd);
+}
+
+void CGUIManager::UnloadWindowLayout( CEGUI::Window* pWnd )
+{
+	assert(pWnd);
+	WindowManager::getSingleton().destroyWindow(pWnd);
 }

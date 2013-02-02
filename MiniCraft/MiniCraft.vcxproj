@@ -46,7 +46,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>.\Dependency\Lua5_1_4\src;.\Dependency\CEGUI\include;.\Dependency\boost;.\Dependency\OgreRecast\Include;.\Dependency\OIS\include;.\Dependency\Ogre\include;.\Game;.\Game\Client;.\Game\Core;.\Game\Client\Object;.\Game\Client\AI;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\Dependency\Lua5_1_4\src;.\Dependency\CEGUI\include;.\Dependency\boost;.\Dependency\OgreRecast\Include;.\Dependency\OIS\include;.\Dependency\Ogre\include;.\Game;.\Game\Client\UI;.\Game\Client;.\Game\Core;.\Game\Client\Object;.\Game\Client\AI;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <AdditionalOptions>/Zm143 %(AdditionalOptions)</AdditionalOptions>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -120,6 +120,7 @@
     <ClInclude Include="Game\Client\Object\SelectableObject.h" />
     <ClInclude Include="Game\Client\Object\Unit.h" />
     <ClInclude Include="Game\Client\stdafx.h" />
+    <ClInclude Include="Game\Client\UI\CommandPanel.h" />
     <ClInclude Include="Game\Client\World.h" />
     <ClInclude Include="Game\Core\Application.h" />
     <ClInclude Include="Game\Core\AppState.h" />
@@ -251,6 +252,7 @@
     <ClCompile Include="Game\Client\stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Game\Client\UI\CommandPanel.cpp" />
     <ClCompile Include="Game\Client\World.cpp" />
     <ClCompile Include="Game\Core\Application.cpp" />
     <ClCompile Include="Game\Core\AppStateManager.cpp" />

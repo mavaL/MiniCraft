@@ -3,12 +3,14 @@
 
 #include "Singleton.h"
 #include "CEGUI.h"
+#include "GameDefine.h"
 #include "InputManager.h"
 
 namespace CEGUI
 {
 	class OgreRenderer;
 }
+class UiCommandPanel;
 
 /*------------------------------------------------
 					CEGUI模块封装类
@@ -22,13 +24,17 @@ class CGUIManager : public CSingleton<CGUIManager>
 	virtual ~CGUIManager(void);
 
 public:
-	bool Init();
-	void Shutdown();
-	void ShowCursor(bool bEnable);
+	bool	Init();
+	void	Shutdown();
+	void	ShowCursor(bool bEnable);
+	CEGUI::Window*	LoadWindowLayout(const STRING& name);
+	void	UnloadWindowLayout(CEGUI::Window* pWnd);
+	void	SetGUISheet(CEGUI::Window* pWnd);
 
 private:
 	CEGUI::OgreRenderer*	m_pRenderer;
 	CEGUI::System*			m_pSystem;
+	UiCommandPanel*			m_pCmdPanel;
 
 	//Hook进渲染事件,绘制自定义数据
 	bool overlayHandler(const CEGUI::EventArgs& args);

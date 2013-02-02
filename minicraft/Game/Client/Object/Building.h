@@ -27,6 +27,9 @@ public:
 public:
 	void			SetBuildingName(const STRING& name) { m_buildingName = name; }
 
+protected:
+	virtual	void	OnSelected(bool bSelected);
+
 private:
 	STRING	m_buildingName;
 };

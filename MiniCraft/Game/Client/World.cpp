@@ -3,6 +3,7 @@
 #include "GameDefine.h"
 #include "Unit.h"
 #include "OgreManager.h"
+#include "GUIManager.h"
 #include <SdkCameraMan.h>
 #include "DotSceneLoader.h"
 #include "ObjectManager.h"
@@ -336,10 +337,10 @@ void World::UpdateConsoleUITransform(float dt)
 	// 	Ogre::Degree halfFov(m_pCamera->getFOVy().valueDegrees() / 2);
 	// 	float fOffset = 3 * Ogre::Math::Tan(halfFov.valueRadians());
 	//TODO: 硬编码设置UI位置,以后要加入UI layout
-	POS newPos = camPos + camDir * 2 + camRight * -1.07f + camUp * -0.8f;
+	POS newPos = camPos + camDir * 1.7f + camRight * -0.9f + camUp * -0.67f;
 	m_pUISceneNode1->_setDerivedOrientation(m_pCamera->getRealOrientation());
 	m_pUISceneNode1->_setDerivedPosition(newPos);
 	m_pUISceneNode2->setPosition(1, -0.02f, 0);
-	m_pUISceneNode3->setPosition(1.8f, 0.64f, 0);
-	m_pUISceneNode4->setPosition(2.25f, -0.03f, -0.1f);
+	m_pUISceneNode3->setPosition(1.38f, 0.64f, 0);
+	m_pUISceneNode4->setPosition(1.8f, -0.0f, -0.01f);
 }

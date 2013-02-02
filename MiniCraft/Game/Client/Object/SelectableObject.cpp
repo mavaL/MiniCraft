@@ -343,6 +343,8 @@ void SelectableObject::SetSelected( bool bSelected )
 		pEntity->setMaterialName("SelectionCircleAlly");
 	else if(type == eObjectType_Resource)
 		pEntity->setMaterialName("SelectionCircleNeutral");
+
+	OnSelected(bSelected);
 }
 
 Ogre::MeshPtr SelectableObject::_CreateSelectionCircleMesh(const Ogre::MeshPtr& objMesh)
