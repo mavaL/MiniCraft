@@ -6,18 +6,17 @@
 	purpose:	可选中物体基类.
 *********************************************************************/
 
-#ifndef Selectable_h__
-#define Selectable_h__
+#ifndef SelectableObject_h__
+#define SelectableObject_h__
 
 #include "ObjectBase.h"
 #include "GameDefine.h"
+#include "Ability.h"
 
 
 ///该类实现来自OgreProcedural库
 class SelectableObject : public RenderableObject
 {
-	typedef std::unordered_map<STRING, Ogre::MeshPtr>	SelectionCircleCache;
-
 public:
 	SelectableObject();
 	~SelectableObject();
@@ -35,11 +34,14 @@ protected:
 
 private:
 	Ogre::MeshPtr	_CreateSelectionCircleMesh(const Ogre::MeshPtr& objMesh);
-	static SelectionCircleCache	m_selCircleCache;	//cache每种单位的选中框mesh
 
+	typedef std::unordered_map<STRING, Ogre::MeshPtr>	SelectionCircleCache;
+	static SelectionCircleCache	m_selCircleCache;	//cache每种单位的选中框mesh
 	bool						m_bSelected;		//该对象是否被选中
 	Ogre::SceneNode*			m_pSelCircleNode;
 
+	typedef std::vector<Ability>	AbilitySlots;
+	AbilitySlots				m_abilities;		//该物体的能力
 };
 
-#endif // Selectable_h__
+#endif // SelectableObject_h__

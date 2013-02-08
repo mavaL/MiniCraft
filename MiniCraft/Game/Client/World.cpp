@@ -1,12 +1,13 @@
 #include "stdafx.h"
 #include "World.h"
-#include "GameDefine.h"
 #include "Unit.h"
+#include "GameDefine.h"
 #include "OgreManager.h"
 #include "GUIManager.h"
 #include <SdkCameraMan.h>
 #include "DotSceneLoader.h"
 #include "ObjectManager.h"
+#include "GameDataDef.h"
 
 
 SGlobalEnvironment	g_Environment;
@@ -56,10 +57,9 @@ void World::Init()
 	m_pCamera->setPosition(0, 35, 0);
 	m_pCamera->lookAt(0, 0, 8.75f);
 
-	//场景中参与构建NavMesh的物体
-	std::vector<Entity*> vecNavEnt;	
+	GameDataDefManager::GetSingleton().LoadAllData();
 
-	//加载测试场景Test.Scene
+	//加载测试场景
 	DotSceneLoader sceneLoader;
 	sceneLoader.parseDotScene("MyStarCraft.Scene", "General", 
 		m_pSceneMgr, m_pSceneMgr->getRootSceneNode()->createChildSceneNode("SceneNode"));

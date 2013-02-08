@@ -2,6 +2,9 @@
 <GUIScheme Name="TaharezLook">
 	<Imageset Filename="TaharezLook.imageset" />
 	<Imageset Filename="Scv.imageset" />
+	<Imageset Filename="Marine.imageset" />
+	<Imageset Filename="Drone.imageset" />
+	<Imageset Filename="Zergling.imageset" />
 	<Imageset Filename="TerranFrameNormal.imageset" />
 	<Imageset Filename="TerranFrameHighlight.imageset" />
 	<Imageset Filename="ZergFrameNormal.imageset" />

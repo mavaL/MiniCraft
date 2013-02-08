@@ -110,6 +110,7 @@
     <ClInclude Include="Game\Client\AI\UnitState.h" />
     <ClInclude Include="Game\Client\BattleState.h" />
     <ClInclude Include="Game\Client\DotSceneLoader.h" />
+    <ClInclude Include="Game\Client\GameDataDef.h" />
     <ClInclude Include="Game\Client\GameDefine.h" />
     <ClInclude Include="Game\Client\Object\Building.h" />
     <ClInclude Include="Game\Client\Object\Faction.h" />
@@ -241,6 +242,7 @@
     <ClCompile Include="Game\Client\AI\UnitState.cpp" />
     <ClCompile Include="Game\Client\BattleState.cpp" />
     <ClCompile Include="Game\Client\DotSceneLoader.cpp" />
+    <ClCompile Include="Game\Client\GameDataDef.cpp" />
     <ClCompile Include="Game\Client\Object\Building.cpp" />
     <ClCompile Include="Game\Client\Object\Faction.cpp" />
     <ClCompile Include="Game\Client\Object\ObjectBase.cpp" />

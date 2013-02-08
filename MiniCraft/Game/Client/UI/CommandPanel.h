@@ -14,6 +14,14 @@ namespace CEGUI
 	class Window;
 }
 
+//技能槽状态
+enum eSlotState
+{
+	eSlotState_Normal,
+	eSlotState_Highlight,
+	eSlotState_Disable,
+	eSlotState_Empty
+};
 
 class UiCommandPanel
 {
@@ -24,6 +32,8 @@ public:
 public:
 	void	Init();
 	void	Destroy();
+	//设置能力槽图标
+	void	CEGUI_SetAbilitySlot(int slotIndex, eSlotState state, const std::string& imgName = "");
 
 private:
 	CEGUI::Window*	m_pLayout;

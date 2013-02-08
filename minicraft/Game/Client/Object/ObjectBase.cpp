@@ -9,13 +9,20 @@ Object::Object()
 }
 
 ///////////////////////////////////////////////////////////////////////
+IMPL_PARAM_COMMAND(RenderableObject, Position, Vector3)
+IMPL_PARAM_COMMAND(RenderableObject, Orientation, Quaternion)
+
 RenderableObject::RenderableObject()
 :Object()
 ,m_pEntity(nullptr)
 ,m_pSceneNode(nullptr)
 ,m_bRenderableReady(false)
 {
-
+	if (createParamDictionary("RenderableObject"))
+	{
+		Ogre::ParamDictionary* dict = getParamDictionary();
+		dict->addParameter(Ogre::ParameterDef("position", "position of the object", Ogre::PT_VECTOR3), &m_sCmdPosition);
+	}
 }
 
 void RenderableObject::SetPosition( const POS& pos )

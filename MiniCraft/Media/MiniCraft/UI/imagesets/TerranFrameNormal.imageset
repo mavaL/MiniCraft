@@ -1,4 +1,4 @@
 <?xml version="1.0" ?>
-<Imageset Name="Icon_TerranframeNormal" Imagefile="ui_commandcard_terranframe_normal.dds" NativeHorzRes="1280" NativeVertRes="800" AutoScaled="false">
+<Imageset Name="Icon_TerranFrameNormal" Imagefile="ui_commandcard_terranframe_normal.dds" NativeHorzRes="1280" NativeVertRes="800" AutoScaled="false">
     <Image Name="TerranFrameNormal" XPos="0" YPos="0" Width="76" Height="76" />
 </Imageset>

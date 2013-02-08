@@ -278,11 +278,11 @@ CommandBase* CBattleState::_ComputeCommand( Unit* pUnit, const Ogre::Vector3& ta
 {
 	CommandBase* pCmd = nullptr;
 
-	//检测是否目标点超出了游戏地图
-	//TODO:后面很有可能加入Map类,相关数据和操作封装进去
-	if(targetPos.x < -50 || targetPos.x > 50 || targetPos.z < -50 || targetPos.z > 50)
-		return nullptr;
-
+// 	//检测是否目标点超出了游戏地图
+// 	//TODO:后面很有可能加入Map类,相关数据和操作封装进去
+// 	if(targetPos.x < -50 || targetPos.x > 50 || targetPos.z < -50 || targetPos.z > 50)
+// 		return nullptr;
+// 
 // 	static Ogre::Vector3 goldArea = World::GetSingleton().GetResAABB().getHalfSize();
 // 	if (targetPos.x >= -goldArea.x && 
 // 		targetPos.x <= goldArea.x &&
@@ -293,13 +293,13 @@ CommandBase* CBattleState::_ComputeCommand( Unit* pUnit, const Ogre::Vector3& ta
 // 		pCmd = new HarvestCommand(pUnit);
 // 	}
 // 	else
-	{
-		//将目标点调整至有效
-		Ogre::Vector3 adjustPos(targetPos);
-		World::GetSingleton().ClampPosToNavMesh(adjustPos);
-		//执行移动命令
-		pCmd = new MoveCommand(pUnit, adjustPos);
-	}
+// 	{
+// 		//将目标点调整至有效
+// 		Ogre::Vector3 adjustPos(targetPos);
+// 		World::GetSingleton().ClampPosToNavMesh(adjustPos);
+// 		//执行移动命令
+// 		pCmd = new MoveCommand(pUnit, adjustPos);
+// 	}
 
 	return pCmd;
 }

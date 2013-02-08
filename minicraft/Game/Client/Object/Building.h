@@ -10,11 +10,12 @@
 #define Building_h__
 
 #include "SelectableObject.h"
+#include "GameDataDef.h"
 
 class Building : public SelectableObject
 {
 public:
-	Building():SelectableObject(),m_buildingName("") {}
+	Building();
 	~Building() {}
 
 	static const STRING sNamePrefix;
@@ -26,12 +27,14 @@ public:
 
 public:
 	void			SetBuildingName(const STRING& name) { m_buildingName = name; }
+	void			SetAbility(int slotIndex, const SAbilityData* pData);
 
 protected:
 	virtual	void	OnSelected(bool bSelected);
 
 private:
-	STRING	m_buildingName;
+	STRING			m_buildingName;
+	SAbilityData*	m_pAbilitySlots[MAX_ABILITY_SLOT];
 };
 
 

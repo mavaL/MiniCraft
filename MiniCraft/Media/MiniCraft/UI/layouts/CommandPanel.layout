@@ -4,10 +4,23 @@
     <Window Type="DefaultWindow" Name="Root" >
         <Property Name="UnifiedAreaRect" Value="{{0,0},{0,0},{1,0},{1,0}}" />
         <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
-        <Window Type="TaharezLook/ImageButton" Name="CommandSlot1Frame" >
+        <Window Type="TaharezLook/ImageButton" Name="CommandSlot0Frame" >
             <Property Name="UnifiedAreaRect" Value="{{0,920},{0,600},{0,980},{0,660}}" />
             <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
             <Property Name="NormalImage"     Value="set:Icon_CommandEmpty image:CommandEmpty" />
+            <Property Name="Alpha" 					Value="0.2" />
+            <Window Type="TaharezLook/StaticImage" Name="CommandSlot0Icon" >
+            		<Property Name="UnifiedAreaRect" Value="{{0,0},{0,0},{1,0},{1,0}}" />
+            		<Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+            		<Property Name="BackgroundEnabled" Value="false" />
+            		<Property Name="FrameEnabled" Value="false" />
+            </Window>
+        </Window>
+        <Window Type="TaharezLook/ImageButton" Name="CommandSlot1Frame" >
+            <Property Name="UnifiedAreaRect" Value="{{0,980},{0,600},{0,1040},{0,660}}" />
+            <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+            <Property Name="NormalImage"     Value="set:Icon_CommandEmpty image:CommandEmpty" />
+            <Property Name="Alpha" 					Value="0.2" />
             <Window Type="TaharezLook/StaticImage" Name="CommandSlot1Icon" >
             		<Property Name="UnifiedAreaRect" Value="{{0,0},{0,0},{1,0},{1,0}}" />
             		<Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
@@ -16,9 +29,10 @@
             </Window>
         </Window>
         <Window Type="TaharezLook/ImageButton" Name="CommandSlot2Frame" >
-            <Property Name="UnifiedAreaRect" Value="{{0,980},{0,600},{0,1040},{0,660}}" />
+            <Property Name="UnifiedAreaRect" Value="{{0,1040},{0,600},{0,1100},{0,660}}" />
             <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
             <Property Name="NormalImage"     Value="set:Icon_CommandEmpty image:CommandEmpty" />
+            <Property Name="Alpha" 					Value="0.2" />
             <Window Type="TaharezLook/StaticImage" Name="CommandSlot2Icon" >
             		<Property Name="UnifiedAreaRect" Value="{{0,0},{0,0},{1,0},{1,0}}" />
             		<Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
@@ -27,9 +41,10 @@
             </Window>
         </Window>
         <Window Type="TaharezLook/ImageButton" Name="CommandSlot3Frame" >
-            <Property Name="UnifiedAreaRect" Value="{{0,1040},{0,600},{0,1100},{0,660}}" />
+            <Property Name="UnifiedAreaRect" Value="{{0,1100},{0,600},{0,1160},{0,660}}" />
             <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
             <Property Name="NormalImage"     Value="set:Icon_CommandEmpty image:CommandEmpty" />
+            <Property Name="Alpha" 					Value="0.2" />
             <Window Type="TaharezLook/StaticImage" Name="CommandSlot3Icon" >
             		<Property Name="UnifiedAreaRect" Value="{{0,0},{0,0},{1,0},{1,0}}" />
             		<Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
@@ -38,9 +53,10 @@
             </Window>
         </Window>
         <Window Type="TaharezLook/ImageButton" Name="CommandSlot4Frame" >
-            <Property Name="UnifiedAreaRect" Value="{{0,1100},{0,600},{0,1160},{0,660}}" />
+            <Property Name="UnifiedAreaRect" Value="{{0,1160},{0,600},{0,1220},{0,660}}" />
             <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
             <Property Name="NormalImage"     Value="set:Icon_CommandEmpty image:CommandEmpty" />
+            <Property Name="Alpha" 					Value="0.2" />
             <Window Type="TaharezLook/StaticImage" Name="CommandSlot4Icon" >
             		<Property Name="UnifiedAreaRect" Value="{{0,0},{0,0},{1,0},{1,0}}" />
             		<Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
@@ -49,9 +65,10 @@
             </Window>
         </Window>
         <Window Type="TaharezLook/ImageButton" Name="CommandSlot5Frame" >
-            <Property Name="UnifiedAreaRect" Value="{{0,1160},{0,600},{0,1220},{0,660}}" />
+            <Property Name="UnifiedAreaRect" Value="{{0,920},{0,660},{0,980},{0,720}}" />
             <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
             <Property Name="NormalImage"     Value="set:Icon_CommandEmpty image:CommandEmpty" />
+            <Property Name="Alpha" 					Value="0.2" />
             <Window Type="TaharezLook/StaticImage" Name="CommandSlot5Icon" >
             		<Property Name="UnifiedAreaRect" Value="{{0,0},{0,0},{1,0},{1,0}}" />
             		<Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
@@ -60,9 +77,10 @@
             </Window>
         </Window>
         <Window Type="TaharezLook/ImageButton" Name="CommandSlot6Frame" >
-            <Property Name="UnifiedAreaRect" Value="{{0,920},{0,660},{0,980},{0,720}}" />
+            <Property Name="UnifiedAreaRect" Value="{{0,980},{0,660},{0,1040},{0,720}}" />
             <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
             <Property Name="NormalImage"     Value="set:Icon_CommandEmpty image:CommandEmpty" />
+            <Property Name="Alpha" 					Value="0.2" />
             <Window Type="TaharezLook/StaticImage" Name="CommandSlot6Icon" >
             		<Property Name="UnifiedAreaRect" Value="{{0,0},{0,0},{1,0},{1,0}}" />
             		<Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
@@ -71,9 +89,10 @@
             </Window>
         </Window>
         <Window Type="TaharezLook/ImageButton" Name="CommandSlot7Frame" >
-            <Property Name="UnifiedAreaRect" Value="{{0,980},{0,660},{0,1040},{0,720}}" />
+            <Property Name="UnifiedAreaRect" Value="{{0,1040},{0,660},{0,1100},{0,720}}" />
             <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
             <Property Name="NormalImage"     Value="set:Icon_CommandEmpty image:CommandEmpty" />
+            <Property Name="Alpha" 					Value="0.2" />
             <Window Type="TaharezLook/StaticImage" Name="CommandSlot7Icon" >
             		<Property Name="UnifiedAreaRect" Value="{{0,0},{0,0},{1,0},{1,0}}" />
             		<Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
@@ -82,9 +101,10 @@
             </Window>
         </Window>
         <Window Type="TaharezLook/ImageButton" Name="CommandSlot8Frame" >
-            <Property Name="UnifiedAreaRect" Value="{{0,1040},{0,660},{0,1100},{0,720}}" />
+            <Property Name="UnifiedAreaRect" Value="{{0,1100},{0,660},{0,1160},{0,720}}" />
             <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
             <Property Name="NormalImage"     Value="set:Icon_CommandEmpty image:CommandEmpty" />
+            <Property Name="Alpha" 					Value="0.2" />
             <Window Type="TaharezLook/StaticImage" Name="CommandSlot8Icon" >
             		<Property Name="UnifiedAreaRect" Value="{{0,0},{0,0},{1,0},{1,0}}" />
             		<Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
@@ -93,9 +113,10 @@
             </Window>
         </Window>
         <Window Type="TaharezLook/ImageButton" Name="CommandSlot9Frame" >
-            <Property Name="UnifiedAreaRect" Value="{{0,1100},{0,660},{0,1160},{0,720}}" />
+            <Property Name="UnifiedAreaRect" Value="{{0,1160},{0,660},{0,1220},{0,720}}" />
             <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
             <Property Name="NormalImage"     Value="set:Icon_CommandEmpty image:CommandEmpty" />
+            <Property Name="Alpha" 					Value="0.2" />
             <Window Type="TaharezLook/StaticImage" Name="CommandSlot9Icon" >
             		<Property Name="UnifiedAreaRect" Value="{{0,0},{0,0},{1,0},{1,0}}" />
             		<Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
@@ -104,9 +125,10 @@
             </Window>
         </Window>
         <Window Type="TaharezLook/ImageButton" Name="CommandSlot10Frame" >
-            <Property Name="UnifiedAreaRect" Value="{{0,1160},{0,660},{0,1220},{0,720}}" />
+            <Property Name="UnifiedAreaRect" Value="{{0,920},{0,720},{0,980},{0,780}}" />
             <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
             <Property Name="NormalImage"     Value="set:Icon_CommandEmpty image:CommandEmpty" />
+            <Property Name="Alpha" 					Value="0.2" />
             <Window Type="TaharezLook/StaticImage" Name="CommandSlot10Icon" >
             		<Property Name="UnifiedAreaRect" Value="{{0,0},{0,0},{1,0},{1,0}}" />
             		<Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
@@ -115,9 +137,10 @@
             </Window>
         </Window>
         <Window Type="TaharezLook/ImageButton" Name="CommandSlot11Frame" >
-            <Property Name="UnifiedAreaRect" Value="{{0,920},{0,720},{0,980},{0,780}}" />
+            <Property Name="UnifiedAreaRect" Value="{{0,980},{0,720},{0,1040},{0,780}}" />
             <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
             <Property Name="NormalImage"     Value="set:Icon_CommandEmpty image:CommandEmpty" />
+            <Property Name="Alpha" 					Value="0.2" />
             <Window Type="TaharezLook/StaticImage" Name="CommandSlot11Icon" >
             		<Property Name="UnifiedAreaRect" Value="{{0,0},{0,0},{1,0},{1,0}}" />
             		<Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
@@ -126,9 +149,10 @@
             </Window>
         </Window>
         <Window Type="TaharezLook/ImageButton" Name="CommandSlot12Frame" >
-            <Property Name="UnifiedAreaRect" Value="{{0,980},{0,720},{0,1040},{0,780}}" />
+            <Property Name="UnifiedAreaRect" Value="{{0,1040},{0,720},{0,1100},{0,780}}" />
             <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
             <Property Name="NormalImage"     Value="set:Icon_CommandEmpty image:CommandEmpty" />
+            <Property Name="Alpha" 					Value="0.2" />
             <Window Type="TaharezLook/StaticImage" Name="CommandSlot12Icon" >
             		<Property Name="UnifiedAreaRect" Value="{{0,0},{0,0},{1,0},{1,0}}" />
             		<Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
@@ -137,9 +161,10 @@
             </Window>
         </Window>
         <Window Type="TaharezLook/ImageButton" Name="CommandSlot13Frame" >
-            <Property Name="UnifiedAreaRect" Value="{{0,1040},{0,720},{0,1100},{0,780}}" />
+            <Property Name="UnifiedAreaRect" Value="{{0,1100},{0,720},{0,1160},{0,780}}" />
             <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
             <Property Name="NormalImage"     Value="set:Icon_CommandEmpty image:CommandEmpty" />
+            <Property Name="Alpha" 					Value="0.2" />
             <Window Type="TaharezLook/StaticImage" Name="CommandSlot13Icon" >
             		<Property Name="UnifiedAreaRect" Value="{{0,0},{0,0},{1,0},{1,0}}" />
             		<Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
@@ -148,21 +173,11 @@
             </Window>
         </Window>
         <Window Type="TaharezLook/ImageButton" Name="CommandSlot14Frame" >
-            <Property Name="UnifiedAreaRect" Value="{{0,1100},{0,720},{0,1160},{0,780}}" />
-            <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
-            <Property Name="NormalImage"     Value="set:Icon_CommandEmpty image:CommandEmpty" />
-            <Window Type="TaharezLook/StaticImage" Name="CommandSlot14Icon" >
-            		<Property Name="UnifiedAreaRect" Value="{{0,0},{0,0},{1,0},{1,0}}" />
-            		<Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
-            		<Property Name="BackgroundEnabled" Value="false" />
-            		<Property Name="FrameEnabled" Value="false" />
-            </Window>
-        </Window>
-        <Window Type="TaharezLook/ImageButton" Name="CommandSlot15Frame" >
             <Property Name="UnifiedAreaRect" Value="{{0,1160},{0,720},{0,1220},{0,780}}" />
             <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
             <Property Name="NormalImage"     Value="set:Icon_CommandEmpty image:CommandEmpty" />
-            <Window Type="TaharezLook/StaticImage" Name="CommandSlot15Icon" >
+            <Property Name="Alpha" 					Value="0.2" />
+            <Window Type="TaharezLook/StaticImage" Name="CommandSlot14Icon" >
             		<Property Name="UnifiedAreaRect" Value="{{0,0},{0,0},{1,0},{1,0}}" />
             		<Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
             		<Property Name="BackgroundEnabled" Value="false" />

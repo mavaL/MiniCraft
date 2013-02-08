@@ -65,7 +65,7 @@ public:
 
 	const SelectedContainer&	GetSelectedObjects() { return m_vecSelectUnis; }
 	//将给定世界坐标通过射线投射夹持在地形上
-	void ClampToTerrain(Ogre::Vector3& pos);
+	void			ClampToTerrain(Ogre::Vector3& pos);
 	//像一个公告板一样更新控制台UI
 	void			UpdateConsoleUITransform(float dt);
 

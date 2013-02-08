@@ -13,14 +13,6 @@ typedef Ogre::Vector2		FLOAT2;
 const std::string	SCENE_MANAGER_NAME	=	"DefaultSceneMgr";
 const float			SCENE_VERSION		=	0.2f;	//当前.scene版本号,注意与编辑器同步
 
-//游戏种族:人族,神族,虫族
-enum eGameRace
-{
-	eGameRace_Terran,
-	//eGameRace_Protoss,
-	eGameRace_Zerg
-};
-
 //对象类型
 enum eObjectType
 {

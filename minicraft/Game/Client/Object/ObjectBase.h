@@ -10,10 +10,36 @@
 #define ObjectBase_h__
 
 #include "GameDefine.h"
+#include "OgreStringInterface.h"
+
+///注册OgreStringInterface
+#define DECL_PARAM_COMMAND(name)						\
+class Cmd##name : public Ogre::ParamCommand				\
+{														\
+public:													\
+	STRING doGet(const void* target) const;				\
+	void doSet(void* target, const STRING& val);		\
+};														\
+static Cmd##name	m_sCmd##name;						
+
+#define IMPL_PARAM_COMMAND(classname, cmdname, paramtype)								\
+classname::Cmd##cmdname	classname::m_sCmd##cmdname;										\
+STRING classname::Cmd##cmdname::doGet(const void* target) const							\
+{																						\
+	const classname* obj = static_cast<const classname*>(target);						\
+	return Ogre::StringConverter::toString(obj->Get##cmdname());						\
+}																						\
+																						\
+void classname::Cmd##cmdname::doSet(void* target, const STRING& val)					\
+{																						\
+	classname* obj = static_cast<classname*>(target);									\
+	obj->Set##cmdname(Ogre::StringConverter::parse##paramtype(val));					\
+}																						\
+
 
 ////////////////////////////////////////////////////
 ///顶层基类
-class Object
+class Object : public Ogre::StringInterface
 {
 public:
 	Object();
@@ -34,6 +60,10 @@ private:
 ///可渲染对象基类
 class RenderableObject : public Object
 {
+	/// Command object
+	DECL_PARAM_COMMAND(Position)
+	DECL_PARAM_COMMAND(Orientation)
+
 public:
 	RenderableObject();
 	~RenderableObject() {}

@@ -10,7 +10,7 @@
 #define Faction_h__
 
 #include "ObjectBase.h"
-#include "GameDefine.h"
+#include "GameDataDef.h"
 
 
 class Faction : public Object

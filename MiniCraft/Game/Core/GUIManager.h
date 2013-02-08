@@ -5,12 +5,12 @@
 #include "CEGUI.h"
 #include "GameDefine.h"
 #include "InputManager.h"
+#include "CommandPanel.h"
 
 namespace CEGUI
 {
 	class OgreRenderer;
 }
-class UiCommandPanel;
 
 /*------------------------------------------------
 					CEGUI模块封装类
@@ -31,10 +31,14 @@ public:
 	void	UnloadWindowLayout(CEGUI::Window* pWnd);
 	void	SetGUISheet(CEGUI::Window* pWnd);
 
+	///获取UI组件
+public:
+	UiCommandPanel*		GetCommandPanel() { return &m_cmdPanel; }
+
 private:
 	CEGUI::OgreRenderer*	m_pRenderer;
 	CEGUI::System*			m_pSystem;
-	UiCommandPanel*			m_pCmdPanel;
+	UiCommandPanel			m_cmdPanel;
 
 	//Hook进渲染事件,绘制自定义数据
 	bool overlayHandler(const CEGUI::EventArgs& args);

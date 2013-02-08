@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "DialogGameDataBuilding.h"
 #include "Utility.h"
+#include "Manipulator/ManipulatorGameData.h"
 
 
 BEGIN_MESSAGE_MAP(DialogGameDataBuilding, CDialog)
@@ -88,9 +89,8 @@ void DialogGameDataBuilding::OnPaint()
 		wnd->UpdateWindow();
 
 		Gdiplus::Graphics g(wnd->GetDC()->GetSafeHdc());
-		eGameRace race = IsDlgButtonChecked(IDC_DlgBuilding_SwitchT) ? eGameRace_Terran : eGameRace_Zerg;
-		const SBuildingData* pData = manGameData.GetBuildingData(race, buildingName.c_str());
-		Gdiplus::Bitmap* bm = ManipulatorSystem.GetResource().GetIcon(pData->m_iconName);
+		const SBuildingData* pData = manGameData.GetBuildingData(buildingName.c_str());
+		Gdiplus::Bitmap* bm = ManipulatorSystem.GetResource().GetIcon(Utility::EngineToUnicode(pData->m_iconName));
 		g.DrawImage(bm, 0, 0, 0, 0, bm->GetWidth(), bm->GetHeight(), Gdiplus::UnitPixel);
 	}
 
@@ -121,10 +121,10 @@ void DialogGameDataBuilding::OnPaint()
 		if(!_GetCurBuildingName(curSelBuilding))
 			return;
 		
-		const SBuildingData* pBuildingData = manGameData.GetBuildingData(m_curEditRace, curSelBuilding);
+		const SBuildingData* pBuildingData = manGameData.GetBuildingData(curSelBuilding);
 		for (int i=0; i<MAX_ABILITY_SLOT; ++i)
 		{
-			const SAbilityData* pAbilData = manGameData.GetAbilityData(pBuildingData->m_vecAbilities[i]);
+			const SAbilityData* pAbilData = manGameData.GetAbilityData(Utility::EngineToUnicode(pBuildingData->m_vecAbilities[i]));
 			if(!pAbilData)
 				continue;
 
@@ -135,7 +135,7 @@ void DialogGameDataBuilding::OnPaint()
 			RECT rc;
 			pSlot->GetClientRect(&rc);
 			Gdiplus::Rect rcDest(0, 0, rc.right-rc.left, rc.bottom-rc.top);
-			Gdiplus::Bitmap* bm = ManipulatorSystem.GetResource().GetIcon(pAbilData->m_iconName);
+			Gdiplus::Bitmap* bm = ManipulatorSystem.GetResource().GetIcon(Utility::EngineToUnicode(pAbilData->m_iconName));
 			Gdiplus::Graphics graphSlot(pSlot->GetDC()->GetSafeHdc());
 			graphSlot.DrawImage(bm, rcDest, 0, 0, bm->GetWidth(), bm->GetHeight(), Gdiplus::UnitPixel);
 		}	
@@ -162,11 +162,11 @@ void DialogGameDataBuilding::OnSlotSelChange()
 	_GetCurSlot(iCurSlot);
 
 	ManipulatorGameData& manGameData = ManipulatorSystem.GetGameData();
-	const SBuildingData* pBuildingData = manGameData.GetBuildingData(m_curEditRace, curSelBuilding);
+	const SBuildingData* pBuildingData = manGameData.GetBuildingData(curSelBuilding);
 	const auto abilNames = ManipulatorSystem.GetGameData().GetAbilityNames();
 
 	CComboBox* pAbilList = (CComboBox*)GetDlgItem(IDC_DlgBuilding_AbilList);
-	auto iter = std::find(abilNames.begin(), abilNames.end(), pBuildingData->m_vecAbilities[iCurSlot]);
+	auto iter = std::find(abilNames.begin(), abilNames.end(), Utility::EngineToUnicode(pBuildingData->m_vecAbilities[iCurSlot]));
 	if(iter == abilNames.end())
 	{
 		pAbilList->SetCurSel(0);
@@ -195,8 +195,7 @@ void DialogGameDataBuilding::OnAbilitySelChange()
 	if(!_GetCurAbilityName(curSelAbil))
 		return;
 
-	ManipulatorSystem.GetGameData().SetBuildingAbility(m_curEditRace, curSelBuilding, iCurSlot, 
-		curSelAbil == L"None" ? L"" : curSelAbil);
+	ManipulatorSystem.GetGameData().SetBuildingAbility(curSelBuilding, iCurSlot, curSelAbil == L"None" ? L"" : curSelAbil);
 
 	Invalidate();
 }

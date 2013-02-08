@@ -6,6 +6,7 @@
 #include "ObjectManager.h"
 #include "ObjectBase.h"
 #include "Building.h"
+#include "GameDataDef.h"
 
 
 // #include "PagedGeometry.h"
@@ -98,7 +99,8 @@ void DotSceneLoader::parseDotScene(const STRING &SceneName, const STRING &groupN
 
 void DotSceneLoader::processScene(rapidxml::xml_node<>* XMLRoot)
 {
-    rapidxml::xml_node<>* pElement;
+	using namespace rapidxml;
+    xml_node<>* pElement;
 
 //     // Process environment (?)
 //     pElement = XMLRoot->first_node("environment");
@@ -174,8 +176,25 @@ void DotSceneLoader::processScene(rapidxml::xml_node<>* XMLRoot)
 			if(bIsBuilding)
 			{
 				const STRING strBuildingName = curObjNode->first_attribute("buildingname")->value();
+
 				Building* pBuilding = dynamic_cast<Building*>(pObject);
 				pBuilding->SetBuildingName(strBuildingName);
+
+				//初始化其能力
+				GameDataDefManager& dataMgr = GameDataDefManager::GetSingleton();
+				auto iter = dataMgr.m_buildingData.find(strBuildingName);
+				assert(iter != dataMgr.m_buildingData.end());
+				const SBuildingData& data = iter->second;
+
+				for (int iAbil=0; iAbil<MAX_ABILITY_SLOT; ++iAbil)
+				{
+					const std::string& strAbil = data.m_vecAbilities[iAbil];
+					if (strAbil != "")
+					{
+						const SAbilityData& pAbil = dataMgr.m_abilityData.find(strAbil)->second;
+						pBuilding->SetAbility(iAbil, &pAbil);
+					}
+				}	
 			}
 		}
 		else

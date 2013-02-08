@@ -39,32 +39,32 @@ AIComponent::~AIComponent()
 
 void AIComponent::GiveCommand( const CommandBase& cmd )
 {
-	//停止当前命令
-	if (m_pCurCommand)
-		CancelCurCommand();
-
-	//创建新命令
-	switch (cmd.GetType())
-	{
-	case eCommandType_Move:		m_pCurCommand = new MoveCommand; break;
-	case eCommandType_Attack:	m_pCurCommand = new AttackCommand; break;
-	case eCommandType_Build:	m_pCurCommand = new BuildCommand; break;
-	case eCommandType_Harvest:	m_pCurCommand = new HarvestCommand; break;
-	}
-	m_pCurCommand->Clone(cmd);
-
-	//执行新命令
-	m_pCurCommand->Excute();
+// 	//停止当前命令
+// 	if (m_pCurCommand)
+// 		CancelCurCommand();
+// 
+// 	//创建新命令
+// 	switch (cmd.GetType())
+// 	{
+// 	case eCommandType_Move:		m_pCurCommand = new MoveCommand; break;
+// 	case eCommandType_Attack:	m_pCurCommand = new AttackCommand; break;
+// 	case eCommandType_Build:	m_pCurCommand = new BuildCommand; break;
+// 	case eCommandType_Harvest:	m_pCurCommand = new HarvestCommand; break;
+// 	}
+// 	m_pCurCommand->Clone(cmd);
+// 
+// 	//执行新命令
+// 	m_pCurCommand->Excute();
 }
 
 void AIComponent::CancelCurCommand()
 {
-	if(!m_pCurCommand)
-		return;
-
-	m_pCurCommand->Cancel();
-	delete m_pCurCommand;
-	m_pCurCommand = nullptr;
+// 	if(!m_pCurCommand)
+// 		return;
+// 
+// 	m_pCurCommand->Cancel();
+// 	delete m_pCurCommand;
+// 	m_pCurCommand = nullptr;
 }
 
 void AIComponent::SetState( eUnitState state )

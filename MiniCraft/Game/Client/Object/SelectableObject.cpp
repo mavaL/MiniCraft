@@ -314,6 +314,8 @@ void SelectableObject::SetSelected( bool bSelected )
 	assert(IsRenderableReady());
 
 	m_bSelected = bSelected;
+	OnSelected(bSelected);
+
 	//已创建选中框
 	//效率考虑,不会反复创建销毁它
 	if (m_pSelCircleNode)
@@ -343,8 +345,6 @@ void SelectableObject::SetSelected( bool bSelected )
 		pEntity->setMaterialName("SelectionCircleAlly");
 	else if(type == eObjectType_Resource)
 		pEntity->setMaterialName("SelectionCircleNeutral");
-
-	OnSelected(bSelected);
 }
 
 Ogre::MeshPtr SelectableObject::_CreateSelectionCircleMesh(const Ogre::MeshPtr& objMesh)

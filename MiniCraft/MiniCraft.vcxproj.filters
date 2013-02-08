@@ -250,6 +250,9 @@
     <ClInclude Include="Game\Client\UI\CommandPanel.h">
       <Filter>Client\UI</Filter>
     </ClInclude>
+    <ClInclude Include="Game\Client\GameDataDef.h">
+      <Filter>Client</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game\Core\Application.cpp">
@@ -419,6 +422,9 @@
     </ClCompile>
     <ClCompile Include="Game\Client\UI\CommandPanel.cpp">
       <Filter>Client\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Client\GameDataDef.cpp">
+      <Filter>Client</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

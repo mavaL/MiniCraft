@@ -2,7 +2,7 @@
 #include "GUIManager.h"
 #include "RendererModules\Ogre\CEGUIOgreRenderer.h"
 #include "OgreManager.h"
-#include "CommandPanel.h"
+
 
 using namespace CEGUI;
 
@@ -10,7 +10,6 @@ using namespace CEGUI;
 CGUIManager::CGUIManager(void)
 : m_pRenderer(NULL)
 ,m_pSystem(NULL)
-,m_pCmdPanel(NULL)
 {
 }
 
@@ -55,16 +54,14 @@ bool CGUIManager::Init()
 
 	 m_pRenderer->getDefaultRenderingRoot().clearGeometry(CEGUI::RQ_OVERLAY);
 
-	m_pCmdPanel = new UiCommandPanel;
-	m_pCmdPanel->Init();
+	m_cmdPanel.Init();
 
 	return true;
 }
 
 void CGUIManager::Shutdown()
 {
-	m_pCmdPanel->Destroy();
-	SAFE_DELETE(m_pCmdPanel);
+	m_cmdPanel.Destroy();
 	if (m_pRenderer)
 	{
 		OgreRenderer::destroySystem();
