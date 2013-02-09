@@ -9,15 +9,7 @@
 #define GameDataDef_h__
 
 #include "Singleton.h"
-
-//游戏种族:人族,神族,虫族
-enum eGameRace
-{
-	eGameRace_Terran,
-	//eGameRace_Protoss,
-	eGameRace_Zerg,
-	eGameRace_Count
-};
+#include "GameDefine.h"
 
 //Building相关数据,见RaceBuildingData.xml
 struct SBuildingData
@@ -28,12 +20,11 @@ struct SBuildingData
 	std::vector<std::string>	m_vecAbilities;	//建筑的能力
 };
 
-#define MAX_ABILITY_SLOT	15
-
 //Ability相关数据,见AbilityData.xml
 struct SAbilityData
 {
-	std::string m_iconName;	//图标文件名
+	std::string m_iconName;		//图标文件名
+	float		m_fTimeCost;	//生产所需时间
 };
 
 //设计基于值对象而不是指针,是因为一旦初始化完毕,在程序退出前,就不会去改变了,

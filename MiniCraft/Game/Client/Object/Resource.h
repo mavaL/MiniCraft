@@ -19,11 +19,8 @@ public:
 	Resource():SelectableObject() {}
 	~Resource() {}
 
-	const static STRING sNamePrefix;
-
 public:
 	virtual eObjectType GetType() const { return eObjectType_Resource; }
-	virtual const STRING& GetNamePrefix() const { return sNamePrefix; }
 	virtual void	Update(float dt) {}
 };
 

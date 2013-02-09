@@ -49,8 +49,6 @@ private:
 
 	//获取右击目标点会产生的命令(移动,攻击...)
 	CommandBase* _ComputeCommand(Unit* pUnit, const Ogre::Vector3& targetPos);
-	//从Entity name中抽取出ID,物体命名为例如:EntUnit0
-	int			_GetIDFromName(Ogre::Entity* pEntity) const;
 
 private:
 	bool	m_bQuit;

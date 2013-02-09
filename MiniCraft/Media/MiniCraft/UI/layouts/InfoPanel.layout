@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<GUILayout version="4" >
+    <Window Type="DefaultWindow" Name="InfoPanelFrame" >
+        <Property Name="UnifiedAreaRect" Value="{{0,355},{0,616},{0,900},{0,780}}" />
+        <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+        <!--Property Name="MousePassThroughEnabled"  Value="True" /-->
+        <Window Type="TaharezLook/StaticImage" Name="InfoIcon" >
+        		<Property Name="UnifiedAreaRect" Value="{{0,410},{0,690},{0,486},{0,766}}" />
+            <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+            <Property Name="BackgroundEnabled" Value="false" />
+            <Property Name="FrameEnabled" Value="false" />
+        </Window>
+    </Window>
+</GUILayout>

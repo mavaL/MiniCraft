@@ -2,11 +2,8 @@
 #include "Unit.h"
 #include "GameDefine.h"
 #include "World.h"
-#include "AIComponent.h"
 #include "Command.h"
 
-
-const STRING Unit::sNamePrefix = "EntResource";
 
 //**** Define stuff for the Lua Class ****//
 // Define the Lua ClassName
@@ -33,7 +30,6 @@ const STRING Unit::UNIT_TABLE_NAME	=	"UnitTable";
 
 Unit::Unit()
 :SelectableObject()
-,m_pAI(nullptr)
 ,m_pAnimState(nullptr)
 {
 	//将对象绑定到lua
@@ -47,7 +43,6 @@ Unit::~Unit()
 
 void Unit::Update( float dt )
 {
-	m_pAI->Update(dt);
 }
 
 void Unit::PlayAnimation( const STRING& animName, bool bLoop )
@@ -85,27 +80,27 @@ int Unit::StopAnimation( lua_State* L )
 
 int Unit::SetState( lua_State* L )
 {
-	const eUnitState state = static_cast<eUnitState>(ScriptSystem::GetSingleton().Get_Int(-1));
-	m_pAI->SetState(state);
+// 	const eUnitState state = static_cast<eUnitState>(ScriptSystem::GetSingleton().Get_Int(-1));
+// 	m_pAI->SetState(state);
 
 	return 0;
 }
 
 int Unit::FindPath( lua_State* L )
 {
-	ScriptSystem& system = ScriptSystem::GetSingleton();
-	float x = system.Get_Float(-3);
-	float y = system.Get_Float(-2);
-	float z = system.Get_Float(-1);
-
-	if(m_pAI->FindPath(Ogre::Vector3(x, y, z)))
-	{
-		system.Push_Bool(true);
-	}
-	else
-	{
-		system.Push_Bool(false);
-	}
+// 	ScriptSystem& system = ScriptSystem::GetSingleton();
+// 	float x = system.Get_Float(-3);
+// 	float y = system.Get_Float(-2);
+// 	float z = system.Get_Float(-1);
+// 
+// 	if(m_pAI->FindPath(Ogre::Vector3(x, y, z)))
+// 	{
+// 		system.Push_Bool(true);
+// 	}
+// 	else
+// 	{
+// 		system.Push_Bool(false);
+// 	}
 
 	return 1;
 }
@@ -122,26 +117,26 @@ int Unit::GetDestPosition( lua_State* L )
 
 int Unit::GetCurCommandType( lua_State* L )
 {
-	ScriptSystem::GetSingleton().Push_Int((int)m_pAI->GetCurCommand()->GetType());
+// 	ScriptSystem::GetSingleton().Push_Int((int)m_pAI->GetCurCommand()->GetType());
 
 	return 1;
 }
 
 int Unit::UpdatePathFinding( lua_State* L )
 {
-	const float dt = ScriptSystem::GetSingleton().Get_Float(-1);
-	bool bArrived = false;
-
-	POS curPos = m_pAI->GetAgentPos();
-	World::GetSingleton().ClampToTerrain(curPos);
-
-	m_pSceneNode->lookAt(curPos, Ogre::Node::TS_WORLD/*, Ogre::Vector3::UNIT_Z*/);
-	SetPosition(curPos);
-
-	if (curPos.positionEquals(m_destPos, 0.1f))
-		bArrived = true;
-
-	ScriptSystem::GetSingleton().Push_Bool(bArrived);
+// 	const float dt = ScriptSystem::GetSingleton().Get_Float(-1);
+// 	bool bArrived = false;
+// 
+// 	POS curPos = m_pAI->GetAgentPos();
+// 	World::GetSingleton().ClampToTerrain(curPos);
+// 
+// 	m_pSceneNode->lookAt(curPos, Ogre::Node::TS_WORLD/*, Ogre::Vector3::UNIT_Z*/);
+// 	SetPosition(curPos);
+// 
+// 	if (curPos.positionEquals(m_destPos, 0.1f))
+// 		bArrived = true;
+// 
+// 	ScriptSystem::GetSingleton().Push_Bool(bArrived);
 
 	return 1;
 }

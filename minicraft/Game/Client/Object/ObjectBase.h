@@ -10,31 +10,7 @@
 #define ObjectBase_h__
 
 #include "GameDefine.h"
-#include "OgreStringInterface.h"
-
-///×¢²áOgreStringInterface
-#define DECL_PARAM_COMMAND(name)						\
-class Cmd##name : public Ogre::ParamCommand				\
-{														\
-public:													\
-	STRING doGet(const void* target) const;				\
-	void doSet(void* target, const STRING& val);		\
-};														\
-static Cmd##name	m_sCmd##name;						
-
-#define IMPL_PARAM_COMMAND(classname, cmdname, paramtype)								\
-classname::Cmd##cmdname	classname::m_sCmd##cmdname;										\
-STRING classname::Cmd##cmdname::doGet(const void* target) const							\
-{																						\
-	const classname* obj = static_cast<const classname*>(target);						\
-	return Ogre::StringConverter::toString(obj->Get##cmdname());						\
-}																						\
-																						\
-void classname::Cmd##cmdname::doSet(void* target, const STRING& val)					\
-{																						\
-	classname* obj = static_cast<classname*>(target);									\
-	obj->Set##cmdname(Ogre::StringConverter::parse##paramtype(val));					\
-}																						\
+#include <OgreStringInterface.h>
 
 
 ////////////////////////////////////////////////////
@@ -48,7 +24,6 @@ public:
 public:
 	int					GetID() const { return m_ID; }
 	virtual eObjectType GetType() const = 0;
-	virtual const STRING& GetNamePrefix() const = 0;
 	virtual	void		Update(float dt) = 0;
 
 private:

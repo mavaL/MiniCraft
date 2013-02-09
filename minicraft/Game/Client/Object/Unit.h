@@ -15,8 +15,6 @@
 
 
 struct lua_State;
-class AIComponent;
-
 
 class Unit : public SelectableObject
 {
@@ -29,18 +27,13 @@ public:
 	static Luna<Unit>::RegType methods[];
 
 	const static STRING UNIT_TABLE_NAME;
-	const static STRING sNamePrefix;
 
 public:
 	virtual eObjectType GetType() const { return eObjectType_Unit; }
-	virtual const STRING& GetNamePrefix() const { return sNamePrefix; }
 	virtual void	SetPosition(const POS& pos);
 	virtual void	Update(float dt);
 
 public:
-	void			SetAIComponent(AIComponent* pAI) { m_pAI = pAI; }
-	AIComponent*	GetAIComponent() const { return m_pAI; }
-
 	void			SetDestPos(const Ogre::Vector3& destPos);
 	const Ogre::Vector3& GetDestPos() const	{ return m_destPos; }
 	
@@ -61,7 +54,6 @@ public:
 	int				DetachRes(lua_State* L);
 
 private:
-	AIComponent*		m_pAI;			//AI组件
 	Ogre::Vector3		m_destPos;
 	Ogre::AnimationState* m_pAnimState;	//当前播放动画
 	

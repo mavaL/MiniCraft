@@ -1,7 +1,9 @@
 #include "stdafx.h"
 #include "SelectableObject.h"
 #include "World.h"
-
+#include "AIComponent.h"
+#include "GUIManager.h"
+#include "Command.h"
 
 /** This is ogre-procedural's temporary mesh buffer.
  * It stores all the info needed to build an Ogre Mesh, yet is intented to be more flexible, since
@@ -298,12 +300,13 @@ SelectableObject::SelectableObject()
 ,m_pSelCircleNode(nullptr)
 ,m_bSelected(false)
 {
-
+	m_pAi = new AiComponent(this);
+	memset(m_pAbilitySlots, 0, MAX_ABILITY_SLOT * sizeof(SAbilityData*));
 }
 
 SelectableObject::~SelectableObject()
 {
-
+	SAFE_DELETE(m_pAi);
 }
 
 void SelectableObject::SetSelected( bool bSelected )
@@ -314,7 +317,7 @@ void SelectableObject::SetSelected( bool bSelected )
 	assert(IsRenderableReady());
 
 	m_bSelected = bSelected;
-	OnSelected(bSelected);
+	_OnSelected(bSelected);
 
 	//已创建选中框
 	//效率考虑,不会反复创建销毁它
@@ -462,6 +465,57 @@ void SelectableObject::ReleaseMeshCache()
 	for(auto iter=m_selCircleCache.begin(); iter!=m_selCircleCache.end(); ++iter)
 		(iter->second).setNull();
 	m_selCircleCache.clear();
+}
+
+void SelectableObject::Update( float dt )
+{
+	m_pAi->Update(dt);
+}
+
+void SelectableObject::_OnSelected( bool bSelected )
+{
+	UiCommandPanel* pCmdPanel = CGUIManager::GetSingleton().GetCommandPanel();
+	//更新命令面板
+	if (bSelected)
+	{
+		const auto& selObjs = World::GetSingleton().GetSelectedObjects();
+		//TODO: 多选状态下命令面板应该怎样?
+		if(selObjs.size() > 1)
+			return;
+
+		//设置UI图标
+		for(int i=0; i<MAX_ABILITY_SLOT; ++i)
+		{
+			if(m_pAbilitySlots[i])
+				pCmdPanel->CEGUI_SetAbilitySlot(i, true, m_pAbilitySlots[i]->m_iconName);
+		}
+
+		pCmdPanel->SetActiveObject(this);
+	}
+	else
+	{
+		//清空UI图标
+		for(int i=0; i<MAX_ABILITY_SLOT; ++i)
+		{
+			if(m_pAbilitySlots[i])
+				pCmdPanel->CEGUI_SetAbilitySlot(i, false);
+		}
+
+		pCmdPanel->SetActiveObject(nullptr);
+	}
+}
+
+void SelectableObject::SetAbility( int slotIndex, const SAbilityData* pData )
+{
+	assert(slotIndex>=0 && slotIndex < MAX_ABILITY_SLOT);
+	m_pAbilitySlots[slotIndex] = (SAbilityData*)pData;
+}
+
+void SelectableObject::ExcuteCommand( int slotIndex )
+{
+	assert(slotIndex>=0 && slotIndex < MAX_ABILITY_SLOT && m_pAbilitySlots[slotIndex] != nullptr);
+	CmdProduce* cmd = new CmdProduce(this, m_pAbilitySlots[slotIndex]);
+	m_pAi->GiveCommand(*cmd);
 }
 
 

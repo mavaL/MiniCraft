@@ -6,6 +6,7 @@
 #include "GameDefine.h"
 #include "InputManager.h"
 #include "CommandPanel.h"
+#include "InfoPanel.h"
 
 namespace CEGUI
 {
@@ -34,11 +35,13 @@ public:
 	///获取UI组件
 public:
 	UiCommandPanel*		GetCommandPanel() { return &m_cmdPanel; }
+	UiInfoPanel*		GetInfoPanel()	{ return &m_infoPanel; }
 
 private:
 	CEGUI::OgreRenderer*	m_pRenderer;
 	CEGUI::System*			m_pSystem;
 	UiCommandPanel			m_cmdPanel;
+	UiInfoPanel				m_infoPanel;
 
 	//Hook进渲染事件,绘制自定义数据
 	bool overlayHandler(const CEGUI::EventArgs& args);

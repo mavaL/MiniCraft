@@ -3,7 +3,7 @@
 	filename: 	F:\MiniCraft\MiniCraft\Game\Client\Selectable.h
 	author:		maval
 	
-	purpose:	可选中物体基类.
+	purpose:	可选中物体基类.可选中物体能够拥有技能Command.
 *********************************************************************/
 
 #ifndef SelectableObject_h__
@@ -11,8 +11,9 @@
 
 #include "ObjectBase.h"
 #include "GameDefine.h"
-#include "Ability.h"
+#include "GameDataDef.h"
 
+class AiComponent;
 
 ///该类实现来自OgreProcedural库
 class SelectableObject : public RenderableObject
@@ -22,26 +23,26 @@ public:
 	~SelectableObject();
 
 public:
-	void	SetSelected(bool bSelected);
-	bool	GetSelected() const { return m_bSelected; }
-
+	virtual	void	Update(float dt);
 	//!!在Ogre Root销毁前必须调用
-	static void	ReleaseMeshCache();
+	static void		ReleaseMeshCache();
 
-protected:
-	//子类进行被选中行为的特化
-	virtual	void	OnSelected(bool bSelected) {}
+	void			SetSelected(bool bSelected);
+	bool			GetSelected() const { return m_bSelected; }
+
+	void			SetAbility(int slotIndex, const SAbilityData* pData);
+	void			ExcuteCommand(int slotIndex);
 
 private:
 	Ogre::MeshPtr	_CreateSelectionCircleMesh(const Ogre::MeshPtr& objMesh);
+	void			_OnSelected(bool bSelected);
 
 	typedef std::unordered_map<STRING, Ogre::MeshPtr>	SelectionCircleCache;
 	static SelectionCircleCache	m_selCircleCache;	//cache每种单位的选中框mesh
 	bool						m_bSelected;		//该对象是否被选中
 	Ogre::SceneNode*			m_pSelCircleNode;
-
-	typedef std::vector<Ability>	AbilitySlots;
-	AbilitySlots				m_abilities;		//该物体的能力
+	SAbilityData*				m_pAbilitySlots[MAX_ABILITY_SLOT];
+	AiComponent*				m_pAi;
 };
 
 #endif // SelectableObject_h__

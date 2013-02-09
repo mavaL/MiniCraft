@@ -204,9 +204,8 @@ bool CBattleState::OnInputSys_MouseReleased( const OIS::MouseEvent& arg, OIS::Mo
 		//单位设置为选中状态
 		for(size_t i=0; i<vecResult.size(); ++i)
 		{
-			Ogre::Entity* pEntity = dynamic_cast<Ogre::Entity*>(vecResult[i]);
-			int unitID = _GetIDFromName(pEntity);
-			world.SetObjectSelected(unitID);
+			Object* pObj = Ogre::any_cast<Object*>(vecResult[i]->getUserAny());
+			world.SetObjectSelected(pObj->GetID());
 		}
 	}
 
@@ -302,22 +301,4 @@ CommandBase* CBattleState::_ComputeCommand( Unit* pUnit, const Ogre::Vector3& ta
 // 	}
 
 	return pCmd;
-}
-
-int CBattleState::_GetIDFromName( Ogre::Entity* pEntity ) const
-{
-	static int UNIT_NAME_PREFIX_LEN = strlen(Unit::sNamePrefix.c_str());
-	static int BUILDING_NAME_PREFIX_LEN = strlen(Building::sNamePrefix.c_str());
-	static int RESOURCE_NAME_PREFIX_LEN = strlen(Resource::sNamePrefix.c_str());
-
-	STRING strID;
-	const STRING& entName = pEntity->getName();
-	if(entName.substr(0, UNIT_NAME_PREFIX_LEN) == Unit::sNamePrefix)
-		strID = entName.substr(UNIT_NAME_PREFIX_LEN);
-	else if(entName.substr(0, BUILDING_NAME_PREFIX_LEN) == Building::sNamePrefix)
-		strID = entName.substr(BUILDING_NAME_PREFIX_LEN);
-	else if(entName.substr(0, RESOURCE_NAME_PREFIX_LEN) == Resource::sNamePrefix)
-		strID = entName.substr(RESOURCE_NAME_PREFIX_LEN);
-
-	return Ogre::StringConverter::parseInt(strID, -1);
 }

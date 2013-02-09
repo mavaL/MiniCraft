@@ -253,6 +253,9 @@
     <ClInclude Include="Game\Client\GameDataDef.h">
       <Filter>Client</Filter>
     </ClInclude>
+    <ClInclude Include="Game\Client\UI\InfoPanel.h">
+      <Filter>Client\UI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game\Core\Application.cpp">
@@ -425,6 +428,9 @@
     </ClCompile>
     <ClCompile Include="Game\Client\GameDataDef.cpp">
       <Filter>Client</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Client\UI\InfoPanel.cpp">
+      <Filter>Client\UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

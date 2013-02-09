@@ -122,6 +122,7 @@
     <ClInclude Include="Game\Client\Object\Unit.h" />
     <ClInclude Include="Game\Client\stdafx.h" />
     <ClInclude Include="Game\Client\UI\CommandPanel.h" />
+    <ClInclude Include="Game\Client\UI\InfoPanel.h" />
     <ClInclude Include="Game\Client\World.h" />
     <ClInclude Include="Game\Core\Application.h" />
     <ClInclude Include="Game\Core\AppState.h" />
@@ -255,6 +256,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Game\Client\UI\CommandPanel.cpp" />
+    <ClCompile Include="Game\Client\UI\InfoPanel.cpp" />
     <ClCompile Include="Game\Client\World.cpp" />
     <ClCompile Include="Game\Core\Application.cpp" />
     <ClCompile Include="Game\Core\AppStateManager.cpp" />

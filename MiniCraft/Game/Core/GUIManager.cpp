@@ -55,6 +55,10 @@ bool CGUIManager::Init()
 	 m_pRenderer->getDefaultRenderingRoot().clearGeometry(CEGUI::RQ_OVERLAY);
 
 	m_cmdPanel.Init();
+	m_infoPanel.Init();
+	WindowManager& wndMgr = WindowManager::getSingleton();
+	m_pSystem->setGUISheet(wndMgr.getWindow("Root"));
+	m_pSystem->getGUISheet()->addChildWindow(wndMgr.getWindow("InfoPanelFrame"));
 
 	return true;
 }
@@ -62,6 +66,7 @@ bool CGUIManager::Init()
 void CGUIManager::Shutdown()
 {
 	m_cmdPanel.Destroy();
+	m_infoPanel.Destroy();
 	if (m_pRenderer)
 	{
 		OgreRenderer::destroySystem();

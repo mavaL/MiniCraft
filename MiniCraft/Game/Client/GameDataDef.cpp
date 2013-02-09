@@ -60,7 +60,8 @@ void GameDataDefManager::LoadAllData()
 	{
 		const char* szName = pNode->first_attribute("name")->value();
 		const char* szIcon = pNode->first_attribute("iconname")->value();
-		SAbilityData data = { szIcon };
+		const char* szTimeCost = pNode->first_attribute("timecost")->value();
+		SAbilityData data = { szIcon, Ogre::StringConverter::parseReal(szTimeCost) };
 		m_abilityData.insert(std::make_pair(szName, data));
 
 		pNode = pNode->next_sibling();
