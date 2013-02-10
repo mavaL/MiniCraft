@@ -64,8 +64,10 @@ void UiInfoPanel::Update()
 	{
 		Building* pObj = dynamic_cast<Building*>(m_pActiveObject);
 		float fProgress = pObj->GetCurProgress();
+		SUnitData* unitData = &GameDataDefManager::GetSingleton().m_unitData[m_pActiveObject->GetActiveAbility()->m_param];
+
 		ShowInfoIcon(true, m_pActiveObject->GetActiveAbility()->m_iconName);
-		SetProgress(fProgress / m_pActiveObject->GetActiveAbility()->m_fTimeCost);
+		SetProgress(fProgress / unitData->m_fTimeCost);
 		ShowProgressQueue(true);
 	}
 }

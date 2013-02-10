@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<Root>
+  <Unit name="Scv" timecost="5" meshname="Marine_0.mesh"/>
+  <Unit name="Marine" timecost="25" meshname="Marine_0.mesh"/>
+  <Unit name="Drone" timecost="17" meshname="Zergling_0.mesh"/>
+  <Unit name="Zergling" timecost="24" meshname="Zergling_0.mesh"/>
+</Root>
+

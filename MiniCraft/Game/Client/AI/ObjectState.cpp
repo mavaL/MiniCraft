@@ -4,6 +4,7 @@
 #include "SelectableObject.h"
 #include "AIComponent.h"
 #include "Building.h"
+#include "ObjectManager.h"
 
 void StateProduce::Enter(SelectableObject* pOwner)
 {
@@ -16,14 +17,18 @@ void StateProduce::Update( float dt, SelectableObject* pOwner )
 {
 	Building* pObj = dynamic_cast<Building*>(pOwner);
 	float fProgress = pObj->GetCurProgress();
-	float fTotalTime = pOwner->GetActiveAbility()->m_fTimeCost;
+	SUnitData* unitData = &GameDataDefManager::GetSingleton().m_unitData[pOwner->GetActiveAbility()->m_param];
 
-	if (fProgress > fTotalTime)
+	if (fProgress > unitData->m_fTimeCost)
 	{
 		//生产完毕
 		pOwner->GetAiComponent()->SetCurState(eObjectState_Idle);
+		//鲜活的单位出炉了
+		Object* pUnit = ObjectManager::GetSingleton().CreateObject(eObjectType_Unit);
+		pUnit->setParameter("meshname", unitData->m_meshname);
+		pUnit->setParameter("position", /*pOwner->getParameter("position")*/"0 0 0");
+		pUnit->setParameter("scale", "5 5 5");
 	}
-
 }
 
 void StateProduce::Exit(SelectableObject* pOwner)

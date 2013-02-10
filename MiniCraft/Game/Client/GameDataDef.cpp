@@ -60,14 +60,47 @@ void GameDataDefManager::LoadAllData()
 	{
 		const char* szName = pNode->first_attribute("name")->value();
 		const char* szIcon = pNode->first_attribute("iconname")->value();
-		const char* szTimeCost = pNode->first_attribute("timecost")->value();
-		SAbilityData data = { szIcon, Ogre::StringConverter::parseReal(szTimeCost) };
+		const char* szType = pNode->first_attribute("type")->value();
+
+		eCommandType type;
+		STRING param("");
+		if (strcmp(szType, "produce") == 0)
+		{
+			type = eCommandType_Produce;
+			param = pNode->first_attribute("extraparam")->value();
+		}
+		else
+		{
+			assert(0);
+		}
+
+		SAbilityData data = { szIcon, type, param };
 		m_abilityData.insert(std::make_pair(szName, data));
 
 		pNode = pNode->next_sibling();
 	}
 	free(szData);
 	XMLDoc.clear();
+
+	///¼ÓÔØUnitÅä±í
+ 	stream = Ogre::ResourceGroupManager::getSingleton().openResource("UnitTable.xml", "Config");
+ 	szData = strdup(stream->getAsString().c_str());
+
+	XMLDoc.parse<0>(szData);
+ 	pNode = XMLDoc.first_node("Root")->first_node("Unit");
+ 	while(pNode)
+ 	{
+ 		const char* szName = pNode->first_attribute("name")->value();
+ 		const char* szTimeCost = pNode->first_attribute("timecost")->value();
+		const char* szMeshName = pNode->first_attribute("meshname")->value();
+
+ 		SUnitData data = { Ogre::StringConverter::parseReal(szTimeCost), szMeshName };
+ 		m_unitData.insert(std::make_pair(szName, data));
+ 
+ 		pNode = pNode->next_sibling();
+ 	}
+ 	free(szData);
+ 	XMLDoc.clear();
 }
 
 void GameDataDefManager::SaveAllData()

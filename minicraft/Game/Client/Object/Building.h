@@ -24,11 +24,9 @@ public:
 	virtual void	_OnCommandFinished(eCommandType cmd);
 
 public:
-	void			SetBuildingName(const STRING& name) { m_buildingName = name; }
 	float			GetCurProgress() const { return m_fCurProgress; }
 
 private:
-	STRING			m_buildingName;
 	float			m_fCurProgress;		//若当前正在生产状态,已生产的时间
 };
 

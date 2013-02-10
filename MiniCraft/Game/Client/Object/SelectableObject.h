@@ -30,6 +30,7 @@ public:
 	//!!在Ogre Root销毁前必须调用
 	static void		ReleaseMeshCache();
 
+	void			SetAiComponent(AiComponent* pAi)	{ m_pAi = pAi; }
 	AiComponent*	GetAiComponent()	{ return m_pAi; }
 	void			SetSelected(bool bSelected);
 	bool			GetSelected() const { return m_bSelected; }

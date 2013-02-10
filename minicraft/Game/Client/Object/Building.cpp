@@ -6,10 +6,9 @@
 
 Building::Building()
 :SelectableObject()
-,m_buildingName("")
 ,m_fCurProgress(0)
 {
-	
+	SetAiComponent(new AiComponent(this));
 }
 
 void Building::Update( float dt )

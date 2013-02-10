@@ -11,17 +11,23 @@ Object::Object()
 ///////////////////////////////////////////////////////////////////////
 IMPL_PARAM_COMMAND(RenderableObject, Position, Vector3)
 IMPL_PARAM_COMMAND(RenderableObject, Orientation, Quaternion)
+IMPL_PARAM_COMMAND(RenderableObject, Scale, Vector3)
+IMPL_PARAM_COMMAND_STR(RenderableObject, MeshName)
 
 RenderableObject::RenderableObject()
 :Object()
 ,m_pEntity(nullptr)
 ,m_pSceneNode(nullptr)
 ,m_bRenderableReady(false)
+,m_meshname("")
 {
 	if (createParamDictionary("RenderableObject"))
 	{
 		Ogre::ParamDictionary* dict = getParamDictionary();
 		dict->addParameter(Ogre::ParameterDef("position", "position of the object", Ogre::PT_VECTOR3), &m_sCmdPosition);
+		dict->addParameter(Ogre::ParameterDef("orientation", "orientation of the object", Ogre::PT_QUATERNION), &m_sCmdOrientation);
+		dict->addParameter(Ogre::ParameterDef("scale", "scale of the object", Ogre::PT_VECTOR3), &m_sCmdScale);
+		dict->addParameter(Ogre::ParameterDef("meshname", "mesh file name of the object", Ogre::PT_STRING), &m_sCmdMeshName);
 	}
 }
 
@@ -71,12 +77,14 @@ void RenderableObject::DestroyRenderInstance()
 	m_bRenderableReady = false;
 }
 
-void RenderableObject::CreateRenderInstance( const STRING& meshname )
+void RenderableObject::CreateRenderInstance()
 {
+	assert(!m_meshname.empty());
+
 	DestroyRenderInstance();
 
 	m_pSceneNode = g_Environment.m_pSceneMgr->getRootSceneNode()->createChildSceneNode();
-	m_pEntity = g_Environment.m_pSceneMgr->createEntity(meshname);
+	m_pEntity = g_Environment.m_pSceneMgr->createEntity(m_meshname);
 	m_pEntity->setQueryFlags(eQueryType_SelectableObject);
 	m_pSceneNode->attachObject(m_pEntity);
 
@@ -84,6 +92,12 @@ void RenderableObject::CreateRenderInstance( const STRING& meshname )
 	m_pEntity->setUserAny(Ogre::Any(static_cast<Object*>(this)));
 
 	m_bRenderableReady = true;
+}
+
+void RenderableObject::SetMeshName( const STRING& meshname )
+{
+	m_meshname = meshname;
+	CreateRenderInstance();
 }
 
 

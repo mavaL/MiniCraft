@@ -35,24 +35,24 @@ private:
 ///可渲染对象基类
 class RenderableObject : public Object
 {
-	/// Command object
 	DECL_PARAM_COMMAND(Position)
 	DECL_PARAM_COMMAND(Orientation)
+	DECL_PARAM_COMMAND(MeshName)
+	DECL_PARAM_COMMAND(Scale)
 
 public:
 	RenderableObject();
 	~RenderableObject() {}
 
 public:
-	virtual	void	CreateRenderInstance(const STRING& meshname);
-	virtual void	DestroyRenderInstance();
-	virtual void	SetPosition(const POS& pos);
-	virtual void	SetOrientation(const ORIENT& orient);
-	virtual void	SetScale(const SCALE& scale);
-
-public:
+	void			SetMeshName(const STRING& meshname);
+	const STRING&	GetMeshName() const { return m_meshname; }
+	void			CreateRenderInstance();
+	void			DestroyRenderInstance();
 	bool			IsRenderableReady() const { return m_bRenderableReady; }
-
+	void			SetPosition(const POS& pos);
+	void			SetOrientation(const ORIENT& orient);
+	void			SetScale(const SCALE& scale);
 	const POS&		GetPosition() const;
 	const ORIENT&	GetOrientation() const;
 	const SCALE&	GetScale() const;
@@ -61,6 +61,7 @@ protected:
 	Ogre::Entity*		m_pEntity;
 	Ogre::SceneNode*	m_pSceneNode;
 	bool				m_bRenderableReady;	//渲染实例是否已创建
+	STRING				m_meshname;
 };
 
 

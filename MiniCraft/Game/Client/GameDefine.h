@@ -48,20 +48,34 @@ class Cmd##name : public Ogre::ParamCommand				\
 public:													\
 	STRING doGet(const void* target) const;				\
 	void doSet(void* target, const STRING& val);		\
-	};														\
-	static Cmd##name	m_sCmd##name;						
+};														\
+static Cmd##name	m_sCmd##name;						
 
 #define IMPL_PARAM_COMMAND(classname, cmdname, paramtype)								\
-	classname::Cmd##cmdname	classname::m_sCmd##cmdname;										\
-	STRING classname::Cmd##cmdname::doGet(const void* target) const							\
+classname::Cmd##cmdname	classname::m_sCmd##cmdname;										\
+STRING classname::Cmd##cmdname::doGet(const void* target) const							\
 {																						\
 	const classname* obj = static_cast<const classname*>(target);						\
 	return Ogre::StringConverter::toString(obj->Get##cmdname());						\
-	}																						\
-	\
-	void classname::Cmd##cmdname::doSet(void* target, const STRING& val)					\
+}																						\
+																						\
+void classname::Cmd##cmdname::doSet(void* target, const STRING& val)					\
 {																						\
 	classname* obj = static_cast<classname*>(target);									\
 	obj->Set##cmdname(Ogre::StringConverter::parse##paramtype(val));					\
-	}																						\
+}
+
+#define IMPL_PARAM_COMMAND_STR(classname, cmdname)										\
+classname::Cmd##cmdname	classname::m_sCmd##cmdname;										\
+STRING classname::Cmd##cmdname::doGet(const void* target) const							\
+{																						\
+	const classname* obj = static_cast<const classname*>(target);						\
+	return obj->Get##cmdname();															\
+}																						\
+																						\
+void classname::Cmd##cmdname::doSet(void* target, const STRING& val)					\
+{																						\
+	classname* obj = static_cast<classname*>(target);									\
+	obj->Set##cmdname(val);																\
+}
 

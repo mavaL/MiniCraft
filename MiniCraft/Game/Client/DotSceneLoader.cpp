@@ -157,29 +157,25 @@ void DotSceneLoader::processScene(rapidxml::xml_node<>* XMLRoot)
 	for (size_t i=0; i< count; ++i)
 	{
 		const STRING strMesh = curObjNode->first_attribute("meshname")->value();
-		const Ogre::Vector3 pos = Ogre::StringConverter::parseVector3(curObjNode->first_attribute("position")->value());
-		const Ogre::Quaternion orient = Ogre::StringConverter::parseQuaternion(curObjNode->first_attribute("orientation")->value());
-		const Ogre::Vector3 scale = Ogre::StringConverter::parseVector3(curObjNode->first_attribute("scale")->value());
+		const STRING strPos = curObjNode->first_attribute("position")->value();
+		const STRING strOrient = curObjNode->first_attribute("orientation")->value();
+		const STRING strScale = curObjNode->first_attribute("scale")->value();
 		const bool bIsBuilding = Ogre::StringConverter::parseBool(curObjNode->first_attribute("isbuilding")->value());
 		const bool bIsResource = Ogre::StringConverter::parseBool(curObjNode->first_attribute("isresource")->value());
 
 		if (bIsBuilding || bIsResource)
 		{
 			//建筑物对象
-			RenderableObject* pObject = dynamic_cast<RenderableObject*>(ObjectManager::GetSingleton().
-				CreateObject(bIsBuilding ? eObjectType_Building : eObjectType_Resource));
-			pObject->CreateRenderInstance(strMesh);
-			pObject->SetScale(scale);
-			pObject->SetOrientation(orient);
-			pObject->SetPosition(pos);
+			Object* pObject = ObjectManager::GetSingleton().CreateObject(bIsBuilding ? eObjectType_Building : eObjectType_Resource);
+			pObject->setParameter("meshname", strMesh);
+			pObject->setParameter("position", strPos);
+			pObject->setParameter("orientation", strOrient);
+			pObject->setParameter("scale", strScale);
 
 			if(bIsBuilding)
 			{
 				const STRING strBuildingName = curObjNode->first_attribute("buildingname")->value();
-
 				Building* pBuilding = dynamic_cast<Building*>(pObject);
-				pBuilding->SetBuildingName(strBuildingName);
-
 				//初始化其能力
 				GameDataDefManager& dataMgr = GameDataDefManager::GetSingleton();
 				auto iter = dataMgr.m_buildingData.find(strBuildingName);
@@ -199,6 +195,10 @@ void DotSceneLoader::processScene(rapidxml::xml_node<>* XMLRoot)
 		}
 		else
 		{
+			const Ogre::Vector3 pos = Ogre::StringConverter::parseVector3(strPos);
+			const Ogre::Quaternion orient = Ogre::StringConverter::parseQuaternion(strOrient);
+			const Ogre::Vector3 scale = Ogre::StringConverter::parseVector3(strScale);
+
 			//非游戏对象,不纳入逻辑管理,只渲染
 			Ogre::Entity* entity = mSceneMgr->createEntity(strMesh);
 			assert(entity);

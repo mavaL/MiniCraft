@@ -3,7 +3,9 @@
 #include "GameDefine.h"
 #include "World.h"
 #include "Command.h"
+#include "AIComponent.h"
 
+IMPL_PARAM_COMMAND(Unit, ClampPos, Vector3)
 
 //**** Define stuff for the Lua Class ****//
 // Define the Lua ClassName
@@ -32,8 +34,16 @@ Unit::Unit()
 :SelectableObject()
 ,m_pAnimState(nullptr)
 {
+	SetAiComponent(new AiComponent(this));
+
+	if (createParamDictionary("Unit"))
+	{
+		Ogre::ParamDictionary* dict = getParamDictionary();
+		dict->addParameter(Ogre::ParameterDef("clamppos", "clamp position of the object", Ogre::PT_VECTOR3), &m_sCmdClampPos);
+	}
+
 	//将对象绑定到lua
-	ScriptSystem::GetSingleton().BindObjectToLua<Unit>(UNIT_TABLE_NAME, GetID(), this);
+	//ScriptSystem::GetSingleton().BindObjectToLua<Unit>(UNIT_TABLE_NAME, GetID(), this);
 }
 
 Unit::~Unit()
@@ -190,7 +200,7 @@ void Unit::SetDestPos( const Ogre::Vector3& destPos )
 	m_destPos = adjustPos;
 }
 
-void Unit::SetPosition( const POS& pos )
+void Unit::SetClampPos( const POS& pos )
 {
 	Ogre::Vector3 adjustPos = pos;
 	bool bSucceed = World::GetSingleton().ClampPosToNavMesh(adjustPos);

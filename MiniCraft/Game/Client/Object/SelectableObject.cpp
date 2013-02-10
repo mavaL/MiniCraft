@@ -299,8 +299,8 @@ SelectableObject::SelectableObject()
 ,m_pSelCircleNode(nullptr)
 ,m_bSelected(false)
 ,m_pActiveAbility(nullptr)
+,m_pAi(nullptr)
 {
-	m_pAi = new AiComponent(this);
 	memset(m_pAbilitySlots, 0, MAX_ABILITY_SLOT * sizeof(SAbilityData*));
 }
 

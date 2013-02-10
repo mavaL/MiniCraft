@@ -18,6 +18,7 @@ struct lua_State;
 
 class Unit : public SelectableObject
 {
+	DECL_PARAM_COMMAND(ClampPos)
 public:
 	Unit();
 	Unit(lua_State* L) {}
@@ -30,15 +31,16 @@ public:
 
 public:
 	virtual eObjectType GetType() const { return eObjectType_Unit; }
-	virtual void	SetPosition(const POS& pos);
 	virtual void	Update(float dt);
 
 public:
 	void			SetDestPos(const Ogre::Vector3& destPos);
 	const Ogre::Vector3& GetDestPos() const	{ return m_destPos; }
-	
 	void			PlayAnimation(const STRING& animName, bool bLoop);
 	void			StopAnimation();
+	//设置单位坐标,内部会自动夹持到地形上
+	void			SetClampPos(const POS& pos);
+	const POS&		GetClampPos() const { return GetPosition(); }
 
 public:
 	///lua导出函数
