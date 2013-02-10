@@ -4,12 +4,15 @@
     <Window Type="DefaultWindow" Name="InfoPanelFrame" >
         <Property Name="UnifiedAreaRect" Value="{{0,355},{0,616},{0,900},{0,780}}" />
         <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
-        <!--Property Name="MousePassThroughEnabled"  Value="True" /-->
         <Window Type="TaharezLook/StaticImage" Name="InfoIcon" >
-        		<Property Name="UnifiedAreaRect" Value="{{0,410},{0,690},{0,486},{0,766}}" />
+        		<Property Name="UnifiedAreaRect" Value="{{0,30},{0,50},{0,106},{0,126}}" />
             <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
             <Property Name="BackgroundEnabled" Value="false" />
             <Property Name="FrameEnabled" Value="false" />
         </Window>
+         <Window Type="TaharezLook/ProgressBar" Name="InfoPanel/ProgressBar" >
+                <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+                <Property Name="UnifiedAreaRect" Value="{{0,145},{0,84},{0,345},{0,109}}" />
+            </Window>
     </Window>
 </GUILayout>

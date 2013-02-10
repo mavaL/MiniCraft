@@ -3,49 +3,31 @@
 	filename: 	F:\MiniCraft\MiniCraft\Game\Client\AI\Command.h
 	author:		maval
 	
-	purpose:	命令类体系.
+	purpose:	命令类.
 *********************************************************************/
 
 #ifndef Command_h__
 #define Command_h__
 
-#include "GameDefine.h"
+class SelectableObject;
 
-class Object;
-struct SAbilityData;
+enum eCommandType
+{
+	eCommandType_Produce		//生产命令
+};
 
-class CommandBase
+class Command
 {
 public:
-	CommandBase(Object* pOwner, const SAbilityData* param);
-	virtual ~CommandBase() {}
+	Command(eCommandType type, SelectableObject* pOwner);
+	~Command() {}
 
 public:
-	virtual void	Excute() const = 0;
+	void	Excute();
 
 protected:
-	Object*				m_pOwner;
-	const SAbilityData*	m_pParam;
-};
-
-///操作命令:移动,攻击等
-class CmdOperation : public CommandBase
-{
-public:
-	CmdOperation(Object* pOwner, const SAbilityData* param);
-
-public:
-	virtual void	Excute() const {}
-};
-
-///生产命令
-class CmdProduce : public CommandBase
-{
-public:
-	CmdProduce(Object* pOwner, const SAbilityData* param);
-
-public:
-	virtual void	Excute() const;
+	SelectableObject*	m_pOwner;
+	eCommandType		m_type;
 };
 
 #endif // Command_h__

@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "AIComponent.h"
 #include "OgreDetourCrowd.h"
-#include "Command.h"
 #include "World.h"
 #include "SelectableObject.h"
 
@@ -9,20 +8,26 @@
 AiComponent::AiComponent(SelectableObject* pOwner)
 :m_pOwner(pOwner)
 ,m_bExecuting(false)
-//,m_pCurState(nullptr)
+,m_curState(eObjectState_Idle)
 {
-	
+	m_states.push_back(new StateIdle);
+	m_states.push_back(new StateProduce);
 }
 
-void AiComponent::GiveCommand( const CommandBase& cmd )
+AiComponent::~AiComponent()
 {
-	//if (!m_bExecuting && m_cmdQueue.empty())
+	for(size_t i=0; i<m_states.size(); ++i)
+		delete m_states[i];
+	m_states.clear();
+}
+
+void AiComponent::GiveCommand( Command& cmd )
+{
+	if(m_cmdQueue.size() < MAX_COMMAND_QUEUE_LEN)
 	{
 		cmd.Excute();
-		m_bExecuting = true;
+		m_cmdQueue.push_back(cmd);
 	}
-	if(m_cmdQueue.size() < MAX_COMMAND_QUEUE_LEN)
-		m_cmdQueue.push_back(&cmd);
 }
 
 // void AiComponent::CancelCurCommand()
@@ -35,33 +40,24 @@ void AiComponent::GiveCommand( const CommandBase& cmd )
 // // 	m_pCurCommand = nullptr;
 // }
 // 
-// void AiComponent::SetState( eUnitState state )
-// {
-// // 	//退出当前状态
-// // 	if(m_pCurState)
-// // 	{
-// // 		m_pCurState->Exit();
-// // 		delete m_pCurState;
-// // 	}
-// // 	//创建新状态
-// // 	switch (state)
-// // 	{
-// // 	case eUnitState_Idle:		m_pCurState = new IdleState(this); break;
-// // 	case eUnitState_Move:		m_pCurState = new MoveState(this); break;
-// // 	case eUnitState_Attack:		m_pCurState = new AttackState(this); break;
-// // 	case eUnitState_Build:		m_pCurState = new BuildState(this); break;
-// // 	case eUnitState_Collect:	m_pCurState = new CollectResState(this); break;
-// // 	case eUnitState_Return:		m_pCurState = new ReturnResState(this); break;
-// // 	default:					assert(0);
-// // 	}
-// // 
-// // 	m_pCurState->Enter();
-// }
+void AiComponent::SetCurState(eObjectState state)
+{
+ 	//退出当前状态
+ 	m_states[m_curState]->Exit(m_pOwner);
+	//进入新状态
+ 	m_states[state]->Enter(m_pOwner);
+	m_curState = state;
+}
 
 void AiComponent::Update( float dt )
 {
+	m_states[m_curState]->Update(dt, m_pOwner);
+}
 
-	//m_pCurState->Update(dt);
+void AiComponent::_OnCommandFinished()
+{
+	//将该命令从命令队列中移除
+	m_cmdQueue.pop_front();
 }
 
 //////////////////////////////////////////////////////////////////////////////

@@ -3,7 +3,6 @@
 #include "World.h"
 #include "AIComponent.h"
 #include "GUIManager.h"
-#include "Command.h"
 
 /** This is ogre-procedural's temporary mesh buffer.
  * It stores all the info needed to build an Ogre Mesh, yet is intented to be more flexible, since
@@ -299,6 +298,7 @@ SelectableObject::SelectableObject()
 :RenderableObject()
 ,m_pSelCircleNode(nullptr)
 ,m_bSelected(false)
+,m_pActiveAbility(nullptr)
 {
 	m_pAi = new AiComponent(this);
 	memset(m_pAbilitySlots, 0, MAX_ABILITY_SLOT * sizeof(SAbilityData*));
@@ -475,6 +475,7 @@ void SelectableObject::Update( float dt )
 void SelectableObject::_OnSelected( bool bSelected )
 {
 	UiCommandPanel* pCmdPanel = CGUIManager::GetSingleton().GetCommandPanel();
+	UiInfoPanel*	pInfoPanel = CGUIManager::GetSingleton().GetInfoPanel();
 	//¸üÐÂÃüÁîÃæ°å
 	if (bSelected)
 	{
@@ -491,6 +492,7 @@ void SelectableObject::_OnSelected( bool bSelected )
 		}
 
 		pCmdPanel->SetActiveObject(this);
+		pInfoPanel->SetActiveObject(this);
 	}
 	else
 	{
@@ -502,6 +504,7 @@ void SelectableObject::_OnSelected( bool bSelected )
 		}
 
 		pCmdPanel->SetActiveObject(nullptr);
+		pInfoPanel->SetActiveObject(this);
 	}
 }
 
@@ -511,11 +514,8 @@ void SelectableObject::SetAbility( int slotIndex, const SAbilityData* pData )
 	m_pAbilitySlots[slotIndex] = (SAbilityData*)pData;
 }
 
-void SelectableObject::ExcuteCommand( int slotIndex )
+void SelectableObject::_OnCommandFinished(eCommandType cmd)
 {
-	assert(slotIndex>=0 && slotIndex < MAX_ABILITY_SLOT && m_pAbilitySlots[slotIndex] != nullptr);
-	CmdProduce* cmd = new CmdProduce(this, m_pAbilitySlots[slotIndex]);
-	m_pAi->GiveCommand(*cmd);
+	m_pAi->_OnCommandFinished();
 }
-
 

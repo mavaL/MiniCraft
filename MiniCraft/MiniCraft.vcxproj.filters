@@ -139,9 +139,6 @@
     <ClInclude Include="Game\Client\AI\Command.h">
       <Filter>Client\AI</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Client\AI\UnitState.h">
-      <Filter>Client\AI</Filter>
-    </ClInclude>
     <ClInclude Include="Game\Client\AI\AIComponent.h">
       <Filter>Client\AI</Filter>
     </ClInclude>
@@ -256,6 +253,9 @@
     <ClInclude Include="Game\Client\UI\InfoPanel.h">
       <Filter>Client\UI</Filter>
     </ClInclude>
+    <ClInclude Include="Game\Client\AI\ObjectState.h">
+      <Filter>Client\AI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game\Core\Application.cpp">
@@ -310,9 +310,6 @@
       <Filter>Client\Object</Filter>
     </ClCompile>
     <ClCompile Include="Game\Client\AI\Command.cpp">
-      <Filter>Client\AI</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Client\AI\UnitState.cpp">
       <Filter>Client\AI</Filter>
     </ClCompile>
     <ClCompile Include="Game\Client\AI\AIComponent.cpp">
@@ -432,10 +429,8 @@
     <ClCompile Include="Game\Client\UI\InfoPanel.cpp">
       <Filter>Client\UI</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="UnitState.lua">
-      <Filter>资源文件</Filter>
-    </None>
+    <ClCompile Include="Game\Client\AI\ObjectState.cpp">
+      <Filter>Client\AI</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

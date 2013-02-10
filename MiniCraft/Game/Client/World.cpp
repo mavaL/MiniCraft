@@ -200,6 +200,8 @@ void World::Update(float dt)
 	m_pDetourCrowd->updateTick(dt);
 
 	ObjectManager::GetSingleton().UpdateAll(dt);
+
+	CGUIManager::GetSingleton().GetInfoPanel()->Update();
 }
 
 bool World::ClampPosToNavMesh( Ogre::Vector3& wPos )

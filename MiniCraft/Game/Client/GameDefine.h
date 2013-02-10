@@ -13,7 +13,7 @@ typedef Ogre::Vector2		FLOAT2;
 const		std::string		SCENE_MANAGER_NAME	=	"DefaultSceneMgr";
 const		float			SCENE_VERSION		=	0.2f;	//当前.scene版本号,注意与编辑器同步
 const		int				MAX_ABILITY_SLOT	=	15;		//命令面板技能槽个数
-const		int				MAX_COMMAND_QUEUE_LEN	=	6;	//命令队列最大长度
+const		int				MAX_COMMAND_QUEUE_LEN	=	1;	//命令队列最大长度
 
 //游戏种族:人族,神族,虫族
 enum eGameRace

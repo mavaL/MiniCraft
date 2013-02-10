@@ -12,6 +12,7 @@
 #include "ObjectBase.h"
 #include "GameDefine.h"
 #include "GameDataDef.h"
+#include "Command.h"
 
 class AiComponent;
 
@@ -24,15 +25,18 @@ public:
 
 public:
 	virtual	void	Update(float dt);
+	//当前命令完成,接到通知
+	virtual void	_OnCommandFinished(eCommandType cmd);
 	//!!在Ogre Root销毁前必须调用
 	static void		ReleaseMeshCache();
 
+	AiComponent*	GetAiComponent()	{ return m_pAi; }
 	void			SetSelected(bool bSelected);
 	bool			GetSelected() const { return m_bSelected; }
-
 	void			SetAbility(int slotIndex, const SAbilityData* pData);
-	void			ExcuteCommand(int slotIndex);
-
+	void			SetActiveAbility(int slotIndex) { m_pActiveAbility = m_pAbilitySlots[slotIndex]; } 
+	const SAbilityData*	GetActiveAbility() const { return m_pActiveAbility; }
+	
 private:
 	Ogre::MeshPtr	_CreateSelectionCircleMesh(const Ogre::MeshPtr& objMesh);
 	void			_OnSelected(bool bSelected);
@@ -43,6 +47,7 @@ private:
 	Ogre::SceneNode*			m_pSelCircleNode;
 	SAbilityData*				m_pAbilitySlots[MAX_ABILITY_SLOT];
 	AiComponent*				m_pAi;
+	const SAbilityData*			m_pActiveAbility;
 };
 
 #endif // SelectableObject_h__

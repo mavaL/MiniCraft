@@ -14,6 +14,8 @@ namespace CEGUI
 	class Window;
 }
 
+class SelectableObject;
+
 class UiInfoPanel
 {
 public:
@@ -22,11 +24,17 @@ public:
 
 public:
 	void	Init();
+	void	Update();
 	void	Destroy();
-	void	SetInfoIcon(const std::string& imgName);
+	void	ShowInfoIcon(bool bShow, const std::string& imgName = "");
+	void	ShowProgressQueue(bool bShow);
+	void	SetProgress(float fPercent);
+	void	SetVisible(bool bVisible);
+	void	SetActiveObject(SelectableObject* pObj) { m_pActiveObject = pObj; }
 
 private:
 	CEGUI::Window*		m_pLayout;
+	SelectableObject*	m_pActiveObject;
 };
 
 

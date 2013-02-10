@@ -1,28 +1,22 @@
 #include "stdafx.h"
 #include "Command.h"
-#include "GameDataDef.h"
-#include "GUIManager.h"
+#include "SelectableObject.h"
+#include "AIComponent.h"
 
-CommandBase::CommandBase(Object* pOwner, const SAbilityData* param)
-:m_pOwner(pOwner)
-,m_pParam(param)
+
+Command::Command(eCommandType type, SelectableObject* pOwner)
+:m_type(type)
+,m_pOwner(pOwner)
 {
 
 }
 
-//////////////////////////////////////////////////////////////////////
-CmdOperation::CmdOperation(Object* pOwner, const SAbilityData* param)
-:CommandBase(pOwner, param)
-{	
+void Command::Excute()
+{
+	switch (m_type)
+	{
+	case eCommandType_Produce: m_pOwner->GetAiComponent()->SetCurState(eObjectState_Produce); break;
+	default: assert(0);
+	}
 }
 
-//////////////////////////////////////////////////////////////////////
-CmdProduce::CmdProduce(Object* pOwner, const SAbilityData* param)
-:CommandBase(pOwner, param)
-{
-}
-
-void CmdProduce::Excute() const
-{
-	CGUIManager::GetSingleton().GetInfoPanel()->SetInfoIcon(m_pParam->m_iconName);
-}

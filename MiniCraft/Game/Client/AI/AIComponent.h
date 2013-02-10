@@ -9,13 +9,12 @@
 #ifndef AIComponent_h__
 #define AIComponent_h__
 
-#include "UnitState.h"
 #include "GameDefine.h"
+#include "Command.h"
+#include "ObjectState.h"
 
-class CommandBase;
 class OgreRecast;
 class OgreDetourCrowd;
-class UnitState;
 struct dtCrowdAgent;
 class SelectableObject;
 
@@ -24,22 +23,27 @@ class AiComponent
 {
 public:
 	AiComponent(SelectableObject* pOwner);
-	virtual ~AiComponent() {}
+	virtual ~AiComponent();
 
 public:
 	void			Update(float dt);
-	void			GiveCommand(const CommandBase& cmd);
+	void			GiveCommand(Command& cmd);
+	void			SetCurState(eObjectState state);
+	eObjectState	GetCurState() const { return m_curState; }
 
-// 	void			SetState(eUnitState state);
-// 	UnitState*		GetCurState() const { return m_pCurState; }
+	//当前命令完成,接到通知
+	void			_OnCommandFinished();
 
 protected:
-	SelectableObject*	m_pOwner;		//该组件所属对象
+	typedef std::vector<ObjectState*>	StateLib;
+	StateLib			m_states;		//状态容器.每类状态只生成一个实例存储在这里供取用
 
-	typedef std::list<const CommandBase*> CommandQueue;
+	typedef std::list<Command> CommandQueue;
 	CommandQueue		m_cmdQueue;		//命令队列
+
+	SelectableObject*	m_pOwner;		//该组件所属对象
 	bool				m_bExecuting;	//当前是否在执行命令
-	//UnitState*			m_pCurState;	//单位当前状态(逻辑状态机)
+	eObjectState		m_curState;		//对象当前所处状态
 };
 
 ///寻路AI组件

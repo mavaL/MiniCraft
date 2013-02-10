@@ -5,7 +5,6 @@
 #include "OgreManager.h"
 #include "Unit.h"
 #include "Command.h"
-#include "UnitState.h"
 #include "World.h"
 #include "Building.h"
 #include "Resource.h"

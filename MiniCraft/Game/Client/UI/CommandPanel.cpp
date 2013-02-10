@@ -3,6 +3,8 @@
 #include "GUIManager.h"
 #include "GameDataDef.h"
 #include "SelectableObject.h"
+#include "Command.h"
+#include "AIComponent.h"
 
 using namespace CEGUI;
 
@@ -70,6 +72,7 @@ template<int Slot>
 bool UiCommandPanel::CEGUI_OnCommandBtnClicked( const CEGUI::EventArgs& e )
 {
 	assert(m_pActiveObj);
-	m_pActiveObj->ExcuteCommand(Slot);
+	m_pActiveObj->SetActiveAbility(Slot);
+	m_pActiveObj->GetAiComponent()->GiveCommand(Command(eCommandType_Produce, m_pActiveObj));
 	return true;
 }
