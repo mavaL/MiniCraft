@@ -26,7 +26,7 @@ public:
 	void	Init();
 	void	Update();
 	void	Destroy();
-	void	ShowInfoIcon(bool bShow, const std::string& imgName = "");
+	void	ShowInfoIcon(bool bShow, const std::string& imgSetName = "", const std::string& imgName = "");
 	void	ShowProgressQueue(bool bShow);
 	void	SetProgress(float fPercent);
 	void	SetVisible(bool bVisible);

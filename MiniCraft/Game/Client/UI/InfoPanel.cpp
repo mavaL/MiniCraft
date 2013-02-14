@@ -28,12 +28,13 @@ void UiInfoPanel::Destroy()
 	m_pLayout = nullptr;
 }
 
-void UiInfoPanel::ShowInfoIcon( bool bShow, const std::string& imgName )
+void UiInfoPanel::ShowInfoIcon( bool bShow, const std::string& imgSetName, const std::string& imgName )
 {
 	Window* wnd = m_pLayout->getChild("InfoIcon");
 	STRING prop("set:");
+	prop += imgSetName;
+	prop += " image:";
 	prop += imgName;
-	prop += " image:full_image";
 	wnd->setProperty("Image", prop);
 	wnd->setVisible(bShow);
 }
@@ -50,7 +51,8 @@ void UiInfoPanel::SetProgress( float fPercent )
 
 void UiInfoPanel::SetVisible( bool bVisible )
 {
-	ShowInfoIcon(bVisible);
+	Window* wnd = m_pLayout->getChild("InfoIcon");
+	wnd->setVisible(bVisible);
 	ShowProgressQueue(bVisible);
 }
 
@@ -66,7 +68,7 @@ void UiInfoPanel::Update()
 		float fProgress = pObj->GetCurProgress();
 		SUnitData* unitData = &GameDataDefManager::GetSingleton().m_unitData[m_pActiveObject->GetActiveAbility()->m_param];
 
-		ShowInfoIcon(true, m_pActiveObject->GetActiveAbility()->m_iconName);
+		ShowInfoIcon(true, m_pActiveObject->GetActiveAbility()->m_iconName, "full_image");
 		SetProgress(fProgress / unitData->m_fTimeCost);
 		ShowProgressQueue(true);
 	}

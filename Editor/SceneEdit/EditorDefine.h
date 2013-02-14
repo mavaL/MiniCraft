@@ -10,8 +10,6 @@
 #define EditorDefine_h__
 
 
-const	float	SCENE_VERSION	=	0.2f;	//当前.scene版本号,注意与客户端同步
-const	std::string	SCENE_MANAGER_NAME	=	"DefaultSceneMgr";//默认场景管理器名字
 const	int		EDITOR_CLIENT_W			=	1024;
 const	int		EDITOR_CLIENT_H			=	768;
 const	int		FPS					=	100;

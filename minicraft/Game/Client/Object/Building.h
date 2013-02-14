@@ -14,6 +14,7 @@
 
 class Building : public SelectableObject
 {
+	DECL_PARAM_COMMAND(RallyPoint)
 public:
 	Building();
 	~Building() {}
@@ -24,10 +25,17 @@ public:
 	virtual void	_OnCommandFinished(eCommandType cmd);
 
 public:
+	void			Init(const STRING& name, const POS& pos, const ORIENT& orient, const SCALE& scale);
+	const STRING&	GetBuildingName() const {return m_buildingName; } 
 	float			GetCurProgress() const { return m_fCurProgress; }
+	void			SetRallyPoint(const POS& pos) { m_rallyPoint = pos; }
+	const POS&		GetRallyPoint() const	{ return m_rallyPoint; }
+
 
 private:
+	STRING			m_buildingName;		//单位名称,如:barrack...
 	float			m_fCurProgress;		//若当前正在生产状态,已生产的时间
+	POS				m_rallyPoint;		//集结点
 };
 
 

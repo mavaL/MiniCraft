@@ -1,8 +1,9 @@
 #include "stdafx.h"
 #include "AIComponent.h"
-#include "OgreDetourCrowd.h"
-#include "World.h"
 #include "SelectableObject.h"
+#include "World.h"
+#include "Unit.h"
+#include "PathComponent.h"
 
 
 AiComponent::AiComponent(SelectableObject* pOwner)
@@ -12,6 +13,8 @@ AiComponent::AiComponent(SelectableObject* pOwner)
 {
 	m_states.push_back(new StateIdle);
 	m_states.push_back(new StateProduce);
+	m_states.push_back(new StateMove);
+	m_states.push_back(new StateTargeting);
 }
 
 AiComponent::~AiComponent()
@@ -21,25 +24,28 @@ AiComponent::~AiComponent()
 	m_states.clear();
 }
 
-void AiComponent::GiveCommand( Command& cmd )
+void AiComponent::GiveCommand( Command& cmd, bool bForceExecute )
 {
-	if(m_cmdQueue.size() < MAX_COMMAND_QUEUE_LEN)
+	if (bForceExecute && !m_cmdQueue.empty())
 	{
+		CancelCurCommand();
+		cmd.Excute();
+		m_cmdQueue.push_front(cmd);
+	}
+	else if(m_cmdQueue.size() < MAX_COMMAND_QUEUE_LEN)
+	{
+		//TODO: 只有MAX_COMMAND_QUEUE_LEN=1时这里逻辑才对
 		cmd.Excute();
 		m_cmdQueue.push_back(cmd);
 	}
 }
 
-// void AiComponent::CancelCurCommand()
-// {
-// // 	if(!m_pCurCommand)
-// // 		return;
-// // 
-// // 	m_pCurCommand->Cancel();
-// // 	delete m_pCurCommand;
-// // 	m_pCurCommand = nullptr;
-// }
-// 
+void AiComponent::CancelCurCommand()
+{
+	if(!m_cmdQueue.empty())
+		m_pOwner->_OnCommandFinished(GetCurCommand());
+}
+
 void AiComponent::SetCurState(eObjectState state)
 {
  	//退出当前状态
@@ -57,63 +63,45 @@ void AiComponent::Update( float dt )
 void AiComponent::_OnCommandFinished()
 {
 	//将该命令从命令队列中移除
-	m_cmdQueue.pop_front();
+	if(!m_cmdQueue.empty())
+		m_cmdQueue.pop_front();
 }
 
-//////////////////////////////////////////////////////////////////////////////
-AiPath::AiPath( SelectableObject* pOwner )
-:AiComponent(pOwner)
-,m_pRecast(g_Environment.m_pRecast)
-,m_pDetour(g_Environment.m_pCrowd)
-,m_pAgent(nullptr)
-,m_agentID(-1)
+void AiComponent::GiveCommand( const OIS::MouseEvent& arg )
 {
-	//确定渲染实例已创建
-	assert(pOwner->IsRenderableReady());
+	World& world = World::GetSingleton();
 
-	//创建寻路对象
-	m_agentID = m_pDetour->addAgent(pOwner->GetPosition());
-	m_pAgent = const_cast<dtCrowdAgent*>(m_pDetour->getAgent(m_agentID));
-	assert(m_pAgent);
+	float screenX = arg.state.X.abs / (float)arg.state.width;
+	float screenY = arg.state.Y.abs / (float)arg.state.height;
+	
+	POS intersectPos;
+	if(!world.GetTerrainIntersectPos(FLOAT2(screenX, screenY), intersectPos))
+		return;
 
-	// 	//将单位缩放至适于Recast库
-	// 	float scale = m_pDetour->getAgentRadius() / m_pEntity->getBoundingRadius();
-	// 	m_pNode->setScale(scale, scale, scale);
-}
+// 	Ogre::MovableObject* pMovable = world.GetRaySceneQueryResult(ray, eQueryType_SelectableObject);
+// 	SelectableObject* pHitObj = nullptr;
+// 	if(pMovable)
+// 	{
+// 		pHitObj = Ogre::any_cast<SelectableObject*>(pMovable->getUserAny());
+// 		assert(pHitObj);
+// 	}
 
-AiPath::~AiPath()
-{
-	if(m_pAgent)
+	if(m_pOwner->GetType() == eObjectType_Unit)
 	{
-		m_pDetour->removeAgent(m_agentID);
-		m_pAgent = nullptr;
+		//进行寻路尝试
+		Unit* pUnit = dynamic_cast<Unit*>(m_pOwner);
+		World::GetSingleton().ClampPosToNavMesh(intersectPos);
+
+		if(pUnit->GetPathComponent()->FindPath(intersectPos, true))
+		{
+			pUnit->SetDestPos(intersectPos);
+			//执行寻路命令
+			pUnit->GetAiComponent()->GiveCommand(Command(eCommandType_Move, pUnit), true);
+		}
 	}
 }
 
-bool AiPath::FindPath( const Ogre::Vector3& destPos )
+eCommandType AiComponent::GetCurCommand() const
 {
-	Ogre::Vector3 beginPos(m_pOwner->GetPosition());
-	World::GetSingleton().ClampPosToNavMesh(beginPos);
-
-	Ogre::Vector3 adjustDestPos(destPos);
-	World::GetSingleton().ClampPosToNavMesh(adjustDestPos);
-
-	int ret = m_pRecast->FindPath(beginPos, adjustDestPos, 1, 1);
-	if( ret >= 0)
-	{
-		m_pDetour->setMoveTarget(m_agentID, adjustDestPos, false);
-		//绘制路径线
-		m_pRecast->CreateRecastPathLine(1);
-	}
-
-	return ret >= 0;
-}
-
-const POS AiPath::GetAgentPos() const
-{
-	assert(m_pAgent->active);
-	POS agentPos;
-	OgreRecast::FloatAToOgreVect3(m_pAgent->npos, agentPos);
-
-	return agentPos;
+	return m_cmdQueue.front().GetType();
 }

@@ -8,6 +8,7 @@
 #include "World.h"
 #include "Building.h"
 #include "Resource.h"
+#include "AIComponent.h"
 
 
 std::string CBattleState::StateName = "BattleState";
@@ -79,6 +80,11 @@ void CBattleState::resume()
 
 void CBattleState::exit()
 {
+	CInputManager& InputMgr = CInputManager::GetSingleton();
+	InputMgr.UnbindMouseMove(eInputEventPriority_default);
+	InputMgr.UnbindMousePressed(eInputEventPriority_default);
+	InputMgr.UnbindMouseRelease(eInputEventPriority_default);
+
 	World::GetSingleton().Shutdown();
 	SAFE_DELETE(m_pSelectionQuad);
 	m_pQuadNode = nullptr;
@@ -120,13 +126,9 @@ bool CBattleState::OnInputSys_MousePressed( const OIS::MouseEvent& arg, OIS::Mou
 
 	float screenX = arg.state.X.abs / (float)arg.state.width;
 	float screenY = arg.state.Y.abs / (float)arg.state.height;
-	Ogre::Ray ray;
-	world.GetCamera()->getCameraToViewportRay(screenX, screenY, &ray);
 
-	Ogre::Plane floor(Ogre::Vector3::UNIT_Y, 0);
-	auto result = ray.intersects(floor);
-	//检测拾取射线是否与游戏区域相交
-	if (!result.first)
+	POS intersectPos;
+	if(!world.GetTerrainIntersectPos(FLOAT2(screenX, screenY), intersectPos))
 		return true;
 
 	if(id == OIS::MB_Left)
@@ -139,20 +141,15 @@ bool CBattleState::OnInputSys_MousePressed( const OIS::MouseEvent& arg, OIS::Mou
 		m_pQuadNode->setVisible(true);
 
 		m_LBDownScreenPos = Ogre::Vector2(screenX, screenY);
-		m_LBDownPos = ray.getPoint(result.second);
+		m_LBDownPos = intersectPos;
 		m_bLBDown = true;
 	}
-// 	else if (id == OIS::MB_Right)
-// 	{
-// 		const SelectedContainer& selectedUnits = world.GetSelectedObjects();
-// 		for (size_t i=0; i<selectedUnits.size(); ++i)
-// 		{
-// 			CommandBase* pCmd = _ComputeCommand(selectedUnits[i], ray.getPoint(result.second));
-// 			if(pCmd)
-// 				selectedUnits[i]->GiveCommand(*pCmd);
-// 			delete pCmd;
-// 		}
-// 	}        
+	else if (id == OIS::MB_Right)
+	{
+		const SelectedContainer& selectedUnits = world.GetSelectedObjects();
+		if(!selectedUnits.empty())
+			selectedUnits[0]->GetAiComponent()->GiveCommand(arg);
+	}        
 
 	return true;
 }
@@ -161,6 +158,8 @@ bool CBattleState::OnInputSys_MouseReleased( const OIS::MouseEvent& arg, OIS::Mo
 {
 	if (id == OIS::MB_Left)
 	{
+		m_bLBDown = false;
+
 		World& world = World::GetSingleton();
 		world.ClearSelectedState();
 		m_pQuadNode->setVisible(false);
@@ -170,19 +169,13 @@ bool CBattleState::OnInputSys_MouseReleased( const OIS::MouseEvent& arg, OIS::Mo
 		Ogre::Ray ray;
 		world.GetCamera()->getCameraToViewportRay(screenX, screenY, &ray);
 
-		Ogre::Plane floor(Ogre::Vector3::UNIT_Y, 0);
-		auto result = ray.intersects(floor);
-		//检测拾取射线是否与游戏区域相交
-		if (!result.first)
-		{
-			m_bLBDown = false;
+		POS intersectPos;
+		if(!world.GetTerrainIntersectPos(FLOAT2(screenX, screenY), intersectPos))
 			return true;
-		}
 		
 		std::vector<Ogre::MovableObject*> vecResult;
 		//鼠标拖动小于阕值时,进行射线查询,使得结果更准确
-		Ogre::Vector3 mouseUpPos(ray.getPoint(result.second));
-		if(mouseUpPos.positionEquals(m_LBDownPos, 0.1f))
+		if(intersectPos.positionEquals(m_LBDownPos, 0.1f))
 		{
 			Ogre::MovableObject* pObject = world.GetRaySceneQueryResult(ray, eQueryType_SelectableObject);
 			if (pObject)
@@ -192,18 +185,24 @@ bool CBattleState::OnInputSys_MouseReleased( const OIS::MouseEvent& arg, OIS::Mo
 		{
 			//建立查询包围盒
 			Ogre::AxisAlignedBox aabb;
-			aabb.setMinimum(std::min(m_LBDownPos.x, mouseUpPos.x), std::min(m_LBDownPos.y, mouseUpPos.y), 
-				std::min(m_LBDownPos.z, mouseUpPos.z));
-			aabb.setMaximum(std::max(m_LBDownPos.x, mouseUpPos.x), std::max(m_LBDownPos.y + 100, mouseUpPos.y + 100),
-				std::max(m_LBDownPos.z, mouseUpPos.z));
+			aabb.setMinimum(std::min(m_LBDownPos.x, intersectPos.x), std::min(m_LBDownPos.y, intersectPos.y), 
+				std::min(m_LBDownPos.z, intersectPos.z));
+			aabb.setMaximum(std::max(m_LBDownPos.x, intersectPos.x), std::max(m_LBDownPos.y + 100, intersectPos.y + 100),
+				std::max(m_LBDownPos.z, intersectPos.z));
 
 			world.GetAABBSceneQueryResult(aabb, vecResult, eQueryType_SelectableObject);
 		}
 
 		//单位设置为选中状态
-		for(size_t i=0; i<vecResult.size(); ++i)
+		//TODO: 目前只支持单个选中
+// 		for(size_t i=0; i<vecResult.size(); ++i)
+// 		{
+// 			Object* pObj = Ogre::any_cast<Object*>(vecResult[i]->getUserAny());
+// 			world.SetObjectSelected(pObj->GetID());
+// 		}
+		if (!vecResult.empty())
 		{
-			Object* pObj = Ogre::any_cast<Object*>(vecResult[i]->getUserAny());
+			SelectableObject* pObj = Ogre::any_cast<SelectableObject*>(vecResult[0]->getUserAny());
 			world.SetObjectSelected(pObj->GetID());
 		}
 	}
@@ -272,10 +271,10 @@ bool CBattleState::OnInputSys_KeyReleased( const OIS::KeyEvent& arg )
 	return true;
 }
 
-CommandBase* CBattleState::_ComputeCommand( Unit* pUnit, const Ogre::Vector3& targetPos )
-{
-	CommandBase* pCmd = nullptr;
-
+// CommandBase* CBattleState::_ComputeCommand( Unit* pUnit, const Ogre::Vector3& targetPos )
+// {
+// 	CommandBase* pCmd = nullptr;
+// 
 // 	//检测是否目标点超出了游戏地图
 // 	//TODO:后面很有可能加入Map类,相关数据和操作封装进去
 // 	if(targetPos.x < -50 || targetPos.x > 50 || targetPos.z < -50 || targetPos.z > 50)
@@ -298,6 +297,6 @@ CommandBase* CBattleState::_ComputeCommand( Unit* pUnit, const Ogre::Vector3& ta
 // 		//执行移动命令
 // 		pCmd = new MoveCommand(pUnit, adjustPos);
 // 	}
-
-	return pCmd;
-}
+// 
+// 	return pCmd;
+// }

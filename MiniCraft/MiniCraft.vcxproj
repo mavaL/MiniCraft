@@ -108,6 +108,7 @@
     <ClInclude Include="Game\Client\AI\AIComponent.h" />
     <ClInclude Include="Game\Client\AI\Command.h" />
     <ClInclude Include="Game\Client\AI\ObjectState.h" />
+    <ClInclude Include="Game\Client\AI\PathComponent.h" />
     <ClInclude Include="Game\Client\BattleState.h" />
     <ClInclude Include="Game\Client\DotSceneLoader.h" />
     <ClInclude Include="Game\Client\GameDataDef.h" />
@@ -241,6 +242,7 @@
     <ClCompile Include="Game\Client\AI\AIComponent.cpp" />
     <ClCompile Include="Game\Client\AI\Command.cpp" />
     <ClCompile Include="Game\Client\AI\ObjectState.cpp" />
+    <ClCompile Include="Game\Client\AI\PathComponent.cpp" />
     <ClCompile Include="Game\Client\BattleState.cpp" />
     <ClCompile Include="Game\Client\DotSceneLoader.cpp" />
     <ClCompile Include="Game\Client\GameDataDef.cpp" />

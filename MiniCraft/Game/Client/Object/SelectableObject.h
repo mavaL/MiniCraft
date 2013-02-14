@@ -25,8 +25,11 @@ public:
 
 public:
 	virtual	void	Update(float dt);
+	virtual void	CreateRenderInstance();
 	//当前命令完成,接到通知
 	virtual void	_OnCommandFinished(eCommandType cmd);
+
+public:
 	//!!在Ogre Root销毁前必须调用
 	static void		ReleaseMeshCache();
 

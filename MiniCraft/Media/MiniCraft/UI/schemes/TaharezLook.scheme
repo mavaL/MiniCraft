@@ -10,6 +10,7 @@
 	<Imageset Filename="ZergFrameNormal.imageset" />
 	<Imageset Filename="ZergFrameHighlight.imageset" />
 	<Imageset Filename="CommandEmpty.imageset" />
+	<Imageset Filename="CommandMove.imageset" />
 	<Font Filename="DejaVuSans-10.font" />
 	<LookNFeel Filename="TaharezLook.looknfeel" />
 	<WindowRendererSet Filename="CEGUIFalagardWRBase" />

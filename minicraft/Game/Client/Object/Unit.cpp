@@ -4,8 +4,11 @@
 #include "World.h"
 #include "Command.h"
 #include "AIComponent.h"
+#include "PathComponent.h"
 
 IMPL_PARAM_COMMAND(Unit, ClampPos, Vector3)
+IMPL_PARAM_COMMAND(Unit, NeedMove, Bool)
+IMPL_PARAM_COMMAND_STR(Unit, UnitName)
 
 //**** Define stuff for the Lua Class ****//
 // Define the Lua ClassName
@@ -33,14 +36,14 @@ const STRING Unit::UNIT_TABLE_NAME	=	"UnitTable";
 Unit::Unit()
 :SelectableObject()
 ,m_pAnimState(nullptr)
+,m_unitName(Ogre::StringUtil::BLANK)
+,m_pPath(nullptr)
+,m_bPosChanged(false)
 {
-	SetAiComponent(new AiComponent(this));
-
-	if (createParamDictionary("Unit"))
-	{
-		Ogre::ParamDictionary* dict = getParamDictionary();
-		dict->addParameter(Ogre::ParameterDef("clamppos", "clamp position of the object", Ogre::PT_VECTOR3), &m_sCmdClampPos);
-	}
+	Ogre::ParamDictionary* dict = getParamDictionary();
+	dict->addParameter(Ogre::ParameterDef("clamppos", "clamp position of the object", Ogre::PT_VECTOR3), &m_sCmdClampPos);
+	dict->addParameter(Ogre::ParameterDef("unitName", "logic representation of the unit", Ogre::PT_STRING), &m_sCmdUnitName);
+	dict->addParameter(Ogre::ParameterDef("needmove", "whether the unit should transfer to move state directly", Ogre::PT_BOOL), &m_sCmdNeedMove);
 
 	//将对象绑定到lua
 	//ScriptSystem::GetSingleton().BindObjectToLua<Unit>(UNIT_TABLE_NAME, GetID(), this);
@@ -53,12 +56,19 @@ Unit::~Unit()
 
 void Unit::Update( float dt )
 {
+	if(m_pAnimState)
+		m_pAnimState->addTime(dt);
+
+	__super::Update(dt);
 }
 
-void Unit::PlayAnimation( const STRING& animName, bool bLoop )
+void Unit::PlayAnimation( eAnimation type, bool bLoop )
 {
 	//停止当前动画
 	StopAnimation();
+
+	SUnitData* pUnitData = &GameDataDefManager::GetSingleton().m_unitData[m_unitName];
+	const STRING& animName = (pUnitData->m_anims)[type];
 
 	m_pAnimState = m_pEntity->getAnimationState(animName);
 	assert(m_pAnimState);
@@ -69,15 +79,18 @@ void Unit::PlayAnimation( const STRING& animName, bool bLoop )
 
 void Unit::StopAnimation()
 {
-	m_pAnimState->setEnabled(false);
-	m_pAnimState = nullptr;
+	if(m_pAnimState)
+	{
+		m_pAnimState->setEnabled(false);
+		m_pAnimState = nullptr;
+	}
 }
 
 int Unit::PlayAnimation( lua_State* L )
 {
-	bool bLoop = ScriptSystem::GetSingleton().Get_Bool(-1);
-	const STRING topAnimName = ScriptSystem::GetSingleton().Get_String(-2);
-	PlayAnimation(topAnimName, bLoop);
+// 	bool bLoop = ScriptSystem::GetSingleton().Get_Bool(-1);
+// 	const STRING topAnimName = ScriptSystem::GetSingleton().Get_String(-2);
+// 	PlayAnimation(topAnimName, bLoop);
 
 	return 0;
 }
@@ -198,6 +211,7 @@ void Unit::SetDestPos( const Ogre::Vector3& destPos )
 	World::GetSingleton().ClampPosToNavMesh(adjustPos);
 	
 	m_destPos = adjustPos;
+	SetNeedMove(true);
 }
 
 void Unit::SetClampPos( const POS& pos )
@@ -208,4 +222,41 @@ void Unit::SetClampPos( const POS& pos )
 	World::GetSingleton().ClampToTerrain(adjustPos);
 
 	__super::SetPosition(adjustPos);
+}
+
+void Unit::_OnCommandFinished( eCommandType cmd )
+{
+	if (cmd == eCommandType_Move)
+	{
+		//停止移动
+		bool bSucceed = m_pPath->StopMove();
+		assert(bSucceed);
+		//SetNeedMove(false);
+	}
+
+	__super::_OnCommandFinished(cmd);
+}
+
+void Unit::SetUnitName( const STRING& name )
+{
+	m_unitName = name;
+
+	GameDataDefManager& dataMgr = GameDataDefManager::GetSingleton();
+	auto iter = dataMgr.m_unitData.find(m_unitName);
+	assert(iter != dataMgr.m_unitData.end());
+	const SUnitData& data = iter->second;
+	
+	//创建渲染实例
+	setParameter("meshname", data.m_meshname);
+
+	//初始化技能
+	for (int iAbil=0; iAbil<MAX_ABILITY_SLOT; ++iAbil)
+	{
+		const std::string& strAbil = data.m_vecAbilities[iAbil];
+		if (strAbil != "")
+		{
+			const SAbilityData& pAbil = dataMgr.m_abilityData.find(strAbil)->second;
+			SetAbility(iAbil, &pAbil);
+		}
+	}	
 }

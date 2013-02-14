@@ -2,8 +2,9 @@
 #define WORLD_H
 
 #include "Singleton.h"
+#include "GameDefine.h"
 
-class Object;
+class SelectableObject;
 class OgreRecast;
 class OgreDetourCrowd;
 
@@ -26,7 +27,7 @@ namespace OgreBites
 	class SdkCameraMan;
 }
 
-typedef	std::vector<Object*>	SelectedContainer;
+typedef	std::vector<SelectableObject*>	SelectedContainer;
 /************************************************************************/
 /*								世界管理器                                */
 /************************************************************************/
@@ -44,7 +45,7 @@ public:
 
 	Ogre::Camera*	GetCamera()	{ return m_pCamera; }
 	const Ogre::AxisAlignedBox&	GetResAABB() const { return m_pGold->getWorldBoundingBox(); }
-	Ogre::Vector3	GetRandomPositionOnNavmesh();
+	POS				GetRandomPositionOnNavmesh();
 
 	void			EnableFreeCamera(bool bEnable);
 	bool			IsFreeCameraEnabled() { return m_bFreeCamMode; }
@@ -57,7 +58,7 @@ public:
 	Ogre::MovableObject*	GetRaySceneQueryResult(const Ogre::Ray& ray, int queryMask = 0xffffffff);
 
 	//尝试调整世界坐标在有效的NavMesh上
-	bool			ClampPosToNavMesh(Ogre::Vector3& wPos);
+	bool			ClampPosToNavMesh(POS& wPos);
 	//设置对象为选中状态
 	void			SetObjectSelected(int ID);
 	//清除所有选中状态
@@ -65,9 +66,11 @@ public:
 
 	const SelectedContainer&	GetSelectedObjects() { return m_vecSelectUnis; }
 	//将给定世界坐标通过射线投射夹持在地形上
-	void			ClampToTerrain(Ogre::Vector3& pos);
+	void			ClampToTerrain(POS& pos);
 	//像一个公告板一样更新控制台UI
 	void			UpdateConsoleUITransform(float dt);
+	//返回相机射线与地形的交点,没相交返回false
+	bool			GetTerrainIntersectPos(const FLOAT2& screenPos, POS& retPt);
 
 private:
 	SelectedContainer			m_vecSelectUnis;	//所有选中单位

@@ -20,12 +20,93 @@ material marine
 			}
 			fragment_program_ref unit_red_ps
 			{
-				param_named TeamColor float4 1 0 0 1
+				param_named TeamColor float4 0 0 1 1
 			}
 
 			texture_unit Map#4
 			{
 				texture marine_diffuse.dds
+				filtering linear linear linear
+			}
+		}
+	}
+}
+
+material scv
+{
+	technique Map#2
+	{
+		pass Map#3
+		{
+			//暂时没有光照
+			lighting off
+
+			vertex_program_ref Ogre/BasicVertexPrograms/AmbientOneTexture
+			{
+				param_named_auto worldViewProj worldviewproj_matrix
+			}
+			fragment_program_ref unit_red_ps
+			{
+				param_named TeamColor float4 0 0 1 1
+			}
+
+			texture_unit Map#4
+			{
+				texture SCV_Diffuse.dds
+				filtering linear linear linear
+			}
+		}
+	}
+}
+
+material drone
+{
+	technique Map#2
+	{
+		pass Map#3
+		{
+			//暂时没有光照
+			lighting off
+
+			vertex_program_ref Ogre/BasicVertexPrograms/AmbientOneTexture
+			{
+				param_named_auto worldViewProj worldviewproj_matrix
+			}
+			fragment_program_ref unit_red_ps
+			{
+				param_named TeamColor float4 1 0 0 1
+			}
+
+			texture_unit Map#4
+			{
+				texture Drone_Diffuse.dds
+				filtering linear linear linear
+			}
+		}
+	}
+}
+
+material zergling
+{
+	technique Map#2
+	{
+		pass Map#3
+		{
+			//暂时没有光照
+			lighting off
+
+			vertex_program_ref Ogre/BasicVertexPrograms/AmbientOneTexture
+			{
+				param_named_auto worldViewProj worldviewproj_matrix
+			}
+			fragment_program_ref unit_red_ps
+			{
+				param_named TeamColor float4 1 0 0 1
+			}
+
+			texture_unit Map#4
+			{
+				texture zergling_diffuse.dds
 				filtering linear linear linear
 			}
 		}

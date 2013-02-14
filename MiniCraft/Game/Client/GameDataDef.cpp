@@ -17,8 +17,9 @@ void GameDataDefManager::LoadAllData()
 		const char* szName = pNode->first_attribute("name")->value();
 		const char* szIcon = pNode->first_attribute("iconname")->value();
 		const char* szMesh = pNode->first_attribute("meshname")->value();
+		const char* szRallyPoint = pNode->first_attribute("rallypoint")->value();
 
-		SBuildingData data = { (eGameRace)-1, szIcon, szMesh };
+		SBuildingData data = { (eGameRace)-1, szIcon, szMesh, Ogre::StringConverter::parseVector3(szRallyPoint) };
 
 		if(strcmp(szRace, "Terran") == 0)
 			data.m_race = eGameRace_Terran;
@@ -27,7 +28,7 @@ void GameDataDefManager::LoadAllData()
 		else
 			assert(0);
 
-		//建筑ability
+		//技能
 		data.m_vecAbilities.resize(MAX_ABILITY_SLOT);
 		for (int i=0; i<MAX_ABILITY_SLOT; ++i)
 			data.m_vecAbilities[i] = "";
@@ -61,18 +62,16 @@ void GameDataDefManager::LoadAllData()
 		const char* szName = pNode->first_attribute("name")->value();
 		const char* szIcon = pNode->first_attribute("iconname")->value();
 		const char* szType = pNode->first_attribute("type")->value();
+		auto attrbParam = pNode->first_attribute("extraparam");
 
-		eCommandType type;
+		std::unordered_map<STRING, eCommandType> mapName;
+		mapName["produce"] = eCommandType_Produce;
+		mapName["move"] = eCommandType_Move;
+
+		eCommandType type = mapName[szType];
 		STRING param("");
-		if (strcmp(szType, "produce") == 0)
-		{
-			type = eCommandType_Produce;
-			param = pNode->first_attribute("extraparam")->value();
-		}
-		else
-		{
-			assert(0);
-		}
+		if(attrbParam)
+			param = attrbParam->value();
 
 		SAbilityData data = { szIcon, type, param };
 		m_abilityData.insert(std::make_pair(szName, data));
@@ -95,8 +94,37 @@ void GameDataDefManager::LoadAllData()
 		const char* szMeshName = pNode->first_attribute("meshname")->value();
 
  		SUnitData data = { Ogre::StringConverter::parseReal(szTimeCost), szMeshName };
- 		m_unitData.insert(std::make_pair(szName, data));
+
+		//动画数据
+		std::unordered_map<STRING, eAnimation> mapName;
+		mapName["Idle"] = eAnimation_Idle;
+		mapName["Move"] = eAnimation_Move;
+
+		rapidxml::xml_node<>* pAnimNode = pNode->first_node("AnimationSet")->first_node("Animation");
+		while(pAnimNode)
+		{
+			const char* szAnimType = pAnimNode->first_attribute("type")->value();
+			const char* szAnimName = pAnimNode->first_attribute("name")->value();
+			data.m_anims.insert(std::make_pair(mapName[szAnimType], szAnimName));
+			pAnimNode = pAnimNode->next_sibling();
+		}
+
+		//技能
+		data.m_vecAbilities.resize(MAX_ABILITY_SLOT);
+		for (int i=0; i<MAX_ABILITY_SLOT; ++i)
+			data.m_vecAbilities[i] = "";
+		rapidxml::xml_node<>* pAbilNode = pNode->first_node("Ability");
+		while(pAbilNode)
+		{
+			const char* szAbilName = pAbilNode->first_attribute("name")->value();
+			const char* szSlotIdx = pAbilNode->first_attribute("slotindex")->value();
+
+			data.m_vecAbilities[Ogre::StringConverter::parseInt(szSlotIdx)] = szAbilName;
+
+			pAbilNode = pAbilNode->next_sibling();
+		}
  
+		m_unitData.insert(std::make_pair(szName, data));
  		pNode = pNode->next_sibling();
  	}
  	free(szData);

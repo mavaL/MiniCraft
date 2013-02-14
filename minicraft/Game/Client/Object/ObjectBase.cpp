@@ -85,11 +85,7 @@ void RenderableObject::CreateRenderInstance()
 
 	m_pSceneNode = g_Environment.m_pSceneMgr->getRootSceneNode()->createChildSceneNode();
 	m_pEntity = g_Environment.m_pSceneMgr->createEntity(m_meshname);
-	m_pEntity->setQueryFlags(eQueryType_SelectableObject);
 	m_pSceneNode->attachObject(m_pEntity);
-
-	//渲染对象与逻辑对象绑定,方便取出通信
-	m_pEntity->setUserAny(Ogre::Any(static_cast<Object*>(this)));
 
 	m_bRenderableReady = true;
 }

@@ -9,12 +9,9 @@
 #ifndef Command_h__
 #define Command_h__
 
-class SelectableObject;
+#include "GameDefine.h"
 
-enum eCommandType
-{
-	eCommandType_Produce		//Éú²úÃüÁî
-};
+class SelectableObject;
 
 class Command
 {
@@ -23,9 +20,10 @@ public:
 	~Command() {}
 
 public:
-	void	Excute();
+	void			Excute();
+	eCommandType	GetType() const { return m_type; }
 
-protected:
+private:
 	SelectableObject*	m_pOwner;
 	eCommandType		m_type;
 };

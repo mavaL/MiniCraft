@@ -488,7 +488,7 @@ void SelectableObject::_OnSelected( bool bSelected )
 		for(int i=0; i<MAX_ABILITY_SLOT; ++i)
 		{
 			if(m_pAbilitySlots[i])
-				pCmdPanel->CEGUI_SetAbilitySlot(i, true, m_pAbilitySlots[i]->m_iconName);
+				pCmdPanel->CEGUI_SetAbilitySlot(i, true, m_pAbilitySlots[i]->m_iconName, "full_image");
 		}
 
 		pCmdPanel->SetActiveObject(this);
@@ -517,5 +517,14 @@ void SelectableObject::SetAbility( int slotIndex, const SAbilityData* pData )
 void SelectableObject::_OnCommandFinished(eCommandType cmd)
 {
 	m_pAi->_OnCommandFinished();
+}
+
+void SelectableObject::CreateRenderInstance()
+{
+	__super::CreateRenderInstance();
+
+	m_pEntity->setQueryFlags(eQueryType_SelectableObject);
+	//渲染对象与逻辑对象绑定,方便取出通信
+	m_pEntity->setUserAny(Ogre::Any(this));
 }
 

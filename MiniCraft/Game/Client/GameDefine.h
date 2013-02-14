@@ -11,7 +11,7 @@ typedef Ogre::Vector2		FLOAT2;
 
 
 const		std::string		SCENE_MANAGER_NAME	=	"DefaultSceneMgr";
-const		float			SCENE_VERSION		=	0.2f;	//当前.scene版本号,注意与编辑器同步
+const		float			SCENE_VERSION		=	0.2f;
 const		int				MAX_ABILITY_SLOT	=	15;		//命令面板技能槽个数
 const		int				MAX_COMMAND_QUEUE_LEN	=	1;	//命令队列最大长度
 
@@ -39,6 +39,13 @@ enum eQueryType
 	eQueryType_Default	=	1<<0,
 	eQueryType_WorldGeometry	=	1<<1,
 	eQueryType_SelectableObject	=	1<<2
+};
+
+//命令
+enum eCommandType
+{
+	eCommandType_Produce,		//生产命令
+	eCommandType_Move			//移动命令
 };
 
 ///注册OgreStringInterface

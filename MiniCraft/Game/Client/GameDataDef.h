@@ -10,7 +10,6 @@
 
 #include "Singleton.h"
 #include "GameDefine.h"
-#include "Command.h"
 
 //Building相关数据,见RaceBuildingData.xml
 struct SBuildingData
@@ -18,7 +17,8 @@ struct SBuildingData
 	eGameRace		m_race;				//所属种族
 	STRING			m_iconName;			//编辑器用到的图标文件名
 	STRING			m_meshname;			//模型文件名
-	std::vector<STRING>	m_vecAbilities;	//建筑的能力
+	POS				m_rallyPoint;		//产兵默认集结点
+	std::vector<STRING>	m_vecAbilities;	//技能
 };
 
 //Ability相关数据,见AbilityData.xml
@@ -29,11 +29,21 @@ struct SAbilityData
 	STRING			m_param;			//附加参数
 };
 
+//单位的可用动画类型
+enum eAnimation
+{
+	eAnimation_Idle,					//休闲动画
+	eAnimation_Move						//移动动画
+};
+
 //Unit配表,见UnitTable.xml
 struct SUnitData
 {
 	float		m_fTimeCost;			//生产所需时间
 	STRING		m_meshname;				//模型文件名
+	typedef std::unordered_map<eAnimation, STRING>	AnimTable;
+	AnimTable	m_anims;				//该单位所有动画的真实名字.因为各模型的导出动画名字不一定一致
+	std::vector<STRING>	m_vecAbilities;	//技能
 };
 
 //设计基于值对象而不是指针,是因为一旦初始化完毕,在程序退出前,就不会去改变了,

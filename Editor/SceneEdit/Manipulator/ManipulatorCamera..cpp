@@ -16,8 +16,8 @@ void ManipulatorCamera::Reset()
 	m_pCamera->setFixedYawAxis(true);
 	m_pCamera->setNearClipDistance(0.1f);
 	m_pCamera->setFarClipDistance(5000);
-	m_pCamera->setPosition(0,20,0);
-	m_pCamera->lookAt(0,0,5);
+	m_pCamera->setPosition(0,30,0);
+	m_pCamera->lookAt(0,0,10);
 	m_pTarget = nullptr;
 	m_type = eCameraType_RTS;
 }

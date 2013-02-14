@@ -25,7 +25,7 @@ public:
 	void	Init();
 	void	Destroy();
 	//设置能力槽图标
-	void	CEGUI_SetAbilitySlot(int slotIndex, bool bEnable, const std::string& imgName = "");
+	void	CEGUI_SetAbilitySlot(int slotIndex, bool bEnable, const std::string& imgSetName = "", const std::string& imgName = "");
 	//设置当前选中物体
 	void	SetActiveObject(SelectableObject* pObject) { m_pActiveObj = pObject; }
 

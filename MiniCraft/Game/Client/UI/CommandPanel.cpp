@@ -48,7 +48,7 @@ void UiCommandPanel::Destroy()
 	m_pLayout = nullptr;
 }
 
-void UiCommandPanel::CEGUI_SetAbilitySlot( int slotIndex, bool bEnable, const std::string& imgName )
+void UiCommandPanel::CEGUI_SetAbilitySlot( int slotIndex, bool bEnable, const std::string& imgSetName, const std::string& imgName )
 {
 	Window* wndFrame = m_pLayout->getChild(slotIndex);
 	Window* wndIcon = wndFrame->getChild(0);
@@ -56,8 +56,9 @@ void UiCommandPanel::CEGUI_SetAbilitySlot( int slotIndex, bool bEnable, const st
 	if (bEnable)
 	{
 		STRING prop("set:");
+		prop += imgSetName;
+		prop += " image:";
 		prop += imgName;
-		prop += " image:full_image";
 		wndIcon->setProperty("Image", prop);
 		wndFrame->setProperty("Alpha", "1.0");
 	}
@@ -73,6 +74,9 @@ bool UiCommandPanel::CEGUI_OnCommandBtnClicked( const CEGUI::EventArgs& e )
 {
 	assert(m_pActiveObj);
 	m_pActiveObj->SetActiveAbility(Slot);
-	m_pActiveObj->GetAiComponent()->GiveCommand(Command(eCommandType_Produce, m_pActiveObj));
+	const SAbilityData* pData = m_pActiveObj->GetActiveAbility();
+	
+	m_pActiveObj->GetAiComponent()->GiveCommand(Command(pData->m_type, m_pActiveObj));
+
 	return true;
 }

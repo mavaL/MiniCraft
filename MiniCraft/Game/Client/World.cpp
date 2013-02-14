@@ -54,8 +54,8 @@ void World::Init()
 	m_cameraMan->setStyle(OgreBites::CS_FREELOOK);
 
 	//RTSËøËÀÊÓ½Ç
-	m_pCamera->setPosition(0, 35, 0);
-	m_pCamera->lookAt(0, 0, 8.75f);
+	m_pCamera->setPosition(0, 30, 0);
+	m_pCamera->lookAt(0, 0, 10);
 
 	GameDataDefManager::GetSingleton().LoadAllData();
 
@@ -71,7 +71,7 @@ void World::Init()
 	recastParams.setAgentMaxSlope(15);
 	recastParams.setAgentHeight(1.5f);
 	recastParams.setAgentMaxClimb(0.5f);
-	recastParams.setAgentRadius(0.6f);
+	recastParams.setAgentRadius(0.4f);
 	recastParams.setEdgeMaxLen(2);
 	recastParams.setEdgeMaxError(1.3f);
 	recastParams.setVertsPerPoly(6);
@@ -345,4 +345,20 @@ void World::UpdateConsoleUITransform(float dt)
 	m_pUISceneNode2->setPosition(1, -0.02f, 0);
 	m_pUISceneNode3->setPosition(1.38f, 0.64f, 0);
 	m_pUISceneNode4->setPosition(1.8f, -0.0f, -0.01f);
+}
+
+bool World::GetTerrainIntersectPos( const FLOAT2& screenPos, POS& retPt )
+{
+	Ogre::Ray ray;
+	m_pCamera->getCameraToViewportRay(screenPos.x, screenPos.y, &ray);
+
+	auto result = m_terrainGroup->rayIntersects(ray);
+
+	if (result.hit)
+	{
+		retPt = result.position;
+		return true;
+	}
+
+	return false;
 }

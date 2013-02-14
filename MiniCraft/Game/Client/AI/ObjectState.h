@@ -12,7 +12,9 @@
 enum eObjectState
 {
 	eObjectState_Idle,			//空闲状态
-	eObjectState_Produce		//生产状态
+	eObjectState_Produce,		//生产状态
+	eObjectState_Move,			//移动状态
+	eObjectState_Targeting		//选择目标状态
 };
 
 class SelectableObject;
@@ -25,9 +27,9 @@ public:
 	virtual ~ObjectState() {}
 
 public:
-	virtual	void Enter(SelectableObject* pOwner) = 0;
-	virtual void Update(float dt, SelectableObject* pOwner) = 0;
-	virtual void Exit(SelectableObject* pOwner) = 0;
+	virtual	void Enter(SelectableObject* pOwner) {}
+	virtual void Update(float dt, SelectableObject* pOwner) {}
+	virtual void Exit(SelectableObject* pOwner) {}
 
 public:
 	eObjectState	GetType() const { return m_type; }
@@ -43,9 +45,35 @@ public:
 	StateIdle():ObjectState(eObjectState_Idle) {}
 
 public:
-	virtual	void Enter(SelectableObject* pOwner) {}
-	virtual void Update(float dt, SelectableObject* pOwner) {}
-	virtual void Exit(SelectableObject* pOwner) {}
+	virtual	void Enter(SelectableObject* pOwner);
+	virtual void Update(float dt, SelectableObject* pOwner);
+	virtual void Exit(SelectableObject* pOwner);
+};
+
+///选择目标状态
+class StateTargeting : public ObjectState
+{
+public:
+	StateTargeting():ObjectState(eObjectState_Targeting) {}
+
+public:
+	virtual	void Enter(SelectableObject* pOwner);
+	virtual void Exit(SelectableObject* pOwner);
+
+private:
+	bool		OnInputSys_MouseReleased(const OIS::MouseEvent& arg, OIS::MouseButtonID id);
+};
+
+///移动状态
+class StateMove : public ObjectState
+{
+public:
+	StateMove():ObjectState(eObjectState_Move) {}
+
+public:
+	virtual	void Enter(SelectableObject* pOwner);
+	virtual void Update(float dt, SelectableObject* pOwner);
+	virtual void Exit(SelectableObject* pOwner);
 };
 
 ///生产状态

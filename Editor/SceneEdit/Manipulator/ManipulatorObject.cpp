@@ -259,7 +259,6 @@ void ManipulatorObject::Load( rapidxml::xml_node<>* XMLNode )
 		const String strMesh = curObjNode->first_attribute("meshname")->value();
 		const bool bIsNavMesh = Ogre::StringConverter::parseBool(curObjNode->first_attribute("isnavmesh")->value());
 		const bool bIsBuilding = Ogre::StringConverter::parseBool(curObjNode->first_attribute("isbuilding")->value());
-		const String strBuildingName = curObjNode->first_attribute("buildingname")->value();
 		const bool bIsResource = Ogre::StringConverter::parseBool(curObjNode->first_attribute("isresource")->value());
 		const Ogre::Vector3 pos = Ogre::StringConverter::parseVector3(curObjNode->first_attribute("position")->value());
 		const Ogre::Quaternion orient = Ogre::StringConverter::parseQuaternion(curObjNode->first_attribute("orientation")->value());
@@ -271,7 +270,11 @@ void ManipulatorObject::Load( rapidxml::xml_node<>* XMLNode )
 		SetObjectNavMeshFlag(pNewEnt, bIsNavMesh);
 		SetObjectIsBuilding(pNewEnt, bIsBuilding);
 		SetObjectIsResource(pNewEnt, bIsResource);
-		SetObjectBuildingName(pNewEnt, strBuildingName);
+		if(bIsBuilding)
+		{
+			const String strBuildingName = curObjNode->first_attribute("buildingname")->value();
+			SetObjectBuildingName(pNewEnt, strBuildingName);
+		}
 
 		curObjNode = curObjNode->next_sibling();
 	}

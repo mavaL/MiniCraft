@@ -44,9 +44,9 @@ bool CGUIManager::Init()
 
 	//挂接鼠标输入事件,注册处理顺序都为1,即为每次都先进行处理
 	CInputManager& InputMgr = CInputManager::GetSingleton();
-	InputMgr.BindMousePressed(boost::bind(&CGUIManager::OnInputSys_MousePressed, this, _1, _2), 1);
-	InputMgr.BindMouseRelease(boost::bind(&CGUIManager::OnInputSys_MouseReleased, this, _1, _2), 1);
-	InputMgr.BindMouseMove(boost::bind(&CGUIManager::OnInputSys_MouseMove, this, _1), 1);
+	InputMgr.BindMousePressed(boost::bind(&CGUIManager::OnInputSys_MousePressed, this, _1, _2), eInputEventPriority_GUI);
+	InputMgr.BindMouseRelease(boost::bind(&CGUIManager::OnInputSys_MouseReleased, this, _1, _2), eInputEventPriority_GUI);
+	InputMgr.BindMouseMove(boost::bind(&CGUIManager::OnInputSys_MouseMove, this, _1), eInputEventPriority_GUI);
 
 	// subscribe handler to render overlay items
 	m_pRenderer->getDefaultRenderingRoot().subscribeEvent(CEGUI::RenderingSurface::EventRenderQueueStarted,
@@ -65,6 +65,11 @@ bool CGUIManager::Init()
 
 void CGUIManager::Shutdown()
 {
+	CInputManager& InputMgr = CInputManager::GetSingleton();
+	InputMgr.UnbindMouseMove(eInputEventPriority_GUI);
+	InputMgr.UnbindMousePressed(eInputEventPriority_GUI);
+	InputMgr.UnbindMouseRelease(eInputEventPriority_GUI);
+
 	m_cmdPanel.Destroy();
 	m_infoPanel.Destroy();
 	if (m_pRenderer)

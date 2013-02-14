@@ -9,6 +9,9 @@ mMouse(0),
 mKeyboard(0),
 m_bIsInit(false)
 {
+	m_connections.resize(eInputEventPriority_Count);
+	for(int i=0; i<eInputEventPriority_Count; ++i)
+		m_connections[i].resize(eInputEvent_Count);
 }
 
 CInputManager::~CInputManager(void)
@@ -71,68 +74,103 @@ void CInputManager::Shutdown()
 	}
 }
 
-bool CInputManager::mouseMoved( const OIS::MouseEvent &arg )
+void CInputManager::BindMouseMove( const MouseMoveHandler& handler, eInputEventPriority priority/*=eInputEventPriority_default*/ )
 {
-	return m_MouseMoveSignal(arg);	
+	m_connections[priority][eInputEvent_MouseMove] = m_MouseMoveSignal.connect(priority, handler);
 }
 
-bool CInputManager::mousePressed( const OIS::MouseEvent &arg, OIS::MouseButtonID id )
+void CInputManager::BindMousePressed( const MouseBtnHandler& handler, eInputEventPriority priority/*=eInputEventPriority_default*/ )
 {
-	return m_MousePressedSignal(arg, id);
+	m_connections[priority][eInputEvent_MouseBtnDown] = m_MousePressedSignal.connect(priority, handler);
 }
 
-bool CInputManager::mouseReleased( const OIS::MouseEvent &arg, OIS::MouseButtonID id )
+void CInputManager::BindMouseRelease( const MouseBtnHandler& handler, eInputEventPriority priority/*=eInputEventPriority_default*/ )
 {
-	return m_MouseReleasedSignal(arg, id);
+	m_connections[priority][eInputEvent_MouseBtnUp] = m_MouseReleasedSignal.connect(priority, handler);
 }
 
-bool CInputManager::keyPressed( const OIS::KeyEvent &arg )
+void CInputManager::BindKeyPressed( const KeyHandler& handler, eInputEventPriority priority/*=eInputEventPriority_default*/ )
 {
-	return m_KeyPressedSignal(arg);
+	m_connections[priority][eInputEvent_KeyDown] = m_KeyPressedSignal.connect(priority, handler);
 }
 
-bool CInputManager::keyReleased( const OIS::KeyEvent &arg )
+void CInputManager::BindKeyReleased( const KeyHandler& handler, eInputEventPriority priority/*=eInputEventPriority_default*/ )
 {
-	return m_KeyReleasedSignal(arg);
+	m_connections[priority][eInputEvent_KeyUp] = m_KeyReleasedSignal.connect(priority, handler);
 }
 
-void CInputManager::BindMouseMove( const MouseMoveHandler& handler, int priority/*=0*/ )
+void CInputManager::UnbindMouseMove( eInputEventPriority priority )
 {
-	if(priority != 0)
-		m_MouseMoveSignal.connect(priority, handler);
+	assert(m_connections[priority][eInputEvent_MouseMove].connected());
+	m_connections[priority][eInputEvent_MouseMove].disconnect();
+}
+
+void CInputManager::UnbindMousePressed( eInputEventPriority priority )
+{
+	assert(m_connections[priority][eInputEvent_MouseBtnDown].connected());
+	m_connections[priority][eInputEvent_MouseBtnDown].disconnect();
+}
+
+void CInputManager::UnbindMouseRelease( eInputEventPriority priority )
+{
+	assert(m_connections[priority][eInputEvent_MouseBtnUp].connected());
+	m_connections[priority][eInputEvent_MouseBtnUp].disconnect();
+}
+
+void CInputManager::UnbindKeyPressed( eInputEventPriority priority )
+{
+	assert(m_connections[priority][eInputEvent_KeyDown].connected());
+	m_connections[priority][eInputEvent_KeyDown].disconnect();
+}
+
+void CInputManager::UnbindKeyReleased( eInputEventPriority priority )
+{
+	assert(m_connections[priority][eInputEvent_KeyUp].connected());
+	m_connections[priority][eInputEvent_KeyUp].disconnect();
+}
+
+void CInputManager::BlockMouseMove( eInputEventPriority priority, bool bBlock )
+{
+	assert(m_connections[priority][eInputEvent_MouseMove].connected());
+	if(bBlock)
+		m_connections[priority][eInputEvent_MouseMove].block();
 	else
-		m_MouseMoveSignal.connect(handler);
+		m_connections[priority][eInputEvent_MouseMove].unblock();
 }
 
-void CInputManager::BindMousePressed( const MouseBtnHandler& handler, int priority/*=0*/ )
+void CInputManager::BlockMousePressed( eInputEventPriority priority, bool bBlock )
 {
-	if(priority != 0)
-		m_MousePressedSignal.connect(priority, handler);
+	assert(m_connections[priority][eInputEvent_MouseBtnDown].connected());
+	if(bBlock)
+		m_connections[priority][eInputEvent_MouseBtnDown].block();
 	else
-		m_MousePressedSignal.connect(handler);
+		m_connections[priority][eInputEvent_MouseBtnDown].unblock();
 }
 
-void CInputManager::BindMouseRelease( const MouseBtnHandler& handler, int priority/*=0*/ )
+void CInputManager::BlockMouseRelease( eInputEventPriority priority, bool bBlock )
 {
-	if(priority != 0)
-		m_MouseReleasedSignal.connect(priority, handler);
+	assert(m_connections[priority][eInputEvent_MouseBtnUp].connected());
+	if(bBlock)
+		m_connections[priority][eInputEvent_MouseBtnUp].block();
 	else
-		m_MouseReleasedSignal.connect(handler);
+		m_connections[priority][eInputEvent_MouseBtnUp].unblock();
 }
 
-void CInputManager::BindKeyPressed( const KeyHandler& handler, int priority/*=0*/ )
+void CInputManager::BlockKeyPressed( eInputEventPriority priority, bool bBlock )
 {
-	if(priority != 0)
-		m_KeyPressedSignal.connect(priority, handler);
+	assert(m_connections[priority][eInputEvent_KeyDown].connected());
+	if(bBlock)
+		m_connections[priority][eInputEvent_KeyDown].block();
 	else
-		m_KeyPressedSignal.connect(handler);
+		m_connections[priority][eInputEvent_KeyDown].unblock();
 }
 
-void CInputManager::BindKeyReleased( const KeyHandler& handler, int priority/*=0*/ )
+void CInputManager::BlockKeyReleased( eInputEventPriority priority, bool bBlock )
 {
-	if(priority != 0)
-		m_KeyReleasedSignal.connect(priority, handler);
+	assert(m_connections[priority][eInputEvent_KeyUp].connected());
+	if(bBlock)
+		m_connections[priority][eInputEvent_KeyUp].block();
 	else
-		m_KeyReleasedSignal.connect(handler);
+		m_connections[priority][eInputEvent_KeyUp].unblock();
 }
 

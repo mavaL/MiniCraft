@@ -7,6 +7,7 @@
 #include "ObjectBase.h"
 #include "Building.h"
 #include "GameDataDef.h"
+#include "AIComponent.h"
 
 
 // #include "PagedGeometry.h"
@@ -165,32 +166,27 @@ void DotSceneLoader::processScene(rapidxml::xml_node<>* XMLRoot)
 
 		if (bIsBuilding || bIsResource)
 		{
-			//建筑物对象
 			Object* pObject = ObjectManager::GetSingleton().CreateObject(bIsBuilding ? eObjectType_Building : eObjectType_Resource);
-			pObject->setParameter("meshname", strMesh);
-			pObject->setParameter("position", strPos);
-			pObject->setParameter("orientation", strOrient);
-			pObject->setParameter("scale", strScale);
 
 			if(bIsBuilding)
 			{
 				const STRING strBuildingName = curObjNode->first_attribute("buildingname")->value();
 				Building* pBuilding = dynamic_cast<Building*>(pObject);
-				//初始化其能力
-				GameDataDefManager& dataMgr = GameDataDefManager::GetSingleton();
-				auto iter = dataMgr.m_buildingData.find(strBuildingName);
-				assert(iter != dataMgr.m_buildingData.end());
-				const SBuildingData& data = iter->second;
 
-				for (int iAbil=0; iAbil<MAX_ABILITY_SLOT; ++iAbil)
-				{
-					const std::string& strAbil = data.m_vecAbilities[iAbil];
-					if (strAbil != "")
-					{
-						const SAbilityData& pAbil = dataMgr.m_abilityData.find(strAbil)->second;
-						pBuilding->SetAbility(iAbil, &pAbil);
-					}
-				}	
+				const POS& pos = Ogre::StringConverter::parseVector3(strPos);
+				const ORIENT& orient = Ogre::StringConverter::parseQuaternion(strOrient);
+				const SCALE& scale = Ogre::StringConverter::parseVector3(strScale);
+				pBuilding->Init(strBuildingName, pos, orient, scale);
+
+				//AI组件
+				pBuilding->SetAiComponent(new AiComponent(pBuilding));
+			}
+			else
+			{
+				pObject->setParameter("meshname", strMesh);
+				pObject->setParameter("position", strPos);
+				pObject->setParameter("orientation", strOrient);
+				pObject->setParameter("scale", strScale);
 			}
 		}
 		else

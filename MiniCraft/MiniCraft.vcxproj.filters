@@ -256,6 +256,9 @@
     <ClInclude Include="Game\Client\AI\ObjectState.h">
       <Filter>Client\AI</Filter>
     </ClInclude>
+    <ClInclude Include="Game\Client\AI\PathComponent.h">
+      <Filter>Client\AI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game\Core\Application.cpp">
@@ -430,6 +433,9 @@
       <Filter>Client\UI</Filter>
     </ClCompile>
     <ClCompile Include="Game\Client\AI\ObjectState.cpp">
+      <Filter>Client\AI</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Client\AI\PathComponent.cpp">
       <Filter>Client\AI</Filter>
     </ClCompile>
   </ItemGroup>

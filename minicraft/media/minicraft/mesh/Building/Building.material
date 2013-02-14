@@ -79,7 +79,7 @@ material sc2material
 	}
 }
 
-material Standard_9
+material hatchery
 {
 	technique Map#1
 	{
