@@ -7,6 +7,31 @@ Object::Object()
 	static int nextID = 0;
 	m_ID = nextID++;
 }
+Object::~Object()
+{
+	//销毁所有组件
+	for(auto iter=m_components.begin(); iter!=m_components.end(); ++iter)
+		delete iter->second;
+	m_components.clear();
+}
+void Object::AddComponent( eComponentType type, Component* pCo )
+{
+	assert(m_components.find(type) == m_components.end() && "Component of this type had already added!");
+	m_components.insert(std::make_pair(type, pCo));
+}
+
+Component* Object::GetComponent( eComponentType type )
+{
+	auto iter = m_components.find(type);
+	assert(iter != m_components.end() && "There is no component of this type in this object!");
+	return iter->second;
+}
+
+void Object::UpdateAllComponent( float dt )
+{
+	for(auto iter=m_components.begin(); iter!=m_components.end(); ++iter)
+		iter->second->Update(dt);
+}
 
 ///////////////////////////////////////////////////////////////////////
 IMPL_PARAM_COMMAND(RenderableObject, Position, Vector3)

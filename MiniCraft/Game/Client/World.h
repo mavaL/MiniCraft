@@ -7,6 +7,7 @@
 class SelectableObject;
 class OgreRecast;
 class OgreDetourCrowd;
+class Faction;
 
 //常用成员全局环境
 struct SGlobalEnvironment 
@@ -71,6 +72,8 @@ public:
 	void			UpdateConsoleUITransform(float dt);
 	//返回相机射线与地形的交点,没相交返回false
 	bool			GetTerrainIntersectPos(const FLOAT2& screenPos, POS& retPt);
+	//获取玩家派系
+	Faction*		GetFaction(eGameRace race) { return m_player[race]; }
 
 private:
 	SelectedContainer			m_vecSelectUnis;	//所有选中单位
@@ -100,6 +103,8 @@ private:
 	Ogre::SceneNode*			m_pUISceneNode4;
 	Ogre::AnimationState*		m_pConsoleAnim1;
 	Ogre::AnimationState*		m_pConsoleAnim2;
+
+	Faction*					m_player[eGameRace_Count];
 };
 
 

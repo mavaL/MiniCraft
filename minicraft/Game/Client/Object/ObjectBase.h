@@ -11,6 +11,7 @@
 
 #include "GameDefine.h"
 #include <OgreStringInterface.h>
+#include "Component.h"
 
 
 ////////////////////////////////////////////////////
@@ -19,15 +20,21 @@ class Object : public Ogre::StringInterface
 {
 public:
 	Object();
-	virtual ~Object() {}
+	virtual ~Object();
 
 public:
 	int					GetID() const { return m_ID; }
+	void				AddComponent(eComponentType type, Component* pCo);
+	Component*			GetComponent(eComponentType type);
+	void				UpdateAllComponent(float dt);
 	virtual eObjectType GetType() const = 0;
 	virtual	void		Update(float dt) = 0;
 
 private:
-	int	m_ID;	//对象唯一标示ID
+	int					m_ID;			//对象唯一标示ID
+
+	typedef std::unordered_map<eComponentType, Component*>	ComponentContainer;
+	ComponentContainer	m_components;	//组件容器
 };
 
 

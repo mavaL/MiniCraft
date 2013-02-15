@@ -15,13 +15,11 @@
 
 
 struct lua_State;
-class PathComponent;
 
 class Unit : public SelectableObject
 {
 	DECL_PARAM_COMMAND(ClampPos)
 	DECL_PARAM_COMMAND(UnitName)
-	DECL_PARAM_COMMAND(NeedMove)
 public:
 	Unit();
 	Unit(lua_State* L) {}
@@ -38,19 +36,17 @@ public:
 	virtual void	_OnCommandFinished(eCommandType cmd);
 
 public:
-	void			SetPathComponent(PathComponent* path)	{ m_pPath = path; }
-	PathComponent*	GetPathComponent()	{ return m_pPath; }
 	void			SetUnitName(const STRING& name);
 	const STRING&	GetUnitName() const {return m_unitName; } 
-	void			SetDestPos(const POS& destPos);
-	const POS&		GetDestPos() const	{ return m_destPos; }
 	void			PlayAnimation(eAnimation type, bool bLoop);
 	void			StopAnimation();
 	//设置单位坐标,内部会自动夹持到地形上
 	void			SetClampPos(const POS& pos);
 	const POS&		GetClampPos() const { return GetPosition(); }
-	void			SetNeedMove(bool bNeedMove) { m_bPosChanged = bNeedMove; }
-	bool			GetNeedMove() const { return m_bPosChanged; }
+	//停止行动
+	void			StopAction();
+	void			SetStopTime(float fTime) { m_fStopTime = fTime; }
+	float			GetStopTime() const	{ return m_fStopTime; }
 
 public:
 	///lua导出函数
@@ -66,11 +62,9 @@ public:
 	int				DetachRes(lua_State* L);
 
 private:
-	PathComponent*			m_pPath;		//寻路组件
 	STRING					m_unitName;		//单位名称,如:scv,marine...
-	POS						m_destPos;
-	bool					m_bPosChanged;	//是否需要更新寻路.根据该标志位来决定移动时是否需要先进入选择目标状态
 	Ogre::AnimationState*	m_pAnimState;	//当前播放动画
+	float					m_fStopTime;	//已经进入停止状态多久
 	
 };
 

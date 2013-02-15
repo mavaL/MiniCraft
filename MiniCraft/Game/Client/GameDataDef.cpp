@@ -18,20 +18,24 @@ void GameDataDefManager::LoadAllData()
 		const char* szIcon = pNode->first_attribute("iconname")->value();
 		const char* szMesh = pNode->first_attribute("meshname")->value();
 		const char* szRallyPoint = pNode->first_attribute("rallypoint")->value();
+		const char* szFlags = pNode->first_attribute("flags")->value();
 
 		SBuildingData data = { (eGameRace)-1, szIcon, szMesh, Ogre::StringConverter::parseVector3(szRallyPoint) };
 
-		if(strcmp(szRace, "Terran") == 0)
-			data.m_race = eGameRace_Terran;
-		else if(strcmp(szRace, "Zerg") == 0)
-			data.m_race = eGameRace_Zerg;
-		else
-			assert(0);
+		//种族
+		std::unordered_map<STRING, eGameRace> mapRace;
+		mapRace["Terran"]	= eGameRace_Terran;
+		mapRace["Zerg"]		= eGameRace_Zerg;
+
+		data.m_race = mapRace[szRace];
 
 		//技能
 		data.m_vecAbilities.resize(MAX_ABILITY_SLOT);
 		for (int i=0; i<MAX_ABILITY_SLOT; ++i)
 			data.m_vecAbilities[i] = "";
+
+		//属性集
+		data.m_flags = Ogre::StringConverter::parseInt(szFlags);
 
 		rapidxml::xml_node<>* abilNode = pNode->first_node("Ability");
 		while(abilNode)
@@ -65,8 +69,10 @@ void GameDataDefManager::LoadAllData()
 		auto attrbParam = pNode->first_attribute("extraparam");
 
 		std::unordered_map<STRING, eCommandType> mapName;
-		mapName["produce"] = eCommandType_Produce;
-		mapName["move"] = eCommandType_Move;
+		mapName["produce"]	= eCommandType_Produce;
+		mapName["move"]		= eCommandType_Move;
+		mapName["stop"]		= eCommandType_Stop;
+		mapName["gather"]	= eCommandType_Gather;
 
 		eCommandType type = mapName[szType];
 		STRING param("");
@@ -92,13 +98,22 @@ void GameDataDefManager::LoadAllData()
  		const char* szName = pNode->first_attribute("name")->value();
  		const char* szTimeCost = pNode->first_attribute("timecost")->value();
 		const char* szMeshName = pNode->first_attribute("meshname")->value();
+		const char* szRace = pNode->first_attribute("race")->value();
 
  		SUnitData data = { Ogre::StringConverter::parseReal(szTimeCost), szMeshName };
+
+		//种族
+		std::unordered_map<STRING, eGameRace> mapRace;
+		mapRace["Terran"]	= eGameRace_Terran;
+		mapRace["Zerg"]		= eGameRace_Zerg;
+
+		data.m_race = mapRace[szRace];
 
 		//动画数据
 		std::unordered_map<STRING, eAnimation> mapName;
 		mapName["Idle"] = eAnimation_Idle;
 		mapName["Move"] = eAnimation_Move;
+		mapName["Gather"] = eAnimation_Gather;
 
 		rapidxml::xml_node<>* pAnimNode = pNode->first_node("AnimationSet")->first_node("Animation");
 		while(pAnimNode)

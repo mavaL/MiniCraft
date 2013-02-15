@@ -171,15 +171,13 @@ void DotSceneLoader::processScene(rapidxml::xml_node<>* XMLRoot)
 			if(bIsBuilding)
 			{
 				const STRING strBuildingName = curObjNode->first_attribute("buildingname")->value();
-				Building* pBuilding = dynamic_cast<Building*>(pObject);
+				Building* pBuilding = static_cast<Building*>(pObject);
 
 				const POS& pos = Ogre::StringConverter::parseVector3(strPos);
 				const ORIENT& orient = Ogre::StringConverter::parseQuaternion(strOrient);
 				const SCALE& scale = Ogre::StringConverter::parseVector3(strScale);
-				pBuilding->Init(strBuildingName, pos, orient, scale);
 
-				//AI×é¼þ
-				pBuilding->SetAiComponent(new AiComponent(pBuilding));
+				pBuilding->Init(strBuildingName, pos, orient, scale);
 			}
 			else
 			{

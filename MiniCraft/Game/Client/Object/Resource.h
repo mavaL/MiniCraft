@@ -16,12 +16,19 @@
 class Resource : public SelectableObject
 {
 public:
-	Resource():SelectableObject() {}
+	Resource();
 	~Resource() {}
 
 public:
 	virtual eObjectType GetType() const { return eObjectType_Resource; }
 	virtual void	Update(float dt) {}
+
+	void			DecreaseRes(int num) { m_resLeft -= num; }
+	//该资源被采集一次的数量
+	int				GetGatherOnceNum()	{ return 5; }
+
+private:
+	int			m_resLeft;		//剩余资源数
 };
 
 

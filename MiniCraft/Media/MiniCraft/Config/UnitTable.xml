@@ -1,32 +1,40 @@
 <?xml version='1.0' encoding='utf-8' ?>
 <Root>
-  <Unit name="Scv" timecost="5" meshname="SCV_0.mesh">
+  <Unit name="Scv" timecost="5" meshname="SCV_0.mesh" race="Terran">
     <AnimationSet>
       <Animation type="Idle" name="Idle"/>
       <Animation type="Move" name="Walk"/>
+      <Animation type="Gather" name="Work"/>
     </AnimationSet>
     <Ability name="Move" slotindex="0"/>
+    <Ability name="Stop" slotindex="1"/>
+    <Ability name="Gather" slotindex="6"/>
   </Unit>
-  <Unit name="Marine" timecost="5" meshname="Marine_0.mesh">
+  <Unit name="Marine" timecost="5" meshname="Marine_0.mesh" race="Terran">
     <AnimationSet>
       <Animation type="Idle" name="Stand"/>
       <Animation type="Move" name="Walk"/>
     </AnimationSet>
     <Ability name="Move" slotindex="0"/>
+    <Ability name="Stop" slotindex="1"/>
   </Unit>
-  <Unit name="Drone" timecost="5" meshname="Drone_0.mesh">
+  <Unit name="Drone" timecost="5" meshname="Drone_0.mesh" race="Zerg">
     <AnimationSet>
       <Animation type="Idle" name="Idle"/>
       <Animation type="Move" name="Walk"/>
+      <Animation type="Gather" name="Work"/>
     </AnimationSet>
     <Ability name="Move" slotindex="0"/>
+    <Ability name="Stop" slotindex="1"/>
+    <Ability name="Gather" slotindex="6"/>
   </Unit>
-  <Unit name="Zergling" timecost="5" meshname="Zergling_0.mesh">
+  <Unit name="Zergling" timecost="5" meshname="Zergling_0.mesh" race="Zerg">
     <AnimationSet>
       <Animation type="Idle" name="Stand"/>
       <Animation type="Move" name="Run"/>
     </AnimationSet>
     <Ability name="Move" slotindex="0"/>
+    <Ability name="Stop" slotindex="1"/>
   </Unit>
 </Root>
 

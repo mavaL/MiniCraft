@@ -15,17 +15,10 @@ void Command::Excute()
 {
 	switch (m_type)
 	{
-	case eCommandType_Produce: m_pOwner->GetAiComponent()->SetCurState(eObjectState_Produce); break;
-
-	case eCommandType_Move: 
-		{
-			bool bNeedMove = Ogre::StringConverter::parseBool(m_pOwner->getParameter("needmove"));
-			if(bNeedMove)
-				m_pOwner->GetAiComponent()->SetCurState(eObjectState_Move);
-			else
-				m_pOwner->GetAiComponent()->SetCurState(eObjectState_Targeting);
-		}
-		break;
+	case eCommandType_Produce:	m_pOwner->GetAi()->SetCurState(eObjectState_Produce); break;
+	case eCommandType_Move: 	m_pOwner->GetAi()->SetCurState(eObjectState_Move); break;
+	case eCommandType_Stop:		m_pOwner->GetAi()->SetCurState(eObjectState_Stop); break;
+	case eCommandType_Gather:	m_pOwner->GetAi()->SetCurState(eObjectState_Gather); break;
 	default: assert(0);
 	}
 }

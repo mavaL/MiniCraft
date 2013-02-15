@@ -28,15 +28,6 @@ public:
 };
 
 ////////////////////////////////////////////////////////////
-class FactionFactory : public ObjectFactory
-{
-public:
-	virtual eObjectType GetType() const { return eObjectType_Faction; }
-	virtual Object*		CreateInstance();
-	virtual void		DestroyInstance(Object* pObject);
-};
-
-////////////////////////////////////////////////////////////
 class UnitFactory : public ObjectFactory
 {
 public:

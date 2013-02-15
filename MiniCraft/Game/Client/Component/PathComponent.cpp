@@ -5,11 +5,12 @@
 #include "SelectableObject.h"
 
 PathComponent::PathComponent( SelectableObject* pOwner )
-:m_pOwner(pOwner)
+:Component(pOwner)
 ,m_pRecast(g_Environment.m_pRecast)
 ,m_pDetour(g_Environment.m_pCrowd)
 ,m_pAgent(nullptr)
 ,m_agentID(-1)
+,m_bIsMoving(false)
 {
 	//确定渲染实例已创建
 	assert(pOwner->IsRenderableReady());
@@ -29,12 +30,12 @@ PathComponent::~PathComponent()
 	}
 }
 
-bool PathComponent::FindPath( const Ogre::Vector3& destPos, bool bJustTry )
+bool PathComponent::FindPath( const POS& destPos, bool bJustTry )
 {
-	Ogre::Vector3 beginPos(m_pOwner->GetPosition());
+	POS beginPos(m_pOwner->GetPosition());
 	World::GetSingleton().ClampPosToNavMesh(beginPos);
 
-	Ogre::Vector3 adjustDestPos(destPos);
+	POS adjustDestPos(destPos);
 	World::GetSingleton().ClampPosToNavMesh(adjustDestPos);
 
 	int ret = m_pRecast->FindPath(beginPos, adjustDestPos, 1, 1);
@@ -43,7 +44,7 @@ bool PathComponent::FindPath( const Ogre::Vector3& destPos, bool bJustTry )
 		m_pDetour->setMoveTarget(m_agentID, adjustDestPos, false);
 		//绘制路径线
 		//m_pRecast->CreateRecastPathLine(1);
-		m_pOwner->setParameter("needmove", "false");
+		m_bIsMoving = true;
 	}
 
 	return ret >= 0;
@@ -60,5 +61,42 @@ const POS PathComponent::GetAgentPos() const
 
 bool PathComponent::StopMove()
 {
-	return m_pDetour->stopAgent(m_agentID);
+	bool ret = m_pDetour->stopAgent(m_agentID);
+	assert(ret);
+	m_bIsMoving = false;
+
+	return ret;
+}
+
+void PathComponent::SetDestPos( const POS& destPos )
+{
+	POS adjustPos(destPos);
+	World::GetSingleton().ClampPosToNavMesh(adjustPos);
+
+	m_destPos = adjustPos;
+}
+
+bool PathComponent::_UpdatePathFinding( float dt )
+{
+	POS curPos = GetAgentPos();
+	World::GetSingleton().ClampToTerrain(curPos);
+	m_pOwner->GetSceneNode()->lookAt(curPos, Ogre::Node::TS_WORLD, Ogre::Vector3::UNIT_Z);
+	m_pOwner->SetPosition(curPos);
+
+	if (curPos.positionEquals(m_destPos, 0.1f))
+	{
+		StopMove();
+		return true;
+	}
+
+	return false;
+}
+
+void PathComponent::EnableObstcleAvoidance( bool bEnable )
+{
+	if (bEnable)
+		m_pAgent->params.updateFlags = DT_CROWD_ANTICIPATE_TURNS | 
+		DT_CROWD_OPTIMIZE_VIS | DT_CROWD_OPTIMIZE_TOPO | DT_CROWD_OBSTACLE_AVOIDANCE;
+	else
+		m_pAgent->params.updateFlags = 0;
 }

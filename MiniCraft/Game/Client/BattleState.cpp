@@ -148,7 +148,7 @@ bool CBattleState::OnInputSys_MousePressed( const OIS::MouseEvent& arg, OIS::Mou
 	{
 		const SelectedContainer& selectedUnits = world.GetSelectedObjects();
 		if(!selectedUnits.empty())
-			selectedUnits[0]->GetAiComponent()->GiveCommand(arg);
+			selectedUnits[0]->GetAi()->GiveCommand(arg, id);
 	}        
 
 	return true;

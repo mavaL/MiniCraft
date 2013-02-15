@@ -8,27 +8,23 @@
 #include "ObjectManager.h"
 #include "Unit.h"
 #include "World.h"
+#include "HarvestComponent.h"
 
 void StateIdle::Enter( SelectableObject* pOwner )
 {
 	if(pOwner->GetType() == eObjectType_Unit)
 	{
-		Unit* pUnit = dynamic_cast<Unit*>(pOwner);
+		Unit* pUnit = static_cast<Unit*>(pOwner);
 		//播放休闲动画
 		pUnit->PlayAnimation(eAnimation_Idle, true);
 	}
-}
-
-void StateIdle::Update( float dt, SelectableObject* pOwner )
-{
-
 }
 
 void StateIdle::Exit( SelectableObject* pOwner )
 {
 	if(pOwner->GetType() == eObjectType_Unit)
 	{
-		Unit* pUnit = dynamic_cast<Unit*>(pOwner);
+		Unit* pUnit = static_cast<Unit*>(pOwner);
 		//停止播放休闲动画
 		pUnit->StopAnimation();
 	}
@@ -38,9 +34,13 @@ void StateIdle::Exit( SelectableObject* pOwner )
 void StateMove::Enter( SelectableObject* pOwner )
 {
 	assert(pOwner->GetType() == eObjectType_Unit);
-	Unit* pUnit = dynamic_cast<Unit*>(pOwner);
-	pUnit->GetPathComponent()->FindPath(pUnit->GetDestPos(), false);
+
+	PathComponent* path = pOwner->GetPath();
+	bool bSucceed = path->FindPath(path->GetDestPos(), false);
+	assert(bSucceed);
+
 	//播放移动动画
+	Unit* pUnit = static_cast<Unit*>(pOwner);
 	pUnit->PlayAnimation(eAnimation_Move, true);
 }
 
@@ -48,24 +48,17 @@ void StateMove::Update( float dt, SelectableObject* pOwner )
 {
 	assert(pOwner->GetType() == eObjectType_Unit);
 
-	Unit* pUnit = dynamic_cast<Unit*>(pOwner);
-	POS curPos = pUnit->GetPathComponent()->GetAgentPos();
-
-	World::GetSingleton().ClampToTerrain(curPos);
-	pOwner->GetSceneNode()->lookAt(curPos, Ogre::Node::TS_WORLD, Ogre::Vector3::UNIT_Z);
-	pUnit->SetPosition(curPos);
-
-	if (curPos.positionEquals(pUnit->GetDestPos(), 0.1f))
+	if(pOwner->GetPath()->_UpdatePathFinding(dt))
 	{
 		//已到达目的地,进入空闲状态
-		pOwner->GetAiComponent()->SetCurState(eObjectState_Idle);
+		pOwner->GetAi()->SetCurState(eObjectState_Idle);
 	}
 }
 
 void StateMove::Exit( SelectableObject* pOwner )
 {
 	assert(pOwner->GetType() == eObjectType_Unit);
-	Unit* pUnit = dynamic_cast<Unit*>(pOwner);
+	Unit* pUnit = static_cast<Unit*>(pOwner);
 	//停止播放移动动画
 	pUnit->StopAnimation();
 
@@ -82,7 +75,9 @@ void StateProduce::Enter(SelectableObject* pOwner)
 
 void StateProduce::Update( float dt, SelectableObject* pOwner )
 {
-	Building* pObj = dynamic_cast<Building*>(pOwner);
+	assert(pOwner->GetType() == eObjectType_Building);
+
+	Building* pObj = static_cast<Building*>(pOwner);
 	float fProgress = pObj->GetCurProgress();
 	const STRING& unitName = pOwner->GetActiveAbility()->m_param;
 	SUnitData* unitData = &GameDataDefManager::GetSingleton().m_unitData[unitName];
@@ -90,18 +85,17 @@ void StateProduce::Update( float dt, SelectableObject* pOwner )
 	if (fProgress > unitData->m_fTimeCost)
 	{
 		//生产完毕
-		pOwner->GetAiComponent()->SetCurState(eObjectState_Idle);
+		pOwner->GetAi()->SetCurState(eObjectState_Idle);
 
 		//鲜活的单位出炉了
-		Object* pObj = ObjectManager::GetSingleton().CreateObject(eObjectType_Unit);
-		pObj->setParameter("unitName", unitName);
-		pObj->setParameter("position", pOwner->getParameter("rallypoint"));
+		SelectableObject* pNewObj = static_cast<SelectableObject*>(ObjectManager::GetSingleton().CreateObject(eObjectType_Unit));
+		pNewObj->setParameter("unitName", unitName);
+		pNewObj->setParameter("position", pOwner->getParameter("rallypoint"));
 
 		//新单位进入空闲状态
-		Unit* pUnit = dynamic_cast<Unit*>(pObj);
-		pUnit->SetAiComponent(new AiComponent(pUnit));
-		pUnit->SetPathComponent(new PathComponent(pUnit));
-		pUnit->GetAiComponent()->SetCurState(eObjectState_Idle);
+		pNewObj->AddComponent(eComponentType_AI, new AiComponent(pNewObj));
+		pNewObj->AddComponent(eComponentType_Path, new PathComponent(pNewObj));
+		pNewObj->GetAi()->SetCurState(eObjectState_Idle);
 	}
 }
 
@@ -132,23 +126,58 @@ bool StateTargeting::OnInputSys_MouseReleased( const OIS::MouseEvent& arg, OIS::
 	if (id == OIS::MB_Left)
 	{
 		SelectableObject* pObj = World::GetSingleton().GetSelectedObjects().at(0);
-		Unit* pUnit = dynamic_cast<Unit*>(pObj);
-
-		FLOAT2 screenPos;
-		screenPos.x = arg.state.X.abs / (float)arg.state.width;
-		screenPos.y = arg.state.Y.abs / (float)arg.state.height;
-
-		POS intersectPos;
-		if(World::GetSingleton().GetTerrainIntersectPos(screenPos, intersectPos))
-		{
-			if (pUnit->GetPathComponent()->FindPath(intersectPos, true))
-			{
-				//转入移动状态
-				pUnit->SetDestPos(intersectPos);
-				pUnit->GetAiComponent()->SetCurState(eObjectState_Move);
-			}
-		}
+		pObj->GetAi()->GiveCommand(arg, id);
+		//退出并行状态
+		pObj->GetAi()->ClearParallelState();
 	}
 
 	return true;
+}
+
+///////////////////////////////////////////////////////////////
+void StateStop::Enter( SelectableObject* pOwner )
+{
+	assert(pOwner->GetType() == eObjectType_Unit);
+
+	Unit* pUnit = static_cast<Unit*>(pOwner);
+	pUnit->StopAction();
+}
+
+void StateStop::Update( float dt, SelectableObject* pOwner )
+{
+	assert(pOwner->GetType() == eObjectType_Unit);
+
+	Unit* pUnit = static_cast<Unit*>(pOwner);
+	float fPastTime = pUnit->GetStopTime() + dt;
+	pUnit->SetStopTime(fPastTime);
+
+	const float STOP_TIME = 0.2f;
+	if (fPastTime > STOP_TIME)
+	{
+		//进入空闲状态
+		pUnit->GetAi()->SetCurState(eObjectState_Idle);
+	}
+}
+
+///////////////////////////////////////////////////////////////
+void StateGather::Enter( SelectableObject* pOwner )
+{
+	HarvestComponent* pCo = QueryComponent(pOwner, eComponentType_Harvest, HarvestComponent);
+	pCo->SetCurStage(eHarvestStage_ToRes);
+	//禁止单位间阻挡
+	pOwner->GetPath()->EnableObstcleAvoidance(false);
+}
+
+void StateGather::Update( float dt, SelectableObject* pOwner )
+{
+	HarvestComponent* pCo = QueryComponent(pOwner, eComponentType_Harvest, HarvestComponent);
+	pCo->Update(dt);
+}
+
+void StateGather::Exit( SelectableObject* pOwner )
+{
+	HarvestComponent* pCo = QueryComponent(pOwner, eComponentType_Harvest, HarvestComponent);
+	pCo->SetCurStage(eHarvestStage_None);
+	//恢复单位间阻挡
+	pOwner->GetPath()->EnableObstcleAvoidance(true);
 }

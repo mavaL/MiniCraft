@@ -8,6 +8,7 @@
 #include "DotSceneLoader.h"
 #include "ObjectManager.h"
 #include "GameDataDef.h"
+#include "Faction.h"
 
 
 SGlobalEnvironment	g_Environment;
@@ -28,7 +29,7 @@ World::World()
 ,m_terrainOption(nullptr)
 ,m_pTerrain(nullptr)
 {
-
+	
 }
 
 void World::Init()
@@ -57,12 +58,11 @@ void World::Init()
 	m_pCamera->setPosition(0, 30, 0);
 	m_pCamera->lookAt(0, 0, 10);
 
-	GameDataDefManager::GetSingleton().LoadAllData();
+	//测试两个CPU玩家
+	m_player[eGameRace_Terran] = new Faction(eGameRace_Terran);
+	m_player[eGameRace_Zerg] = new Faction(eGameRace_Zerg);
 
-	//加载测试场景
-	DotSceneLoader sceneLoader;
-	sceneLoader.parseDotScene("MyStarCraft.Scene", "General", 
-		m_pSceneMgr, m_pSceneMgr->getRootSceneNode()->createChildSceneNode("SceneNode"));
+	GameDataDefManager::GetSingleton().LoadAllData();
 
 	//初始化Recast库
 	OgreRecastConfigParams recastParams = OgreRecastConfigParams();
@@ -88,13 +88,18 @@ void World::Init()
 		"NavMesh.Bin", "General", false);
 	assert(m_pDetourTileCache->loadAll(stream));
 
- 	//m_pDetourTileCache->drawNavMesh();
+	//m_pDetourTileCache->drawNavMesh();
 
 	//初始化Detour寻路库
 	m_pDetourCrowd = new OgreDetourCrowd(m_pRecast);
 
 	g_Environment.m_pRecast = m_pRecast;
 	g_Environment.m_pCrowd = m_pDetourCrowd;
+
+	//加载测试场景
+	DotSceneLoader sceneLoader;
+	sceneLoader.parseDotScene("MyStarCraft.Scene", "General", 
+		m_pSceneMgr, m_pSceneMgr->getRootSceneNode()->createChildSceneNode("SceneNode"));
 
 	//UI for test
 	Ogre::Entity* pEntConsole = m_pSceneMgr->createEntity("ConsoleTerran_0.mesh");
@@ -128,6 +133,9 @@ void World::Init()
 
 void World::Shutdown()
 {
+	SAFE_DELETE(m_player[eGameRace_Terran]);
+	SAFE_DELETE(m_player[eGameRace_Zerg]);
+
 	ObjectManager::GetSingleton().DestroyAll();
 
 	SAFE_DELETE(m_terrainGroup);
@@ -206,7 +214,9 @@ void World::Update(float dt)
 
 bool World::ClampPosToNavMesh( Ogre::Vector3& wPos )
 {
-	return m_pRecast->findNearestPointOnNavmesh(wPos, wPos);
+	bool ret = m_pRecast->findNearestPointOnNavmesh(wPos, wPos);
+	assert(ret);
+	return ret;
 }
 
 Ogre::Vector3 World::GetRandomPositionOnNavmesh()

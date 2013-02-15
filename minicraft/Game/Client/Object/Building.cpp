@@ -2,6 +2,8 @@
 #include "Building.h"
 #include "AIComponent.h"
 #include "GUIManager.h"
+#include "Faction.h"
+#include "World.h"
 
 IMPL_PARAM_COMMAND(Building, RallyPoint, Vector3)
 
@@ -17,7 +19,7 @@ Building::Building()
 
 void Building::Update( float dt )
 {
-	if(GetAiComponent()->GetCurState() == eObjectState_Produce)
+	if(GetAi()->GetCurState() == eObjectState_Produce)
 		m_fCurProgress += dt;
 
 	__super::Update(dt);
@@ -45,8 +47,12 @@ void Building::Init( const STRING& name, const POS& pos, const ORIENT& orient, c
 	SetOrientation(orient);
 	SetScale(scale);
 
+	World& world = World::GetSingleton();
 	//设置默认集结点
-	setParameter("rallypoint", Ogre::StringConverter::toString(pos + data.m_rallyPoint));
+	POS rallyPt = pos + data.m_rallyPoint;
+	world.ClampPosToNavMesh(rallyPt);
+	world.ClampToTerrain(rallyPt);
+	setParameter("rallypoint", Ogre::StringConverter::toString(rallyPt));
 
 	//初始化技能
 	for (int iAbil=0; iAbil<MAX_ABILITY_SLOT; ++iAbil)
@@ -57,6 +63,13 @@ void Building::Init( const STRING& name, const POS& pos, const ORIENT& orient, c
 			const SAbilityData& pAbil = dataMgr.m_abilityData.find(strAbil)->second;
 			SetAbility(iAbil, &pAbil);
 		}
-	}	
+	}
+
+	//属性集
+	if(data.m_flags & eBuildingFlag_ResDropOff)
+		world.GetFaction(data.m_race)->SetBase(this);
+
+	//初始化组件
+	AddComponent(eComponentType_AI, new AiComponent(this));
 }
 

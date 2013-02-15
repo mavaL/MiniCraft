@@ -13,8 +13,8 @@
 #include "GameDefine.h"
 #include "GameDataDef.h"
 #include "Command.h"
-
-class AiComponent;
+#include "AIComponent.h"
+#include "PathComponent.h"
 
 ///该类实现来自OgreProcedural库
 class SelectableObject : public RenderableObject
@@ -33,13 +33,15 @@ public:
 	//!!在Ogre Root销毁前必须调用
 	static void		ReleaseMeshCache();
 
-	void			SetAiComponent(AiComponent* pAi)	{ m_pAi = pAi; }
-	AiComponent*	GetAiComponent()	{ return m_pAi; }
 	void			SetSelected(bool bSelected);
 	bool			GetSelected() const { return m_bSelected; }
 	void			SetAbility(int slotIndex, const SAbilityData* pData);
 	void			SetActiveAbility(int slotIndex) { m_pActiveAbility = m_pAbilitySlots[slotIndex]; } 
 	const SAbilityData*	GetActiveAbility() const { return m_pActiveAbility; }
+	bool			HasAbility(eCommandType type);
+
+	inline AiComponent*		GetAi() { return QueryComponent(this, eComponentType_AI, AiComponent); }
+	inline PathComponent*	GetPath() { return QueryComponent(this, eComponentType_Path, PathComponent); }
 	
 private:
 	Ogre::MeshPtr	_CreateSelectionCircleMesh(const Ogre::MeshPtr& objMesh);
@@ -50,7 +52,6 @@ private:
 	bool						m_bSelected;		//该对象是否被选中
 	Ogre::SceneNode*			m_pSelCircleNode;
 	SAbilityData*				m_pAbilitySlots[MAX_ABILITY_SLOT];
-	AiComponent*				m_pAi;
 	const SAbilityData*			m_pActiveAbility;
 };
 

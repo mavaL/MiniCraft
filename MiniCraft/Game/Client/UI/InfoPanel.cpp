@@ -58,7 +58,7 @@ void UiInfoPanel::SetVisible( bool bVisible )
 
 void UiInfoPanel::Update()
 {
-	if (!m_pActiveObject || m_pActiveObject->GetAiComponent()->GetCurState() != eObjectState_Produce)
+	if (!m_pActiveObject || m_pActiveObject->GetAi()->GetCurState() != eObjectState_Produce)
 	{
 		SetVisible(false);
 	}

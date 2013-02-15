@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "SelectableObject.h"
 #include "World.h"
-#include "AIComponent.h"
 #include "GUIManager.h"
 
 /** This is ogre-procedural's temporary mesh buffer.
@@ -299,14 +298,12 @@ SelectableObject::SelectableObject()
 ,m_pSelCircleNode(nullptr)
 ,m_bSelected(false)
 ,m_pActiveAbility(nullptr)
-,m_pAi(nullptr)
 {
 	memset(m_pAbilitySlots, 0, MAX_ABILITY_SLOT * sizeof(SAbilityData*));
 }
 
 SelectableObject::~SelectableObject()
 {
-	SAFE_DELETE(m_pAi);
 }
 
 void SelectableObject::SetSelected( bool bSelected )
@@ -469,7 +466,6 @@ void SelectableObject::ReleaseMeshCache()
 
 void SelectableObject::Update( float dt )
 {
-	m_pAi->Update(dt);
 }
 
 void SelectableObject::_OnSelected( bool bSelected )
@@ -516,7 +512,7 @@ void SelectableObject::SetAbility( int slotIndex, const SAbilityData* pData )
 
 void SelectableObject::_OnCommandFinished(eCommandType cmd)
 {
-	m_pAi->_OnCommandFinished();
+	GetAi()->_OnCommandFinished();
 }
 
 void SelectableObject::CreateRenderInstance()
@@ -526,5 +522,16 @@ void SelectableObject::CreateRenderInstance()
 	m_pEntity->setQueryFlags(eQueryType_SelectableObject);
 	//渲染对象与逻辑对象绑定,方便取出通信
 	m_pEntity->setUserAny(Ogre::Any(this));
+}
+
+bool SelectableObject::HasAbility( eCommandType type )
+{
+	for (int i=0; i<MAX_ABILITY_SLOT; ++i)
+	{
+		if(m_pAbilitySlots[i] && m_pAbilitySlots[i]->m_type == type)
+			return true;
+	}
+
+	return false;
 }
 

@@ -46,7 +46,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>.\Dependency\Lua5_1_4\src;.\Dependency\CEGUI\include;.\Dependency\boost;.\Dependency\OgreRecast\Include;.\Dependency\OIS\include;.\Dependency\Ogre\include;.\Game;.\Game\Client\UI;.\Game\Client;.\Game\Core;.\Game\Client\Object;.\Game\Client\AI;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\Dependency\Lua5_1_4\src;.\Dependency\CEGUI\include;.\Dependency\boost;.\Dependency\OgreRecast\Include;.\Dependency\OIS\include;.\Dependency\Ogre\include;.\Game;.\Game\Client\UI;.\Game\Client;.\Game\Core;.\Game\Client\Object;.\Game\Client\AI;.\Game\Client\Component;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <AdditionalOptions>/Zm143 %(AdditionalOptions)</AdditionalOptions>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -105,16 +105,18 @@
     <ClInclude Include="Dependency\OgreRecast\Include\Recast\RecastAlloc.h" />
     <ClInclude Include="Dependency\OgreRecast\Include\Recast\RecastAssert.h" />
     <ClInclude Include="Dependency\OgreRecast\Include\TestCharacter.h" />
-    <ClInclude Include="Game\Client\AI\AIComponent.h" />
     <ClInclude Include="Game\Client\AI\Command.h" />
     <ClInclude Include="Game\Client\AI\ObjectState.h" />
-    <ClInclude Include="Game\Client\AI\PathComponent.h" />
     <ClInclude Include="Game\Client\BattleState.h" />
+    <ClInclude Include="Game\Client\Component\AIComponent.h" />
+    <ClInclude Include="Game\Client\Component\Component.h" />
+    <ClInclude Include="Game\Client\Component\HarvestComponent.h" />
+    <ClInclude Include="Game\Client\Component\PathComponent.h" />
     <ClInclude Include="Game\Client\DotSceneLoader.h" />
+    <ClInclude Include="Game\Client\Faction.h" />
     <ClInclude Include="Game\Client\GameDataDef.h" />
     <ClInclude Include="Game\Client\GameDefine.h" />
     <ClInclude Include="Game\Client\Object\Building.h" />
-    <ClInclude Include="Game\Client\Object\Faction.h" />
     <ClInclude Include="Game\Client\Object\ObjectBase.h" />
     <ClInclude Include="Game\Client\Object\ObjectFactory.h" />
     <ClInclude Include="Game\Client\Object\ObjectManager.h" />
@@ -239,15 +241,16 @@
     <ClCompile Include="Dependency\OgreRecast\Src\Recast\RecastRegion.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="Game\Client\AI\AIComponent.cpp" />
     <ClCompile Include="Game\Client\AI\Command.cpp" />
     <ClCompile Include="Game\Client\AI\ObjectState.cpp" />
-    <ClCompile Include="Game\Client\AI\PathComponent.cpp" />
     <ClCompile Include="Game\Client\BattleState.cpp" />
+    <ClCompile Include="Game\Client\Component\AIComponent.cpp" />
+    <ClCompile Include="Game\Client\Component\HarvestComponent.cpp" />
+    <ClCompile Include="Game\Client\Component\PathComponent.cpp" />
     <ClCompile Include="Game\Client\DotSceneLoader.cpp" />
+    <ClCompile Include="Game\Client\Faction.cpp" />
     <ClCompile Include="Game\Client\GameDataDef.cpp" />
     <ClCompile Include="Game\Client\Object\Building.cpp" />
-    <ClCompile Include="Game\Client\Object\Faction.cpp" />
     <ClCompile Include="Game\Client\Object\ObjectBase.cpp" />
     <ClCompile Include="Game\Client\Object\ObjectFactory.cpp" />
     <ClCompile Include="Game\Client\Object\ObjectManager.cpp" />

@@ -45,7 +45,9 @@ enum eQueryType
 enum eCommandType
 {
 	eCommandType_Produce,		//生产命令
-	eCommandType_Move			//移动命令
+	eCommandType_Move,			//移动命令
+	eCommandType_Stop,			//停止命令
+	eCommandType_Gather			//采集命令
 };
 
 ///注册OgreStringInterface

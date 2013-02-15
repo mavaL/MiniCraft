@@ -5,9 +5,9 @@
 #include "Command.h"
 #include "AIComponent.h"
 #include "PathComponent.h"
+#include "HarvestComponent.h"
 
 IMPL_PARAM_COMMAND(Unit, ClampPos, Vector3)
-IMPL_PARAM_COMMAND(Unit, NeedMove, Bool)
 IMPL_PARAM_COMMAND_STR(Unit, UnitName)
 
 //**** Define stuff for the Lua Class ****//
@@ -37,13 +37,11 @@ Unit::Unit()
 :SelectableObject()
 ,m_pAnimState(nullptr)
 ,m_unitName(Ogre::StringUtil::BLANK)
-,m_pPath(nullptr)
-,m_bPosChanged(false)
+,m_fStopTime(0)
 {
 	Ogre::ParamDictionary* dict = getParamDictionary();
 	dict->addParameter(Ogre::ParameterDef("clamppos", "clamp position of the object", Ogre::PT_VECTOR3), &m_sCmdClampPos);
 	dict->addParameter(Ogre::ParameterDef("unitName", "logic representation of the unit", Ogre::PT_STRING), &m_sCmdUnitName);
-	dict->addParameter(Ogre::ParameterDef("needmove", "whether the unit should transfer to move state directly", Ogre::PT_BOOL), &m_sCmdNeedMove);
 
 	//将对象绑定到lua
 	//ScriptSystem::GetSingleton().BindObjectToLua<Unit>(UNIT_TABLE_NAME, GetID(), this);
@@ -130,10 +128,10 @@ int Unit::FindPath( lua_State* L )
 
 int Unit::GetDestPosition( lua_State* L )
 {
-	ScriptSystem& system = ScriptSystem::GetSingleton();
-	system.Push_Float(m_destPos.x);
-	system.Push_Float(m_destPos.y);
-	system.Push_Float(m_destPos.z);
+// 	ScriptSystem& system = ScriptSystem::GetSingleton();
+// 	system.Push_Float(m_destPos.x);
+// 	system.Push_Float(m_destPos.y);
+// 	system.Push_Float(m_destPos.z);
 
 	return 3;
 }
@@ -195,23 +193,14 @@ int Unit::DetachRes( lua_State* L )
 
 int Unit::SetDestPosition( lua_State* L )
 {
-	ScriptSystem& system = ScriptSystem::GetSingleton();
-	float x = system.Get_Float(-3);
-	float y = system.Get_Float(-2);
-	float z = system.Get_Float(-1);
-
-	m_destPos = Ogre::Vector3(x, y, z);
+// 	ScriptSystem& system = ScriptSystem::GetSingleton();
+// 	float x = system.Get_Float(-3);
+// 	float y = system.Get_Float(-2);
+// 	float z = system.Get_Float(-1);
+// 
+// 	m_destPos = Ogre::Vector3(x, y, z);
 
 	return 0;
-}
-
-void Unit::SetDestPos( const Ogre::Vector3& destPos )
-{
-	Ogre::Vector3 adjustPos(destPos);
-	World::GetSingleton().ClampPosToNavMesh(adjustPos);
-	
-	m_destPos = adjustPos;
-	SetNeedMove(true);
 }
 
 void Unit::SetClampPos( const POS& pos )
@@ -226,13 +215,8 @@ void Unit::SetClampPos( const POS& pos )
 
 void Unit::_OnCommandFinished( eCommandType cmd )
 {
-	if (cmd == eCommandType_Move)
-	{
-		//停止移动
-		bool bSucceed = m_pPath->StopMove();
-		assert(bSucceed);
-		//SetNeedMove(false);
-	}
+	if(cmd == eCommandType_Move)
+		GetPath()->StopMove();
 
 	__super::_OnCommandFinished(cmd);
 }
@@ -257,6 +241,17 @@ void Unit::SetUnitName( const STRING& name )
 		{
 			const SAbilityData& pAbil = dataMgr.m_abilityData.find(strAbil)->second;
 			SetAbility(iAbil, &pAbil);
+
+			//采集组件
+			if(pAbil.m_type == eCommandType_Gather)
+				AddComponent(eComponentType_Harvest, new HarvestComponent(this));
 		}
 	}	
+}
+
+void Unit::StopAction()
+{
+	GetAi()->CancelAllCommand();
+	StopAnimation();
+	SetStopTime(0);
 }

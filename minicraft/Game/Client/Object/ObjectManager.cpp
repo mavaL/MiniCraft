@@ -7,7 +7,6 @@
 ObjectManager::ObjectManager()
 {
 	//注册所有对象工厂
-	m_factories.insert(std::make_pair(eObjectType_Faction, new FactionFactory));
  	m_factories.insert(std::make_pair(eObjectType_Unit, new UnitFactory));
  	m_factories.insert(std::make_pair(eObjectType_Building, new BuildingFactory));
 	m_factories.insert(std::make_pair(eObjectType_Resource, new ResourceFactory));
@@ -49,5 +48,9 @@ void ObjectManager::DestroyAll()
 void ObjectManager::UpdateAll( float dt )
 {
 	for(auto iter=m_objects.begin(); iter!=m_objects.end(); ++iter)
-		(iter->second)->Update(dt);
+	{
+		Object* pObj = (iter->second);
+		pObj->UpdateAllComponent(dt);
+		pObj->Update(dt);
+	}
 }

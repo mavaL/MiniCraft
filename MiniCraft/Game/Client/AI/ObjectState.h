@@ -11,10 +11,12 @@
 
 enum eObjectState
 {
-	eObjectState_Idle,			//空闲状态
-	eObjectState_Produce,		//生产状态
-	eObjectState_Move,			//移动状态
-	eObjectState_Targeting		//选择目标状态
+	eObjectState_Idle,			//空闲
+	eObjectState_Produce,		//生产
+	eObjectState_Move,			//移动
+	eObjectState_Targeting,		//选择目标
+	eObjectState_Stop,			//停止
+	eObjectState_Gather,		//采集资源
 };
 
 class SelectableObject;
@@ -46,7 +48,6 @@ public:
 
 public:
 	virtual	void Enter(SelectableObject* pOwner);
-	virtual void Update(float dt, SelectableObject* pOwner);
 	virtual void Exit(SelectableObject* pOwner);
 };
 
@@ -81,6 +82,29 @@ class StateProduce : public ObjectState
 {
 public:
 	StateProduce():ObjectState(eObjectState_Produce) {}
+
+public:
+	virtual	void Enter(SelectableObject* pOwner);
+	virtual void Update(float dt, SelectableObject* pOwner);
+	virtual void Exit(SelectableObject* pOwner);
+};
+
+///停止状态
+class StateStop : public ObjectState
+{
+public:
+	StateStop():ObjectState(eObjectState_Stop) {}
+
+public:
+	virtual	void Enter(SelectableObject* pOwner);
+	virtual void Update(float dt, SelectableObject* pOwner);
+};
+
+///采集状态
+class StateGather : public ObjectState
+{
+public:
+	StateGather():ObjectState(eObjectState_Gather) {}
 
 public:
 	virtual	void Enter(SelectableObject* pOwner);

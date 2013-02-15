@@ -76,7 +76,14 @@ bool UiCommandPanel::CEGUI_OnCommandBtnClicked( const CEGUI::EventArgs& e )
 	m_pActiveObj->SetActiveAbility(Slot);
 	const SAbilityData* pData = m_pActiveObj->GetActiveAbility();
 	
-	m_pActiveObj->GetAiComponent()->GiveCommand(Command(pData->m_type, m_pActiveObj));
+	if(pData->m_param == TARGETING_AND_FORCE_EXECUTE)
+	{
+		m_pActiveObj->GetAi()->SetParallelState(eObjectState_Targeting);
+	}
+	else
+	{
+		m_pActiveObj->GetAi()->GiveCommand(Command(pData->m_type, m_pActiveObj), pData->m_param == FORCE_EXECUTE);
+	}
 
 	return true;
 }

@@ -1,22 +1,9 @@
 #include "stdafx.h"
 #include "ObjectFactory.h"
-#include "Faction.h"
 #include "Unit.h"
 #include "Building.h"
 #include "Resource.h"
 
-
-/////////////////////////////////////////////////////////////
-Object* FactionFactory::CreateInstance()
-{
-	return new Faction;
-}
-
-void FactionFactory::DestroyInstance( Object* pObject )
-{
-	assert(pObject);
-	delete pObject;
-}
 
 /////////////////////////////////////////////////////////////
 Object* UnitFactory::CreateInstance()
