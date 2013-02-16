@@ -5,12 +5,13 @@
 #include "OgreManager.h"
 #include "GUIManager.h"
 #include <SdkCameraMan.h>
-#include "DotSceneLoader.h"
 #include "ObjectManager.h"
 #include "GameDataDef.h"
 #include "Faction.h"
 #include "CommandPanel.h"
 #include "InfoPanel.h"
+#include "Scene.h"
+#include "Building.h"
 
 
 SGlobalEnvironment	g_Environment;
@@ -27,11 +28,9 @@ World::World()
 ,m_bFreeCamMode(false)
 ,m_pSceneQuery(nullptr)
 ,m_pRaySceneQuery(nullptr)
-,m_terrainGroup(nullptr)
-,m_terrainOption(nullptr)
-,m_pTerrain(nullptr)
 ,m_cmdPanel(new UiCommandPanel)
 ,m_infoPanel(new UiInfoPanel)
+,m_pTestScene(new Scene)
 {
 	
 }
@@ -40,6 +39,7 @@ World::~World()
 {
 	SAFE_DELETE(m_cmdPanel);
 	SAFE_DELETE(m_infoPanel);
+	SAFE_DELETE(m_pTestScene);
 }
 
 void World::Init()
@@ -107,9 +107,9 @@ void World::Init()
 	g_Environment.m_pCrowd = m_pDetourCrowd;
 
 	//加载测试场景
-	DotSceneLoader sceneLoader;
-	sceneLoader.parseDotScene("MyStarCraft.Scene", "General", 
-		m_pSceneMgr, m_pSceneMgr->getRootSceneNode()->createChildSceneNode("SceneNode"));
+	SetSerializerOwner(m_pTestScene);
+	SetSerializerSceneManager(m_pSceneMgr);
+	m_pTestScene->Load("MyStarCraft.Scene", "General", this);
 
 	//UI for test
 	Ogre::Entity* pEntConsole = m_pSceneMgr->createEntity("ConsoleTerran_0.mesh");
@@ -157,13 +157,10 @@ void World::Shutdown()
 
 	ObjectManager::GetSingleton().DestroyAll();
 
-	SAFE_DELETE(m_terrainGroup);
-	SAFE_DELETE(m_terrainOption);
 	SAFE_DELETE(m_pDetourCrowd);
 	SAFE_DELETE(m_pDetourTileCache);
 	SAFE_DELETE(m_pRecast);
 	SAFE_DELETE(m_cameraMan);
-	m_pTerrain = nullptr;
 
 	m_pSceneMgr->destroyQuery(m_pSceneQuery);
 	m_pSceneMgr->destroyQuery(m_pRaySceneQuery);
@@ -184,45 +181,6 @@ void World::Shutdown()
 
 	m_cmdPanel->Destroy();
 	m_infoPanel->Destroy();
-}
-
-void World::LoadTerrain( rapidxml::xml_node<>* XMLNode )
-{
-	m_terrainOption = new Ogre::TerrainGlobalOptions;
-
-	Ogre::Real worldSize = DotSceneLoader::getAttribReal(XMLNode, "worldSize");
-	int mapSize = Ogre::StringConverter::parseInt(XMLNode->first_attribute("mapSize")->value());
-	//bool colourmapEnabled = DotSceneLoader::getAttribBool(XMLNode, "colourmapEnabled");
-	//int colourMapTextureSize = Ogre::StringConverter::parseInt(XMLNode->first_attribute("colourMapTextureSize")->value());
-	//int compositeMapDistance = Ogre::StringConverter::parseInt(XMLNode->first_attribute("tuningCompositeMapDistance")->value());
-	int maxPixelError = Ogre::StringConverter::parseInt(XMLNode->first_attribute("tuningMaxPixelError")->value());
-
-	//     Ogre::Vector3 lightdir(0, -0.3, 0.75);
-	//     lightdir.normalise();
-	//     Ogre::Light* l = mSceneMgr->createLight("tstLight");
-	//     l->setType(Ogre::Light::LT_DIRECTIONAL);
-	//     l->setDirection(lightdir);
-	//     l->setDiffuseColour(Ogre::ColourValue(1.0, 1.0, 1.0));
-	//     l->setSpecularColour(Ogre::ColourValue(0.4, 0.4, 0.4));
-
-	m_terrainOption->setMaxPixelError((Ogre::Real)maxPixelError);
-	m_terrainOption->setCompositeMapDistance(3000);
-	m_terrainOption->setUseRayBoxDistanceCalculation(true);
-	// mTerrainGlobalOptions->setLightMapDirection(lightdir);
-	m_terrainOption->setCompositeMapAmbient(m_pSceneMgr->getAmbientLight());
-	//mTerrainGlobalOptions->setCompositeMapDiffuse(l->getDiffuseColour());
-
-	//mSceneMgr->destroyLight("tstLight");
-
-	m_terrainGroup = new Ogre::TerrainGroup(m_pSceneMgr, Ogre::Terrain::ALIGN_X_Z, mapSize, worldSize);
-	m_terrainGroup->setOrigin(Ogre::Vector3::ZERO);
-	m_terrainGroup->setResourceGroup("General");
-
-	//加载地形数据
-	m_terrainGroup->defineTerrain(0, 0, "terrain.dat");
-	m_terrainGroup->loadTerrain(0, 0);
-	m_terrainGroup->freeTemporaryResources();
-	m_pTerrain = m_terrainGroup->getTerrain(0, 0);
 }
 
 void World::Update(float dt)
@@ -323,7 +281,7 @@ void World::ClampToTerrain(Ogre::Vector3& pos)
 	Ogre::Ray queryRay(pos, Ogre::Vector3::NEGATIVE_UNIT_Y);
 
 	// Perform the scene query
-	Ogre::TerrainGroup::RayResult result = m_terrainGroup->rayIntersects(queryRay);
+	Ogre::TerrainGroup::RayResult result = m_pTestScene->GetTerrainGroup()->rayIntersects(queryRay);
 	if(result.hit) 
 	{
 		Ogre::Real terrainHeight = result.position.y;
@@ -336,7 +294,7 @@ void World::ClampToTerrain(Ogre::Vector3& pos)
 		queryRay.setDirection(Ogre::Vector3::UNIT_Y);
 
 		// Perform scene query again
-		result = m_terrainGroup->rayIntersects(queryRay);
+		result = m_pTestScene->GetTerrainGroup()->rayIntersects(queryRay);
 		if(result.hit) 
 		{
 			Ogre::Real terrainHeight = result.position.y;
@@ -384,7 +342,7 @@ bool World::GetTerrainIntersectPos( const FLOAT2& screenPos, POS& retPt )
 	Ogre::Ray ray;
 	m_pCamera->getCameraToViewportRay(screenPos.x, screenPos.y, &ray);
 
-	auto result = m_terrainGroup->rayIntersects(ray);
+	auto result = m_pTestScene->GetTerrainGroup()->rayIntersects(ray);
 
 	if (result.hit)
 	{
@@ -393,4 +351,60 @@ bool World::GetTerrainIntersectPos( const FLOAT2& screenPos, POS& retPt )
 	}
 
 	return false;
+}
+
+void World::_LoadObjects( rapidxml::xml_node<>* node )
+{
+	size_t count = Ogre::StringConverter::parseUnsignedInt(node->first_attribute("count")->value());
+	rapidxml::xml_node<>* curObjNode = node->first_node();
+
+	for (size_t i=0; i< count; ++i)
+	{
+		const STRING strMesh = curObjNode->first_attribute("meshname")->value();
+		const STRING strPos = curObjNode->first_attribute("position")->value();
+		const STRING strOrient = curObjNode->first_attribute("orientation")->value();
+		const STRING strScale = curObjNode->first_attribute("scale")->value();
+		const bool bIsBuilding = Ogre::StringConverter::parseBool(curObjNode->first_attribute("isbuilding")->value());
+		const bool bIsResource = Ogre::StringConverter::parseBool(curObjNode->first_attribute("isresource")->value());
+
+		if (bIsBuilding || bIsResource)
+		{
+			Object* pObject = ObjectManager::GetSingleton().CreateObject(bIsBuilding ? eObjectType_Building : eObjectType_Resource);
+
+			if(bIsBuilding)
+			{
+				const STRING strBuildingName = curObjNode->first_attribute("buildingname")->value();
+				Building* pBuilding = static_cast<Building*>(pObject);
+
+				const POS& pos = Ogre::StringConverter::parseVector3(strPos);
+				const ORIENT& orient = Ogre::StringConverter::parseQuaternion(strOrient);
+				const SCALE& scale = Ogre::StringConverter::parseVector3(strScale);
+
+				pBuilding->Init(strBuildingName, pos, orient, scale);
+			}
+			else
+			{
+				pObject->setParameter("meshname", strMesh);
+				pObject->setParameter("position", strPos);
+				pObject->setParameter("orientation", strOrient);
+				pObject->setParameter("scale", strScale);
+			}
+		}
+		else
+		{
+			const Ogre::Vector3 pos = Ogre::StringConverter::parseVector3(strPos);
+			const Ogre::Quaternion orient = Ogre::StringConverter::parseQuaternion(strOrient);
+			const Ogre::Vector3 scale = Ogre::StringConverter::parseVector3(strScale);
+
+			//非游戏对象,不纳入逻辑管理,只渲染
+			Ogre::Entity* entity = m_pSceneMgr->createEntity(strMesh);
+			assert(entity);
+
+			Ogre::SceneNode* pNode = m_pSceneMgr->getRootSceneNode()->createChildSceneNode(pos, orient);
+			pNode->setScale(scale);
+			pNode->attachObject(entity);
+		}	
+
+		curObjNode = curObjNode->next_sibling();
+	}
 }

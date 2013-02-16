@@ -44,6 +44,9 @@
     <Filter Include="源文件\OgreRecast\Src\RecastContrib">
       <UniqueIdentifier>{5682fa6e-36d9-4618-8a69-376d73dc75df}</UniqueIdentifier>
     </Filter>
+    <Filter Include="源文件\rapidxml">
+      <UniqueIdentifier>{b22a3cdf-09fd-49be-b007-897b10948901}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\AppState.h">
@@ -150,6 +153,24 @@
     </ClInclude>
     <ClInclude Include="Dependency\OgreRecast\Include\RecastInputGeom.h">
       <Filter>源文件\OgreRecast\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Scene.h">
+      <Filter>源文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\SceneSerializer.h">
+      <Filter>源文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependency\rapidxml\rapidxml.hpp">
+      <Filter>源文件\rapidxml</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependency\rapidxml\rapidxml_iterators.hpp">
+      <Filter>源文件\rapidxml</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependency\rapidxml\rapidxml_print.hpp">
+      <Filter>源文件\rapidxml</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependency\rapidxml\rapidxml_utils.hpp">
+      <Filter>源文件\rapidxml</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -260,6 +281,12 @@
     </ClCompile>
     <ClCompile Include="Dependency\OgreRecast\Src\RecastConvexHull.cpp">
       <Filter>源文件\OgreRecast\Src\RecastContrib</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Scene.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\SceneSerializer.cpp">
+      <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

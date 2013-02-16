@@ -46,7 +46,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\Kratos\Src;..\Kratos\Dependency\Lua5_1_4\src;..\Kratos\Dependency\CEGUI\include;..\Kratos\Dependency\boost;..\Kratos\Dependency\OgreRecast\Include;..\Kratos\Dependency\OIS\include;..\Kratos\Dependency\Ogre\include;.\Game;.\Game\Client\UI;.\Game\Client;.\Game\Core;.\Game\Client\Object;.\Game\Client\AI;.\Game\Client\Component;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Kratos\Src;..\Kratos\Dependency\rapidxml;..\Kratos\Dependency\Lua5_1_4\src;..\Kratos\Dependency\CEGUI\include;..\Kratos\Dependency\boost;..\Kratos\Dependency\OgreRecast\Include;..\Kratos\Dependency\OIS\include;..\Kratos\Dependency\Ogre\include;.\Game;.\Game\Client\UI;.\Game\Client;.\Game\Core;.\Game\Client\Object;.\Game\Client\AI;.\Game\Client\Component;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <AdditionalOptions>/Zm143 %(AdditionalOptions)</AdditionalOptions>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -81,7 +81,6 @@
     <ClInclude Include="Game\Client\Component\Component.h" />
     <ClInclude Include="Game\Client\Component\HarvestComponent.h" />
     <ClInclude Include="Game\Client\Component\PathComponent.h" />
-    <ClInclude Include="Game\Client\DotSceneLoader.h" />
     <ClInclude Include="Game\Client\Faction.h" />
     <ClInclude Include="Game\Client\GameDataDef.h" />
     <ClInclude Include="Game\Client\GameDefine.h" />
@@ -96,10 +95,6 @@
     <ClInclude Include="Game\Client\UI\CommandPanel.h" />
     <ClInclude Include="Game\Client\UI\InfoPanel.h" />
     <ClInclude Include="Game\Client\World.h" />
-    <ClInclude Include="Game\rapidxml\rapidxml.hpp" />
-    <ClInclude Include="Game\rapidxml\rapidxml_iterators.hpp" />
-    <ClInclude Include="Game\rapidxml\rapidxml_print.hpp" />
-    <ClInclude Include="Game\rapidxml\rapidxml_utils.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game\Client\AI\Command.cpp" />
@@ -109,7 +104,6 @@
     <ClCompile Include="Game\Client\Component\AIComponent.cpp" />
     <ClCompile Include="Game\Client\Component\HarvestComponent.cpp" />
     <ClCompile Include="Game\Client\Component\PathComponent.cpp" />
-    <ClCompile Include="Game\Client\DotSceneLoader.cpp" />
     <ClCompile Include="Game\Client\Faction.cpp" />
     <ClCompile Include="Game\Client\GameDataDef.cpp" />
     <ClCompile Include="Game\Client\MiniCraft.cpp" />

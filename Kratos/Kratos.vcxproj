@@ -45,7 +45,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>.\Dependency\Lua5_1_4\src;.\Dependency\CEGUI\include;.\Dependency\boost;.\Dependency\OgreRecast\Include;.\Dependency\OIS\include;.\Dependency\Ogre\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\Dependency\rapidxml;.\Dependency\Lua5_1_4\src;.\Dependency\CEGUI\include;.\Dependency\boost;.\Dependency\OgreRecast\Include;.\Dependency\OIS\include;.\Dependency\Ogre\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -95,12 +95,18 @@
     <ClInclude Include="Dependency\OgreRecast\Include\Recast\Recast.h" />
     <ClInclude Include="Dependency\OgreRecast\Include\Recast\RecastAlloc.h" />
     <ClInclude Include="Dependency\OgreRecast\Include\Recast\RecastAssert.h" />
+    <ClInclude Include="Dependency\rapidxml\rapidxml.hpp" />
+    <ClInclude Include="Dependency\rapidxml\rapidxml_iterators.hpp" />
+    <ClInclude Include="Dependency\rapidxml\rapidxml_print.hpp" />
+    <ClInclude Include="Dependency\rapidxml\rapidxml_utils.hpp" />
     <ClInclude Include="Src\AppState.h" />
     <ClInclude Include="Src\AppStateManager.h" />
     <ClInclude Include="Src\GUIManager.h" />
     <ClInclude Include="Src\InputManager.h" />
     <ClInclude Include="Src\luna.h" />
     <ClInclude Include="Src\OgreManager.h" />
+    <ClInclude Include="Src\Scene.h" />
+    <ClInclude Include="Src\SceneSerializer.h" />
     <ClInclude Include="Src\ScriptSystem.h" />
     <ClInclude Include="Src\Singleton.h" />
   </ItemGroup>
@@ -140,6 +146,8 @@
     <ClCompile Include="Src\GUIManager.cpp" />
     <ClCompile Include="Src\InputManager.cpp" />
     <ClCompile Include="Src\OgreManager.cpp" />
+    <ClCompile Include="Src\Scene.cpp" />
+    <ClCompile Include="Src\SceneSerializer.cpp" />
     <ClCompile Include="Src\ScriptSystem.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

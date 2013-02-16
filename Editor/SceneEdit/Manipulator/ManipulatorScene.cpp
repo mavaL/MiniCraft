@@ -1,9 +1,8 @@
 #include "stdafx.h"
-#include "../DotSceneSerializer.h"
-#include "../DotSceneLoader.h"
 #include "ManipulatorScene.h"
 #include "../EditorDefine.h"
 #include "Utility.h"
+#include "Scene.h"
 
 
 ManipulatorScene::ManipulatorScene()
@@ -11,12 +10,13 @@ ManipulatorScene::ManipulatorScene()
 ,m_bIsSceneReay(false)
 ,m_pSceneMgr(nullptr)
 ,m_pMainCamera(nullptr)
+,m_pCurScene(new Scene)
 {
 }
 
 ManipulatorScene::~ManipulatorScene()
 {
-	
+	SAFE_DELETE(m_pCurScene);
 }
 void ManipulatorScene::Init()
 {
@@ -25,8 +25,6 @@ void ManipulatorScene::Init()
 	m_scenePath = Utility::EngineToUnicode(loc->at(0));
 	m_scenePath += L"\\";
 
-	m_sceneSerializer = new DotSceneSerialezer;
-	m_sceneLoader = new DotSceneLoader;
 	m_manipulatorTerrain = new ManipulatorTerrain;
 	m_manipulatorObject = new ManipulatorObject;
 	m_manipulatorNavMesh = new ManipulatorNavMesh;
@@ -44,8 +42,6 @@ void ManipulatorScene::Shutdown()
 	SAFE_DELETE(m_manipulatorCamera);
 	SAFE_DELETE(m_manipulatorResource);
 	SAFE_DELETE(m_manipulatorGameData);
-	SAFE_DELETE(m_sceneSerializer);
-	SAFE_DELETE(m_sceneLoader);
 }
 
 void ManipulatorScene::SceneNew(const std::wstring& sceneName)
@@ -66,8 +62,11 @@ void ManipulatorScene::SceneOpen(const std::wstring& filepath)
 	Ogre::StringUtil::splitFullFilename(fullpath, basename, extname, path);
 
 	m_sceneName = Utility::EngineToUnicode(basename);
-	m_sceneLoader->parseDotScene(fullpath);
 	
+	SetSerializerSceneManager(m_pSceneMgr);
+	SetSerializerOwner(m_pCurScene);
+	m_pCurScene->Load(fullpath, this);
+
 	m_bIsSceneReay = true;
 
 	//回调事件
@@ -78,12 +77,14 @@ void ManipulatorScene::SceneOpen(const std::wstring& filepath)
 
 void ManipulatorScene::SceneSave()
 {
-	m_sceneSerializer->Serialize(Utility::UnicodeToEngine(m_scenePath+m_sceneName), Utility::UnicodeToEngine(m_sceneName));
+	//m_sceneSerializer->Serialize(Utility::UnicodeToEngine(m_scenePath+m_sceneName), Utility::UnicodeToEngine(m_sceneName));
+	m_pCurScene->Save();
 	m_manipulatorGameData->SaveAllXml();
 }
 
 void ManipulatorScene::SceneClose()
 {
+	m_pCurScene->Reset();
 	m_manipulatorTerrain->Shutdown();
 	m_pSceneMgr->clearScene();
 	m_bIsSceneReay = false;
@@ -113,6 +114,11 @@ void ManipulatorScene::OnGizmoNodeReset()
 void ManipulatorScene::OnFrameMove( float dt )
 {
 	m_manipulatorObject->OnFrameMove(dt);
+}
+
+void ManipulatorScene::_LoadObjects( rapidxml::xml_node<>* node )
+{
+	m_manipulatorObject->Load(node);
 }
 
 

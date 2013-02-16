@@ -31,9 +31,9 @@
 #include <algorithm>
 
 //rapidxml
-#include "rapidxml/rapidxml.hpp"       
-#include "rapidxml/rapidxml_utils.hpp"
-#include "rapidxml/rapidxml_print.hpp"
+#include "rapidxml.hpp"       
+#include "rapidxml_utils.hpp"
+#include "rapidxml_print.hpp"
 
 #include <Windows.h>
 

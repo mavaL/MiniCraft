@@ -54,7 +54,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>./;../../Kratos/Dependency/OIS/include;../../Kratos/Dependency/Ogre/include;../../Kratos/Dependency/Ogre/include/Terrain;../../Kratos/Dependency/OgreRecast/include;../Dependency/XTP/Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./;../../Kratos/Src;../../Kratos/Dependency/rapidxml;../../Kratos/Dependency/OIS/include;../../Kratos/Dependency/Ogre/include;../../Kratos/Dependency/Ogre/include/Terrain;../../Kratos/Dependency/OgreRecast/include;../Dependency/XTP/Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/Zm300 %(AdditionalOptions)</AdditionalOptions>
       <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
     </ClCompile>
@@ -123,8 +123,6 @@
     <ClInclude Include="Action\ActionTerrainSplat.h" />
     <ClInclude Include="Application.h" />
     <ClInclude Include="Brush.h" />
-    <ClInclude Include="DotSceneLoader.h" />
-    <ClInclude Include="DotSceneSerializer.h" />
     <ClInclude Include="EditorDefine.h" />
     <ClInclude Include="Gizmo.h" />
     <ClInclude Include="MainFrm.h" />
@@ -137,10 +135,6 @@
     <ClInclude Include="Manipulator\ManipulatorObject.h" />
     <ClInclude Include="Manipulator\ManipulatorScene.h" />
     <ClInclude Include="Manipulator\ManipulatorTerrain.h" />
-    <ClInclude Include="rapidxml\rapidxml.hpp" />
-    <ClInclude Include="rapidxml\rapidxml_iterators.hpp" />
-    <ClInclude Include="rapidxml\rapidxml_print.hpp" />
-    <ClInclude Include="rapidxml\rapidxml_utils.hpp" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="SceneEdit.h" />
     <ClInclude Include="stdafx.h" />
@@ -163,8 +157,6 @@
     <ClCompile Include="Action\ActionTerrainSplat.cpp" />
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="Brush.cpp" />
-    <ClCompile Include="DotSceneLoader.cpp" />
-    <ClCompile Include="DotSceneSerializer.cpp" />
     <ClCompile Include="Gizmo.cpp" />
     <ClCompile Include="MainFrm.cpp" />
     <ClCompile Include="Manipulator\ManipulatorAction.cpp" />

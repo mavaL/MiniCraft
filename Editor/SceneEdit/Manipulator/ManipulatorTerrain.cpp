@@ -1,4 +1,3 @@
-LoadUnloadResourceList
 #include "stdafx.h"
 #include "ManipulatorTerrain.h"
 #include <OgreStreamSerialiser.h>
@@ -8,7 +7,7 @@ LoadUnloadResourceList
 #include "ManipulatorScene.h"
 #include "../EditorDefine.h"
 #include "Utility.h"
-
+#include "Scene.h"
 
 
 ManipulatorTerrain::ManipulatorTerrain()
@@ -24,6 +23,13 @@ ManipulatorTerrain::ManipulatorTerrain()
 	m_brush[0].reset(new BrushCircle);
 	m_brush[1].reset(new BrushSquare);
 	m_brush[1]->SetDimension(10, 10);
+
+	ManipulatorScene::GetSingleton().AddCallback(this);
+}
+
+ManipulatorTerrain::~ManipulatorTerrain()
+{
+	ManipulatorScene::GetSingleton().RemoveCallback(this);
 }
 
 void ManipulatorTerrain::NewFlatTerrain()
@@ -127,46 +133,14 @@ void ManipulatorTerrain::Shutdown()
 	m_terrainOption.reset();
 }
 
-void ManipulatorTerrain::Load( rapidxml::xml_node<>* XMLNode )
+void ManipulatorTerrain::OnSceneOpen()
 {
-	m_terrainOption.reset(new TerrainGlobalOptions);
-
-	Ogre::Real worldSize = DotSceneLoader::getAttribReal(XMLNode, "worldSize");
-	int mapSize = Ogre::StringConverter::parseInt(XMLNode->first_attribute("mapSize")->value());
-	//bool colourmapEnabled = DotSceneLoader::getAttribBool(XMLNode, "colourmapEnabled");
-	//int colourMapTextureSize = Ogre::StringConverter::parseInt(XMLNode->first_attribute("colourMapTextureSize")->value());
-	//int compositeMapDistance = Ogre::StringConverter::parseInt(XMLNode->first_attribute("tuningCompositeMapDistance")->value());
-	int maxPixelError = Ogre::StringConverter::parseInt(XMLNode->first_attribute("tuningMaxPixelError")->value());
-
-	//     Ogre::Vector3 lightdir(0, -0.3, 0.75);
-	//     lightdir.normalise();
-	//     Ogre::Light* l = mSceneMgr->createLight("tstLight");
-	//     l->setType(Ogre::Light::LT_DIRECTIONAL);
-	//     l->setDirection(lightdir);
-	//     l->setDiffuseColour(Ogre::ColourValue(1.0, 1.0, 1.0));
-	//     l->setSpecularColour(Ogre::ColourValue(0.4, 0.4, 0.4));
-
-	m_terrainOption->setMaxPixelError((Ogre::Real)maxPixelError);
-	m_terrainOption->setCompositeMapDistance(3000);
-	m_terrainOption->setUseRayBoxDistanceCalculation(true);
-	// mTerrainGlobalOptions->setLightMapDirection(lightdir);
-	m_terrainOption->setCompositeMapAmbient(ManipulatorSystem.m_pSceneMgr->getAmbientLight());
-	//mTerrainGlobalOptions->setCompositeMapDiffuse(l->getDiffuseColour());
-
-	//mSceneMgr->destroyLight("tstLight");
-
 	SAFE_DELETE(m_terrainGroup);
-	m_terrainGroup = new Ogre::TerrainGroup(ManipulatorSystem.m_pSceneMgr, Ogre::Terrain::ALIGN_X_Z, mapSize, worldSize);
-	m_terrainGroup->setOrigin(m_origPos);
-	m_terrainGroup->setResourceGroup("General");
 
-	//加载地形数据
-	std::wstring fullPath(ManipulatorSystem.GenerateSceneFullPath());
-	fullPath += L"terrain.dat";
-	m_terrainGroup->defineTerrain(0, 0, Utility::UnicodeToEngine(fullPath));
-	m_terrainGroup->loadTerrain(0, 0);
-	m_terrainGroup->freeTemporaryResources();
-	m_pTerrain = m_terrainGroup->getTerrain(0, 0);
+	Scene* pScene = ManipulatorScene::GetSingleton().GetScene();
+	m_terrainOption.reset(pScene->GetTerrainOption());
+	m_terrainGroup = pScene->GetTerrainGroup();
+	m_pTerrain = pScene->GetTerrain();
 
 	//设置当前编辑层为0
 	m_curEditLayer = 0;

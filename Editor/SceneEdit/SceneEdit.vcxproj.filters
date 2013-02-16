@@ -13,14 +13,8 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="DotScene">
-      <UniqueIdentifier>{75942cc7-968b-4aa3-a1f5-04efb434546a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="UI">
       <UniqueIdentifier>{44c5d3c2-f93b-4e2c-ba58-64c4211623b9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="DotScene\rapidxml">
-      <UniqueIdentifier>{1b030b2e-87fb-4d67-a6ed-319190048a40}</UniqueIdentifier>
     </Filter>
     <Filter Include="Manipulator">
       <UniqueIdentifier>{7985c4cc-42ce-4fec-8dc7-ce61963cd83e}</UniqueIdentifier>
@@ -72,29 +66,11 @@
     <ClInclude Include="Application.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="DotSceneLoader.h">
-      <Filter>DotScene</Filter>
-    </ClInclude>
-    <ClInclude Include="DotSceneSerializer.h">
-      <Filter>DotScene</Filter>
-    </ClInclude>
     <ClInclude Include="UI\DialogSceneNew.h">
       <Filter>UI</Filter>
     </ClInclude>
     <ClInclude Include="Utility.h">
       <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="rapidxml\rapidxml.hpp">
-      <Filter>DotScene\rapidxml</Filter>
-    </ClInclude>
-    <ClInclude Include="rapidxml\rapidxml_iterators.hpp">
-      <Filter>DotScene\rapidxml</Filter>
-    </ClInclude>
-    <ClInclude Include="rapidxml\rapidxml_print.hpp">
-      <Filter>DotScene\rapidxml</Filter>
-    </ClInclude>
-    <ClInclude Include="rapidxml\rapidxml_utils.hpp">
-      <Filter>DotScene\rapidxml</Filter>
     </ClInclude>
     <ClInclude Include="EditorDefine.h">
       <Filter>头文件</Filter>
@@ -184,12 +160,6 @@
     </ClCompile>
     <ClCompile Include="Application.cpp">
       <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="DotSceneLoader.cpp">
-      <Filter>DotScene</Filter>
-    </ClCompile>
-    <ClCompile Include="DotSceneSerializer.cpp">
-      <Filter>DotScene</Filter>
     </ClCompile>
     <ClCompile Include="UI\DialogSceneNew.cpp">
       <Filter>UI</Filter>

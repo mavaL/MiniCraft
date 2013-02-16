@@ -8,6 +8,8 @@
 #ifndef ManipulatorTerrain_h__
 #define ManipulatorTerrain_h__
 
+#include "ManipulatorEventCallback.h"
+
 namespace Ogre
 {
 	class Terrain;
@@ -22,12 +24,15 @@ using Ogre::TerrainGroup;
 #include "../Brush.h"
 
 
-class ManipulatorTerrain
+class ManipulatorTerrain : public ManipulatorSceneEventCallback
 {
 	friend class ManipulatorNavMesh;
 public:
 	ManipulatorTerrain();
-	~ManipulatorTerrain() {}
+	~ManipulatorTerrain();
+
+	//////////////事件回调
+	virtual void	OnSceneOpen();
 	
 	enum eTerrainEditMode
 	{
@@ -39,7 +44,6 @@ public:
 public:
 	void	NewFlatTerrain();
 	void	Shutdown();
-	void	Load(rapidxml::xml_node<>* XMLNode);
 	void	Serialize(rapidxml::xml_document<>& doc, rapidxml::xml_node<>* XMLNode);
 	void	OnGizmoNodeReset();
 

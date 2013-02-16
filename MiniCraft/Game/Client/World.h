@@ -3,6 +3,7 @@
 
 #include "Singleton.h"
 #include "GameDefine.h"
+#include "SceneSerializer.h"
 
 class SelectableObject;
 class OgreRecast;
@@ -10,6 +11,7 @@ class OgreDetourCrowd;
 class Faction;
 class UiCommandPanel;
 class UiInfoPanel;
+class Scene;
 
 //常用成员全局环境
 struct SGlobalEnvironment 
@@ -35,16 +37,20 @@ typedef	std::vector<SelectableObject*>	SelectedContainer;
 /*								世界管理器                                */
 /************************************************************************/
 
-class World : public CSingleton<World>
+class World : public CSingleton<World>, public SceneSerializer
 {
 	World();
 	~World();
 	DECLEAR_SINGLETON(World);
+
+protected:
+	///////////////////重写SceneSerializer方法
+	virtual void	_LoadObjects(rapidxml::xml_node<>* node);
+
 public:
 	void	Init();
 	void	Update(float dt);
 	void	Shutdown();
-	void	LoadTerrain(rapidxml::xml_node<>* XMLNode);
 
 	Ogre::Camera*	GetCamera()	{ return m_pCamera; }
 	const Ogre::AxisAlignedBox&	GetResAABB() const { return m_pGold->getWorldBoundingBox(); }
@@ -98,10 +104,6 @@ private:
 	OgreBites::SdkCameraMan*	m_cameraMan;
 	bool						m_bFreeCamMode;
 
-	Ogre::TerrainGroup*			m_terrainGroup;
-	Ogre::TerrainGlobalOptions*	m_terrainOption;
-	Ogre::Terrain*				m_pTerrain;
-
 	//UI console for test
 	Ogre::SceneNode*			m_pUISceneNode1;
 	Ogre::SceneNode*			m_pUISceneNode2;
@@ -114,6 +116,7 @@ private:
 	UiInfoPanel*				m_infoPanel;
 
 	Faction*					m_player[eGameRace_Count];
+	Scene*						m_pTestScene;
 };
 
 

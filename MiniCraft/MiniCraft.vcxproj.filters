@@ -5,9 +5,6 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="rapidxml">
-      <UniqueIdentifier>{f85173b9-8c83-49a6-8126-8ec6181b6acd}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Client">
       <UniqueIdentifier>{9f10a3c6-13b5-446d-bbd0-6ce31b684e40}</UniqueIdentifier>
     </Filter>
@@ -25,22 +22,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Game\rapidxml\rapidxml.hpp">
-      <Filter>rapidxml</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\rapidxml\rapidxml_iterators.hpp">
-      <Filter>rapidxml</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\rapidxml\rapidxml_print.hpp">
-      <Filter>rapidxml</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\rapidxml\rapidxml_utils.hpp">
-      <Filter>rapidxml</Filter>
-    </ClInclude>
     <ClInclude Include="Game\Client\BattleState.h">
-      <Filter>Client</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Client\DotSceneLoader.h">
       <Filter>Client</Filter>
     </ClInclude>
     <ClInclude Include="Game\Client\GameDefine.h">
@@ -109,9 +91,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game\Client\BattleState.cpp">
-      <Filter>Client</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Client\DotSceneLoader.cpp">
       <Filter>Client</Filter>
     </ClCompile>
     <ClCompile Include="Game\Client\World.cpp">

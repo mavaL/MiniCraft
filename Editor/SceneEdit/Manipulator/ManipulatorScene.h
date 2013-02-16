@@ -17,25 +17,33 @@
 #include "ManipulatorCamera.h"
 #include "ManipulatorEditorResource.h"
 #include "ManipulatorGameData.h"
+#include "SceneSerializer.h"
 
 namespace Ogre
 {
 	class SceneManager;
 }
-
-class DotSceneSerialezer;
-class DotSceneLoader;
+class Scene;
 
 
-class ManipulatorScene : public CSingleton<ManipulatorScene>, public ManipulatorCallbackManager<ManipulatorSceneEventCallback>
+class ManipulatorScene : 
+	public CSingleton<ManipulatorScene>, 
+	public ManipulatorCallbackManager<ManipulatorSceneEventCallback>,
+	public SceneSerializer
 {
 	ManipulatorScene();
 	~ManipulatorScene();
 	DECLEAR_SINGLETON(ManipulatorScene);
 
+protected:
+	///////////////////÷ÿ–¥SceneSerializer∑Ω∑®
+	virtual void	_LoadObjects(rapidxml::xml_node<>* node);
+
 public:
 	Ogre::SceneManager*	m_pSceneMgr;
 	Ogre::Camera*		m_pMainCamera;
+
+	Scene*	GetScene() { return m_pCurScene; }
 
 	void	SceneNew(const std::wstring& sceneName);
 	void	SceneOpen(const std::wstring& filepath);
@@ -64,9 +72,8 @@ public:
 private:
 	std::wstring		m_scenePath;
 	std::wstring		m_sceneName;
+	Scene*				m_pCurScene;
 	bool				m_bIsSceneReay;
-	DotSceneSerialezer*	m_sceneSerializer;
-	DotSceneLoader*		m_sceneLoader;
 	ManipulatorTerrain*	m_manipulatorTerrain;
 	ManipulatorObject*	m_manipulatorObject;
 	ManipulatorNavMesh*	m_manipulatorNavMesh;
