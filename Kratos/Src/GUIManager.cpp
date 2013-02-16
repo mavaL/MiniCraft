@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "GUIManager.h"
 #include "RendererModules\Ogre\CEGUIOgreRenderer.h"
 #include "OgreManager.h"
@@ -54,12 +53,6 @@ bool CGUIManager::Init()
 
 	 m_pRenderer->getDefaultRenderingRoot().clearGeometry(CEGUI::RQ_OVERLAY);
 
-	m_cmdPanel.Init();
-	m_infoPanel.Init();
-	WindowManager& wndMgr = WindowManager::getSingleton();
-	m_pSystem->setGUISheet(wndMgr.getWindow("Root"));
-	m_pSystem->getGUISheet()->addChildWindow(wndMgr.getWindow("InfoPanelFrame"));
-
 	return true;
 }
 
@@ -70,8 +63,6 @@ void CGUIManager::Shutdown()
 	InputMgr.UnbindMousePressed(eInputEventPriority_GUI);
 	InputMgr.UnbindMouseRelease(eInputEventPriority_GUI);
 
-	m_cmdPanel.Destroy();
-	m_infoPanel.Destroy();
 	if (m_pRenderer)
 	{
 		OgreRenderer::destroySystem();
@@ -148,7 +139,7 @@ bool CGUIManager::OnInputSys_MouseMove( const OIS::MouseEvent &arg )
 	return m_pSystem->injectMouseMove(static_cast<float>(arg.state.X.rel), static_cast<float>(arg.state.Y.rel));
 }
 
-CEGUI::Window* CGUIManager::LoadWindowLayout( const STRING& name )
+CEGUI::Window* CGUIManager::LoadWindowLayout( const Ogre::String& name )
 {
 	return WindowManager::getSingleton().loadWindowLayout(name);
 }

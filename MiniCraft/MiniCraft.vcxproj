@@ -46,15 +46,15 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>.\Dependency\Lua5_1_4\src;.\Dependency\CEGUI\include;.\Dependency\boost;.\Dependency\OgreRecast\Include;.\Dependency\OIS\include;.\Dependency\Ogre\include;.\Game;.\Game\Client\UI;.\Game\Client;.\Game\Core;.\Game\Client\Object;.\Game\Client\AI;.\Game\Client\Component;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Kratos\Src;..\Kratos\Dependency\Lua5_1_4\src;..\Kratos\Dependency\CEGUI\include;..\Kratos\Dependency\boost;..\Kratos\Dependency\OgreRecast\Include;..\Kratos\Dependency\OIS\include;..\Kratos\Dependency\Ogre\include;.\Game;.\Game\Client\UI;.\Game\Client;.\Game\Core;.\Game\Client\Object;.\Game\Client\AI;.\Game\Client\Component;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <AdditionalOptions>/Zm143 %(AdditionalOptions)</AdditionalOptions>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>.\Dependency\Lua5_1_4\lib;.\Dependency\CEGUI\lib\debug;.\Dependency\boost\Lib;.\Dependency\OIS\Lib\$(Configuration);.\Dependency\Ogre\Lib\$(Configuration)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>OgreMain_d.lib;OIS_d.lib;OgreTerrain_d.lib;CEGUIBase_d.lib;CEGUIOgreRenderer_d.lib;lua51.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>.\Build\Bin\$(Configuration);..\Kratos\Dependency\Lua5_1_4\lib;..\Kratos\Dependency\CEGUI\lib\debug;..\Kratos\Dependency\boost\Lib;..\Kratos\Dependency\OIS\Lib\$(Configuration);..\Kratos\Dependency\Ogre\Lib\$(Configuration)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>OgreMain_d.lib;OIS_d.lib;OgreTerrain_d.lib;CEGUIBase_d.lib;CEGUIOgreRenderer_d.lib;lua51.lib;Kratos_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -73,40 +73,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Dependency\OgreRecast\Include\Character.h" />
-    <ClInclude Include="Dependency\OgreRecast\Include\ConvexShapeObstacle.h" />
-    <ClInclude Include="Dependency\OgreRecast\Include\CylinderObstacle.h" />
-    <ClInclude Include="Dependency\OgreRecast\Include\DetourCrowd\DetourCrowd.h" />
-    <ClInclude Include="Dependency\OgreRecast\Include\DetourCrowd\DetourLocalBoundary.h" />
-    <ClInclude Include="Dependency\OgreRecast\Include\DetourCrowd\DetourObstacleAvoidance.h" />
-    <ClInclude Include="Dependency\OgreRecast\Include\DetourCrowd\DetourPathCorridor.h" />
-    <ClInclude Include="Dependency\OgreRecast\Include\DetourCrowd\DetourPathQueue.h" />
-    <ClInclude Include="Dependency\OgreRecast\Include\DetourCrowd\DetourProximityGrid.h" />
-    <ClInclude Include="Dependency\OgreRecast\Include\DetourTileCache\DetourTileCache.h" />
-    <ClInclude Include="Dependency\OgreRecast\Include\DetourTileCache\DetourTileCacheBuilder.h" />
-    <ClInclude Include="Dependency\OgreRecast\Include\Detour\DetourAlloc.h" />
-    <ClInclude Include="Dependency\OgreRecast\Include\Detour\DetourAssert.h" />
-    <ClInclude Include="Dependency\OgreRecast\Include\Detour\DetourCommon.h" />
-    <ClInclude Include="Dependency\OgreRecast\Include\Detour\DetourNavMesh.h" />
-    <ClInclude Include="Dependency\OgreRecast\Include\Detour\DetourNavMeshBuilder.h" />
-    <ClInclude Include="Dependency\OgreRecast\Include\Detour\DetourNavMeshQuery.h" />
-    <ClInclude Include="Dependency\OgreRecast\Include\Detour\DetourNode.h" />
-    <ClInclude Include="Dependency\OgreRecast\Include\Detour\DetourStatus.h" />
-    <ClInclude Include="Dependency\OgreRecast\Include\Obstacle.h" />
-    <ClInclude Include="Dependency\OgreRecast\Include\OgreDetourCrowd.h" />
-    <ClInclude Include="Dependency\OgreRecast\Include\OgreDetourTileCache.h" />
-    <ClInclude Include="Dependency\OgreRecast\Include\OgreRecast.h" />
-    <ClInclude Include="Dependency\OgreRecast\Include\OgreRecastDefinitions.h" />
-    <ClInclude Include="Dependency\OgreRecast\Include\OgreRecastNavmeshPruner.h" />
-    <ClInclude Include="Dependency\OgreRecast\Include\RecastContrib\fastlz\fastlz.h" />
-    <ClInclude Include="Dependency\OgreRecast\Include\RecastConvexHull.h" />
-    <ClInclude Include="Dependency\OgreRecast\Include\RecastInputGeom.h" />
-    <ClInclude Include="Dependency\OgreRecast\Include\Recast\Recast.h" />
-    <ClInclude Include="Dependency\OgreRecast\Include\Recast\RecastAlloc.h" />
-    <ClInclude Include="Dependency\OgreRecast\Include\Recast\RecastAssert.h" />
-    <ClInclude Include="Dependency\OgreRecast\Include\TestCharacter.h" />
     <ClInclude Include="Game\Client\AI\Command.h" />
     <ClInclude Include="Game\Client\AI\ObjectState.h" />
+    <ClInclude Include="Game\Client\Application.h" />
     <ClInclude Include="Game\Client\BattleState.h" />
     <ClInclude Include="Game\Client\Component\AIComponent.h" />
     <ClInclude Include="Game\Client\Component\Component.h" />
@@ -127,122 +96,15 @@
     <ClInclude Include="Game\Client\UI\CommandPanel.h" />
     <ClInclude Include="Game\Client\UI\InfoPanel.h" />
     <ClInclude Include="Game\Client\World.h" />
-    <ClInclude Include="Game\Core\Application.h" />
-    <ClInclude Include="Game\Core\AppState.h" />
-    <ClInclude Include="Game\Core\AppStateManager.h" />
-    <ClInclude Include="Game\Core\GUIManager.h" />
-    <ClInclude Include="Game\Core\InputManager.h" />
-    <ClInclude Include="Game\Core\luna.h" />
-    <ClInclude Include="Game\Core\OgreManager.h" />
-    <ClInclude Include="Game\Core\ScriptSystem.h" />
-    <ClInclude Include="Game\Core\Singleton.h" />
     <ClInclude Include="Game\rapidxml\rapidxml.hpp" />
     <ClInclude Include="Game\rapidxml\rapidxml_iterators.hpp" />
     <ClInclude Include="Game\rapidxml\rapidxml_print.hpp" />
     <ClInclude Include="Game\rapidxml\rapidxml_utils.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Dependency\OgreRecast\Src\Character.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="Dependency\OgreRecast\Src\DetourCrowd\DetourCrowd.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="Dependency\OgreRecast\Src\DetourCrowd\DetourLocalBoundary.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="Dependency\OgreRecast\Src\DetourCrowd\DetourObstacleAvoidance.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="Dependency\OgreRecast\Src\DetourCrowd\DetourPathCorridor.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="Dependency\OgreRecast\Src\DetourCrowd\DetourPathQueue.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="Dependency\OgreRecast\Src\DetourCrowd\DetourProximityGrid.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="Dependency\OgreRecast\Src\DetourTileCache\DetourTileCache.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="Dependency\OgreRecast\Src\DetourTileCache\DetourTileCacheBuilder.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="Dependency\OgreRecast\Src\Detour\DetourAlloc.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="Dependency\OgreRecast\Src\Detour\DetourCommon.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="Dependency\OgreRecast\Src\Detour\DetourNavMesh.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="Dependency\OgreRecast\Src\Detour\DetourNavMeshBuilder.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="Dependency\OgreRecast\Src\Detour\DetourNavMeshQuery.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="Dependency\OgreRecast\Src\Detour\DetourNode.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="Dependency\OgreRecast\Src\Obstacle.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="Dependency\OgreRecast\Src\OgreDetourCrowd.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="Dependency\OgreRecast\Src\OgreDetourTileCache.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="Dependency\OgreRecast\Src\OgreRecast.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="Dependency\OgreRecast\Src\OgreRecastNavmeshPruner.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="Dependency\OgreRecast\Src\RecastContrib\fastlz\fastlz.c">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="Dependency\OgreRecast\Src\RecastConvexHull.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="Dependency\OgreRecast\Src\RecastInputGeom.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="Dependency\OgreRecast\Src\Recast\Recast.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="Dependency\OgreRecast\Src\Recast\RecastAlloc.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="Dependency\OgreRecast\Src\Recast\RecastArea.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="Dependency\OgreRecast\Src\Recast\RecastContour.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="Dependency\OgreRecast\Src\Recast\RecastFilter.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="Dependency\OgreRecast\Src\Recast\RecastLayers.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="Dependency\OgreRecast\Src\Recast\RecastMesh.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="Dependency\OgreRecast\Src\Recast\RecastMeshDetail.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="Dependency\OgreRecast\Src\Recast\RecastRasterization.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="Dependency\OgreRecast\Src\Recast\RecastRegion.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
-    </ClCompile>
     <ClCompile Include="Game\Client\AI\Command.cpp" />
     <ClCompile Include="Game\Client\AI\ObjectState.cpp" />
+    <ClCompile Include="Game\Client\Application.cpp" />
     <ClCompile Include="Game\Client\BattleState.cpp" />
     <ClCompile Include="Game\Client\Component\AIComponent.cpp" />
     <ClCompile Include="Game\Client\Component\HarvestComponent.cpp" />
@@ -250,6 +112,7 @@
     <ClCompile Include="Game\Client\DotSceneLoader.cpp" />
     <ClCompile Include="Game\Client\Faction.cpp" />
     <ClCompile Include="Game\Client\GameDataDef.cpp" />
+    <ClCompile Include="Game\Client\MiniCraft.cpp" />
     <ClCompile Include="Game\Client\Object\Building.cpp" />
     <ClCompile Include="Game\Client\Object\ObjectBase.cpp" />
     <ClCompile Include="Game\Client\Object\ObjectFactory.cpp" />
@@ -263,13 +126,6 @@
     <ClCompile Include="Game\Client\UI\CommandPanel.cpp" />
     <ClCompile Include="Game\Client\UI\InfoPanel.cpp" />
     <ClCompile Include="Game\Client\World.cpp" />
-    <ClCompile Include="Game\Core\Application.cpp" />
-    <ClCompile Include="Game\Core\AppStateManager.cpp" />
-    <ClCompile Include="Game\Core\GUIManager.cpp" />
-    <ClCompile Include="Game\Core\InputManager.cpp" />
-    <ClCompile Include="Game\Core\MiniCraft.cpp" />
-    <ClCompile Include="Game\Core\OgreManager.cpp" />
-    <ClCompile Include="Game\Core\ScriptSystem.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

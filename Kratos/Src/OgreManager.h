@@ -2,7 +2,9 @@
 #define OGRE_MANAGER_H
 
 #include "Singleton.h"
-#include "GameDefine.h"
+#include <OgrePrerequisites.h>
+#include <OgreWindowEventUtilities.h>
+
 
 /*------------------------------------------------
 				 OGRE图形模块封装类
@@ -24,10 +26,10 @@ public:
 
 public:
 	void			MessagePump()		{ Ogre::WindowEventUtilities::messagePump(); }
-	bool			IsMainWndClosed()	{ return mWindow->isClosed(); }
-	bool			IsMainWndActive()	{ return mWindow->isActive(); }
+	bool			IsMainWndClosed();
+	bool			IsMainWndActive();
 	Ogre::Timer*	GetTimer()			{ return m_Timer; }
-	void			GetMainWndHandle(unsigned long& hwnd) { mWindow->getCustomAttribute("WINDOW", &hwnd);}
+	void			GetMainWndHandle(unsigned long& hwnd);
 	Ogre::RenderWindow*	GetRenderWindow()	{ return mWindow; }
 	Ogre::Viewport*	GetViewport()		{ return m_pViewport; }
 

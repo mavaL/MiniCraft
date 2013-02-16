@@ -1,12 +1,9 @@
-#include "stdafx.h"
 #include "ScriptSystem.h"
-#include "World.h"
-#include "Unit.h"
-
+#include <windows.h>
 
 
 ScriptSystem::ScriptSystem()
-	:m_pLuaState(nullptr)
+:m_pLuaState(nullptr)
 {
 
 }
@@ -18,10 +15,10 @@ void ScriptSystem::Init()
 	luaL_openlibs(m_pLuaState);
 
 	//注册导出类
-	Luna<Unit>::Register(m_pLuaState);
+	//Luna<Unit>::Register(m_pLuaState);
 
 	//加载脚本
-	DoFile("../../../UnitState.lua");
+	//DoFile("../../../UnitState.lua");
 }
 
 void ScriptSystem::Shutdown()
@@ -82,7 +79,7 @@ void ScriptSystem::CallStack( lua_State* L, int n )
 	}
 }
 
-void ScriptSystem::DoFile( const STRING& filename )
+void ScriptSystem::DoFile( const std::string& filename )
 {
 	lua_pushcclosure(m_pLuaState, OnError, 0);
 	int errfunc = lua_gettop(m_pLuaState);
@@ -93,10 +90,10 @@ void ScriptSystem::DoFile( const STRING& filename )
 		PrintError(m_pLuaState, "%s", lua_tostring(m_pLuaState, -1));
 }
 
-const STRING ScriptSystem::Get_String(int index)
+const std::string ScriptSystem::Get_String(int index)
 {
 	assert(lua_isstring(m_pLuaState, index));
-	return STRING(lua_tostring(m_pLuaState, index));
+	return std::string(lua_tostring(m_pLuaState, index));
 }
 
 

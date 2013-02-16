@@ -9,6 +9,7 @@
 #include "Unit.h"
 #include "World.h"
 #include "HarvestComponent.h"
+#include "InfoPanel.h"
 
 void StateIdle::Enter( SelectableObject* pOwner )
 {
@@ -68,7 +69,7 @@ void StateMove::Exit( SelectableObject* pOwner )
 ///////////////////////////////////////////////////////////////
 void StateProduce::Enter(SelectableObject* pOwner)
 {
-	UiInfoPanel* panel = CGUIManager::GetSingleton().GetInfoPanel();
+	UiInfoPanel* panel = World::GetSingleton().GetInfoPanel();
 	panel->ShowInfoIcon(true, pOwner->GetActiveAbility()->m_iconName, "full_image");
 	panel->ShowProgressQueue(true);
 }
@@ -102,7 +103,7 @@ void StateProduce::Update( float dt, SelectableObject* pOwner )
 void StateProduce::Exit(SelectableObject* pOwner)
 {
 	pOwner->_OnCommandFinished(eCommandType_Produce);
-	UiInfoPanel* panel = CGUIManager::GetSingleton().GetInfoPanel();
+	UiInfoPanel* panel = World::GetSingleton().GetInfoPanel();
 	panel->SetVisible(false);
 }
 

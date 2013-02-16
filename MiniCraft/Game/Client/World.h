@@ -8,6 +8,8 @@ class SelectableObject;
 class OgreRecast;
 class OgreDetourCrowd;
 class Faction;
+class UiCommandPanel;
+class UiInfoPanel;
 
 //常用成员全局环境
 struct SGlobalEnvironment 
@@ -36,7 +38,7 @@ typedef	std::vector<SelectableObject*>	SelectedContainer;
 class World : public CSingleton<World>
 {
 	World();
-	~World() {}
+	~World();
 	DECLEAR_SINGLETON(World);
 public:
 	void	Init();
@@ -75,6 +77,10 @@ public:
 	//获取玩家派系
 	Faction*		GetFaction(eGameRace race) { return m_player[race]; }
 
+	///获取UI组件
+	UiCommandPanel*	GetCommandPanel() { return m_cmdPanel; }
+	UiInfoPanel*	GetInfoPanel()	{ return m_infoPanel; }
+
 private:
 	SelectedContainer			m_vecSelectUnis;	//所有选中单位
 	Ogre::SceneManager*			m_pSceneMgr;
@@ -103,6 +109,9 @@ private:
 	Ogre::SceneNode*			m_pUISceneNode4;
 	Ogre::AnimationState*		m_pConsoleAnim1;
 	Ogre::AnimationState*		m_pConsoleAnim2;
+
+	UiCommandPanel*				m_cmdPanel;
+	UiInfoPanel*				m_infoPanel;
 
 	Faction*					m_player[eGameRace_Count];
 };

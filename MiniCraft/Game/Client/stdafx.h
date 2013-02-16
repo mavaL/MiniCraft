@@ -3,7 +3,6 @@
 #include <assert.h>
 
 //Ogre
-#include <Ogre.h>
 #include <Terrain/OgreTerrain.h>
 #include <Terrain/OgreTerrainGroup.h>
 #include <Terrain/OgreTerrainQuadTreeNode.h>

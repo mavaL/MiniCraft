@@ -2,6 +2,8 @@
 #define APP_STATE_H
 
 
+#include <OgrePrerequisites.h>
+
 class CAppState;
 /*------------------------------------------------
 			游戏状态管理监听器,Observer模式	

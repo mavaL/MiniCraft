@@ -9,6 +9,8 @@
 #include "ObjectManager.h"
 #include "GameDataDef.h"
 #include "Faction.h"
+#include "CommandPanel.h"
+#include "InfoPanel.h"
 
 
 SGlobalEnvironment	g_Environment;
@@ -28,8 +30,16 @@ World::World()
 ,m_terrainGroup(nullptr)
 ,m_terrainOption(nullptr)
 ,m_pTerrain(nullptr)
+,m_cmdPanel(new UiCommandPanel)
+,m_infoPanel(new UiInfoPanel)
 {
 	
+}
+
+World::~World()
+{
+	SAFE_DELETE(m_cmdPanel);
+	SAFE_DELETE(m_infoPanel);
 }
 
 void World::Init()
@@ -129,6 +139,15 @@ void World::Init()
 	m_pUISceneNode4 = m_pUISceneNode1->createChildSceneNode("PortraitPanelNode");
 	m_pUISceneNode4->attachObject(pEntConsole);
 	(const_cast<Ogre::AxisAlignedBox&>(pEntConsole->getMesh()->getBounds())).setInfinite();
+
+	m_cmdPanel->Init();
+	m_infoPanel->Init();
+
+	CEGUI::WindowManager& wndMgr = CEGUI::WindowManager::getSingleton();
+	CEGUI::Window* pRoot = wndMgr.getWindow("Root");
+	assert(pRoot);
+	CGUIManager::GetSingleton().SetGUISheet(pRoot);
+	pRoot->addChildWindow(wndMgr.getWindow("InfoPanelFrame"));
 }
 
 void World::Shutdown()
@@ -162,6 +181,9 @@ void World::Shutdown()
 	m_vecSelectUnis.clear();
 
 	g_Environment.Reset();
+
+	m_cmdPanel->Destroy();
+	m_infoPanel->Destroy();
 }
 
 void World::LoadTerrain( rapidxml::xml_node<>* XMLNode )
@@ -209,7 +231,7 @@ void World::Update(float dt)
 
 	ObjectManager::GetSingleton().UpdateAll(dt);
 
-	CGUIManager::GetSingleton().GetInfoPanel()->Update();
+	World::GetSingleton().GetInfoPanel()->Update();
 }
 
 bool World::ClampPosToNavMesh( Ogre::Vector3& wPos )

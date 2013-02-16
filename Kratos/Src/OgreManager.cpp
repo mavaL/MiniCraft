@@ -1,7 +1,5 @@
-#include "stdafx.h"
 #include "OgreManager.h"
-#include "InputManager.h"
-
+#include <Ogre.h>
 
 using namespace Ogre;
 
@@ -37,7 +35,7 @@ bool COgreManager::Init()
 	cf.load(ResourceCfg);
 	// Go through all sections & settings in the file
 	Ogre::ConfigFile::SectionIterator seci = cf.getSectionIterator();
-	STRING secName, typeName, archName;
+	Ogre::String secName, typeName, archName;
 	while (seci.hasMoreElements())
 	{
 		secName = seci.peekNextKey();
@@ -93,9 +91,9 @@ void COgreManager::windowResized(Ogre::RenderWindow* rw)
 //Unattach OIS before window shutdown (very important under Linux)
 void COgreManager::windowClosed(Ogre::RenderWindow* rw)
 {
-	//Only close for window that created OIS (the main window in these demos)
-	if( rw == mWindow )
-		CInputManager::GetSingleton().Shutdown();
+// 	//Only close for window that created OIS (the main window in these demos)
+// 	if( rw == mWindow )
+// 		CInputManager::GetSingleton().Shutdown();
 }
 
 void COgreManager::Shutdown()
@@ -116,4 +114,19 @@ bool COgreManager::Update(float dt)
 	mRoot->renderOneFrame(dt);
 
 	return true;
+}
+
+bool COgreManager::IsMainWndClosed()
+{
+	return mWindow->isClosed();
+}
+
+bool COgreManager::IsMainWndActive()
+{
+	return mWindow->isActive();
+}
+
+void COgreManager::GetMainWndHandle( unsigned long& hwnd )
+{
+	mWindow->getCustomAttribute("WINDOW", &hwnd);
 }

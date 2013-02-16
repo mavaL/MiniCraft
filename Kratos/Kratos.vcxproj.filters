@@ -1,0 +1,265 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="源文件">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="源文件\OgreRecast">
+      <UniqueIdentifier>{48323be5-e7b9-4fc1-86bd-e0ff7edc994c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\OgreRecast\Include">
+      <UniqueIdentifier>{23293ec7-2830-4f20-ae30-f6678d154b17}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\OgreRecast\Include\Detour">
+      <UniqueIdentifier>{25daff03-c0f1-4bc4-bca5-ddee475431da}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\OgreRecast\Include\DetourCrowd">
+      <UniqueIdentifier>{607faae8-d956-4dcd-8d25-524f720338ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\OgreRecast\Include\DetourTileCache">
+      <UniqueIdentifier>{a1976a54-7c60-49c9-934e-ed1f0e462a72}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\OgreRecast\Include\Recast">
+      <UniqueIdentifier>{3c5e9214-86e5-4335-ac50-e2470e04de7e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\OgreRecast\Include\RecastContrib">
+      <UniqueIdentifier>{6c99e93f-3127-4c9a-8587-960d52b6318f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\OgreRecast\Src">
+      <UniqueIdentifier>{0e23386a-e8be-4821-8fbc-3c481cf8d6b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\OgreRecast\Src\Detour">
+      <UniqueIdentifier>{b6d61271-a4a7-4e84-ad8d-609422b669f5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\OgreRecast\Src\DetourCrowd">
+      <UniqueIdentifier>{30388e35-d0ad-41e6-8d95-4e27a002f29b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\OgreRecast\Src\DetourTileCache">
+      <UniqueIdentifier>{f11a1436-20f2-439e-b83a-ae4d0c704fc0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\OgreRecast\Src\Recast">
+      <UniqueIdentifier>{23d6a32e-cd86-4cc7-9477-cd04d6772427}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\OgreRecast\Src\RecastContrib">
+      <UniqueIdentifier>{5682fa6e-36d9-4618-8a69-376d73dc75df}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Src\AppState.h">
+      <Filter>源文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\AppStateManager.h">
+      <Filter>源文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\GUIManager.h">
+      <Filter>源文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\InputManager.h">
+      <Filter>源文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\luna.h">
+      <Filter>源文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\OgreManager.h">
+      <Filter>源文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\ScriptSystem.h">
+      <Filter>源文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Singleton.h">
+      <Filter>源文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependency\OgreRecast\Include\Detour\DetourAlloc.h">
+      <Filter>源文件\OgreRecast\Include\Detour</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependency\OgreRecast\Include\Detour\DetourAssert.h">
+      <Filter>源文件\OgreRecast\Include\Detour</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependency\OgreRecast\Include\Detour\DetourCommon.h">
+      <Filter>源文件\OgreRecast\Include\Detour</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependency\OgreRecast\Include\Detour\DetourNavMesh.h">
+      <Filter>源文件\OgreRecast\Include\Detour</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependency\OgreRecast\Include\Detour\DetourNavMeshBuilder.h">
+      <Filter>源文件\OgreRecast\Include\Detour</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependency\OgreRecast\Include\Detour\DetourNavMeshQuery.h">
+      <Filter>源文件\OgreRecast\Include\Detour</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependency\OgreRecast\Include\Detour\DetourNode.h">
+      <Filter>源文件\OgreRecast\Include\Detour</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependency\OgreRecast\Include\Detour\DetourStatus.h">
+      <Filter>源文件\OgreRecast\Include\Detour</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependency\OgreRecast\Include\DetourCrowd\DetourCrowd.h">
+      <Filter>源文件\OgreRecast\Include\DetourCrowd</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependency\OgreRecast\Include\DetourCrowd\DetourLocalBoundary.h">
+      <Filter>源文件\OgreRecast\Include\DetourCrowd</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependency\OgreRecast\Include\DetourCrowd\DetourObstacleAvoidance.h">
+      <Filter>源文件\OgreRecast\Include\DetourCrowd</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependency\OgreRecast\Include\DetourCrowd\DetourPathCorridor.h">
+      <Filter>源文件\OgreRecast\Include\DetourCrowd</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependency\OgreRecast\Include\DetourCrowd\DetourPathQueue.h">
+      <Filter>源文件\OgreRecast\Include\DetourCrowd</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependency\OgreRecast\Include\DetourCrowd\DetourProximityGrid.h">
+      <Filter>源文件\OgreRecast\Include\DetourCrowd</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependency\OgreRecast\Include\DetourTileCache\DetourTileCache.h">
+      <Filter>源文件\OgreRecast\Include\DetourTileCache</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependency\OgreRecast\Include\DetourTileCache\DetourTileCacheBuilder.h">
+      <Filter>源文件\OgreRecast\Include\DetourTileCache</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependency\OgreRecast\Include\Recast\Recast.h">
+      <Filter>源文件\OgreRecast\Include\Recast</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependency\OgreRecast\Include\Recast\RecastAlloc.h">
+      <Filter>源文件\OgreRecast\Include\Recast</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependency\OgreRecast\Include\Recast\RecastAssert.h">
+      <Filter>源文件\OgreRecast\Include\Recast</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependency\OgreRecast\Include\RecastContrib\fastlz\fastlz.h">
+      <Filter>源文件\OgreRecast\Include\RecastContrib</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependency\OgreRecast\Include\OgreDetourCrowd.h">
+      <Filter>源文件\OgreRecast\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependency\OgreRecast\Include\OgreDetourTileCache.h">
+      <Filter>源文件\OgreRecast\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependency\OgreRecast\Include\OgreRecast.h">
+      <Filter>源文件\OgreRecast\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependency\OgreRecast\Include\OgreRecastDefinitions.h">
+      <Filter>源文件\OgreRecast\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependency\OgreRecast\Include\OgreRecastNavmeshPruner.h">
+      <Filter>源文件\OgreRecast\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependency\OgreRecast\Include\RecastConvexHull.h">
+      <Filter>源文件\OgreRecast\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependency\OgreRecast\Include\RecastInputGeom.h">
+      <Filter>源文件\OgreRecast\Include</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Src\AppStateManager.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\GUIManager.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\InputManager.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\OgreManager.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\ScriptSystem.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependency\OgreRecast\Src\Detour\DetourAlloc.cpp">
+      <Filter>源文件\OgreRecast\Src\Detour</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependency\OgreRecast\Src\Detour\DetourCommon.cpp">
+      <Filter>源文件\OgreRecast\Src\Detour</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependency\OgreRecast\Src\Detour\DetourNavMesh.cpp">
+      <Filter>源文件\OgreRecast\Src\Detour</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependency\OgreRecast\Src\Detour\DetourNavMeshBuilder.cpp">
+      <Filter>源文件\OgreRecast\Src\Detour</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependency\OgreRecast\Src\Detour\DetourNavMeshQuery.cpp">
+      <Filter>源文件\OgreRecast\Src\Detour</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependency\OgreRecast\Src\Detour\DetourNode.cpp">
+      <Filter>源文件\OgreRecast\Src\Detour</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependency\OgreRecast\Src\DetourCrowd\DetourCrowd.cpp">
+      <Filter>源文件\OgreRecast\Src\DetourCrowd</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependency\OgreRecast\Src\DetourCrowd\DetourLocalBoundary.cpp">
+      <Filter>源文件\OgreRecast\Src\DetourCrowd</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependency\OgreRecast\Src\DetourCrowd\DetourObstacleAvoidance.cpp">
+      <Filter>源文件\OgreRecast\Src\DetourCrowd</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependency\OgreRecast\Src\DetourCrowd\DetourPathCorridor.cpp">
+      <Filter>源文件\OgreRecast\Src\DetourCrowd</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependency\OgreRecast\Src\DetourCrowd\DetourPathQueue.cpp">
+      <Filter>源文件\OgreRecast\Src\DetourCrowd</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependency\OgreRecast\Src\DetourCrowd\DetourProximityGrid.cpp">
+      <Filter>源文件\OgreRecast\Src\DetourCrowd</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependency\OgreRecast\Src\DetourTileCache\DetourTileCache.cpp">
+      <Filter>源文件\OgreRecast\Src\DetourTileCache</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependency\OgreRecast\Src\DetourTileCache\DetourTileCacheBuilder.cpp">
+      <Filter>源文件\OgreRecast\Src\DetourTileCache</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependency\OgreRecast\Src\Recast\Recast.cpp">
+      <Filter>源文件\OgreRecast\Src\Recast</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependency\OgreRecast\Src\Recast\RecastAlloc.cpp">
+      <Filter>源文件\OgreRecast\Src\Recast</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependency\OgreRecast\Src\Recast\RecastArea.cpp">
+      <Filter>源文件\OgreRecast\Src\Recast</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependency\OgreRecast\Src\Recast\RecastContour.cpp">
+      <Filter>源文件\OgreRecast\Src\Recast</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependency\OgreRecast\Src\Recast\RecastFilter.cpp">
+      <Filter>源文件\OgreRecast\Src\Recast</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependency\OgreRecast\Src\Recast\RecastLayers.cpp">
+      <Filter>源文件\OgreRecast\Src\Recast</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependency\OgreRecast\Src\Recast\RecastMesh.cpp">
+      <Filter>源文件\OgreRecast\Src\Recast</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependency\OgreRecast\Src\Recast\RecastMeshDetail.cpp">
+      <Filter>源文件\OgreRecast\Src\Recast</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependency\OgreRecast\Src\Recast\RecastRasterization.cpp">
+      <Filter>源文件\OgreRecast\Src\Recast</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependency\OgreRecast\Src\Recast\RecastRegion.cpp">
+      <Filter>源文件\OgreRecast\Src\Recast</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependency\OgreRecast\Src\RecastContrib\fastlz\fastlz.c">
+      <Filter>源文件\OgreRecast\Src\RecastContrib</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependency\OgreRecast\Src\OgreDetourCrowd.cpp">
+      <Filter>源文件\OgreRecast\Src</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependency\OgreRecast\Src\OgreDetourTileCache.cpp">
+      <Filter>源文件\OgreRecast\Src</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependency\OgreRecast\Src\OgreRecast.cpp">
+      <Filter>源文件\OgreRecast\Src</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependency\OgreRecast\Src\OgreRecastNavmeshPruner.cpp">
+      <Filter>源文件\OgreRecast\Src</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependency\OgreRecast\Src\RecastInputGeom.cpp">
+      <Filter>源文件\OgreRecast\Src</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependency\OgreRecast\Src\RecastConvexHull.cpp">
+      <Filter>源文件\OgreRecast\Src\RecastContrib</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

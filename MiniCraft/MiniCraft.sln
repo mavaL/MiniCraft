@@ -2,10 +2,18 @@
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MiniCraft", "MiniCraft.vcxproj", "{7193039C-4E9E-4BA8-B0CE-47AFD3C7C554}"
+	ProjectSection(ProjectDependencies) = postProject
+		{D2C8141A-2358-446C-B1D1-307649AAAF22} = {D2C8141A-2358-446C-B1D1-307649AAAF22}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SceneEdit", "..\Editor\SceneEdit\SceneEdit.vcxproj", "{F2B2D7A0-6DBB-4C53-9C3B-6B1A36EE807B}"
+	ProjectSection(ProjectDependencies) = postProject
+		{D2C8141A-2358-446C-B1D1-307649AAAF22} = {D2C8141A-2358-446C-B1D1-307649AAAF22}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CEGUIBase", "..\..\CEGUI-0.7.9\projects\premake\BaseSystem\CEGUIBase.vcxproj", "{D12113E2-D6DD-364C-A421-AD834D645AEC}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Kratos", "..\Kratos\Kratos.vcxproj", "{D2C8141A-2358-446C-B1D1-307649AAAF22}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -110,6 +118,33 @@ Global
 		{D12113E2-D6DD-364C-A421-AD834D645AEC}.Unicode Release|Win32.ActiveCfg = Release|Win32
 		{D12113E2-D6DD-364C-A421-AD834D645AEC}.Unicode Release|Win32.Build.0 = Release|Win32
 		{D12113E2-D6DD-364C-A421-AD834D645AEC}.Unicode Release|x64.ActiveCfg = Release|Win32
+		{D2C8141A-2358-446C-B1D1-307649AAAF22}.Debug_Static|Win32.ActiveCfg = Debug|Win32
+		{D2C8141A-2358-446C-B1D1-307649AAAF22}.Debug_Static|Win32.Build.0 = Debug|Win32
+		{D2C8141A-2358-446C-B1D1-307649AAAF22}.Debug_Static|x64.ActiveCfg = Debug|Win32
+		{D2C8141A-2358-446C-B1D1-307649AAAF22}.Debug|Win32.ActiveCfg = Debug|Win32
+		{D2C8141A-2358-446C-B1D1-307649AAAF22}.Debug|Win32.Build.0 = Debug|Win32
+		{D2C8141A-2358-446C-B1D1-307649AAAF22}.Debug|x64.ActiveCfg = Debug|Win32
+		{D2C8141A-2358-446C-B1D1-307649AAAF22}.MinSizeRel|Win32.ActiveCfg = Release|Win32
+		{D2C8141A-2358-446C-B1D1-307649AAAF22}.MinSizeRel|Win32.Build.0 = Release|Win32
+		{D2C8141A-2358-446C-B1D1-307649AAAF22}.MinSizeRel|x64.ActiveCfg = Release|Win32
+		{D2C8141A-2358-446C-B1D1-307649AAAF22}.Release_Static|Win32.ActiveCfg = Release|Win32
+		{D2C8141A-2358-446C-B1D1-307649AAAF22}.Release_Static|Win32.Build.0 = Release|Win32
+		{D2C8141A-2358-446C-B1D1-307649AAAF22}.Release_Static|x64.ActiveCfg = Release|Win32
+		{D2C8141A-2358-446C-B1D1-307649AAAF22}.Release|Win32.ActiveCfg = Release|Win32
+		{D2C8141A-2358-446C-B1D1-307649AAAF22}.Release|Win32.Build.0 = Release|Win32
+		{D2C8141A-2358-446C-B1D1-307649AAAF22}.Release|x64.ActiveCfg = Release|Win32
+		{D2C8141A-2358-446C-B1D1-307649AAAF22}.ReleaseWithSymbols|Win32.ActiveCfg = Release|Win32
+		{D2C8141A-2358-446C-B1D1-307649AAAF22}.ReleaseWithSymbols|Win32.Build.0 = Release|Win32
+		{D2C8141A-2358-446C-B1D1-307649AAAF22}.ReleaseWithSymbols|x64.ActiveCfg = Release|Win32
+		{D2C8141A-2358-446C-B1D1-307649AAAF22}.RelWithDebInfo|Win32.ActiveCfg = Release|Win32
+		{D2C8141A-2358-446C-B1D1-307649AAAF22}.RelWithDebInfo|Win32.Build.0 = Release|Win32
+		{D2C8141A-2358-446C-B1D1-307649AAAF22}.RelWithDebInfo|x64.ActiveCfg = Release|Win32
+		{D2C8141A-2358-446C-B1D1-307649AAAF22}.Unicode Debug|Win32.ActiveCfg = Debug|Win32
+		{D2C8141A-2358-446C-B1D1-307649AAAF22}.Unicode Debug|Win32.Build.0 = Debug|Win32
+		{D2C8141A-2358-446C-B1D1-307649AAAF22}.Unicode Debug|x64.ActiveCfg = Debug|Win32
+		{D2C8141A-2358-446C-B1D1-307649AAAF22}.Unicode Release|Win32.ActiveCfg = Release|Win32
+		{D2C8141A-2358-446C-B1D1-307649AAAF22}.Unicode Release|Win32.Build.0 = Release|Win32
+		{D2C8141A-2358-446C-B1D1-307649AAAF22}.Unicode Release|x64.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

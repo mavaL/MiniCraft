@@ -4,6 +4,7 @@
 
 #include "AppState.h"
 #include "Singleton.h"
+#include <OgrePrerequisites.h>
 
 /************************************************************************/
 /*							³ÌÐò×´Ì¬¿ØÖÆÆ÷								*/

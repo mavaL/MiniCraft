@@ -1,0 +1,148 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{D2C8141A-2358-446C-B1D1-307649AAAF22}</ProjectGuid>
+    <RootNamespace>Kratos</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>$(SolutionDir)\Build\Bin\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)\Build\Intermediate\$(Configuration)\</IntDir>
+    <TargetName>$(ProjectName)_d</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>.\Dependency\Lua5_1_4\src;.\Dependency\CEGUI\include;.\Dependency\boost;.\Dependency\OgreRecast\Include;.\Dependency\OIS\include;.\Dependency\Ogre\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+    <Lib>
+      <OutputFile>$(SolutionDir)\Build\Bin\$(Configuration)\Kratos_d.lib</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="Dependency\OgreRecast\Include\DetourCrowd\DetourCrowd.h" />
+    <ClInclude Include="Dependency\OgreRecast\Include\DetourCrowd\DetourLocalBoundary.h" />
+    <ClInclude Include="Dependency\OgreRecast\Include\DetourCrowd\DetourObstacleAvoidance.h" />
+    <ClInclude Include="Dependency\OgreRecast\Include\DetourCrowd\DetourPathCorridor.h" />
+    <ClInclude Include="Dependency\OgreRecast\Include\DetourCrowd\DetourPathQueue.h" />
+    <ClInclude Include="Dependency\OgreRecast\Include\DetourCrowd\DetourProximityGrid.h" />
+    <ClInclude Include="Dependency\OgreRecast\Include\DetourTileCache\DetourTileCache.h" />
+    <ClInclude Include="Dependency\OgreRecast\Include\DetourTileCache\DetourTileCacheBuilder.h" />
+    <ClInclude Include="Dependency\OgreRecast\Include\Detour\DetourAlloc.h" />
+    <ClInclude Include="Dependency\OgreRecast\Include\Detour\DetourAssert.h" />
+    <ClInclude Include="Dependency\OgreRecast\Include\Detour\DetourCommon.h" />
+    <ClInclude Include="Dependency\OgreRecast\Include\Detour\DetourNavMesh.h" />
+    <ClInclude Include="Dependency\OgreRecast\Include\Detour\DetourNavMeshBuilder.h" />
+    <ClInclude Include="Dependency\OgreRecast\Include\Detour\DetourNavMeshQuery.h" />
+    <ClInclude Include="Dependency\OgreRecast\Include\Detour\DetourNode.h" />
+    <ClInclude Include="Dependency\OgreRecast\Include\Detour\DetourStatus.h" />
+    <ClInclude Include="Dependency\OgreRecast\Include\OgreDetourCrowd.h" />
+    <ClInclude Include="Dependency\OgreRecast\Include\OgreDetourTileCache.h" />
+    <ClInclude Include="Dependency\OgreRecast\Include\OgreRecast.h" />
+    <ClInclude Include="Dependency\OgreRecast\Include\OgreRecastDefinitions.h" />
+    <ClInclude Include="Dependency\OgreRecast\Include\OgreRecastNavmeshPruner.h" />
+    <ClInclude Include="Dependency\OgreRecast\Include\RecastContrib\fastlz\fastlz.h" />
+    <ClInclude Include="Dependency\OgreRecast\Include\RecastConvexHull.h" />
+    <ClInclude Include="Dependency\OgreRecast\Include\RecastInputGeom.h" />
+    <ClInclude Include="Dependency\OgreRecast\Include\Recast\Recast.h" />
+    <ClInclude Include="Dependency\OgreRecast\Include\Recast\RecastAlloc.h" />
+    <ClInclude Include="Dependency\OgreRecast\Include\Recast\RecastAssert.h" />
+    <ClInclude Include="Src\AppState.h" />
+    <ClInclude Include="Src\AppStateManager.h" />
+    <ClInclude Include="Src\GUIManager.h" />
+    <ClInclude Include="Src\InputManager.h" />
+    <ClInclude Include="Src\luna.h" />
+    <ClInclude Include="Src\OgreManager.h" />
+    <ClInclude Include="Src\ScriptSystem.h" />
+    <ClInclude Include="Src\Singleton.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Dependency\OgreRecast\Src\DetourCrowd\DetourCrowd.cpp" />
+    <ClCompile Include="Dependency\OgreRecast\Src\DetourCrowd\DetourLocalBoundary.cpp" />
+    <ClCompile Include="Dependency\OgreRecast\Src\DetourCrowd\DetourObstacleAvoidance.cpp" />
+    <ClCompile Include="Dependency\OgreRecast\Src\DetourCrowd\DetourPathCorridor.cpp" />
+    <ClCompile Include="Dependency\OgreRecast\Src\DetourCrowd\DetourPathQueue.cpp" />
+    <ClCompile Include="Dependency\OgreRecast\Src\DetourCrowd\DetourProximityGrid.cpp" />
+    <ClCompile Include="Dependency\OgreRecast\Src\DetourTileCache\DetourTileCache.cpp" />
+    <ClCompile Include="Dependency\OgreRecast\Src\DetourTileCache\DetourTileCacheBuilder.cpp" />
+    <ClCompile Include="Dependency\OgreRecast\Src\Detour\DetourAlloc.cpp" />
+    <ClCompile Include="Dependency\OgreRecast\Src\Detour\DetourCommon.cpp" />
+    <ClCompile Include="Dependency\OgreRecast\Src\Detour\DetourNavMesh.cpp" />
+    <ClCompile Include="Dependency\OgreRecast\Src\Detour\DetourNavMeshBuilder.cpp" />
+    <ClCompile Include="Dependency\OgreRecast\Src\Detour\DetourNavMeshQuery.cpp" />
+    <ClCompile Include="Dependency\OgreRecast\Src\Detour\DetourNode.cpp" />
+    <ClCompile Include="Dependency\OgreRecast\Src\OgreDetourCrowd.cpp" />
+    <ClCompile Include="Dependency\OgreRecast\Src\OgreDetourTileCache.cpp" />
+    <ClCompile Include="Dependency\OgreRecast\Src\OgreRecast.cpp" />
+    <ClCompile Include="Dependency\OgreRecast\Src\OgreRecastNavmeshPruner.cpp" />
+    <ClCompile Include="Dependency\OgreRecast\Src\RecastContrib\fastlz\fastlz.c" />
+    <ClCompile Include="Dependency\OgreRecast\Src\RecastConvexHull.cpp" />
+    <ClCompile Include="Dependency\OgreRecast\Src\RecastInputGeom.cpp" />
+    <ClCompile Include="Dependency\OgreRecast\Src\Recast\Recast.cpp" />
+    <ClCompile Include="Dependency\OgreRecast\Src\Recast\RecastAlloc.cpp" />
+    <ClCompile Include="Dependency\OgreRecast\Src\Recast\RecastArea.cpp" />
+    <ClCompile Include="Dependency\OgreRecast\Src\Recast\RecastContour.cpp" />
+    <ClCompile Include="Dependency\OgreRecast\Src\Recast\RecastFilter.cpp" />
+    <ClCompile Include="Dependency\OgreRecast\Src\Recast\RecastLayers.cpp" />
+    <ClCompile Include="Dependency\OgreRecast\Src\Recast\RecastMesh.cpp" />
+    <ClCompile Include="Dependency\OgreRecast\Src\Recast\RecastMeshDetail.cpp" />
+    <ClCompile Include="Dependency\OgreRecast\Src\Recast\RecastRasterization.cpp" />
+    <ClCompile Include="Dependency\OgreRecast\Src\Recast\RecastRegion.cpp" />
+    <ClCompile Include="Src\AppStateManager.cpp" />
+    <ClCompile Include="Src\GUIManager.cpp" />
+    <ClCompile Include="Src\InputManager.cpp" />
+    <ClCompile Include="Src\OgreManager.cpp" />
+    <ClCompile Include="Src\ScriptSystem.cpp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

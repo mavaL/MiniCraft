@@ -2,6 +2,8 @@
 #include "SelectableObject.h"
 #include "World.h"
 #include "GUIManager.h"
+#include "CommandPanel.h"
+#include "InfoPanel.h"
 
 /** This is ogre-procedural's temporary mesh buffer.
  * It stores all the info needed to build an Ogre Mesh, yet is intented to be more flexible, since
@@ -470,8 +472,8 @@ void SelectableObject::Update( float dt )
 
 void SelectableObject::_OnSelected( bool bSelected )
 {
-	UiCommandPanel* pCmdPanel = CGUIManager::GetSingleton().GetCommandPanel();
-	UiInfoPanel*	pInfoPanel = CGUIManager::GetSingleton().GetInfoPanel();
+	UiCommandPanel* pCmdPanel = World::GetSingleton().GetCommandPanel();
+	UiInfoPanel*	pInfoPanel = World::GetSingleton().GetInfoPanel();
 	//¸üÐÂÃüÁîÃæ°å
 	if (bSelected)
 	{
