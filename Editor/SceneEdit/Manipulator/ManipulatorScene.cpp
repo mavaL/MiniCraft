@@ -10,13 +10,12 @@ ManipulatorScene::ManipulatorScene()
 ,m_bIsSceneReay(false)
 ,m_pSceneMgr(nullptr)
 ,m_pMainCamera(nullptr)
-,m_pCurScene(new Scene)
 {
 }
 
 ManipulatorScene::~ManipulatorScene()
 {
-	SAFE_DELETE(m_pCurScene);
+	
 }
 void ManipulatorScene::Init()
 {
@@ -32,10 +31,14 @@ void ManipulatorScene::Init()
 	m_manipulatorCamera = new ManipulatorCamera(m_pMainCamera);
 	m_manipulatorResource = new ManipulatorResource;
 	m_manipulatorGameData = new ManipulatorGameData;
+
+	assert(m_pSceneMgr);
+	m_pCurScene = new Scene(m_pSceneMgr);
 }
 
 void ManipulatorScene::Shutdown()
 {
+	SAFE_DELETE(m_pCurScene);
 	SAFE_DELETE(m_manipulatorTerrain);
 	SAFE_DELETE(m_manipulatorObject);
 	SAFE_DELETE(m_manipulatorNavMesh);
@@ -46,8 +49,17 @@ void ManipulatorScene::Shutdown()
 
 void ManipulatorScene::SceneNew(const std::wstring& sceneName)
 {
+	//环境光
+	m_pSceneMgr->setAmbientLight(Ogre::ColourValue(0.2f, 0.2f, 0.2f));
+
+	//全局光
+	Ogre::Light* pSunLight = m_pSceneMgr->createLight("SunLight");
+	pSunLight->setType(Ogre::Light::LT_DIRECTIONAL);
+	pSunLight->setDirection(m_pCurScene->GetSunLightDirection());
+	pSunLight->setDiffuseColour(m_pCurScene->GetSunLightDiffuse());
+
 	m_sceneName = sceneName;
-	m_manipulatorTerrain->NewFlatTerrain();
+	m_manipulatorTerrain->NewFlatTerrain(pSunLight);
 	m_bIsSceneReay = true;
 
 	//回调事件
@@ -63,8 +75,6 @@ void ManipulatorScene::SceneOpen(const std::wstring& filepath)
 
 	m_sceneName = Utility::EngineToUnicode(basename);
 	
-	SetSerializerSceneManager(m_pSceneMgr);
-	SetSerializerOwner(m_pCurScene);
 	m_pCurScene->Load(fullpath, this);
 
 	m_bIsSceneReay = true;
@@ -77,16 +87,19 @@ void ManipulatorScene::SceneOpen(const std::wstring& filepath)
 
 void ManipulatorScene::SceneSave()
 {
-	//m_sceneSerializer->Serialize(Utility::UnicodeToEngine(m_scenePath+m_sceneName), Utility::UnicodeToEngine(m_sceneName));
-	m_pCurScene->Save();
+	Ogre::String fullPath = Utility::UnicodeToEngine(m_scenePath+m_sceneName);
+	//创建场景文件夹
+	::CreateDirectoryA(fullPath.c_str(), NULL);
+
+	fullPath += "\\" + Utility::UnicodeToEngine(m_sceneName) + ".scene";
+	m_pCurScene->Save(fullPath, this);
+
 	m_manipulatorGameData->SaveAllXml();
 }
 
 void ManipulatorScene::SceneClose()
 {
 	m_pCurScene->Reset();
-	m_manipulatorTerrain->Shutdown();
-	m_pSceneMgr->clearScene();
 	m_bIsSceneReay = false;
 
 	//回调事件
@@ -119,6 +132,16 @@ void ManipulatorScene::OnFrameMove( float dt )
 void ManipulatorScene::_LoadObjects( rapidxml::xml_node<>* node )
 {
 	m_manipulatorObject->Load(node);
+}
+
+void ManipulatorScene::_SaveTerrain( rapidxml::xml_document<>* doc, rapidxml::xml_node<>* XMLNode )
+{
+	m_manipulatorTerrain->Serialize(doc, XMLNode);
+}
+
+void ManipulatorScene::_SaveObjects( rapidxml::xml_document<>* doc, rapidxml::xml_node<>* XMLNode )
+{
+	m_manipulatorObject->Serialize(doc, XMLNode);
 }
 
 

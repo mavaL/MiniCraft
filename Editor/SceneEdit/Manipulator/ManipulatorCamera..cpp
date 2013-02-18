@@ -61,7 +61,7 @@ void ManipulatorCamera::OnMouseMove( const SActionParam& param )
 
 void ManipulatorCamera::OnMouseWheel( short nNotch )
 {
-	m_pCamera->moveRelative(Ogre::Vector3(0,0,(float)nNotch*2));
+	m_pCamera->move(Ogre::Vector3(0,-(float)nNotch*2,0));
 }
 
 void ManipulatorCamera::SetModelViewerTarget( Ogre::Entity* pTarget )
@@ -82,8 +82,9 @@ void ManipulatorCamera::SetType( eCameraType type )
 	if (type == eCameraType_RTS)
 	{
 		//»Ö¸´ÎªRTSÊÓ½Ç
-		m_pCamera->setPosition(0,20,0);
-		m_pCamera->lookAt(0, 0, m_pCamera->getRealPosition().y*5/20);
+		const Ogre::Vector3& pos = m_pCamera->getRealPosition();
+		m_pCamera->setPosition(pos.x, 30, pos.z);
+		m_pCamera->lookAt(pos.x, 0, pos.z + 10);
 	}
 	m_type = type;
 }

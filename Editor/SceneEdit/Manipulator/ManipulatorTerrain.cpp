@@ -2,8 +2,6 @@
 #include "ManipulatorTerrain.h"
 #include <OgreStreamSerialiser.h>
 #include <OgreDeflate.h>
-#include "../DotSceneLoader.h"
-#include "../DotSceneSerializer.h"
 #include "ManipulatorScene.h"
 #include "../EditorDefine.h"
 #include "Utility.h"
@@ -12,7 +10,7 @@
 
 ManipulatorTerrain::ManipulatorTerrain()
 :m_terrainGroup(nullptr)
-,m_vertexPerSide(65)
+,m_vertexPerSide(129)
 ,m_worldSize(128)
 ,m_origPos(Ogre::Vector3::ZERO)
 ,m_pTerrain(nullptr)
@@ -32,14 +30,13 @@ ManipulatorTerrain::~ManipulatorTerrain()
 	ManipulatorScene::GetSingleton().RemoveCallback(this);
 }
 
-void ManipulatorTerrain::NewFlatTerrain()
+void ManipulatorTerrain::NewFlatTerrain(Ogre::Light* pSunLight)
 {
-	SAFE_DELETE(m_terrainGroup);
-	m_terrainOption.reset(new TerrainGlobalOptions);
+	m_terrainOption = new TerrainGlobalOptions;
 	m_terrainGroup = new TerrainGroup(ManipulatorSystem.m_pSceneMgr, Terrain::ALIGN_X_Z, (Ogre::uint16)m_vertexPerSide, (float)m_worldSize);
 	m_terrainGroup->setOrigin(m_origPos);
 
-	_ConfigureTerrainDefaults();
+	_ConfigureTerrainDefaults(pSunLight);
 	
 	//初始化平坦地形
 	m_terrainGroup->defineTerrain(0, 0, 0.0f);
@@ -47,60 +44,27 @@ void ManipulatorTerrain::NewFlatTerrain()
 	// sync load since we want everything in place when we start
 	m_terrainGroup->loadTerrain(0, 0);
 
-	//_InitBlendMap();
-
 	m_terrainGroup->freeTemporaryResources();
 	m_pTerrain = m_terrainGroup->getTerrain(0, 0);
 }
 
-void ManipulatorTerrain::_InitBlendMap()
-{
-	Ogre::TerrainLayerBlendMap* blendMap0 = m_pTerrain->getLayerBlendMap(1);
-	Ogre::TerrainLayerBlendMap* blendMap1 = m_pTerrain->getLayerBlendMap(2);
-	float minHeight0 = 70;
-	float fadeDist0 = 40;
-	float minHeight1 = 70;
-	float fadeDist1 = 15;
-	float* pBlend1 = blendMap1->getBlendPointer();
-	for (Ogre::uint16 y = 0; y < m_pTerrain->getLayerBlendMapSize(); ++y)
-	{
-		for (Ogre::uint16 x = 0; x < m_pTerrain->getLayerBlendMapSize(); ++x)
-		{
-			float tx, ty;
-
-			blendMap0->convertImageToTerrainSpace(x, y, &tx, &ty);
-			float height = m_pTerrain->getHeightAtTerrainPosition(tx, ty);
-			float val = (height - minHeight0) / fadeDist0;
-			val = Ogre::Math::Clamp(val, (float)0, (float)1);
-			//*pBlend0++ = val;
-
-			val = (height - minHeight1) / fadeDist1;
-			val = Ogre::Math::Clamp(val, (float)0, (float)1);
-			*pBlend1++ = val;
-		}
-	}
-	blendMap0->dirty();
-	blendMap1->dirty();
-	blendMap0->update();
-	blendMap1->update();
-}
-
-void ManipulatorTerrain::_ConfigureTerrainDefaults()
+void ManipulatorTerrain::_ConfigureTerrainDefaults(Ogre::Light* pSunLight)
 {
 // 	MaterialManager::getSingleton().setDefaultTextureFiltering(TFO_ANISOTROPIC);
 // 	MaterialManager::getSingleton().setDefaultAnisotropy(7);
 
+	//全局光
 	m_terrainOption->setMaxPixelError(8);
 	m_terrainOption->setCompositeMapDistance(3000);
-	m_terrainOption->setUseRayBoxDistanceCalculation(true);
+	//m_terrainOption->setUseRayBoxDistanceCalculation(true);
 	//m_terrainOption->getDefaultMaterialGenerator()->setDebugLevel(1);
-	m_terrainOption->setLightMapSize(512);
+	//m_terrainOption->setLightMapSize(512);
 
 	//matProfile->setLightmapEnabled(false);
 	// Important to set these so that the terrain knows what to use for derived (non-realtime) data
-	//mTerrainGlobals->setLightMapDirection(l->getDerivedDirection());
+	m_terrainOption->setLightMapDirection(pSunLight->getDirection().normalisedCopy());
 	m_terrainOption->setCompositeMapAmbient(ManipulatorSystem.m_pSceneMgr->getAmbientLight());
-	//mTerrainGlobals->setCompositeMapDiffuse(l->getDiffuseColour());
+	m_terrainOption->setCompositeMapDiffuse(pSunLight->getDiffuseColour());
 
 	// Configure default import settings for if we use imported image
 	Terrain::ImportData& defaultimp = m_terrainGroup->getDefaultImportSettings();
@@ -127,10 +91,11 @@ void ManipulatorTerrain::_ConfigureTerrainDefaults()
 	m_curEditLayer = 0;
 }
 
-void ManipulatorTerrain::Shutdown()
+void ManipulatorTerrain::OnSceneClose()
 {
-	SAFE_DELETE(m_terrainGroup);
-	m_terrainOption.reset();
+	m_terrainGroup = nullptr;
+	m_terrainOption = nullptr;
+	m_pTerrain = nullptr;
 }
 
 void ManipulatorTerrain::OnSceneOpen()
@@ -138,7 +103,7 @@ void ManipulatorTerrain::OnSceneOpen()
 	SAFE_DELETE(m_terrainGroup);
 
 	Scene* pScene = ManipulatorScene::GetSingleton().GetScene();
-	m_terrainOption.reset(pScene->GetTerrainOption());
+	m_terrainOption = pScene->GetTerrainOption();
 	m_terrainGroup = pScene->GetTerrainGroup();
 	m_pTerrain = pScene->GetTerrain();
 
@@ -146,22 +111,22 @@ void ManipulatorTerrain::OnSceneOpen()
 	m_curEditLayer = 0;
 }
 
-void ManipulatorTerrain::Serialize( rapidxml::xml_document<>& doc, rapidxml::xml_node<>* XMLNode )
+void ManipulatorTerrain::Serialize( rapidxml::xml_document<>* doc, rapidxml::xml_node<>* XMLNode )
 {
 	String strWorldSize = Ogre::StringConverter::toString(m_worldSize);
 	String strTerrainSize = Ogre::StringConverter::toString(m_vertexPerSide);
 	String strPixelError = Ogre::StringConverter::toString(m_terrainOption->getMaxPixelError());
 
-	XMLNode->append_attribute(doc.allocate_attribute("worldSize", doc.allocate_string(strWorldSize.c_str())));
-	XMLNode->append_attribute(doc.allocate_attribute("mapSize", doc.allocate_string(strTerrainSize.c_str())));
-	XMLNode->append_attribute(doc.allocate_attribute("tuningMaxPixelError", doc.allocate_string(strPixelError.c_str())));
+	XMLNode->append_attribute(doc->allocate_attribute("worldSize", doc->allocate_string(strWorldSize.c_str())));
+	XMLNode->append_attribute(doc->allocate_attribute("mapSize", doc->allocate_string(strTerrainSize.c_str())));
+	XMLNode->append_attribute(doc->allocate_attribute("tuningMaxPixelError", doc->allocate_string(strPixelError.c_str())));
 
 	//保存地形数据
 	std::wstring fullPath(ManipulatorSystem.GenerateSceneFullPath());
 	fullPath += L"terrain.dat";
 	Ogre::DataStreamPtr stream = Ogre::Root::getSingleton().createFileStream(Utility::UnicodeToEngine(fullPath), 
 		Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, true);
-	//文件压缩.地形数据貌似很大,以后研究为什么
+
 	Ogre::DataStreamPtr compressStream(new Ogre::DeflateStream(Utility::UnicodeToEngine(fullPath), stream));
 	Ogre::StreamSerialiser ser(compressStream);
 

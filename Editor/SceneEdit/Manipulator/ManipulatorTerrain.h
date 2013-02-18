@@ -33,6 +33,7 @@ public:
 
 	//////////////事件回调
 	virtual void	OnSceneOpen();
+	virtual void	OnSceneClose();
 	
 	enum eTerrainEditMode
 	{
@@ -42,9 +43,8 @@ public:
 	};
 
 public:
-	void	NewFlatTerrain();
-	void	Shutdown();
-	void	Serialize(rapidxml::xml_document<>& doc, rapidxml::xml_node<>* XMLNode);
+	void	NewFlatTerrain(Ogre::Light* pSunLight);
+	void	Serialize(rapidxml::xml_document<>* doc, rapidxml::xml_node<>* XMLNode);
 	void	OnGizmoNodeReset();
 
 	float	GetHeightAt(const Ogre::Vector2& worldPos);
@@ -91,12 +91,11 @@ public:
 	int		GetCurEditLayer() const { return m_curEditLayer; }
 
 private:
-	void	_ConfigureTerrainDefaults();
-	void	_InitBlendMap();
+	void	_ConfigureTerrainDefaults(Ogre::Light* pSunLight);
 
 private:
 	TerrainGroup*							m_terrainGroup;
-	std::unique_ptr<TerrainGlobalOptions>	m_terrainOption;
+	TerrainGlobalOptions*					m_terrainOption;
 	Terrain*								m_pTerrain;			//目前仅有一块地形
 	Ogre::StringVector						m_vecLayerTex;		//画刷可用的所有纹理名
 
@@ -107,7 +106,7 @@ private:
 	std::unique_ptr<Brush>					m_brush[2]; //0:cirle 1:square
 	int										m_curBrushIndex;
 	eTerrainEditMode						m_curEditMode;
-	int										m_curEditLayer;
+	int										m_curEditLayer;					
 };
 
 

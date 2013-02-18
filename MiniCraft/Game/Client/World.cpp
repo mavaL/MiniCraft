@@ -30,7 +30,6 @@ World::World()
 ,m_pRaySceneQuery(nullptr)
 ,m_cmdPanel(new UiCommandPanel)
 ,m_infoPanel(new UiInfoPanel)
-,m_pTestScene(new Scene)
 {
 	
 }
@@ -39,7 +38,6 @@ World::~World()
 {
 	SAFE_DELETE(m_cmdPanel);
 	SAFE_DELETE(m_infoPanel);
-	SAFE_DELETE(m_pTestScene);
 }
 
 void World::Init()
@@ -47,7 +45,6 @@ void World::Init()
 	using namespace Ogre;
 
 	m_pSceneMgr = Ogre::Root::getSingleton().createSceneManager(Ogre::ST_GENERIC, SCENE_MANAGER_NAME);
-	m_pSceneMgr->setAmbientLight(ColourValue(1.0f, 1.0f, 1.0f));
 
 	g_Environment.m_pSceneMgr = m_pSceneMgr;
 
@@ -107,8 +104,7 @@ void World::Init()
 	g_Environment.m_pCrowd = m_pDetourCrowd;
 
 	//¼ÓÔØ²âÊÔ³¡¾°
-	SetSerializerOwner(m_pTestScene);
-	SetSerializerSceneManager(m_pSceneMgr);
+	m_pTestScene = new Scene(m_pSceneMgr);
 	m_pTestScene->Load("MyStarCraft.Scene", "General", this);
 
 	//UI for test
@@ -152,6 +148,8 @@ void World::Init()
 
 void World::Shutdown()
 {
+	SAFE_DELETE(m_pTestScene);
+
 	SAFE_DELETE(m_player[eGameRace_Terran]);
 	SAFE_DELETE(m_player[eGameRace_Zerg]);
 

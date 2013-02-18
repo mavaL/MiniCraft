@@ -6,6 +6,7 @@
 #include "Manipulator/ManipulatorAction.h"
 #include "Action/ActionBase.h"
 #include "MainFrm.h"
+#include "Scene.h"
 
 
 Application::Application()

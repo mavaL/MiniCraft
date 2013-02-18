@@ -49,6 +49,7 @@ public:
 
 public:
 	void		Load(rapidxml::xml_node<>* XMLNode);
+	void		Serialize(rapidxml::xml_document<>* doc, rapidxml::xml_node<>* XMLNode);
 	void		OnFrameMove(float dt);
 	eEditMode	GetCurEditMode() const { return m_curEditMode; }
 	void		SetCurEditMode(eEditMode mode) { m_curEditMode = mode; }

@@ -11,7 +11,6 @@ typedef Ogre::Vector2		FLOAT2;
 
 
 const		std::string		SCENE_MANAGER_NAME	=	"DefaultSceneMgr";
-const		float			SCENE_VERSION		=	0.2f;
 const		int				MAX_ABILITY_SLOT	=	15;		//命令面板技能槽个数
 const		int				MAX_COMMAND_QUEUE_LEN	=	1;	//命令队列最大长度
 

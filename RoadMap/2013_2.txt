@@ -1,1 +1,3 @@
-Happy new year~! Spring Festival this month, not sure how much work can be done!
+Happy new year~! Spring Festival this month
+
+1.Learn Deferred Shading theory and integrate Ogre's DS demo.

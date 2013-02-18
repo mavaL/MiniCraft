@@ -6,19 +6,21 @@
 
 using namespace Ogre;
 
+const Ogre::String SCENE_VERSION = "0.3";
+
 SceneSerializer::SceneSerializer()
-:m_pSerializerMgr(nullptr)
-,m_pOwner(nullptr)
+:m_pOwner(nullptr)
 ,m_sceneGroup(StringUtil::BLANK)
 {
 
 }
 
-void SceneSerializer::LoadScene( const std::string& sceneName, const std::string& sceneGroup )
+void SceneSerializer::LoadScene( const std::string& sceneName, const std::string& sceneGroup, Scene* pOwner )
 {
 	DataStreamPtr stream = ResourceGroupManager::getSingleton().openResource(sceneName, sceneGroup);
 	char* szData = strdup(stream->getAsString().c_str());
 
+	m_pOwner = pOwner;
 	m_sceneGroup = sceneGroup;
 
 	//parse
@@ -30,14 +32,24 @@ void SceneSerializer::LoadScene( const std::string& sceneName, const std::string
 	XMLRoot = XMLDoc.first_node("scene");
 
 	// Validate the File
-	const float SCENE_VERSION = 0.2;
 	const String strVer = XMLRoot->first_attribute("formatVersion")->value();
-	float fVersion = StringConverter::parseReal(strVer);
-	if(fVersion != SCENE_VERSION)
+	if(strVer != SCENE_VERSION)
 	{
 		assert(0);
 		return;
 	}
+
+	//m_pOwner->m_pSceneMgr->setShadowTechnique(SHADOWTYPE_TEXTURE_ADDITIVE);
+
+	//环境光
+	const String strAmbient = XMLRoot->first_attribute("AmbientLight")->value();
+	m_pOwner->m_pSceneMgr->setAmbientLight(Ogre::StringConverter::parseColourValue(strAmbient));
+
+	//全局光
+	Light* pSunLight = m_pOwner->m_pSceneMgr->createLight("SunLight");
+	pSunLight->setType(Light::LT_DIRECTIONAL);
+	pSunLight->setDirection(pOwner->GetSunLightDirection().normalisedCopy());
+	pSunLight->setDiffuseColour(ColourValue::White);
 
 	rapidxml::xml_node<>* pElement = XMLRoot->first_node("terrain");
 	assert(pElement);
@@ -50,9 +62,36 @@ void SceneSerializer::LoadScene( const std::string& sceneName, const std::string
 	free(szData);
 }
 
-void SceneSerializer::SaveScene()
+void SceneSerializer::SaveScene(const std::string& fullPath, Scene* pOwner)
 {
+	using namespace rapidxml;
 
+	m_pOwner = pOwner;
+
+	xml_document<> doc;  
+	//文件头
+	xml_node<>* rot = doc.allocate_node(rapidxml::node_pi, doc.allocate_string("xml version='1.0' encoding='utf-8'"));
+	doc.append_node(rot);
+
+	//scene节
+	xml_node<>* sceneNode =   doc.allocate_node(node_element, "scene");
+	const String strAmbient = Ogre::StringConverter::toString(m_pOwner->m_pSceneMgr->getAmbientLight());
+	sceneNode->append_attribute(doc.allocate_attribute("formatVersion", doc.allocate_string(SCENE_VERSION.c_str())));
+	sceneNode->append_attribute(doc.allocate_attribute("AmbientLight", doc.allocate_string(strAmbient.c_str())));
+	doc.append_node(sceneNode);
+
+	//terrain节
+	xml_node<>* terrainNode =   doc.allocate_node(node_element, "terrain");
+	_SaveTerrain(&doc, terrainNode);
+	sceneNode->append_node(terrainNode);
+
+	//object节
+	xml_node<>* objsNode =   doc.allocate_node(node_element, "objects");
+	_SaveObjects(&doc, objsNode);
+	sceneNode->append_node(objsNode);
+
+	std::ofstream out(fullPath);
+	out << doc;
 }
 
 void SceneSerializer::_LoadTerrain( rapidxml::xml_node<>* node )
@@ -66,24 +105,14 @@ void SceneSerializer::_LoadTerrain( rapidxml::xml_node<>* node )
 	//int compositeMapDistance = Ogre::StringConverter::parseInt(XMLNode->first_attribute("tuningCompositeMapDistance")->value());
 	int maxPixelError = StringConverter::parseInt(node->first_attribute("tuningMaxPixelError")->value());
 
-	//     Ogre::Vector3 lightdir(0, -0.3, 0.75);
-	//     lightdir.normalise();
-	//     Ogre::Light* l = mSceneMgr->createLight("tstLight");
-	//     l->setType(Ogre::Light::LT_DIRECTIONAL);
-	//     l->setDirection(lightdir);
-	//     l->setDiffuseColour(Ogre::ColourValue(1.0, 1.0, 1.0));
-	//     l->setSpecularColour(Ogre::ColourValue(0.4, 0.4, 0.4));
-
 	option->setMaxPixelError((Ogre::Real)maxPixelError);
 	option->setCompositeMapDistance(3000);
-	option->setUseRayBoxDistanceCalculation(true);
-	// mTerrainGlobalOptions->setLightMapDirection(lightdir);
-	option->setCompositeMapAmbient(m_pSerializerMgr->getAmbientLight());
-	//mTerrainGlobalOptions->setCompositeMapDiffuse(l->getDiffuseColour());
+// 	option->setUseRayBoxDistanceCalculation(true);
+// 	option->setLightMapDirection(pSunLight->getDirection());
+// 	option->setCompositeMapAmbient(m_pOwner->m_pSceneMgr->getAmbientLight());
+// 	option->setCompositeMapDiffuse(pSunLight->getDiffuseColour());
 
-	//mSceneMgr->destroyLight("tstLight");
-
-	TerrainGroup* pTerrainGroup = new TerrainGroup(m_pSerializerMgr, Terrain::ALIGN_X_Z, mapSize, worldSize);
+	TerrainGroup* pTerrainGroup = new TerrainGroup(m_pOwner->m_pSceneMgr, Terrain::ALIGN_X_Z, mapSize, worldSize);
 	pTerrainGroup->setOrigin(Vector3::ZERO);
 
 	//加载地形数据
@@ -92,7 +121,7 @@ void SceneSerializer::_LoadTerrain( rapidxml::xml_node<>* node )
 	pTerrainGroup->loadTerrain(0, 0);
 	pTerrainGroup->freeTemporaryResources();
 
-	Terrain* pTerrain = pTerrainGroup->getTerrain(0, 0);
-
-	m_pOwner->_SetTerrainParam(pTerrainGroup, option, pTerrain);
+	m_pOwner->m_pTerrain = pTerrainGroup->getTerrain(0, 0);
+	m_pOwner->m_terrainGroup = pTerrainGroup;
+	m_pOwner->m_terrainOption = option;
 }

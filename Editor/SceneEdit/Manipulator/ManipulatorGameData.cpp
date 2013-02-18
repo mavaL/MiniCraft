@@ -15,7 +15,7 @@ void ManipulatorGameData::LoadAllXml()
 
 void ManipulatorGameData::SaveAllXml()
 {
-	m_dataMgr->SaveAllData();
+	//m_dataMgr->SaveAllData();
 }
 
 std::vector<std::wstring> ManipulatorGameData::GetRaceBuildingNames( eGameRace race ) const

@@ -24,18 +24,17 @@ public:
 	virtual ~SceneSerializer() {}
 
 public:
-	void			LoadScene(const std::string& sceneName, const std::string& sceneGroup);
-	void			SaveScene();
-	void			SetSerializerOwner(Scene* pOwner) { m_pOwner = pOwner; }
-	void			SetSerializerSceneManager(Ogre::SceneManager* pSceneMgr) { m_pSerializerMgr = pSceneMgr; }
+	void			LoadScene(const std::string& sceneName, const std::string& sceneGroup, Scene* pOwner);
+	void			SaveScene(const std::string& fullPath, Scene* pOwner);
 
 protected:
 	virtual	void	_LoadTerrain(rapidxml::xml_node<>* node);
-	virtual void	_LoadObjects(rapidxml::xml_node<>* node) = 0;
+	virtual void	_LoadObjects(rapidxml::xml_node<>* node) {}
+	virtual void	_SaveTerrain(rapidxml::xml_document<>* doc, rapidxml::xml_node<>* XMLNode) {}
+	virtual void	_SaveObjects(rapidxml::xml_document<>* doc, rapidxml::xml_node<>* XMLNode) {}
 
 private:
 	Scene*				m_pOwner;
-	Ogre::SceneManager* m_pSerializerMgr;
 	std::string			m_sceneGroup;
 };
 

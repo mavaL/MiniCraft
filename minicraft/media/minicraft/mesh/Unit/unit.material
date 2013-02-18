@@ -1,29 +1,43 @@
-fragment_program unit_red_ps cg
+fragment_program unit_ps cg
 {
 	source unit.cg
 	entry_point main
 	profiles ps_2_0 arbfp1
 }
 
-material marine
+///模板
+material MT_Unit
 {
-	technique Map#2
-	{
-		pass Map#3
-		{
-			//暂时没有光照
-			lighting off
+	receive_shadows false
 
+	technique
+	{
+		pass
+		{
 			vertex_program_ref Ogre/BasicVertexPrograms/AmbientOneTexture
 			{
 				param_named_auto worldViewProj worldviewproj_matrix
 			}
-			fragment_program_ref unit_red_ps
+			fragment_program_ref unit_ps
 			{
 				param_named TeamColor float4 0 0 1 1
+				param_named_auto ambient ambient_light_colour
 			}
 
-			texture_unit Map#4
+			texture_unit diffusemap
+			{
+			}
+		}
+	}
+}
+
+material marine : MT_Unit
+{
+	technique
+	{
+		pass
+		{
+			texture_unit diffusemap
 			{
 				texture marine_diffuse.dds
 				filtering linear linear linear
@@ -32,25 +46,13 @@ material marine
 	}
 }
 
-material scv
+material scv : MT_Unit
 {
-	technique Map#2
+	technique
 	{
-		pass Map#3
+		pass
 		{
-			//暂时没有光照
-			lighting off
-
-			vertex_program_ref Ogre/BasicVertexPrograms/AmbientOneTexture
-			{
-				param_named_auto worldViewProj worldviewproj_matrix
-			}
-			fragment_program_ref unit_red_ps
-			{
-				param_named TeamColor float4 0 0 1 1
-			}
-
-			texture_unit Map#4
+			texture_unit diffusemap
 			{
 				texture SCV_Diffuse.dds
 				filtering linear linear linear
@@ -59,25 +61,17 @@ material scv
 	}
 }
 
-material drone
+material drone : MT_Unit
 {
-	technique Map#2
+	technique
 	{
-		pass Map#3
+		pass
 		{
-			//暂时没有光照
-			lighting off
-
-			vertex_program_ref Ogre/BasicVertexPrograms/AmbientOneTexture
-			{
-				param_named_auto worldViewProj worldviewproj_matrix
-			}
-			fragment_program_ref unit_red_ps
+			fragment_program_ref unit_ps
 			{
 				param_named TeamColor float4 1 0 0 1
 			}
-
-			texture_unit Map#4
+			texture_unit diffusemap
 			{
 				texture Drone_Diffuse.dds
 				filtering linear linear linear
@@ -86,29 +80,106 @@ material drone
 	}
 }
 
-material zergling
+material zergling : MT_Unit
 {
-	technique Map#2
+	technique
 	{
-		pass Map#3
+		pass
 		{
-			//暂时没有光照
-			lighting off
-
-			vertex_program_ref Ogre/BasicVertexPrograms/AmbientOneTexture
-			{
-				param_named_auto worldViewProj worldviewproj_matrix
-			}
-			fragment_program_ref unit_red_ps
+			fragment_program_ref unit_ps
 			{
 				param_named TeamColor float4 1 0 0 1
 			}
-
-			texture_unit Map#4
+			texture_unit diffusemap
 			{
 				texture zergling_diffuse.dds
 				filtering linear linear linear
 			}
 		}
 	}
+}
+
+material Barracks : MT_Unit
+{
+	technique
+	{
+		pass
+		{
+			texture_unit diffusemap
+			{
+				texture Barracks_Diffuse.dds
+				filtering linear linear linear
+			}
+		}
+	}
+}
+
+material CommandCenter : MT_Unit
+{
+	technique
+	{
+		pass
+		{
+			texture_unit diffusemap
+			{
+				texture CommandCenter_Diffuse.dds
+				filtering linear linear linear
+			}
+		}
+	}
+}
+
+material sc2material : MT_Unit
+{
+	technique
+	{
+		pass
+		{
+			fragment_program_ref unit_ps
+			{
+				param_named TeamColor float4 1 0 0 1
+			}
+			texture_unit diffusemap
+			{
+				texture SpawningPool_Diffuse.dds
+				filtering linear linear linear
+			}
+		}
+	}
+}
+
+material hatchery : MT_Unit
+{
+	technique
+	{
+		pass
+		{
+			fragment_program_ref unit_ps
+			{
+				param_named TeamColor float4 1 0 0 1
+			}
+			texture_unit diffusemap
+			{
+				texture Hatchery_Diffuse.dds
+				filtering linear linear linear
+			}
+		}
+	}
+}
+
+material CrystalJade
+{
+	technique Map#4
+	{
+		pass Map#5
+		{
+			texture_unit Map#6
+			{
+				texture ResourceCrystalDiff_blue.dds
+				filtering linear linear linear
+			}
+		}
+
+	}
+
 }

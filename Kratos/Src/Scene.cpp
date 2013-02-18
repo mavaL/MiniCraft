@@ -1,20 +1,26 @@
 #include "Scene.h"
 #include <OgreResourceGroupManager.h>
+#include <OgreSceneManager.h>
+#include <Terrain/OgreTerrain.h>
+#include <Terrain/OgreTerrainGroup.h>
 #include "SceneSerializer.h"
 
 using namespace Ogre;
 
-Scene::Scene()
+Scene::Scene(Ogre::SceneManager* pSceneMgr)
 :m_pTerrain(nullptr)
 ,m_terrainGroup(nullptr)
 ,m_terrainOption(nullptr)
+,m_pSceneMgr(pSceneMgr)
+,m_sunLightDir(Ogre::Vector3(0.55f, -0.3f, 0.75f))
+,m_sunLightDiffuse(Ogre::ColourValue::White)
 {
-
+	
 }
 
 void Scene::Load( const std::string& sceneName, const std::string& sceneGroup, SceneSerializer* pHandler )
 {
-	pHandler->LoadScene(sceneName, sceneGroup);
+	pHandler->LoadScene(sceneName, sceneGroup, this);
 }
 
 void Scene::Load( const std::string& fullPath, SceneSerializer* pHandler )
@@ -29,20 +35,28 @@ void Scene::Load( const std::string& fullPath, SceneSerializer* pHandler )
 	Load(sceneName, tmpGroup, pHandler);
 }
 
-void Scene::Save()
+void Scene::Save(const std::string& fullPath, SceneSerializer* pHandler)
 {
-
+	pHandler->SaveScene(fullPath, this);
 }
 
 void Scene::Reset()
 {
-
-}
-
-void Scene::_SetTerrainParam( Ogre::TerrainGroup* group, Ogre::TerrainGlobalOptions* option, Ogre::Terrain* terrain )
-{
-	assert(m_terrainGroup ==nullptr && m_terrainOption == nullptr && m_pTerrain == nullptr);
-	m_terrainGroup = group;
-	m_terrainOption = option;
-	m_pTerrain = terrain;
+	if(m_pTerrain)
+	{
+		m_terrainGroup->unloadTerrain(0, 0);
+		m_pTerrain = nullptr;
+	}
+	if(m_terrainGroup)
+	{
+		delete m_terrainGroup;
+		m_terrainGroup = nullptr;
+	}
+	if(m_terrainOption)
+	{
+		delete m_terrainOption;
+		m_terrainOption = nullptr;
+	}
+	if(m_pSceneMgr)
+		m_pSceneMgr->clearScene();
 }

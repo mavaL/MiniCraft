@@ -280,6 +280,47 @@ void ManipulatorObject::Load( rapidxml::xml_node<>* XMLNode )
 	}
 }
 
+void ManipulatorObject::Serialize( rapidxml::xml_document<>* doc, rapidxml::xml_node<>* XMLNode )
+{
+	using namespace rapidxml;
+
+	const String count = Ogre::StringConverter::toString(m_objects.size());
+	XMLNode->append_attribute(doc->allocate_attribute("count", doc->allocate_string(count.c_str())));
+
+	for (auto iter=m_objects.begin(); iter!=m_objects.end(); ++iter)
+	{
+		Ogre::Entity* pObj = iter->first;
+		xml_node<>* objNode =   doc->allocate_node(node_element, "entity");
+
+		//meshname
+		const String& strMesh = pObj->getMesh()->getName();
+		objNode->append_attribute(doc->allocate_attribute("meshname", doc->allocate_string(strMesh.c_str())));
+		//add to navmesh
+		const String& strIsNavMesh = Ogre::StringConverter::toString((iter->second)->m_bAddToNavmesh);
+		objNode->append_attribute(doc->allocate_attribute("isnavmesh", doc->allocate_string(strIsNavMesh.c_str())));
+		//is building
+		const String& strIsBuilding = Ogre::StringConverter::toString((iter->second)->m_bIsBuilding);
+		objNode->append_attribute(doc->allocate_attribute("isbuilding", doc->allocate_string(strIsBuilding.c_str())));
+		//building name
+		if(strIsBuilding == "true")
+			objNode->append_attribute(doc->allocate_attribute("buildingname", doc->allocate_string((iter->second)->m_buildingName.c_str())));
+		//is resource
+		const String& strIsResource = Ogre::StringConverter::toString((iter->second)->m_bIsResource);
+		objNode->append_attribute(doc->allocate_attribute("isresource", doc->allocate_string(strIsResource.c_str())));
+		//position
+		String strPos = Ogre::StringConverter::toString(pObj->getParentSceneNode()->_getDerivedPosition());
+		objNode->append_attribute(doc->allocate_attribute("position", doc->allocate_string(strPos.c_str())));
+		//orientation
+		String strOrient = Ogre::StringConverter::toString(pObj->getParentSceneNode()->_getDerivedOrientation());
+		objNode->append_attribute(doc->allocate_attribute("orientation", doc->allocate_string(strOrient.c_str())));
+		//scale
+		String strScale = Ogre::StringConverter::toString(pObj->getParentSceneNode()->_getDerivedScale());
+		objNode->append_attribute(doc->allocate_attribute("scale", doc->allocate_string(strScale.c_str())));
+
+		XMLNode->append_node(objNode);
+	}
+}
+
 void ManipulatorObject::_UpdateAABBOfEntity( Ogre::Entity* pEntity )
 {
 	assert(pEntity);
@@ -398,6 +439,8 @@ const std::string& ManipulatorObject::GetObjectBuildingName( Ogre::Entity* pEnti
 
 	return (iter->second)->m_buildingName;
 }
+
+
 
 
 
