@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "ObjectBase.h"
 #include "World.h"
+#include "OgreManager.h"
 
 Object::Object()
 {
@@ -90,12 +91,12 @@ void RenderableObject::DestroyRenderInstance()
 {
 	if (m_pSceneNode)
 	{
-		g_Environment.m_pSceneMgr->destroySceneNode(m_pSceneNode);
+		RenderManager.m_pSceneMgr->destroySceneNode(m_pSceneNode);
 		m_pSceneNode = nullptr;
 	}
 	if (m_pEntity)
 	{
-		g_Environment.m_pSceneMgr->destroyEntity(m_pEntity);
+		RenderManager.m_pSceneMgr->destroyEntity(m_pEntity);
 		m_pEntity = nullptr;
 	}
 
@@ -108,8 +109,8 @@ void RenderableObject::CreateRenderInstance()
 
 	DestroyRenderInstance();
 
-	m_pSceneNode = g_Environment.m_pSceneMgr->getRootSceneNode()->createChildSceneNode();
-	m_pEntity = g_Environment.m_pSceneMgr->createEntity(m_meshname);
+	m_pSceneNode = RenderManager.m_pSceneMgr->getRootSceneNode()->createChildSceneNode();
+	m_pEntity = RenderManager.m_pSceneMgr->createEntity(m_meshname);
 	m_pSceneNode->attachObject(m_pEntity);
 
 	m_bRenderableReady = true;

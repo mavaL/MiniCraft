@@ -22,11 +22,11 @@ CInputManager::~CInputManager(void)
 bool CInputManager::Init()
 {
 	//图形系统需初始化
-	assert(COgreManager::GetSingleton().IsInit() && "错误!!图形系统还未初始化!");
+	assert(RenderManager.IsInit() && "错误!!图形系统还未初始化!");
 
 	OIS::ParamList pl;
 	unsigned long hwnd = 0;
-	COgreManager::GetSingleton().GetMainWndHandle(hwnd);
+	RenderManager.GetMainWndHandle(hwnd);
 	pl.insert(std::make_pair("WINDOW", Ogre::StringConverter::toString(hwnd)));
 
 	mInputManager = OIS::InputManager::createInputSystem( pl );
@@ -42,8 +42,8 @@ bool CInputManager::Init()
 	}
 
 	OIS::MouseState& mouseState = const_cast<OIS::MouseState&>(mMouse->getMouseState());
-	mouseState.width = COgreManager::GetSingleton().GetRenderWindow()->getWidth();
-	mouseState.height = COgreManager::GetSingleton().GetRenderWindow()->getHeight();
+	mouseState.width = RenderManager.mWindow->getWidth();
+	mouseState.height = RenderManager.mWindow->getHeight();
 	mouseState.X.abs = mouseState.width / 2;
 	mouseState.Y.abs = mouseState.height / 2;
 

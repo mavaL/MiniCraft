@@ -37,23 +37,10 @@ void CBattleState::enter()
 	World& world = World::GetSingleton();
 	world.Init();
 
-	//TODO: 测试代码
-
-
-// 	Unit* pTestUnit = world.CreateUnit(/*Ogre::Vector3(10, 0, -10)*/Ogre::Vector3::ZERO);
-// 	pTestUnit->SetState(eUnitState_Idle);
-// 
-// // 	for(int i=0; i<9; ++i)
-// // 	{
-// // 		const Ogre::Vector3 randPos = world.GetRandomPositionOnNavmesh();
-// // 		Unit* pTestUnit = world.CreateUnit(randPos);
-// // 		pTestUnit->SetState(eUnitState_Idle);
-// // 	}
-
 	m_pSelectionQuad = new Ogre::Rectangle2D(true);
 	m_pSelectionQuad->setMaterial("SelectionQuad");
 	(const_cast<Ogre::AxisAlignedBox&>(m_pSelectionQuad->getBoundingBox())).setInfinite();
-	m_pQuadNode = g_Environment.m_pSceneMgr->getRootSceneNode()->createChildSceneNode("SelectionQuadNode");
+	m_pQuadNode = RenderManager.m_pSceneMgr->getRootSceneNode()->createChildSceneNode("SelectionQuadNode");
 	m_pQuadNode->attachObject(m_pSelectionQuad);
 	m_pQuadNode->setVisible(false);
 	
@@ -109,7 +96,7 @@ void CBattleState::update(float timeSinceLastFrame)
 	}
 	else
 	{
-		Ogre::Camera* pCam = world.GetCamera();
+		Ogre::Camera* pCam = RenderManager.m_pMainCamera;
 		//更新摄像机运动
 		if(m_bCamMoveLeft)	pCam->move(Ogre::Vector3(timeSinceLastFrame*40, 0, 0));
 		if(m_bCamMoveRight) pCam->move(Ogre::Vector3(-timeSinceLastFrame*40, 0, 0));
@@ -167,7 +154,7 @@ bool CBattleState::OnInputSys_MouseReleased( const OIS::MouseEvent& arg, OIS::Mo
 		float screenX = arg.state.X.abs / (float)arg.state.width;
 		float screenY = arg.state.Y.abs / (float)arg.state.height;
 		Ogre::Ray ray;
-		world.GetCamera()->getCameraToViewportRay(screenX, screenY, &ray);
+		RenderManager.m_pMainCamera->getCameraToViewportRay(screenX, screenY, &ray);
 
 		POS intersectPos;
 		if(!world.GetTerrainIntersectPos(FLOAT2(screenX, screenY), intersectPos))
@@ -233,7 +220,7 @@ bool CBattleState::OnInputSys_MouseMove( const OIS::MouseEvent& arg )
 	}
 
 	//获取屏幕尺寸
-	Ogre::RenderWindow* pRenderWnd = COgreManager::GetSingleton().GetRenderWindow();
+	Ogre::RenderWindow* pRenderWnd = RenderManager.mWindow;
 	int w = (int)pRenderWnd->getWidth(), h = (int)pRenderWnd->getHeight();
 	//获取当前鼠标绝对位置
 	int absX = arg.state.X.abs, absY = arg.state.Y.abs;

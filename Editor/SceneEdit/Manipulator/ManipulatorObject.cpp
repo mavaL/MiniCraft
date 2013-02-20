@@ -6,6 +6,7 @@
 #include "Gizmo.h"
 #include "Utility.h"
 #include <OgreWireBoundingBox.h>
+#include "OgreManager.h"
 
 
 ManipulatorObject::ManipulatorObject()
@@ -14,17 +15,20 @@ ManipulatorObject::ManipulatorObject()
 ,m_pAnimEntity(nullptr)
 ,m_pAnimState(nullptr)
 {
+	//Ä¬ÈÏ²éÑ¯ÑÚÂë
+	Ogre::MovableObject::setDefaultQueryFlags(eQueryMask_Default);
+
 	ManipulatorScene::GetSingleton().AddCallback(this);
 	m_pGizmoAixs = new GizmoAxis;
-	m_pRaySceneQuery = ManipulatorSystem.m_pSceneMgr->createRayQuery(Ogre::Ray());
-	m_pAABBSceneQuery = ManipulatorSystem.m_pSceneMgr->createAABBQuery(Ogre::AxisAlignedBox());
+	m_pRaySceneQuery = RenderManager.m_pSceneMgr->createRayQuery(Ogre::Ray());
+	m_pAABBSceneQuery = RenderManager.m_pSceneMgr->createAABBQuery(Ogre::AxisAlignedBox());
 	m_pRaySceneQuery->setSortByDistance(true);
 }
 
 ManipulatorObject::~ManipulatorObject()
 {
-	ManipulatorSystem.m_pSceneMgr->destroyQuery(m_pRaySceneQuery);
-	ManipulatorSystem.m_pSceneMgr->destroyQuery(m_pAABBSceneQuery);
+	RenderManager.m_pSceneMgr->destroyQuery(m_pRaySceneQuery);
+	RenderManager.m_pSceneMgr->destroyQuery(m_pAABBSceneQuery);
 	m_pRaySceneQuery = nullptr;
 	m_pAABBSceneQuery = nullptr;
 	SAFE_DELETE(m_pGizmoAixs);
@@ -66,11 +70,11 @@ Ogre::Entity* ManipulatorObject::AddEntity( const Ogre::String& meshname, const 
 	Ogre::String entName("Entity_");
 	entName += Ogre::StringConverter::toString(counter++);
 
-	Ogre::Entity* newEntity = ManipulatorSystem.m_pSceneMgr->createEntity(entName, meshname);
+	Ogre::Entity* newEntity = RenderManager.m_pSceneMgr->createEntity(entName, meshname);
 	if(!newEntity)
 		return nullptr;
 
-	Ogre::SceneNode* pNode = ManipulatorSystem.m_pSceneMgr->getRootSceneNode()->createChildSceneNode(worldPos, orient);
+	Ogre::SceneNode* pNode = RenderManager.m_pSceneMgr->getRootSceneNode()->createChildSceneNode(worldPos, orient);
 	pNode->setScale(scale);
 	pNode->attachObject(newEntity);
 
@@ -94,7 +98,7 @@ Ogre::Entity* ManipulatorObject::AddEntity( const Ogre::String& meshname, const 
 
 Ogre::Entity* ManipulatorObject::AddEntity( const Ogre::String& meshname, const Ogre::Vector2& screenPos )
 {
-	Ogre::Ray ray = ManipulatorSystem.m_pMainCamera->getCameraToViewportRay(screenPos.x, screenPos.y);
+	Ogre::Ray ray = RenderManager.m_pMainCamera->getCameraToViewportRay(screenPos.x, screenPos.y);
 
 	Vector3 pt;
 	if (ManipulatorSystem.GetTerrain().GetRayIntersectPoint(ray, pt))
@@ -250,7 +254,7 @@ Ogre::WireBoundingBox* ManipulatorObject::GetEntityAABBGizmo(Ogre::Entity* pEnti
 
 void ManipulatorObject::Load( rapidxml::xml_node<>* XMLNode )
 {
-	Ogre::SceneManager* pSceneMgr = ManipulatorSystem.m_pSceneMgr;
+	Ogre::SceneManager* pSceneMgr = RenderManager.m_pSceneMgr;
 	size_t count = Ogre::StringConverter::parseUnsignedInt(XMLNode->first_attribute("count")->value());
 	rapidxml::xml_node<>* curObjNode = XMLNode->first_node();
 

@@ -3,7 +3,7 @@
 #include "TerrainPropertyPane.h"
 #include "Manipulator/ManipulatorScene.h"
 #include "EditorDefine.h"
-
+#include "Scene.h"
 
 
 BEGIN_MESSAGE_MAP(PropertyPaneTerrain, CPropertiesPane)
@@ -31,7 +31,8 @@ int PropertyPaneTerrain::OnCreate( LPCREATESTRUCT lpCreateStruct )
 	PROPERTY_REG(pCategory, Double, L"CompositeMap Distance", 0, propCompMapDist	);
 	pCategory->Expand();
 
-	for(int iLayer=0; iLayer<TERRAIN_MAX_LAYER; ++iLayer)
+	size_t maxLayer = ManipulatorSystem.GetScene()->GetTerrainMaxLayer();
+	for(size_t iLayer=0; iLayer<maxLayer; ++iLayer)
 	{
 		std::string strLayer("Layer");
 		strLayer += Ogre::StringConverter::toString(iLayer);
@@ -149,17 +150,17 @@ void PropertyPaneTerrain::UpdateProperty( int id )
 	case propSkirtSize:		strNewValue = Ogre::StringConverter::toString(manTerrain.GetSkirtSize()); break;
 	case propMaxPixelError: strNewValue = Ogre::StringConverter::toString(manTerrain.GetMaxPixelError()); break;
 	case propCompMapDist:	strNewValue = Ogre::StringConverter::toString(manTerrain.GetCompositeMapDist()); break;
-	case propLayerWorldSize0:
+	case propLayerWorldSize0: 
 	case propLayerWorldSize1:
-	case propLayerWorldSize2:
+	case propLayerWorldSize2: 
 	case propLayerWorldSize3:
 	case propLayerWorldSize4: strNewValue = Ogre::StringConverter::toString(manTerrain.GetLayerTexWorldSize(id - propLayerWorldSize0)); break;
-	case propLayerDiffuseMap0:
+	case propLayerDiffuseMap0: 
 	case propLayerDiffuseMap1:
-	case propLayerDiffuseMap2:
+	case propLayerDiffuseMap2: 
 	case propLayerDiffuseMap3:
 	case propLayerDiffuseMap4: strNewValue = manTerrain.GetLayerDiffuseMap(id - propLayerDiffuseMap0); break;
-	case propLayerNormalMap0:
+	case propLayerNormalMap0: 
 	case propLayerNormalMap1:
 	case propLayerNormalMap2:
 	case propLayerNormalMap3:

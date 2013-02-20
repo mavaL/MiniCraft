@@ -3,7 +3,8 @@
 #include "EditorDefine.h"
 #include "ManipulatorScene.h"
 #include "Utility.h"
-
+#include "OgreManager.h"
+#include "Scene.h"
 
 ManipulatorNavMesh::ManipulatorNavMesh()
 :m_bShowNavMesh(false)
@@ -11,7 +12,7 @@ ManipulatorNavMesh::ManipulatorNavMesh()
 ,m_debugRenderNode(nullptr)
 ,m_pInputGeom(nullptr)
 {
-	m_pRecast = new OgreRecast(ManipulatorSystem.m_pSceneMgr);
+	m_pRecast = new OgreRecast(RenderManager.m_pSceneMgr);
 	m_pDetourTileCache = new OgreDetourTileCache(m_pRecast);
 
 	ManipulatorScene::GetSingleton().AddCallback(this);
@@ -40,7 +41,7 @@ void ManipulatorNavMesh::Generate()
 				vecNavMeshEnt.push_back(iter->first);
 		}
 
-		m_pInputGeom = new InputGeom(manTerrain.m_terrainGroup, vecNavMeshEnt);
+		m_pInputGeom = new InputGeom(ManipulatorSystem.GetScene()->GetTerrainGroup(), vecNavMeshEnt);
 		//pGeom->debugMesh(pSceneMgr);
 
 		if(!m_pDetourTileCache->TileCacheBuild(m_pInputGeom))
@@ -53,7 +54,7 @@ void ManipulatorNavMesh::Generate()
 	}
 
 	m_pDetourTileCache->drawNavMesh();
-	m_debugRenderNode = (Ogre::SceneNode*)ManipulatorSystem.m_pSceneMgr->getRootSceneNode()->getChild("RecastSN");
+	m_debugRenderNode = (Ogre::SceneNode*)RenderManager.m_pSceneMgr->getRootSceneNode()->getChild("RecastSN");
 	assert(m_debugRenderNode);
 
 	m_debugRenderNode->setVisible(false);
@@ -74,7 +75,7 @@ void ManipulatorNavMesh::Reset()
 	m_pRecast->m_pRecastSN->detachAllObjects();
 
 	for(size_t i=0; i<vecTobeDestroy.size(); ++i)
-		ManipulatorSystem.m_pSceneMgr->destroyMovableObject(vecTobeDestroy[i]);
+		RenderManager.m_pSceneMgr->destroyMovableObject(vecTobeDestroy[i]);
 	vecTobeDestroy.clear();
 
 	//÷ÿ–¬≈‰÷√Recast
@@ -151,8 +152,8 @@ void ManipulatorNavMesh::OnSceneClose()
 {
 	SAFE_DELETE(m_pDetourTileCache);
 	SAFE_DELETE(m_pRecast);
-	assert(ManipulatorSystem.m_pSceneMgr);
-	m_pRecast = new OgreRecast(ManipulatorSystem.m_pSceneMgr);
+	assert(RenderManager.m_pSceneMgr);
+	m_pRecast = new OgreRecast(RenderManager.m_pSceneMgr);
 	m_pDetourTileCache = new OgreDetourTileCache(m_pRecast);
 	Reset();
 }

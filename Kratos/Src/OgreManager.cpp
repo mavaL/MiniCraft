@@ -1,15 +1,24 @@
 #include "OgreManager.h"
 #include <Ogre.h>
+#include <Terrain/OgreTerrain.h>
+#include <Terrain/OgreTerrainGroup.h>
+#include <Terrain/OgreTerrainQuadTreeNode.h>
+#include <Terrain/OgreTerrainMaterialGeneratorA.h>
+#include "DeferredShading/DeferredShading.h"
+#include "DeferredShading/TerrainMaterialGeneratorD.h"
 
 using namespace Ogre;
 
 
 COgreManager::COgreManager(void)
-: mRoot(0),
-mWindow(0),
-m_Timer(NULL),
-m_bHasInit(false),
-m_pViewport(NULL)
+: mRoot(0)
+,mWindow(0)
+,m_Timer(NULL)
+,m_bHasInit(false)
+,m_pViewport(NULL)
+,m_pSceneMgr(NULL)
+,m_pMainCamera(NULL)
+,m_pDS(nullptr)
 {
 }
 
@@ -17,15 +26,21 @@ COgreManager::~COgreManager(void)
 {
 }
 
-bool COgreManager::Init()
+bool COgreManager::Init(bool bEditor, HWND externalHwnd, HWND hwndParent,int width, int height)
 {
 	//资源配置文件和插件配置文件
 	String ResourceCfg, PluginCfg;
 #ifdef _DEBUG
-	ResourceCfg = "resources_d.cfg";
+	if (bEditor)
+		ResourceCfg = "resources_editor_d.cfg";
+	else
+		ResourceCfg = "resources_d.cfg";
 	PluginCfg = "plugins_d.cfg";
 #else
-	ResourceCfg = "resources.cfg";
+	if (bEditor)
+		ResourceCfg = "resources_editor.cfg";
+	else
+		ResourceCfg = "resources.cfg";
 	PluginCfg = "plugins.cfg";
 #endif
 
@@ -49,24 +64,44 @@ bool COgreManager::Init()
 			Ogre::ResourceGroupManager::getSingleton().addResourceLocation(archName, typeName, secName);
 		}
 	}
-	//ogre.cfg
-	if(mRoot->restoreConfig() || mRoot->showConfigDialog())
+	
+	if (bEditor)
 	{
-		mWindow = mRoot->initialise(true, "Game : MiniCraft");
+		RenderSystem* rs = mRoot->getRenderSystemByName("Direct3D9 Rendering Subsystem");
+		assert(rs);
+		mRoot->setRenderSystem(rs);
+		mRoot->initialise(false);
+
+		NameValuePairList params;
+		params["externalWindowHandle"] = StringConverter::toString((unsigned int)externalHwnd);
+		params["parentWindowHandle"] = StringConverter::toString((unsigned int)hwndParent);
+		mWindow = mRoot->createRenderWindow("MainWindow", width, height, false, &params);
 	}
 	else
 	{
-		return false;
+		if(mRoot->restoreConfig() || mRoot->showConfigDialog())
+			mWindow = mRoot->initialise(true, "Game : MiniCraft");
+		else
+			return false;
 	}
 
-	m_pViewport = mWindow->addViewport(NULL);
+	m_pSceneMgr = mRoot->createSceneManager(ST_GENERIC, "DefaultSceneMgr");
+	m_pMainCamera = m_pSceneMgr->createCamera("MainCamera");
+	m_pMainCamera->setNearClipDistance(0.1f);
+	m_pViewport = mWindow->addViewport(m_pMainCamera);
 	m_pViewport->setBackgroundColour(Ogre::ColourValue(0,0,0));
+	m_pMainCamera->setAspectRatio(
+		(Ogre::Real)m_pViewport->getActualWidth()/(Ogre::Real)m_pViewport->getActualHeight());
 
 	Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);
 	Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 	//Set initial mouse clipping size
 	windowResized(mWindow);
 	Ogre::WindowEventUtilities::addWindowEventListener(mWindow, this);
+
+	m_pDS = new DeferredShadingSystem(m_pViewport, m_pSceneMgr, m_pMainCamera);
+	m_pDS->initialize();
+	m_pDS->setActive(false);
 
 	m_Timer = new Ogre::Timer();
 	m_Timer->reset();
@@ -98,6 +133,12 @@ void COgreManager::windowClosed(Ogre::RenderWindow* rw)
 
 void COgreManager::Shutdown()
 {
+	if (m_pDS)
+	{
+		delete m_pDS;
+		m_pDS = nullptr;
+	}
+
 	//Remove ourself as a Window listener
 	Ogre::WindowEventUtilities::removeWindowEventListener(mWindow, this);
 	//销毁输入系统
@@ -129,4 +170,20 @@ bool COgreManager::IsMainWndActive()
 void COgreManager::GetMainWndHandle( unsigned long& hwnd )
 {
 	mWindow->getCustomAttribute("WINDOW", &hwnd);
+}
+
+void COgreManager::EnableDeferredShading(bool bEnable)
+{
+	if (bEnable)
+	{
+		m_pDS->setActive(true);
+		Ogre::TerrainGlobalOptions::getSingleton().setDefaultMaterialGenerator(
+			Ogre::TerrainMaterialGeneratorPtr(new Ogre::TerrainMaterialGeneratorD));
+	}
+	else
+	{
+		m_pDS->setActive(false);
+		Ogre::TerrainGlobalOptions::getSingleton().setDefaultMaterialGenerator(
+			Ogre::TerrainMaterialGeneratorPtr(new Ogre::TerrainMaterialGeneratorA));
+	}
 }

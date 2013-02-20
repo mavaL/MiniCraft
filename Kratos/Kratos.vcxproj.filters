@@ -47,6 +47,9 @@
     <Filter Include="源文件\rapidxml">
       <UniqueIdentifier>{b22a3cdf-09fd-49be-b007-897b10948901}</UniqueIdentifier>
     </Filter>
+    <Filter Include="源文件\DeferredShading">
+      <UniqueIdentifier>{2b5b0e1c-b675-4d3e-a156-fc43534cd62c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\AppState.h">
@@ -172,6 +175,45 @@
     <ClInclude Include="Dependency\rapidxml\rapidxml_utils.hpp">
       <Filter>源文件\rapidxml</Filter>
     </ClInclude>
+    <ClInclude Include="Src\DeferredShading\AmbientLight.h">
+      <Filter>源文件\DeferredShading</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\DeferredShading\DeferredLightCP.h">
+      <Filter>源文件\DeferredShading</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\DeferredShading\DeferredShading.h">
+      <Filter>源文件\DeferredShading</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\DeferredShading\DLight.h">
+      <Filter>源文件\DeferredShading</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\DeferredShading\GBufferMaterialGenerator.h">
+      <Filter>源文件\DeferredShading</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\DeferredShading\GBufferSchemeHandler.h">
+      <Filter>源文件\DeferredShading</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\DeferredShading\GeomUtils.h">
+      <Filter>源文件\DeferredShading</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\DeferredShading\LightMaterialGenerator.h">
+      <Filter>源文件\DeferredShading</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\DeferredShading\ListenerFactoryLogic.h">
+      <Filter>源文件\DeferredShading</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\DeferredShading\MaterialGenerator.h">
+      <Filter>源文件\DeferredShading</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\DeferredShading\NullSchemeHandler.h">
+      <Filter>源文件\DeferredShading</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\DeferredShading\SSAOLogic.h">
+      <Filter>源文件\DeferredShading</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\DeferredShading\TerrainMaterialGeneratorD.h">
+      <Filter>源文件\DeferredShading</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\AppStateManager.cpp">
@@ -287,6 +329,39 @@
     </ClCompile>
     <ClCompile Include="Src\SceneSerializer.cpp">
       <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\DeferredShading\AmbientLight.cpp">
+      <Filter>源文件\DeferredShading</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\DeferredShading\DeferredLightCP.cpp">
+      <Filter>源文件\DeferredShading</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\DeferredShading\DeferredShading.cpp">
+      <Filter>源文件\DeferredShading</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\DeferredShading\DLight.cpp">
+      <Filter>源文件\DeferredShading</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\DeferredShading\GBufferMaterialGenerator.cpp">
+      <Filter>源文件\DeferredShading</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\DeferredShading\GBufferSchemeHandler.cpp">
+      <Filter>源文件\DeferredShading</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\DeferredShading\GeomUtils.cpp">
+      <Filter>源文件\DeferredShading</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\DeferredShading\LightMaterialGenerator.cpp">
+      <Filter>源文件\DeferredShading</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\DeferredShading\MaterialGenerator.cpp">
+      <Filter>源文件\DeferredShading</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\DeferredShading\SSAOLogic.cpp">
+      <Filter>源文件\DeferredShading</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\DeferredShading\TerrainMaterialGeneratorD.cpp">
+      <Filter>源文件\DeferredShading</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -3,7 +3,7 @@
 #include "EditorDefine.h"
 #include "Manipulator/ManipulatorScene.h"
 #include "Gizmo.h"
-
+#include "OgreManager.h"
 
 ActionObjectEdit::ActionObjectEdit()
 :m_bLBDown(false)
@@ -39,7 +39,7 @@ void ActionObjectEdit::OnMouseLButtonDown( const SActionParam& param )
 	if (pGizmo->IsActive())
 	{
 		assert(pGizmo->GetActiveAxis() != eAxis_None);
-		const Ogre::Ray ray = ManipulatorSystem.m_pMainCamera->getCameraToViewportRay(param.m_ptRelative.x, param.m_ptRelative.y);
+		const Ogre::Ray ray = RenderManager.m_pMainCamera->getCameraToViewportRay(param.m_ptRelative.x, param.m_ptRelative.y);
 		if(mode == ManipulatorObject::eEditMode_Move)
 			m_vecAdjust = _ComputeTranslateVector(ray, pGizmo->GetActiveAxis(), false);
 		else if(mode == ManipulatorObject::eEditMode_Scale)
@@ -56,7 +56,7 @@ void ActionObjectEdit::OnMouseMove( const SActionParam& param )
 {
 	ManipulatorObject& manObject = ManipulatorSystem.GetObject();
 	GizmoAxis* pGizmo = manObject.GetGizmoAxis();
-	const Ogre::Ray ray = ManipulatorSystem.m_pMainCamera->getCameraToViewportRay(param.m_ptRelative.x, param.m_ptRelative.y);
+	const Ogre::Ray ray = RenderManager.m_pMainCamera->getCameraToViewportRay(param.m_ptRelative.x, param.m_ptRelative.y);
 	ManipulatorObject::eEditMode mode = manObject.GetCurEditMode();
 
 	if (pGizmo->IsActive() && m_bLBDown)

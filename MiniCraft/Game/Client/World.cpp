@@ -21,9 +21,7 @@ World::World()
 :m_pRecast(nullptr)
 ,m_pDetourTileCache(nullptr)
 ,m_pDetourCrowd(nullptr)
-,m_pSceneMgr(nullptr)
 ,m_pGold(nullptr)
-,m_pCamera(nullptr)
 ,m_cameraMan(nullptr)
 ,m_bFreeCamMode(false)
 ,m_pSceneQuery(nullptr)
@@ -44,26 +42,22 @@ void World::Init()
 {
 	using namespace Ogre;
 
-	m_pSceneMgr = Ogre::Root::getSingleton().createSceneManager(Ogre::ST_GENERIC, SCENE_MANAGER_NAME);
+	SceneManager* sm = RenderManager.m_pSceneMgr;
+	Camera* cam = RenderManager.m_pMainCamera;
 
-	g_Environment.m_pSceneMgr = m_pSceneMgr;
-
-	m_pSceneQuery = m_pSceneMgr->createAABBQuery(AxisAlignedBox());
-	m_pRaySceneQuery = m_pSceneMgr->createRayQuery(Ray());
+	m_pSceneQuery = sm->createAABBQuery(AxisAlignedBox());
+	m_pRaySceneQuery = sm->createRayQuery(Ray());
 	m_pRaySceneQuery->setSortByDistance(true);
 
 	Ogre::MovableObject::setDefaultQueryFlags(eQueryType_Default);
 
-	m_pCamera = m_pSceneMgr->createCamera("GodViewCam");
-	m_pCamera->setNearClipDistance(0.1f);
-	COgreManager::GetSingleton().GetViewport()->setCamera(m_pCamera);
-
-	m_cameraMan = new OgreBites::SdkCameraMan(m_pCamera);
+	m_cameraMan = new OgreBites::SdkCameraMan(cam);
 	m_cameraMan->setStyle(OgreBites::CS_FREELOOK);
 
 	//RTS锁死视角
-	m_pCamera->setPosition(0, 30, 0);
-	m_pCamera->lookAt(0, 0, 10);
+	cam->setPosition(0, 24, 0);
+	cam->lookAt(0, 0, 8);
+	//cam->setFOVy(Degree(30));
 
 	//测试两个CPU玩家
 	m_player[eGameRace_Terran] = new Faction(eGameRace_Terran);
@@ -87,7 +81,7 @@ void World::Init()
 	recastParams.setDetailSampleDist(6);
 	recastParams.setDetailSampleMaxError(1);
 
-	m_pRecast = new OgreRecast(m_pSceneMgr, recastParams);
+	m_pRecast = new OgreRecast(sm, recastParams);
 	m_pDetourTileCache = new OgreDetourTileCache(m_pRecast);
 
 	//加载编辑器导出的导航网格数据
@@ -104,19 +98,19 @@ void World::Init()
 	g_Environment.m_pCrowd = m_pDetourCrowd;
 
 	//加载测试场景
-	m_pTestScene = new Scene(m_pSceneMgr);
+	m_pTestScene = new Scene();
 	m_pTestScene->Load("MyStarCraft.Scene", "General", this);
 
 	//UI for test
-	Ogre::Entity* pEntConsole = m_pSceneMgr->createEntity("ConsoleTerran_0.mesh");
+	Ogre::Entity* pEntConsole = sm->createEntity("ConsoleTerran_0.mesh");
 	pEntConsole->setRenderQueueGroup(Ogre::RENDER_QUEUE_OVERLAY);
-	m_pUISceneNode1 = m_pSceneMgr->getRootSceneNode()->createChildSceneNode("UIConsoleNode");
+	m_pUISceneNode1 = sm->getRootSceneNode()->createChildSceneNode("UIConsoleNode");
 	m_pUISceneNode1->attachObject(pEntConsole);
 	m_pConsoleAnim1 = pEntConsole->getAnimationState("Birth");
 	assert(m_pConsoleAnim1);
 	(const_cast<Ogre::AxisAlignedBox&>(pEntConsole->getMesh()->getBounds())).setInfinite();
 
-	pEntConsole = m_pSceneMgr->createEntity("ConsoleTerran_1.mesh");
+	pEntConsole = sm->createEntity("ConsoleTerran_1.mesh");
 	pEntConsole->setRenderQueueGroup(Ogre::RENDER_QUEUE_OVERLAY);
 	m_pUISceneNode2 = m_pUISceneNode1->createChildSceneNode("InfoPanelNode");
 	m_pUISceneNode2->attachObject(pEntConsole);
@@ -124,13 +118,13 @@ void World::Init()
 	assert(m_pConsoleAnim2);
 	(const_cast<Ogre::AxisAlignedBox&>(pEntConsole->getMesh()->getBounds())).setInfinite();
 
-	pEntConsole = m_pSceneMgr->createEntity("ConsoleTerran_2.mesh");
+	pEntConsole = sm->createEntity("ConsoleTerran_2.mesh");
 	pEntConsole->setRenderQueueGroup(Ogre::RENDER_QUEUE_OVERLAY);
 	m_pUISceneNode3 = m_pUISceneNode1->createChildSceneNode("CmdPanelNode");
 	m_pUISceneNode3->attachObject(pEntConsole);
 	(const_cast<Ogre::AxisAlignedBox&>(pEntConsole->getMesh()->getBounds())).setInfinite();
 
-	pEntConsole = m_pSceneMgr->createEntity("ConsoleProtoss_6.mesh");
+	pEntConsole = sm->createEntity("ConsoleProtoss_6.mesh");
 	pEntConsole->setRenderQueueGroup(Ogre::RENDER_QUEUE_OVERLAY);
 	m_pUISceneNode4 = m_pUISceneNode1->createChildSceneNode("PortraitPanelNode");
 	m_pUISceneNode4->attachObject(pEntConsole);
@@ -160,18 +154,12 @@ void World::Shutdown()
 	SAFE_DELETE(m_pRecast);
 	SAFE_DELETE(m_cameraMan);
 
-	m_pSceneMgr->destroyQuery(m_pSceneQuery);
-	m_pSceneMgr->destroyQuery(m_pRaySceneQuery);
+	RenderManager.m_pSceneMgr->destroyQuery(m_pSceneQuery);
+	RenderManager.m_pSceneMgr->destroyQuery(m_pRaySceneQuery);
 	m_pSceneQuery = nullptr;
 	m_pRaySceneQuery = nullptr;
 
-	Ogre::Root::getSingleton().destroySceneManager(m_pSceneMgr);
-	m_pSceneMgr = nullptr;
-
 	SelectableObject::ReleaseMeshCache();
-
-	COgreManager::GetSingleton().GetViewport()->setCamera(nullptr);
-	m_pCamera = nullptr;
 
 	m_vecSelectUnis.clear();
 
@@ -215,13 +203,14 @@ Ogre::Vector3 World::GetRandomPositionOnNavmesh()
 
 void World::EnableFreeCamera( bool bEnable )
 {
-	assert(m_pCamera && m_cameraMan);
+	assert(RenderManager.m_pMainCamera && m_cameraMan);
 
 	if(!bEnable)
 	{
-		const Ogre::Vector3 pos = m_pCamera->getPosition();
-		m_pCamera->setPosition(pos.x, 35, pos.z);
-		m_pCamera->lookAt(pos.x, 0, pos.z + 8.75f);
+		Ogre::Camera* cam = RenderManager.m_pMainCamera;
+		const Ogre::Vector3 pos = cam->getPosition();
+		cam->setPosition(pos.x, 35, pos.z);
+		cam->lookAt(pos.x, 0, pos.z + 8.75f);
 	}
 
 	m_bFreeCamMode = bEnable;
@@ -320,25 +309,26 @@ void World::UpdateConsoleUITransform(float dt)
 	m_pConsoleAnim1->addTime(dt);
 	m_pConsoleAnim2->addTime(dt);
 
-	const FLOAT3& camRight = m_pCamera->getRealRight();
-	const FLOAT3& camUp = m_pCamera->getRealUp();
-	const POS& camPos = m_pCamera->getRealPosition();
-	const FLOAT3& camDir = m_pCamera->getRealDirection();
-	// 	Ogre::Degree halfFov(m_pCamera->getFOVy().valueDegrees() / 2);
-	// 	float fOffset = 3 * Ogre::Math::Tan(halfFov.valueRadians());
+	Ogre::Camera* cam = RenderManager.m_pMainCamera;
+
+	const FLOAT3& camRight = cam->getRealRight();
+	const FLOAT3& camUp = cam->getRealUp();
+	const POS& camPos = cam->getRealPosition();
+	const FLOAT3& camDir = cam->getRealDirection();
+
 	//TODO: 硬编码设置UI位置,以后要加入UI layout
-	POS newPos = camPos + camDir * 1.7f + camRight * -0.9f + camUp * -0.67f;
-	m_pUISceneNode1->_setDerivedOrientation(m_pCamera->getRealOrientation());
+	POS newPos = camPos + camDir * 1.7f + camRight * -1.1f + camUp * -0.67f;
+	m_pUISceneNode1->_setDerivedOrientation(cam->getRealOrientation());
 	m_pUISceneNode1->_setDerivedPosition(newPos);
-	m_pUISceneNode2->setPosition(1, -0.02f, 0);
-	m_pUISceneNode3->setPosition(1.38f, 0.64f, 0);
-	m_pUISceneNode4->setPosition(1.8f, -0.0f, -0.01f);
+	m_pUISceneNode2->setPosition(1.2f, -0.02f, 0);
+	m_pUISceneNode3->setPosition(1.76f, 0.64f, 0);
+	m_pUISceneNode4->setPosition(2.17f, -0.0f, -0.01f);
 }
 
 bool World::GetTerrainIntersectPos( const FLOAT2& screenPos, POS& retPt )
 {
 	Ogre::Ray ray;
-	m_pCamera->getCameraToViewportRay(screenPos.x, screenPos.y, &ray);
+	RenderManager.m_pMainCamera->getCameraToViewportRay(screenPos.x, screenPos.y, &ray);
 
 	auto result = m_pTestScene->GetTerrainGroup()->rayIntersects(ray);
 
@@ -395,10 +385,10 @@ void World::_LoadObjects( rapidxml::xml_node<>* node )
 			const Ogre::Vector3 scale = Ogre::StringConverter::parseVector3(strScale);
 
 			//非游戏对象,不纳入逻辑管理,只渲染
-			Ogre::Entity* entity = m_pSceneMgr->createEntity(strMesh);
+			Ogre::Entity* entity = RenderManager.m_pSceneMgr->createEntity(strMesh);
 			assert(entity);
 
-			Ogre::SceneNode* pNode = m_pSceneMgr->getRootSceneNode()->createChildSceneNode(pos, orient);
+			Ogre::SceneNode* pNode = RenderManager.m_pSceneMgr->getRootSceneNode()->createChildSceneNode(pos, orient);
 			pNode->setScale(scale);
 			pNode->attachObject(entity);
 		}	

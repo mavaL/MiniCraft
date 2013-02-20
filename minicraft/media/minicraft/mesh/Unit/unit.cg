@@ -7,7 +7,7 @@ float4 main(
 {
    float4 diffuse = tex2D(colorMap, texCoord);
    float4 final = diffuse * diffuse.a + TeamColor * (1 - diffuse.a);
-   final.rgb *= ambient.rgb;
+   //final.rgb *= ambient.rgb;
 
    return final;
 }

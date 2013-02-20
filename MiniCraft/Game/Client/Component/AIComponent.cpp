@@ -6,6 +6,7 @@
 #include "PathComponent.h"
 #include "HarvestComponent.h"
 #include "Resource.h"
+#include "OgreManager.h"
 
 
 AiComponent::AiComponent(SelectableObject* pOwner)
@@ -88,7 +89,7 @@ void AiComponent::GiveCommand( const OIS::MouseEvent& arg, OIS::MouseButtonID id
 
 	//是否选中了其他物体
 	Ogre::Ray ray;
-	world.GetCamera()->getCameraToViewportRay(screenX, screenY, &ray);
+	RenderManager.m_pMainCamera->getCameraToViewportRay(screenX, screenY, &ray);
 	Ogre::MovableObject* pMovable = world.GetRaySceneQueryResult(ray, eQueryType_SelectableObject);
 	SelectableObject* pHitObj = nullptr;
 	if(pMovable)

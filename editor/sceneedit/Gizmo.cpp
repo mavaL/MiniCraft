@@ -2,6 +2,7 @@
 #include "Gizmo.h"
 #include "EditorDefine.h"
 #include "Manipulator/ManipulatorScene.h"
+#include "OgreManager.h"
 
 using namespace Ogre;
 
@@ -197,8 +198,8 @@ void GizmoAxis::_Init()
 {
 	for (int i=0; i<3; ++i)
 	{
-		m_pAxisMove[i] = ManipulatorSystem.m_pSceneMgr->createEntity("Arrow1m.mesh");
-		m_pAxisRotate[i] = ManipulatorSystem.m_pSceneMgr->createEntity("RotationRing.mesh");
+		m_pAxisMove[i] = RenderManager.m_pSceneMgr->createEntity("Arrow1m.mesh");
+		m_pAxisRotate[i] = RenderManager.m_pSceneMgr->createEntity("RotationRing.mesh");
 		m_pAxisMove[i]->setRenderQueueGroup(Ogre::RENDER_QUEUE_OVERLAY);
 		m_pAxisRotate[i]->setRenderQueueGroup(Ogre::RENDER_QUEUE_OVERLAY);
 	}
@@ -297,7 +298,7 @@ void GizmoAxis::Reset()
 void GizmoAxis::OnGizmoNodeReset()
 {
 	//Gizmo Node
-	m_pObjGizmoNode = ManipulatorSystem.m_pSceneMgr->getRootSceneNode()->createChildSceneNode("ObjectGizmoNode");
+	m_pObjGizmoNode = RenderManager.m_pSceneMgr->getRootSceneNode()->createChildSceneNode("ObjectGizmoNode");
 	m_pObjGizmoNode->setInheritScale(false);
 
 	//×ø±êÖá
@@ -330,7 +331,7 @@ void GizmoAxis::OnGizmoNodeReset()
 	Show(false, true);
 	Show(false, false);
 
-	ManipulatorSystem.m_pSceneMgr->getRootSceneNode()->removeChild(m_pObjGizmoNode);
+	RenderManager.m_pSceneMgr->getRootSceneNode()->removeChild(m_pObjGizmoNode);
 
 	m_pAttachNode = nullptr;
 }

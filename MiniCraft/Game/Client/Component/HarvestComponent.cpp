@@ -7,6 +7,7 @@
 #include "World.h"
 #include "Faction.h"
 #include "Building.h"
+#include "OgreManager.h"
 
 HarvestComponent::HarvestComponent( SelectableObject* pOwner )
 :Component(pOwner)
@@ -17,7 +18,7 @@ HarvestComponent::HarvestComponent( SelectableObject* pOwner )
 {
 	assert(m_pOwner->IsRenderableReady());
 
-	m_pCrystal = g_Environment.m_pSceneMgr->createEntity("Crystal_0.mesh");
+	m_pCrystal = RenderManager.m_pSceneMgr->createEntity("Crystal_0.mesh");
 	assert(m_pCrystal);
 	Ogre::SceneNode* pNode = m_pOwner->GetSceneNode()->createChildSceneNode(POS(0, 0, 0.3f));
 	pNode->setScale(2,2,2);

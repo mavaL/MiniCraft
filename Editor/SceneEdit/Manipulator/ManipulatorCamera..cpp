@@ -1,9 +1,9 @@
 #include "stdafx.h"
 #include "ManipulatorCamera.h"
+#include "OgreManager.h"
 
-
-ManipulatorCamera::ManipulatorCamera( Ogre::Camera* pCamera )
-:m_pCamera(pCamera)
+ManipulatorCamera::ManipulatorCamera()
+:m_pCamera(RenderManager.m_pMainCamera)
 ,m_bRBDown(false)
 ,m_bLBDown(false)
 ,m_pTarget(nullptr)

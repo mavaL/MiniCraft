@@ -42,9 +42,6 @@ protected:
 	virtual void	_SaveObjects(rapidxml::xml_document<>* doc, rapidxml::xml_node<>* XMLNode);
 
 public:
-	Ogre::SceneManager*	m_pSceneMgr;
-	Ogre::Camera*		m_pMainCamera;
-
 	Scene*	GetScene() { return m_pCurScene; }
 
 	void	SceneNew(const std::wstring& sceneName);

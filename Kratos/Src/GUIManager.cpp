@@ -19,7 +19,7 @@ CGUIManager::~CGUIManager(void)
 bool CGUIManager::Init()
 {
 	//图形系统和输入系统需初始化
-	assert(COgreManager::GetSingleton().IsInit() && "错误!!图形系统还未初始化!");
+	assert(RenderManager.IsInit() && "错误!!图形系统还未初始化!");
 	assert(CInputManager::GetSingleton().IsInit() && "错误!!输入系统还未初始化!");
 
 	m_pRenderer = &CEGUI::OgreRenderer::bootstrapSystem();
@@ -80,7 +80,7 @@ bool CGUIManager::overlayHandler( const CEGUI::EventArgs& args )
 // 	if (fnt && m_CarInfo != "")
 // 	{
 // 		//暂时把FPS信息一起在这里显示
-// 		const Ogre::RenderTarget::FrameStats& RenderInfo = COgreManager::GetSingleton().GetProfileInfo();
+// 		const Ogre::RenderTarget::FrameStats& RenderInfo = RenderManager.GetProfileInfo();
 // 		static String LastFPS, AverageFPS, TriangleCount, BatchCount;
 // 		LastFPS = String("    LastFPS:") + PropertyHelper::floatToString(RenderInfo.lastFPS);
 // 		AverageFPS = String(" AvergeFPS:") + PropertyHelper::floatToString(RenderInfo.avgFPS);

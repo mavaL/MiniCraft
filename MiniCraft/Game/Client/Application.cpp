@@ -31,9 +31,9 @@ bool Applicaton::Init()
 
 	CBattleState::create(m_stateMgr, CBattleState::StateName);
 
-	if(	!m_ogreMgr->Init()	|| 
-		!m_inputMgr->Init()	||
-		!m_guiMgr->Init()	)
+	if(	!m_ogreMgr->Init(false)	|| 
+		!m_inputMgr->Init()		||
+		!m_guiMgr->Init()		)
 		return false;
 
 	ScriptSystem::GetSingleton().Init();
@@ -51,12 +51,12 @@ void Applicaton::Run()
 	//ÓÎÏ·Ö÷Ñ­»·
 	while(true)
 	{
-		if(m_ogreMgr->GetRenderWindow()->isClosed())
+		if(m_ogreMgr->mWindow->isClosed())
 			break;
 
 		Ogre::WindowEventUtilities::messagePump();
 
-		if(m_ogreMgr->GetRenderWindow()->isActive())
+		if(m_ogreMgr->mWindow->isActive())
 		{
 			startTime = m_ogreMgr->GetTimer()->getMillisecondsCPU();
 

@@ -6,15 +6,10 @@
 #include "../EditorDefine.h"
 #include "Utility.h"
 #include "Scene.h"
-
+#include "OgreManager.h"
 
 ManipulatorTerrain::ManipulatorTerrain()
-:m_terrainGroup(nullptr)
-,m_vertexPerSide(129)
-,m_worldSize(128)
-,m_origPos(Ogre::Vector3::ZERO)
-,m_pTerrain(nullptr)
-,m_curBrushIndex(1)
+:m_curBrushIndex(1)
 ,m_curEditMode(eTerrainEditMode_None)
 ,m_curEditLayer(-1)
 {
@@ -30,92 +25,29 @@ ManipulatorTerrain::~ManipulatorTerrain()
 	ManipulatorScene::GetSingleton().RemoveCallback(this);
 }
 
-void ManipulatorTerrain::NewFlatTerrain(Ogre::Light* pSunLight)
+void ManipulatorTerrain::OnSceneClose()
 {
-	m_terrainOption = new TerrainGlobalOptions;
-	m_terrainGroup = new TerrainGroup(ManipulatorSystem.m_pSceneMgr, Terrain::ALIGN_X_Z, (Ogre::uint16)m_vertexPerSide, (float)m_worldSize);
-	m_terrainGroup->setOrigin(m_origPos);
-
-	_ConfigureTerrainDefaults(pSunLight);
-	
-	//初始化平坦地形
-	m_terrainGroup->defineTerrain(0, 0, 0.0f);
-
-	// sync load since we want everything in place when we start
-	m_terrainGroup->loadTerrain(0, 0);
-
-	m_terrainGroup->freeTemporaryResources();
-	m_pTerrain = m_terrainGroup->getTerrain(0, 0);
 }
 
-void ManipulatorTerrain::_ConfigureTerrainDefaults(Ogre::Light* pSunLight)
+void ManipulatorTerrain::OnSceneNew()
 {
-// 	MaterialManager::getSingleton().setDefaultTextureFiltering(TFO_ANISOTROPIC);
-// 	MaterialManager::getSingleton().setDefaultAnisotropy(7);
-
-	//全局光
-	m_terrainOption->setMaxPixelError(8);
-	m_terrainOption->setCompositeMapDistance(3000);
-	//m_terrainOption->setUseRayBoxDistanceCalculation(true);
-	//m_terrainOption->getDefaultMaterialGenerator()->setDebugLevel(1);
-	//m_terrainOption->setLightMapSize(512);
-
-	//matProfile->setLightmapEnabled(false);
-	// Important to set these so that the terrain knows what to use for derived (non-realtime) data
-	m_terrainOption->setLightMapDirection(pSunLight->getDirection().normalisedCopy());
-	m_terrainOption->setCompositeMapAmbient(ManipulatorSystem.m_pSceneMgr->getAmbientLight());
-	m_terrainOption->setCompositeMapDiffuse(pSunLight->getDiffuseColour());
-
-	// Configure default import settings for if we use imported image
-	Terrain::ImportData& defaultimp = m_terrainGroup->getDefaultImportSettings();
-	defaultimp.terrainSize = m_vertexPerSide;
-	defaultimp.worldSize = m_worldSize;
-	defaultimp.inputScale = 1.0f;
-	defaultimp.minBatchSize = 17;
-	defaultimp.maxBatchSize = 65;
-
-	defaultimp.layerList.resize(TERRAIN_MAX_LAYER);
-	for (int iLayer=0; iLayer<TERRAIN_MAX_LAYER; ++iLayer)
-	{
-		defaultimp.layerList[iLayer].worldSize = 128;
-		defaultimp.layerList[iLayer].textureNames.clear();
-		defaultimp.layerList[iLayer].textureNames.clear();
-	}
-
-	//仅初始化地形纹理第1层
-	defaultimp.layerList[0].worldSize = 128;
-	defaultimp.layerList[0].textureNames.push_back("dirt_grayrocky_diffusespecular.dds");
-	defaultimp.layerList[0].textureNames.push_back("dirt_grayrocky_normalheight.dds");
-
 	//设置当前编辑层为0
 	m_curEditLayer = 0;
 }
 
-void ManipulatorTerrain::OnSceneClose()
-{
-	m_terrainGroup = nullptr;
-	m_terrainOption = nullptr;
-	m_pTerrain = nullptr;
-}
-
 void ManipulatorTerrain::OnSceneOpen()
 {
-	SAFE_DELETE(m_terrainGroup);
-
-	Scene* pScene = ManipulatorScene::GetSingleton().GetScene();
-	m_terrainOption = pScene->GetTerrainOption();
-	m_terrainGroup = pScene->GetTerrainGroup();
-	m_pTerrain = pScene->GetTerrain();
-
 	//设置当前编辑层为0
 	m_curEditLayer = 0;
 }
 
 void ManipulatorTerrain::Serialize( rapidxml::xml_document<>* doc, rapidxml::xml_node<>* XMLNode )
 {
-	String strWorldSize = Ogre::StringConverter::toString(m_worldSize);
-	String strTerrainSize = Ogre::StringConverter::toString(m_vertexPerSide);
-	String strPixelError = Ogre::StringConverter::toString(m_terrainOption->getMaxPixelError());
+	String strWorldSize = Ogre::StringConverter::toString(GetWorldSize());
+	String strTerrainSize = Ogre::StringConverter::toString(GetMapSize());
+
+	float pixelError = ManipulatorSystem.GetScene()->GetTerrainOption()->getMaxPixelError();
+	String strPixelError = Ogre::StringConverter::toString(pixelError);
 
 	XMLNode->append_attribute(doc->allocate_attribute("worldSize", doc->allocate_string(strWorldSize.c_str())));
 	XMLNode->append_attribute(doc->allocate_attribute("mapSize", doc->allocate_string(strTerrainSize.c_str())));
@@ -130,15 +62,13 @@ void ManipulatorTerrain::Serialize( rapidxml::xml_document<>* doc, rapidxml::xml
 	Ogre::DataStreamPtr compressStream(new Ogre::DeflateStream(Utility::UnicodeToEngine(fullPath), stream));
 	Ogre::StreamSerialiser ser(compressStream);
 
-	m_terrainGroup->getTerrain(0, 0)->save(ser);
+	ManipulatorSystem.GetScene()->GetTerrain()->save(ser);
 }
 
 float ManipulatorTerrain::GetHeightAt( const Ogre::Vector2& worldPos )
 {
-	assert(m_terrainGroup);
-
 	Terrain* pTerrain = nullptr;
-	float retH = m_terrainGroup->getHeightAtWorldPosition(worldPos.x, 0, worldPos.y, &pTerrain);
+	float retH = ManipulatorSystem.GetScene()->GetTerrainGroup()->getHeightAtWorldPosition(worldPos.x, 0, worldPos.y, &pTerrain);
 	//assert(pTerrain && "worldPos is invalid!");
 
 	return retH;
@@ -163,19 +93,21 @@ void ManipulatorTerrain::SetBrushPosition( const Ogre::Vector3& pos )
 	float brushDim1, brushDim2;
 	m_brush[m_curBrushIndex]->GetDimension(brushDim1, brushDim2);
 
+	float worldSize = GetWorldSize();
+
 	if (m_curBrushIndex == 0)	//circle
 	{
-		if(clampPos.x - brushDim2 < -m_worldSize/2)	clampPos.x = brushDim2 - m_worldSize/2;
-		if(clampPos.x + brushDim2 > m_worldSize/2)	clampPos.x = m_worldSize/2 - brushDim2;
-		if(clampPos.z - brushDim2 < -m_worldSize/2)	clampPos.z = brushDim2 - m_worldSize/2;
-		if(clampPos.z + brushDim2 > m_worldSize/2)	clampPos.z = m_worldSize/2 - brushDim2;
+		if(clampPos.x - brushDim2 < -worldSize/2)	clampPos.x = brushDim2 - worldSize/2;
+		if(clampPos.x + brushDim2 > worldSize/2)	clampPos.x = worldSize/2 - brushDim2;
+		if(clampPos.z - brushDim2 < -worldSize/2)	clampPos.z = brushDim2 - worldSize/2;
+		if(clampPos.z + brushDim2 > worldSize/2)	clampPos.z = worldSize/2 - brushDim2;
 	}
 	else	//square
 	{
-		if(clampPos.x - brushDim1/2 < -m_worldSize/2)	clampPos.x = brushDim1/2 - m_worldSize/2;
-		if(clampPos.x + brushDim1/2 > m_worldSize/2)	clampPos.x = m_worldSize/2 - brushDim1/2;
-		if(clampPos.z - brushDim2/2 < -m_worldSize/2)	clampPos.z = brushDim2/2 - m_worldSize/2;
-		if(clampPos.z + brushDim2/2 > m_worldSize/2)	clampPos.z = m_worldSize/2 - brushDim2/2;
+		if(clampPos.x - brushDim1/2 < -worldSize/2)	clampPos.x = brushDim1/2 - worldSize/2;
+		if(clampPos.x + brushDim1/2 > worldSize/2)	clampPos.x = worldSize/2 - brushDim1/2;
+		if(clampPos.z - brushDim2/2 < -worldSize/2)	clampPos.z = brushDim2/2 - worldSize/2;
+		if(clampPos.z + brushDim2/2 > worldSize/2)	clampPos.z = worldSize/2 - brushDim2/2;
 	}
 
 	m_brush[m_curBrushIndex]->SetPosition(clampPos);
@@ -183,9 +115,7 @@ void ManipulatorTerrain::SetBrushPosition( const Ogre::Vector3& pos )
 
 bool ManipulatorTerrain::GetRayIntersectPoint( const Ogre::Ray& worldRay, Ogre::Vector3& retPt )
 {
-	assert(m_terrainGroup);
-
-	auto result = m_terrainGroup->rayIntersects(worldRay);
+	auto result = ManipulatorSystem.GetScene()->GetTerrainGroup()->rayIntersects(worldRay);
 
 	if (result.hit)
 	{
@@ -240,25 +170,28 @@ void ManipulatorTerrain::OnEdit( float dt )
 	if(m_curEditMode == eTerrainEditMode_Splat && m_curEditLayer == 0)
 		return;
 
+	Ogre::Terrain* pTerrain = ManipulatorSystem.GetScene()->GetTerrain();
+
 	const Vector3 brushPos = m_brush[m_curBrushIndex]->GetPosition();
 	Vector3 tsPos;
-	m_pTerrain->getTerrainPosition(brushPos, &tsPos);
+	pTerrain->getTerrainPosition(brushPos, &tsPos);
 
 	float brushSizeW, brushSizeH;
 	m_brush[m_curBrushIndex]->GetDimension(brushSizeW, brushSizeH);
-	brushSizeW /= m_worldSize;
-	brushSizeH /= m_worldSize;
+	float worldSize = GetWorldSize();
+	brushSizeW /= worldSize;
+	brushSizeH /= worldSize;
 
 	int multiplier;
 	Ogre::TerrainLayerBlendMap* layer = nullptr;
 	if(m_curEditMode == eTerrainEditMode_Deform)
 	{
-		multiplier = m_pTerrain->getSize() - 1;
+		multiplier = pTerrain->getSize() - 1;
 	}
 	else
 	{
-		multiplier = m_pTerrain->getLayerBlendMapSize();
-		layer = m_pTerrain->getLayerBlendMap(m_curEditLayer);
+		multiplier = pTerrain->getLayerBlendMapSize();
+		layer = pTerrain->getLayerBlendMap(m_curEditLayer);
 	}
 
 	long startx = (long)((tsPos.x - brushSizeW / 2) * multiplier);
@@ -279,8 +212,8 @@ void ManipulatorTerrain::OnEdit( float dt )
 
 			if(m_curEditMode == eTerrainEditMode_Deform)
 			{
-				float* pData = m_pTerrain->getHeightData();
-				pData[y*m_vertexPerSide+x] += 100.0f * dt;
+				float* pData = pTerrain->getHeightData();
+				pData[y*GetMapSize()+x] += 100.0f * dt;
 
 			}
 			else
@@ -298,8 +231,8 @@ void ManipulatorTerrain::OnEdit( float dt )
 	if(m_curEditMode == eTerrainEditMode_Deform)
 	{
 		Ogre::Rect rect(startx, starty, endx, endy);
-		m_pTerrain->dirtyRect(rect);
-		m_pTerrain->update();
+		pTerrain->dirtyRect(rect);
+		pTerrain->update();
 	}
 	else
 	{
@@ -332,31 +265,35 @@ const Ogre::StringVector& ManipulatorTerrain::GetAllLayerTexThumbnailNames()
 
 void ManipulatorTerrain::SetLayerTexWorldSize(int nLayer, float fSize)
 {
-	assert(nLayer >=0 && nLayer<(int)m_pTerrain->getLayerCount());
-	m_pTerrain->setLayerWorldSize(nLayer, fSize);
+	Ogre::Terrain* pTerrain = ManipulatorSystem.GetScene()->GetTerrain();
+	assert(nLayer >=0 && nLayer<(int)pTerrain->getLayerCount());
+	pTerrain->setLayerWorldSize(nLayer, fSize);
 }
 
 float ManipulatorTerrain::GetLayerTexWorldSize( int nLayer )
 {
-	assert(nLayer >=0 && nLayer<(int)m_pTerrain->getLayerCount());
-	return m_pTerrain->getLayerWorldSize(nLayer);
+	Ogre::Terrain* pTerrain = ManipulatorSystem.GetScene()->GetTerrain();
+	assert(nLayer >=0 && nLayer<(int)pTerrain->getLayerCount());
+	return pTerrain->getLayerWorldSize(nLayer);
 }
 
 void ManipulatorTerrain::SetLayerTexture( int nLayer, const std::string& diffuseMapName )
 {
-	assert(nLayer >=0 && nLayer<(int)m_pTerrain->getLayerCount());
+	Ogre::Terrain* pTerrain = ManipulatorSystem.GetScene()->GetTerrain();
+	assert(nLayer >=0 && nLayer<(int)pTerrain->getLayerCount());
 
 	Ogre::String name = diffuseMapName.substr(0, diffuseMapName.find("diffuse"));
-	
+
 	//diffuse map
-	m_pTerrain->setLayerTextureName(nLayer, 0, name + "diffusespecular.dds");
+	pTerrain->setLayerTextureName(nLayer, 0, name + "diffusespecular.dds");
 	//normal map
-	m_pTerrain->setLayerTextureName(nLayer, 1, name + "normalheight.dds");
+	pTerrain->setLayerTextureName(nLayer, 1, name + "normalheight.dds");
 }
 
 void ManipulatorTerrain::SetLayerTexture( int nLayer, int diffuseMapID )
 {
-	assert(nLayer >=0 && nLayer<(int)m_pTerrain->getLayerCount());
+	Ogre::Terrain* pTerrain = ManipulatorSystem.GetScene()->GetTerrain();
+	assert(nLayer >=0 && nLayer<(int)pTerrain->getLayerCount());
 
 	Ogre::String filename, path;
 	Ogre::StringUtil::splitFilename(m_vecLayerTex[diffuseMapID], filename, path);
@@ -366,13 +303,65 @@ void ManipulatorTerrain::SetLayerTexture( int nLayer, int diffuseMapID )
 
 const std::string ManipulatorTerrain::GetLayerDiffuseMap( int nLayer ) const
 {
-	assert(nLayer >=0 && nLayer<(int)m_pTerrain->getLayerCount());
-	return m_pTerrain->getLayerTextureName(nLayer, 0);
+	Ogre::Terrain* pTerrain = ManipulatorSystem.GetScene()->GetTerrain();
+	assert(nLayer >=0 && nLayer<(int)pTerrain->getLayerCount());
+	return pTerrain->getLayerTextureName(nLayer, 0);
 }
 
 const std::string ManipulatorTerrain::GetLayerNormalMap( int nLayer ) const
 {
-	assert(nLayer >=0 && nLayer<(int)m_pTerrain->getLayerCount());
-	return m_pTerrain->getLayerTextureName(nLayer, 1);
+	Ogre::Terrain* pTerrain = ManipulatorSystem.GetScene()->GetTerrain();
+	assert(nLayer >=0 && nLayer<(int)pTerrain->getLayerCount());
+	return pTerrain->getLayerTextureName(nLayer, 1);
+}
+
+float ManipulatorTerrain::GetWorldSize() const
+{
+	return ManipulatorSystem.GetScene()->GetTerrainGroup()->getTerrainWorldSize();
+}
+
+size_t ManipulatorTerrain::GetMapSize() const
+{
+	return ManipulatorSystem.GetScene()->GetTerrainGroup()->getTerrainSize();
+}
+
+float ManipulatorTerrain::GetMaxPixelError() const
+{
+	return ManipulatorSystem.GetScene()->GetTerrainOption()->getMaxPixelError();
+}
+
+float ManipulatorTerrain::GetSkirtSize() const
+{
+	return ManipulatorSystem.GetScene()->GetTerrainOption()->getSkirtSize();
+}
+
+int ManipulatorTerrain::GetMinBatchSize() const
+{
+	return ManipulatorSystem.GetScene()->GetTerrain()->getMinBatchSize();
+}
+
+int ManipulatorTerrain::GetMaxBatchSize() const
+{
+	return ManipulatorSystem.GetScene()->GetTerrain()->getMaxBatchSize();
+}
+
+float ManipulatorTerrain::GetCompositeMapDist() const
+{
+	return ManipulatorSystem.GetScene()->GetTerrainOption()->getCompositeMapDistance();
+}
+
+void ManipulatorTerrain::SetMaxPixelError( float f )
+{
+	ManipulatorSystem.GetScene()->GetTerrainOption()->setMaxPixelError(f);
+}
+
+void ManipulatorTerrain::SetSkirtSize( float f )
+{
+	ManipulatorSystem.GetScene()->GetTerrainOption()->setSkirtSize(f);
+}
+
+void ManipulatorTerrain::SetCompositeMapDist( float f )
+{
+	ManipulatorSystem.GetScene()->GetTerrainOption()->setCompositeMapDistance(f);
 }
 

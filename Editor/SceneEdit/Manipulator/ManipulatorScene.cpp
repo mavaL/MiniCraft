@@ -3,13 +3,12 @@
 #include "../EditorDefine.h"
 #include "Utility.h"
 #include "Scene.h"
+#include "OgreManager.h"
 
 
 ManipulatorScene::ManipulatorScene()
 :m_sceneName(L"")
 ,m_bIsSceneReay(false)
-,m_pSceneMgr(nullptr)
-,m_pMainCamera(nullptr)
 {
 }
 
@@ -27,13 +26,11 @@ void ManipulatorScene::Init()
 	m_manipulatorTerrain = new ManipulatorTerrain;
 	m_manipulatorObject = new ManipulatorObject;
 	m_manipulatorNavMesh = new ManipulatorNavMesh;
-	assert(m_pMainCamera);
-	m_manipulatorCamera = new ManipulatorCamera(m_pMainCamera);
+	m_manipulatorCamera = new ManipulatorCamera;
 	m_manipulatorResource = new ManipulatorResource;
 	m_manipulatorGameData = new ManipulatorGameData;
 
-	assert(m_pSceneMgr);
-	m_pCurScene = new Scene(m_pSceneMgr);
+	m_pCurScene = new Scene;
 }
 
 void ManipulatorScene::Shutdown()
@@ -49,17 +46,9 @@ void ManipulatorScene::Shutdown()
 
 void ManipulatorScene::SceneNew(const std::wstring& sceneName)
 {
-	//环境光
-	m_pSceneMgr->setAmbientLight(Ogre::ColourValue(0.2f, 0.2f, 0.2f));
-
-	//全局光
-	Ogre::Light* pSunLight = m_pSceneMgr->createLight("SunLight");
-	pSunLight->setType(Ogre::Light::LT_DIRECTIONAL);
-	pSunLight->setDirection(m_pCurScene->GetSunLightDirection());
-	pSunLight->setDiffuseColour(m_pCurScene->GetSunLightDiffuse());
+	m_pCurScene->New();
 
 	m_sceneName = sceneName;
-	m_manipulatorTerrain->NewFlatTerrain(pSunLight);
 	m_bIsSceneReay = true;
 
 	//回调事件

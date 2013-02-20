@@ -43,12 +43,8 @@ public:
 	void		OnMouseWheel(short nNotch);
 
 private:
-	void		_InitOgre(int width, int height, HWND hwnd, HWND hParent);
 	void		_UpdateInput(float dt);
 	void		_CreateActionParam(const POINT& viewClientPt, SActionParam& retParam);
-
-	Ogre::RenderWindow*	m_pRenderWnd;
-	Ogre::Root*			m_pRoot;
 };
 
 #endif // Application_h__

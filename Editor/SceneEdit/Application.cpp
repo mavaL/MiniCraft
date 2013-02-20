@@ -7,85 +7,20 @@
 #include "Action/ActionBase.h"
 #include "MainFrm.h"
 #include "Scene.h"
+#include "OgreManager.h"
 
 
 Application::Application()
-:m_pRoot(nullptr)
-,m_pRenderWnd(nullptr)
 {
 }
 
 void Application::Init( int width, int height, HWND hwnd, HWND hParent )
 {
-	_InitOgre(width, height, hwnd, hParent);
-	ManipulatorSystem.Init();
-	ManipulatorSystem.GetGameData().LoadAllXml();
-}
+	RenderManager.Init(true, hwnd, hParent, width, height);
 
-void Application::_InitOgre(int width, int height, HWND hwnd, HWND hParent)
-{
-	using namespace Ogre;
-
-	String ResourceCfg, PluginCfg;
-#ifdef _DEBUG
-	ResourceCfg = "resources_editor_d.cfg";
-	PluginCfg = "plugins_d.cfg";
-#else
-	ResourceCfg = "resources_editor.cfg";
-	PluginCfg = "plugins.cfg";
-#endif
-	
-	m_pRoot = new Ogre::Root(PluginCfg);
-	assert(m_pRoot);
-
-	Ogre::ConfigFile cf;
-	cf.load(ResourceCfg);
-	// Go through all sections & settings in the file
-	Ogre::ConfigFile::SectionIterator seci = cf.getSectionIterator();
-	Ogre::String secName, typeName, archName;
-	while (seci.hasMoreElements())
-	{
-		secName = seci.peekNextKey();
-		Ogre::ConfigFile::SettingsMultiMap *settings = seci.getNext();
-		Ogre::ConfigFile::SettingsMultiMap::iterator i;
-		for (i = settings->begin(); i != settings->end(); ++i)
-		{
-			typeName = i->first;
-			archName = i->second;
-			Ogre::ResourceGroupManager::getSingleton().addResourceLocation(archName, typeName, secName);
-		}
-	}
-
-	RenderSystem* rs = m_pRoot->getRenderSystemByName("Direct3D9 Rendering Subsystem");
-	assert(rs);
-	m_pRoot->setRenderSystem(rs);
-
-	m_pRoot->initialise(false);
-
-	Ogre::SceneManager* pSceneMgr = m_pRoot->createSceneManager(ST_GENERIC, SCENE_MANAGER_NAME);
-	Ogre::Camera* pCamera = pSceneMgr->createCamera(MAIN_CAMERA_NAME);
-
-	ManipulatorSystem.m_pSceneMgr = pSceneMgr;
-	ManipulatorSystem.m_pMainCamera = pCamera;
-
-	NameValuePairList params;
-	params["externalWindowHandle"] = StringConverter::toString((unsigned int)hwnd);
-	params["parentWindowHandle"] = StringConverter::toString((unsigned int)hParent);
-	m_pRenderWnd = m_pRoot->createRenderWindow("MainWindow", width, height, false, &params);
-
-	Viewport* vp = m_pRenderWnd->addViewport(pCamera);
-	vp->setBackgroundColour(Ogre::ColourValue(0,0,0));
-	pCamera->setAspectRatio((Ogre::Real)vp->getActualWidth() / (Ogre::Real)vp->getActualHeight());
-
-	// Set default mipmap level (NB some APIs ignore this)
-	Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);
-	//初始化所有资源
-	Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
-
-	m_pRenderWnd->setActive(true);
-
-	//默认查询掩码
-	Ogre::MovableObject::setDefaultQueryFlags(eQueryMask_Default);
+	ManipulatorScene& manScene = ManipulatorScene::GetSingleton();
+	manScene.Init();
+	manScene.GetGameData().LoadAllXml();
 }
 
 bool Application::Update()
@@ -95,7 +30,7 @@ bool Application::Update()
 	ManipulatorAction::GetSingleton().GetActiveActoin()->OnFrameMove(TIME_PER_FRAME);
 	ManipulatorSystem.OnFrameMove(TIME_PER_FRAME);
 
-	m_pRoot->renderOneFrame();
+	RenderManager.mRoot->renderOneFrame();
 
 	return true;
 }
@@ -103,32 +38,23 @@ bool Application::Update()
 void Application::Shutdown()
 {
 	ManipulatorSystem.Shutdown();
-	SAFE_DELETE(m_pRoot);
 }
 
 void Application::SceneNew()
 {
-	//先关闭当前场景
-	//TODO:检测改动,提示保存
-	SceneClose();
-
 	DialogSceneNew dlg;
 	std::wstring newSceneName;
 	if (IDOK == dlg.DoModal(ManipulatorSystem.GetScenePath(), newSceneName))
 	{
+		//先关闭当前场景
+		//TODO:检测改动,提示保存
+		SceneClose();
 		ManipulatorSystem.SceneNew(newSceneName);
 	}
 }
 
 void Application::SceneOpen()
 {
-	//先关闭当前场景
-	//TODO:检测改动,提示保存
-	SceneClose();
-
-	WCHAR path[MAX_PATH];
-	::GetCurrentDirectory(MAX_PATH, path);
-
 	std::wstring strFilename;
 	CFileDialog dlgFile(TRUE);	
 	dlgFile.GetOFN().lpstrFilter = L"*.scene";
@@ -138,6 +64,10 @@ void Application::SceneOpen()
 
 	if(IDOK == dlgFile.DoModal())
 	{
+		//先关闭当前场景
+		//TODO:检测改动,提示保存
+		SceneClose();
+
 		strFilename = dlgFile.GetOFN().lpstrFile;
 		ManipulatorSystem.SceneOpen(strFilename);
 	}
@@ -155,13 +85,16 @@ void Application::SceneClose()
 
 void Application::OnViewportResized()
 {
-	if (ManipulatorSystem.m_pMainCamera)
-	{	
-		//设备丢失
-		m_pRenderWnd->windowMovedOrResized();	
-		ManipulatorSystem.m_pMainCamera->setAspectRatio(m_pRenderWnd->getWidth()/(float)m_pRenderWnd->getHeight()); 
+	Ogre::Camera* cam = RenderManager.m_pMainCamera;
+	Ogre::RenderWindow* wnd = RenderManager.mWindow;
+
+	//设备丢失
+	if (cam)
+	{
+		wnd->windowMovedOrResized();	
+		cam->setAspectRatio(wnd->getWidth()/(float)wnd->getHeight()); 
 		//reset 设备
-		m_pRenderWnd->update();	
+		wnd->update();
 	}
 }
 
@@ -247,16 +180,18 @@ void Application::OnMouseWheel( short nNotch )
 
 void Application::_CreateActionParam( const POINT& viewClientPt, SActionParam& retParam )
 {
+	Ogre::RenderWindow* wnd = RenderManager.mWindow;
+
 	retParam.m_ptPixel = Ogre::Vector2((float)viewClientPt.x, (float)viewClientPt.y);
-	retParam.m_ptRelative.x = viewClientPt.x / (float)m_pRenderWnd->getWidth();
-	retParam.m_ptRelative.y = viewClientPt.y / (float)m_pRenderWnd->getHeight();
+	retParam.m_ptRelative.x = viewClientPt.x / (float)wnd->getWidth();
+	retParam.m_ptRelative.y = viewClientPt.y / (float)wnd->getHeight();
 
 	static Ogre::Vector2 lastPt = retParam.m_ptPixel;
 	retParam.m_ptDeltaRel = retParam.m_ptPixel - lastPt;
-	retParam.m_ptDeltaRel.x /= m_pRenderWnd->getWidth();
-	retParam.m_ptDeltaRel.y /= m_pRenderWnd->getHeight();
+	retParam.m_ptDeltaRel.x /= wnd->getWidth();
+	retParam.m_ptDeltaRel.y /= wnd->getHeight();
 
-	const Ogre::Ray ray = ManipulatorSystem.m_pMainCamera->getCameraToViewportRay(retParam.m_ptRelative.x, retParam.m_ptRelative.y);
+	const Ogre::Ray ray = RenderManager.m_pMainCamera->getCameraToViewportRay(retParam.m_ptRelative.x, retParam.m_ptRelative.y);
 	retParam.m_bHitTerrain = ManipulatorSystem.GetTerrain().GetRayIntersectPoint(ray, retParam.m_ptTerrain);
 
 	lastPt = retParam.m_ptPixel;

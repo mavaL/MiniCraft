@@ -17,7 +17,7 @@
 class ManipulatorCamera : public ManipulatorSceneEventCallback
 {
 public:
-	ManipulatorCamera(Ogre::Camera* pCamera);
+	ManipulatorCamera();
 	~ManipulatorCamera() {}
 
 	//////////////事件回调

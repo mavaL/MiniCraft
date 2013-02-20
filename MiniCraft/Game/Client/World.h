@@ -17,9 +17,8 @@ class Scene;
 struct SGlobalEnvironment 
 {
 	SGlobalEnvironment() { Reset(); }
-	void	Reset() { m_pSceneMgr=nullptr; m_pRecast=nullptr; m_pCrowd=nullptr; } 
+	void	Reset() { m_pRecast=nullptr; m_pCrowd=nullptr; } 
 
-	Ogre::SceneManager* m_pSceneMgr;
 	OgreRecast*			m_pRecast;
 	OgreDetourCrowd*	m_pCrowd;
 };
@@ -52,7 +51,6 @@ public:
 	void	Update(float dt);
 	void	Shutdown();
 
-	Ogre::Camera*	GetCamera()	{ return m_pCamera; }
 	const Ogre::AxisAlignedBox&	GetResAABB() const { return m_pGold->getWorldBoundingBox(); }
 	POS				GetRandomPositionOnNavmesh();
 
@@ -89,8 +87,6 @@ public:
 
 private:
 	SelectedContainer			m_vecSelectUnis;	//所有选中单位
-	Ogre::SceneManager*			m_pSceneMgr;
-	Ogre::Camera*				m_pCamera;
 	Ogre::Entity*				m_pGold;
 	Ogre::AxisAlignedBoxSceneQuery*		m_pSceneQuery;
 	Ogre::RaySceneQuery*		m_pRaySceneQuery;

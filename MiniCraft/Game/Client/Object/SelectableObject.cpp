@@ -4,6 +4,7 @@
 #include "GUIManager.h"
 #include "CommandPanel.h"
 #include "InfoPanel.h"
+#include "OgreManager.h"
 
 /** This is ogre-procedural's temporary mesh buffer.
  * It stores all the info needed to build an Ogre Mesh, yet is intented to be more flexible, since
@@ -336,7 +337,7 @@ void SelectableObject::SetSelected( bool bSelected )
 	}
 
 	//创建场景节点
-	Ogre::Entity* pEntity = g_Environment.m_pSceneMgr->createEntity((iter->second));
+	Ogre::Entity* pEntity = RenderManager.m_pSceneMgr->createEntity((iter->second));
 	m_pSelCircleNode = m_pSceneNode->createChildSceneNode();
 	m_pSelCircleNode->attachObject(pEntity);
 	m_pSelCircleNode->setVisible(bSelected);

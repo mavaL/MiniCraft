@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "ActionObjectSelect.h"
 #include "Manipulator/ManipulatorScene.h"
+#include "OgreManager.h"
 
 using namespace Ogre;
 
@@ -27,7 +28,7 @@ void ActionObjectSelect::Leave()
 void ActionObjectSelect::OnMouseLButtonUp( const SActionParam& param )
 {
 	ManipulatorObject& manObject = ManipulatorSystem.GetObject();
-	const Ray ray = ManipulatorSystem.m_pMainCamera->getCameraToViewportRay(param.m_ptRelative.x, param.m_ptRelative.y);
+	const Ray ray = RenderManager.m_pMainCamera->getCameraToViewportRay(param.m_ptRelative.x, param.m_ptRelative.y);
 	Entity* pCurDriftEnt = dynamic_cast<Entity*>(manObject.DoRaySceneQuery(ray, eQueryMask_Entity));
 	Entity* pOldSel = manObject.GetSelection();
 
@@ -44,7 +45,7 @@ void ActionObjectSelect::OnMouseLButtonUp( const SActionParam& param )
 void ActionObjectSelect::OnMouseMove( const SActionParam& param )
 {
 	ManipulatorObject& manObject = ManipulatorSystem.GetObject();
-	const Ray ray = ManipulatorSystem.m_pMainCamera->getCameraToViewportRay(param.m_ptRelative.x, param.m_ptRelative.y);
+	const Ray ray = RenderManager.m_pMainCamera->getCameraToViewportRay(param.m_ptRelative.x, param.m_ptRelative.y);
 	Entity* pCurDriftEnt = dynamic_cast<Entity*>(manObject.DoRaySceneQuery(ray, eQueryMask_Entity));
 
 	if(manObject.GetSelection() && pCurDriftEnt == manObject.GetSelection())
