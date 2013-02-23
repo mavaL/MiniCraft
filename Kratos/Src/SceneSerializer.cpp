@@ -43,27 +43,27 @@ void SceneSerializer::LoadScene( const std::string& sceneName, const std::string
 
 	Ogre::SceneManager* sm = RenderManager.m_pSceneMgr;
 	sm->setShadowTechnique(/*SHADOWTYPE_TEXTURE_ADDITIVE_INTEGRATED*/SHADOWTYPE_NONE);
-	//sm->setShadowFarDistance(3000);
+	sm->setShadowFarDistance(3000);
 
 	// 3 textures per directional light (PSSM)
-	//sm->setShadowTextureCountPerLightType(Ogre::Light::LT_DIRECTIONAL, 3);
+	sm->setShadowTextureCountPerLightType(Ogre::Light::LT_DIRECTIONAL, 3);
 
 	// shadow camera setup
-// 	PSSMShadowCameraSetup* pssmSetup = new PSSMShadowCameraSetup();
-// 	pssmSetup->setSplitPadding(/*m_pOwner->->getNearClipDistance()*/0.1f);
-// 	pssmSetup->calculateSplitPoints(3, /*mCamera->getNearClipDistance()*/0.1f, sm->getShadowFarDistance());
-// 	pssmSetup->setOptimalAdjustFactor(0, 2);
-// 	pssmSetup->setOptimalAdjustFactor(1, 1);
-// 	pssmSetup->setOptimalAdjustFactor(2, 0.5);
-// 
-// 	sm->setShadowCameraSetup(ShadowCameraSetupPtr(pssmSetup));
-// 	sm->setShadowTextureCount(3);
-// 	sm->setShadowTextureConfig(0, 2048, 2048, PF_X8B8G8R8);
-// 	sm->setShadowTextureConfig(1, 1024, 1024, PF_X8B8G8R8);
-// 	sm->setShadowTextureConfig(2, 1024, 1024, PF_X8B8G8R8);
-// 	sm->setShadowTextureSelfShadow(false);
-// 	sm->setShadowCasterRenderBackFaces(false);
-// 	sm->setShadowTextureCasterMaterial(StringUtil::BLANK);
+	PSSMShadowCameraSetup* pssmSetup = new PSSMShadowCameraSetup();
+	pssmSetup->setSplitPadding(/*m_pOwner->->getNearClipDistance()*/0.1f);
+	pssmSetup->calculateSplitPoints(3, /*mCamera->getNearClipDistance()*/0.1f, sm->getShadowFarDistance());
+	pssmSetup->setOptimalAdjustFactor(0, 2);
+	pssmSetup->setOptimalAdjustFactor(1, 1);
+	pssmSetup->setOptimalAdjustFactor(2, 0.5);
+
+	sm->setShadowCameraSetup(ShadowCameraSetupPtr(pssmSetup));
+	sm->setShadowTextureCount(3);
+	sm->setShadowTextureConfig(0, 2048, 2048, PF_X8B8G8R8);
+	sm->setShadowTextureConfig(1, 1024, 1024, PF_X8B8G8R8);
+	sm->setShadowTextureConfig(2, 1024, 1024, PF_X8B8G8R8);
+	sm->setShadowTextureSelfShadow(false);
+	sm->setShadowCasterRenderBackFaces(false);
+	sm->setShadowTextureCasterMaterial(StringUtil::BLANK);
 
 	//环境光
 	const String strAmbient = XMLRoot->first_attribute("AmbientLight")->value();
@@ -72,8 +72,8 @@ void SceneSerializer::LoadScene( const std::string& sceneName, const std::string
 	//全局光
 	Light* pSunLight = RenderManager.m_pSceneMgr->createLight("SunLight");
 	pSunLight->setType(Light::LT_DIRECTIONAL);
-	pSunLight->setDirection(pOwner->GetSunLightDirection().normalisedCopy());
-	pSunLight->setDiffuseColour(ColourValue::White);
+	pSunLight->setDirection(pOwner->GetSunLightDirection());
+	pSunLight->setDiffuseColour(pOwner->GetSunLightDiffuse());
 
 	rapidxml::xml_node<>* pElement = XMLRoot->first_node("terrain");
 	assert(pElement);

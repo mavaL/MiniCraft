@@ -5,7 +5,7 @@
 material SelectionCircleAlly
 {
 	technique
-	{
+	{	
 		pass
 		{
             ambient 0.0 0.0 0.0 

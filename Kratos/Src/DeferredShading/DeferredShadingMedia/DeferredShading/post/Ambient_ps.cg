@@ -56,7 +56,7 @@ void main(
 	float4 a1 = tex2D(Tex1, texCoord); // Attribute 1: Normal+depth
 
 	// Clip fragment if depth is too close, so the skybox can be rendered on the background
-	clip(a1.w-0.0001);
+	//clip(a1.w-0.0001);
 
 	// Calculate ambient colour of fragment
 	oColour = float4( ambientColor*float4(a0.rgb ,0));

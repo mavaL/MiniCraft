@@ -103,7 +103,7 @@ void World::Init()
 
 	//UI for test
 	Ogre::Entity* pEntConsole = sm->createEntity("ConsoleTerran_0.mesh");
-	pEntConsole->setRenderQueueGroup(Ogre::RENDER_QUEUE_OVERLAY);
+	pEntConsole->setRenderQueueGroup(Ogre::RENDER_QUEUE_WORLD_GEOMETRY_2);
 	m_pUISceneNode1 = sm->getRootSceneNode()->createChildSceneNode("UIConsoleNode");
 	m_pUISceneNode1->attachObject(pEntConsole);
 	m_pConsoleAnim1 = pEntConsole->getAnimationState("Birth");
@@ -111,7 +111,7 @@ void World::Init()
 	(const_cast<Ogre::AxisAlignedBox&>(pEntConsole->getMesh()->getBounds())).setInfinite();
 
 	pEntConsole = sm->createEntity("ConsoleTerran_1.mesh");
-	pEntConsole->setRenderQueueGroup(Ogre::RENDER_QUEUE_OVERLAY);
+	pEntConsole->setRenderQueueGroup(Ogre::RENDER_QUEUE_WORLD_GEOMETRY_2);
 	m_pUISceneNode2 = m_pUISceneNode1->createChildSceneNode("InfoPanelNode");
 	m_pUISceneNode2->attachObject(pEntConsole);
 	m_pConsoleAnim2 = pEntConsole->getAnimationState("Birth");
@@ -119,13 +119,13 @@ void World::Init()
 	(const_cast<Ogre::AxisAlignedBox&>(pEntConsole->getMesh()->getBounds())).setInfinite();
 
 	pEntConsole = sm->createEntity("ConsoleTerran_2.mesh");
-	pEntConsole->setRenderQueueGroup(Ogre::RENDER_QUEUE_OVERLAY);
+	pEntConsole->setRenderQueueGroup(Ogre::RENDER_QUEUE_WORLD_GEOMETRY_2);
 	m_pUISceneNode3 = m_pUISceneNode1->createChildSceneNode("CmdPanelNode");
 	m_pUISceneNode3->attachObject(pEntConsole);
 	(const_cast<Ogre::AxisAlignedBox&>(pEntConsole->getMesh()->getBounds())).setInfinite();
 
 	pEntConsole = sm->createEntity("ConsoleProtoss_6.mesh");
-	pEntConsole->setRenderQueueGroup(Ogre::RENDER_QUEUE_OVERLAY);
+	pEntConsole->setRenderQueueGroup(Ogre::RENDER_QUEUE_WORLD_GEOMETRY_2);
 	m_pUISceneNode4 = m_pUISceneNode1->createChildSceneNode("PortraitPanelNode");
 	m_pUISceneNode4->attachObject(pEntConsole);
 	(const_cast<Ogre::AxisAlignedBox&>(pEntConsole->getMesh()->getBounds())).setInfinite();
@@ -209,8 +209,8 @@ void World::EnableFreeCamera( bool bEnable )
 	{
 		Ogre::Camera* cam = RenderManager.m_pMainCamera;
 		const Ogre::Vector3 pos = cam->getPosition();
-		cam->setPosition(pos.x, 35, pos.z);
-		cam->lookAt(pos.x, 0, pos.z + 8.75f);
+		cam->setPosition(0, 24, 0);
+		cam->lookAt(0, 0, 8);
 	}
 
 	m_bFreeCamMode = bEnable;

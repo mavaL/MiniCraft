@@ -14,10 +14,10 @@ Scene::Scene()
 :m_pTerrain(nullptr)
 ,m_terrainGroup(nullptr)
 ,m_terrainOption(nullptr)
-,m_sunLightDir(Ogre::Vector3(0.55f, -0.3f, 0.75f))
+,m_sunLightDir(Ogre::Vector3(0.05f, -0.1f, -0.75f))
 ,m_sunLightDiffuse(Ogre::ColourValue::White)
 {
-	
+	m_sunLightDir.normalise();
 }
 
 void Scene::Load( const std::string& sceneName, const std::string& sceneGroup, SceneSerializer* pHandler )

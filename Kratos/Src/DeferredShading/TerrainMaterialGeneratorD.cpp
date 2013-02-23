@@ -151,9 +151,8 @@ namespace Ogre
 		}
  
 		updateParams(mat, terrain);
- 
+
 		return mat;
- 
 	}
 	//---------------------------------------------------------------------
 	MaterialPtr TerrainMaterialGeneratorD::SM2Profile::generateForCompositeMap(const Terrain* terrain)

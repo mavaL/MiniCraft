@@ -27,6 +27,9 @@ material MT_Unit
 			texture_unit diffusemap
 			{
 			}
+			texture_unit normalmap
+			{
+			}
 		}
 	}
 }
@@ -35,13 +38,17 @@ material marine : MT_Unit
 {
 	technique
 	{
-		scheme GBuffer
 		pass
 		{
 			texture_unit diffusemap
 			{
 				texture marine_diffuse.dds
 				filtering linear linear linear
+			}
+			texture_unit normalmap
+			{
+				texture marine_normal.dds
+				filtering point point point
 			}
 		}
 	}
@@ -51,7 +58,6 @@ material scv : MT_Unit
 {
 	technique
 	{
-		scheme GBuffer
 		pass
 		{
 			texture_unit diffusemap
@@ -60,6 +66,11 @@ material scv : MT_Unit
 				filtering linear linear linear
 			}
 		}
+		texture_unit normalmap
+			{
+				texture scv_normal.dds
+				filtering point point point
+			}
 	}
 }
 
@@ -67,17 +78,21 @@ material drone : MT_Unit
 {
 	technique
 	{
-		scheme GBuffer
 		pass
 		{
-			fragment_program_ref unit_ps
-			{
-				param_named TeamColor float4 1 0 0 1
-			}
+			//fragment_program_ref unit_ps
+			//{
+			//	param_named TeamColor float4 1 0 0 1
+			//}
 			texture_unit diffusemap
 			{
 				texture Drone_Diffuse.dds
 				filtering linear linear linear
+			}
+			texture_unit normalmap
+			{
+				texture drone_normal.dds
+				filtering point point point
 			}
 		}
 	}
@@ -87,17 +102,21 @@ material zergling : MT_Unit
 {
 	technique
 	{
-		scheme GBuffer
 		pass
 		{
-			fragment_program_ref unit_ps
-			{
-				param_named TeamColor float4 1 0 0 1
-			}
+			//fragment_program_ref unit_ps
+			//{
+			//	param_named TeamColor float4 1 0 0 1
+			//}
 			texture_unit diffusemap
 			{
 				texture zergling_diffuse.dds
 				filtering linear linear linear
+			}
+			texture_unit normalmap
+			{
+				texture zergling_normal.dds
+				filtering point point point
 			}
 		}
 	}
@@ -107,13 +126,17 @@ material Barracks : MT_Unit
 {
 	technique
 	{
-		scheme GBuffer
 		pass
 		{
 			texture_unit diffusemap
 			{
-				texture Barracks_Diffuse.dds
+				texture barracks_diffuse.dds
 				filtering linear linear linear
+			}
+			texture_unit normalmap
+			{
+				texture barracks_normal.dds
+				filtering point point point
 			}
 		}
 	}
@@ -123,13 +146,17 @@ material CommandCenter : MT_Unit
 {
 	technique
 	{
-		scheme GBuffer
 		pass
 		{
 			texture_unit diffusemap
 			{
-				texture CommandCenter_Diffuse.dds
+				texture commandcenter_diffuse.dds
 				filtering linear linear linear
+			}
+			texture_unit normalmap
+			{
+				texture commandcenter_normal.dds
+				filtering point point point
 			}
 		}
 	}
@@ -139,17 +166,21 @@ material sc2material : MT_Unit
 {
 	technique
 	{
-		scheme GBuffer
 		pass
 		{
-			fragment_program_ref unit_ps
-			{
-				param_named TeamColor float4 1 0 0 1
-			}
+			//fragment_program_ref unit_ps
+			//{
+			//	param_named TeamColor float4 1 0 0 1
+			//}
 			texture_unit diffusemap
 			{
 				texture SpawningPool_Diffuse.dds
 				filtering linear linear linear
+			}
+			texture_unit normalmap
+			{
+				texture spawningpool_normal.dds
+				filtering point point point
 			}
 		}
 	}
@@ -159,17 +190,21 @@ material hatchery : MT_Unit
 {
 	technique
 	{
-		scheme GBuffer
 		pass
 		{
-			fragment_program_ref unit_ps
-			{
-				param_named TeamColor float4 1 0 0 1
-			}
+			//fragment_program_ref unit_ps
+			//{
+			//	param_named TeamColor float4 1 0 0 1
+			//}
 			texture_unit diffusemap
 			{
 				texture Hatchery_Diffuse.dds
 				filtering linear linear linear
+			}
+			texture_unit normalmap
+			{
+				texture hatchery_normals.dds
+				filtering point point point
 			}
 		}
 	}
