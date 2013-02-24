@@ -523,8 +523,17 @@ void SelectableObject::CreateRenderInstance()
 	__super::CreateRenderInstance();
 
 	m_pEntity->setQueryFlags(eQueryType_SelectableObject);
-	//渲染对象与逻辑对象绑定,方便取出通信
+	//Movable对象与逻辑对象绑定,方便取出通信
 	m_pEntity->setUserAny(Ogre::Any(this));
+
+	//队伍颜色与Renderable绑定
+	Ogre::ColourValue teamColor = Ogre::StringConverter::parseColourValue(getParameter("teamcolor"));
+	size_t num = m_pEntity->getNumSubEntities();
+	for (size_t i=0; i<num; ++i)
+	{
+
+		m_pEntity->getSubEntity(i)->setUserAny(Ogre::Any(teamColor));
+	}
 }
 
 bool SelectableObject::HasAbility( eCommandType type )

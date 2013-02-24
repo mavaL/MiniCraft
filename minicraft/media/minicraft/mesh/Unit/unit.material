@@ -1,42 +1,7 @@
-fragment_program unit_ps cg
-{
-	source unit.cg
-	entry_point main
-	profiles ps_2_0 arbfp1
-}
-
-///模板
-material MT_Unit
+material marine
 {
 	receive_shadows false
-
-	technique
-	{
-		pass
-		{
-			vertex_program_ref Ogre/BasicVertexPrograms/AmbientOneTexture
-			{
-				param_named_auto worldViewProj worldviewproj_matrix
-			}
-			fragment_program_ref unit_ps
-			{
-				param_named TeamColor float4 0 0 1 1
-				param_named_auto ambient ambient_light_colour
-			}
-
-			texture_unit diffusemap
-			{
-			}
-			texture_unit normalmap
-			{
-			}
-		}
-	}
-}
-
-material marine : MT_Unit
-{
-	technique
+	technique Unit
 	{
 		pass
 		{
@@ -50,13 +15,19 @@ material marine : MT_Unit
 				texture marine_normal.dds
 				filtering point point point
 			}
+			texture_unit specularmap
+			{
+				texture marine_specular.dds
+				filtering point point point
+			}
 		}
 	}
 }
 
-material scv : MT_Unit
+material scv
 {
-	technique
+	receive_shadows false
+	technique Unit
 	{
 		pass
 		{
@@ -65,25 +36,23 @@ material scv : MT_Unit
 				texture SCV_Diffuse.dds
 				filtering linear linear linear
 			}
-		}
-		texture_unit normalmap
+			texture_unit normalmap
 			{
 				texture scv_normal.dds
 				filtering point point point
 			}
+			//为什么就我木有specular map呢?偏心
+		}
 	}
 }
 
-material drone : MT_Unit
+material drone
 {
-	technique
+	receive_shadows false
+	technique Unit
 	{
 		pass
 		{
-			//fragment_program_ref unit_ps
-			//{
-			//	param_named TeamColor float4 1 0 0 1
-			//}
 			texture_unit diffusemap
 			{
 				texture Drone_Diffuse.dds
@@ -94,20 +63,22 @@ material drone : MT_Unit
 				texture drone_normal.dds
 				filtering point point point
 			}
+			texture_unit specularmap
+			{
+				texture drone_specular.dds
+				filtering point point point
+			}
 		}
 	}
 }
 
-material zergling : MT_Unit
+material zergling
 {
-	technique
+	receive_shadows false
+	technique Unit
 	{
 		pass
 		{
-			//fragment_program_ref unit_ps
-			//{
-			//	param_named TeamColor float4 1 0 0 1
-			//}
 			texture_unit diffusemap
 			{
 				texture zergling_diffuse.dds
@@ -118,13 +89,19 @@ material zergling : MT_Unit
 				texture zergling_normal.dds
 				filtering point point point
 			}
+			texture_unit specularmap
+			{
+				texture zergling_specular.dds
+				filtering point point point
+			}
 		}
 	}
 }
 
-material Barracks : MT_Unit
+material Barracks
 {
-	technique
+	receive_shadows false
+	technique Unit
 	{
 		pass
 		{
@@ -138,13 +115,19 @@ material Barracks : MT_Unit
 				texture barracks_normal.dds
 				filtering point point point
 			}
+			texture_unit specularmap
+			{
+				texture barracks_specular.dds
+				filtering point point point
+			}
 		}
 	}
 }
 
-material CommandCenter : MT_Unit
+material CommandCenter
 {
-	technique
+	receive_shadows false
+	technique Unit
 	{
 		pass
 		{
@@ -158,20 +141,22 @@ material CommandCenter : MT_Unit
 				texture commandcenter_normal.dds
 				filtering point point point
 			}
+			texture_unit specularmap
+			{
+				texture commandcenter_specular.dds
+				filtering point point point
+			}
 		}
 	}
 }
 
-material sc2material : MT_Unit
+material sc2material
 {
-	technique
+	receive_shadows false
+	technique Unit
 	{
 		pass
 		{
-			//fragment_program_ref unit_ps
-			//{
-			//	param_named TeamColor float4 1 0 0 1
-			//}
 			texture_unit diffusemap
 			{
 				texture SpawningPool_Diffuse.dds
@@ -182,20 +167,22 @@ material sc2material : MT_Unit
 				texture spawningpool_normal.dds
 				filtering point point point
 			}
+			texture_unit specularmap
+			{
+				texture spawningpool_specular.dds
+				filtering point point point
+			}
 		}
 	}
 }
 
-material hatchery : MT_Unit
+material hatchery
 {
-	technique
+	receive_shadows false
+	technique Unit
 	{
 		pass
 		{
-			//fragment_program_ref unit_ps
-			//{
-			//	param_named TeamColor float4 1 0 0 1
-			//}
 			texture_unit diffusemap
 			{
 				texture Hatchery_Diffuse.dds
@@ -204,6 +191,11 @@ material hatchery : MT_Unit
 			texture_unit normalmap
 			{
 				texture hatchery_normals.dds
+				filtering point point point
+			}
+			texture_unit specularmap
+			{
+				texture hatchery_specular.dds
 				filtering point point point
 			}
 		}
@@ -221,8 +213,11 @@ material CrystalJade
 				texture ResourceCrystalDiff_blue.dds
 				filtering linear linear linear
 			}
+			texture_unit specularmap
+			{
+				texture resourcecrystalspec_blue.dds
+				filtering point point point
+			}
 		}
-
 	}
-
 }

@@ -20,6 +20,10 @@ same license as the rest of the engine.
 using namespace Ogre;
 
 const String GBufferSchemeHandler::NORMAL_MAP_PATTERN = "normal";
+const String SPECULAR_MAP_PATTERN = "specularmap";
+
+//检测到材质名含有Unit子串
+const String TEAM_COLOR_PATTERN = "Unit";
 
 Technique* GBufferSchemeHandler::handleSchemeNotFound(unsigned short schemeIndex, 
 		const String& schemeName, Material* originalMaterial, unsigned short lodIndex, 
@@ -54,6 +58,15 @@ Technique* GBufferSchemeHandler::handleSchemeNotFound(unsigned short schemeIndex
 
 		Pass* newPass = gBufferTech->createPass();
 		MaterialGenerator::Perm perm = getPermutation(props);
+
+		if (originalTechnique->getName().find(TEAM_COLOR_PATTERN) != Ogre::String::npos)
+		{
+			const Ogre::ColourValue teamColor = Ogre::any_cast<Ogre::ColourValue>(rend->getUserAny());
+			if(teamColor == Ogre::ColourValue::Red)
+				perm |= GBufferMaterialGenerator::GBP_TEAM_COLOR_RED;
+			else if(teamColor == Ogre::ColourValue::Blue)
+				perm |= GBufferMaterialGenerator::GBP_TEAM_COLOR_Blue;
+		}
 
 		const Ogre::MaterialPtr& templateMat = mMaterialGenerator.getMaterial(perm);
     	
@@ -101,6 +114,33 @@ bool GBufferSchemeHandler::checkNormalMap(
 	return isNormal;
 }
 
+bool GBufferSchemeHandler::checkSpecularMap(
+	TextureUnitState* tus, GBufferSchemeHandler::PassProperties& props)
+{
+	bool isSpec = false;
+	Ogre::String lowerCaseAlias = tus->getTextureNameAlias();
+	Ogre::StringUtil::toLowerCase(lowerCaseAlias);
+	if (lowerCaseAlias.find(SPECULAR_MAP_PATTERN) != Ogre::String::npos)
+	{
+		isSpec = true;
+	}
+
+	if (isSpec)
+	{
+		if (props.specularMap == 0)
+		{
+			props.specularMap = tus;
+		}
+		else
+		{
+			OGRE_EXCEPT(Exception::ERR_DUPLICATE_ITEM,
+				"Multiple specular map patterns matches",
+				"GBufferSchemeHandler::inspectPass");
+		}
+	}
+	return isSpec;
+}
+
 GBufferSchemeHandler::PassProperties GBufferSchemeHandler::inspectPass(
 	Pass* pass, unsigned short lodIndex, const Renderable* rend)
 {
@@ -120,7 +160,7 @@ GBufferSchemeHandler::PassProperties GBufferSchemeHandler::inspectPass(
 	for (unsigned short i=0; i<pass->getNumTextureUnitStates(); i++) 
 	{
 		TextureUnitState* tus = pass->getTextureUnitState(i);
-		if (!checkNormalMap(tus, props))
+		if (!checkNormalMap(tus, props) && !checkSpecularMap(tus, props))
 		{
 			props.regularTextures.push_back(tus);
 		}
@@ -153,7 +193,7 @@ MaterialGenerator::Perm GBufferSchemeHandler::getPermutation(const PassPropertie
 	case 0:
 		perm |= GBufferMaterialGenerator::GBP_NO_TEXTURES;
 		
-		if (props.normalMap != 0)
+		if (props.normalMap != 0 || props.specularMap != 0)
 		{
 			perm |= GBufferMaterialGenerator::GBP_ONE_TEXCOORD;
 		}
@@ -191,6 +231,11 @@ MaterialGenerator::Perm GBufferSchemeHandler::getPermutation(const PassPropertie
 		perm |= GBufferMaterialGenerator::GBP_NORMAL_MAP;
 	}
 
+	if (props.specularMap != 0)
+	{
+		perm |= GBufferMaterialGenerator::GBP_SPECULAR_MAP;
+	}
+
     if (props.hasDiffuseColour)
     {
         perm |= GBufferMaterialGenerator::GBP_HAS_DIFFUSE_COLOUR;
@@ -206,6 +251,11 @@ void GBufferSchemeHandler::fillPass(
 	if (props.normalMap != 0)
 	{
 		*(gBufferPass->getTextureUnitState(texUnitIndex)) = *(props.normalMap);
+		texUnitIndex++;
+	}
+	if (props.specularMap != 0)
+	{
+		*(gBufferPass->getTextureUnitState(texUnitIndex)) = *(props.specularMap);
 		texUnitIndex++;
 	}
 	for (size_t i=0; i<props.regularTextures.size(); i++)

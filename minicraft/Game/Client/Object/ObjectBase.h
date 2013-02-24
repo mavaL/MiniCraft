@@ -46,6 +46,7 @@ class RenderableObject : public Object
 	DECL_PARAM_COMMAND(Orientation)
 	DECL_PARAM_COMMAND(MeshName)
 	DECL_PARAM_COMMAND(Scale)
+	DECL_PARAM_COMMAND(TeamColor)
 
 public:
 	RenderableObject();
@@ -66,12 +67,15 @@ public:
 	const ORIENT&	GetOrientation() const;
 	const SCALE&	GetScale() const;
 	Ogre::SceneNode* GetSceneNode() { return m_pSceneNode; }
+	void			SetTeamColor(const COLOR& c) { m_teamColor = c; }
+	const COLOR&	GetTeamColor() const { return m_teamColor; }
 
 protected:
 	Ogre::Entity*		m_pEntity;
 	Ogre::SceneNode*	m_pSceneNode;
 	bool				m_bRenderableReady;	//渲染实例是否已创建
 	STRING				m_meshname;
+	COLOR				m_teamColor;
 };
 
 

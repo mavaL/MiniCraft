@@ -38,6 +38,7 @@ void Object::UpdateAllComponent( float dt )
 IMPL_PARAM_COMMAND(RenderableObject, Position, Vector3)
 IMPL_PARAM_COMMAND(RenderableObject, Orientation, Quaternion)
 IMPL_PARAM_COMMAND(RenderableObject, Scale, Vector3)
+IMPL_PARAM_COMMAND(RenderableObject, TeamColor, ColourValue)
 IMPL_PARAM_COMMAND_STR(RenderableObject, MeshName)
 
 RenderableObject::RenderableObject()
@@ -46,6 +47,7 @@ RenderableObject::RenderableObject()
 ,m_pSceneNode(nullptr)
 ,m_bRenderableReady(false)
 ,m_meshname("")
+,m_teamColor(Ogre::ColourValue::Blue)
 {
 	if (createParamDictionary("RenderableObject"))
 	{
@@ -54,6 +56,7 @@ RenderableObject::RenderableObject()
 		dict->addParameter(Ogre::ParameterDef("orientation", "orientation of the object", Ogre::PT_QUATERNION), &m_sCmdOrientation);
 		dict->addParameter(Ogre::ParameterDef("scale", "scale of the object", Ogre::PT_VECTOR3), &m_sCmdScale);
 		dict->addParameter(Ogre::ParameterDef("meshname", "mesh file name of the object", Ogre::PT_STRING), &m_sCmdMeshName);
+		dict->addParameter(Ogre::ParameterDef("teamcolor", "team color of the object", Ogre::PT_COLOURVALUE), &m_sCmdTeamColor);
 	}
 }
 

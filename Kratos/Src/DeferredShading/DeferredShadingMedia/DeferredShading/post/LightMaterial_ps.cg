@@ -84,6 +84,7 @@ float4 main(
 	
 	uniform sampler Tex0: register(s0),
 	uniform sampler Tex1: register(s1),
+	uniform sampler Tex2: register(s2),
 
 #if LIGHT_TYPE != LIGHT_POINT
 	uniform float3 lightDir,
@@ -127,12 +128,13 @@ float4 main(
 	float3 ray = float3(projPos.x, projPos.y * flip, 1) * farCorner;
 #endif
 	
-	float4 a0 = tex2D(Tex0, texCoord); // Attribute 0: Diffuse color+shininess
+	float4 a0 = tex2D(Tex0, texCoord); // Attribute 0: Diffuse color+bSpecularMap Flag
 	float4 a1 = tex2D(Tex1, texCoord); // Attribute 1: Normal+depth
+	float4 a2 = tex2D(Tex2, texCoord); // Attribute 2: Specular color+shiness
 
 	// Attributes
 	float3 colour = a0.rgb;
-	float specularity = a0.a;
+	int bSpecMap = a0.a;
 	float distance = a1.w;  // Distance from viewer (w)
 	float3 normal = a1.xyz;
 
@@ -161,14 +163,15 @@ float4 main(
 	float3 total_light_contrib;
 	total_light_contrib = max(0.0,dot(objToLightDir, normal)) * lightDiffuseColor.rgb;
 
-#if IS_SPECULAR
 	// Calculate specular component
-	float3 viewDir = -normalize(viewPos);
-	float3 h = normalize(viewDir + objToLightDir);
-	float3 light_specular = pow(dot(normal, h),32.0) * lightSpecularColor.rgb;
+	if(bSpecMap == 1)
+	{
+		float3 viewDir = -normalize(viewPos);
+		float3 h = normalize(viewDir + objToLightDir);
+		float3 light_specular = pow(dot(normal, h), a2.w) * a2.rgb;
 
-	total_light_contrib += specularity * light_specular;
-#endif
+		total_light_contrib += light_specular;
+	}
 
 #if IS_ATTENUATED
 	clip(lightFalloff.x - len);

@@ -52,8 +52,16 @@ public:
 		//Do we have a normal map
 		GBP_NORMAL_MAP =			0x00000800,
 
+		//高光Color+SpecularPower纹理
+		GBP_SPECULAR_MAP	=		0x00000020,
+
 		//Are we skinned?
-		GBP_SKINNED =				0x00010000
+		GBP_SKINNED =				0x00010000,
+
+		//队伍颜色
+		GBP_TEAM_COLOR_RED	=		0x00001000,
+		GBP_TEAM_COLOR_Blue	=		0x00002000,
+		GBP_TEAM_COLOR_Mask	=		0x00003000,
 	};
 	
 	//The mask of the flags that matter for generating the fragment shader

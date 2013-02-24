@@ -168,6 +168,8 @@ Ogre::GpuProgramPtr GBufferMaterialGeneratorImpl::generateFragmentShader(Materia
 
 	ss << "	out float4 oColor0 : COLOR0," << std::endl;
 	ss << "	out float4 oColor1 : COLOR1," << std::endl;
+	// specular map [2/24/2013 mavaL]
+	ss << " out float4 oColor2 : COLOR2," << std::endl;
 
 	ss << std::endl;
 
@@ -175,6 +177,11 @@ Ogre::GpuProgramPtr GBufferMaterialGeneratorImpl::generateFragmentShader(Materia
 	if (permutation & GBufferMaterialGenerator::GBP_NORMAL_MAP)
 	{
 		ss << "	uniform sampler sNormalMap : register(s" << samplerNum++ << ")," << std::endl;
+	}
+	// specular map [2/24/2013 mavaL]
+	if (permutation & GBufferMaterialGenerator::GBP_SPECULAR_MAP)
+	{
+		ss << "	uniform sampler sSpecMap : register(s" << samplerNum++ << ")," << std::endl;
 	}
 	Ogre::uint32 numTextures = permutation & GBufferMaterialGenerator::GBP_TEXTURE_MASK;
 	for (Ogre::uint32 i=0; i<numTextures; i++) {
@@ -188,8 +195,13 @@ Ogre::GpuProgramPtr GBufferMaterialGeneratorImpl::generateFragmentShader(Materia
 #ifdef WRITE_LINEAR_DEPTH
     ss << "	uniform float cFarDistance," << std::endl;
 #endif
+
+	if (permutation & GBufferMaterialGenerator::GBP_TEAM_COLOR_Mask)
+	{
+		ss << "	uniform float4 TeamColor," << std::endl;
+	}
 	
-	ss << "	uniform float cSpecularity" << std::endl;
+	ss << "	uniform float bSpecularMap" << std::endl;
 
 	ss << "	)" << std::endl;
 	
@@ -198,7 +210,7 @@ Ogre::GpuProgramPtr GBufferMaterialGeneratorImpl::generateFragmentShader(Materia
 
 	if (numTexCoords > 0 && numTextures > 0) 
 	{
-		ss << "	oColor0.rgb = tex2D(sTex0, iUV0);" << std::endl;
+		ss << "	oColor0 = tex2D(sTex0, iUV0);" << std::endl;
         if (permutation & GBufferMaterialGenerator::GBP_HAS_DIFFUSE_COLOUR)
         {
             ss << "	oColor0.rgb *= cDiffuseColour.rgb;" << std::endl;
@@ -209,14 +221,19 @@ Ogre::GpuProgramPtr GBufferMaterialGeneratorImpl::generateFragmentShader(Materia
 		ss << "	oColor0.rgb = cDiffuseColour.rgb;" << std::endl;
 	}
     
+	if (permutation & GBufferMaterialGenerator::GBP_TEAM_COLOR_Mask)
+	{
+		ss << "	oColor0 = oColor0 * oColor0.a + TeamColor * (1 - oColor0.a);" << std::endl;
+	}
 	
-	ss << "	oColor0.a = cSpecularity;" << std::endl;
+	ss << "	oColor0.a = bSpecularMap;" << std::endl;
 	if (permutation & GBufferMaterialGenerator::GBP_NORMAL_MAP) 
 	{
 		ss << "	float3 texNormal = (tex2D(sNormalMap, iUV0)-0.5)*2;" << std::endl;
 		ss << "	float3x3 normalRotation = float3x3(iTangent, iBiNormal, iNormal);" << std::endl;
 		ss << "	oColor1.rgb = normalize(mul(texNormal, normalRotation));" << std::endl;
-	} else 
+	} 
+	else 
 	{
 		ss << "	oColor1.rgb = normalize(iNormal);" << std::endl;
 	}
@@ -225,6 +242,15 @@ Ogre::GpuProgramPtr GBufferMaterialGeneratorImpl::generateFragmentShader(Materia
 #else
     ss << "	oColor1.a = iDepth;" << std::endl;
 #endif
+	// specular map [2/24/2013 mavaL]
+	if (permutation & GBufferMaterialGenerator::GBP_SPECULAR_MAP)
+	{
+		ss << "	oColor2 = tex2D(sSpecMap, iUV0);" << std::endl;
+	}
+	else
+	{
+		ss << "	oColor2 = float4(0,0,0,0);" << std::endl;
+	}
 
 	ss << "}" << std::endl;
 	
@@ -244,7 +270,13 @@ Ogre::GpuProgramPtr GBufferMaterialGeneratorImpl::generateFragmentShader(Materia
 	ptrProgram->setParameter("profiles","ps_2_0 arbfp1");
 
 	const Ogre::GpuProgramParametersSharedPtr& params = ptrProgram->getDefaultParameters();
-	params->setNamedAutoConstant("cSpecularity", Ogre::GpuProgramParameters::ACT_SURFACE_SHININESS);
+
+	// like material id works [2/24/2013 mavaL]
+	if(permutation & GBufferMaterialGenerator::GBP_SPECULAR_MAP)
+		params->setNamedConstant("bSpecularMap", 1.0f);
+	else
+		params->setNamedConstant("bSpecularMap", 0.0f);
+
 	if (numTextures == 0 || permutation & GBufferMaterialGenerator::GBP_HAS_DIFFUSE_COLOUR)
 	{
 		params->setNamedAutoConstant("cDiffuseColour", Ogre::GpuProgramParameters::ACT_SURFACE_DIFFUSE_COLOUR);
@@ -254,6 +286,11 @@ Ogre::GpuProgramPtr GBufferMaterialGeneratorImpl::generateFragmentShader(Materia
     //TODO : Should this be the distance to the far corner, not the far clip distance?
     params->setNamedAutoConstant("cFarDistance", Ogre::GpuProgramParameters::ACT_FAR_CLIP_DISTANCE);
 #endif
+
+	if (permutation & GBufferMaterialGenerator::GBP_TEAM_COLOR_RED)
+		params->setNamedConstant("TeamColor", Ogre::ColourValue::Red);
+	else if (permutation & GBufferMaterialGenerator::GBP_TEAM_COLOR_Blue)
+		params->setNamedConstant("TeamColor", Ogre::ColourValue::Blue);
 
 	ptrProgram->load();
 	return Ogre::GpuProgramPtr(ptrProgram);
@@ -269,6 +306,10 @@ Ogre::MaterialPtr GBufferMaterialGeneratorImpl::generateTemplateMaterial(Materia
 	pass->setName(mBaseName + "Pass_" + Ogre::StringConverter::toString(permutation));
 	pass->setLightingEnabled(false);
 	if (permutation & GBufferMaterialGenerator::GBP_NORMAL_MAP)
+	{
+		pass->createTextureUnitState();
+	}
+	if (permutation & GBufferMaterialGenerator::GBP_SPECULAR_MAP)
 	{
 		pass->createTextureUnitState();
 	}

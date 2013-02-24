@@ -827,7 +827,8 @@ namespace Ogre
 			"	float2 uv = uvMisc.xy;\n"
 			// base colour
 			"	oColor0 = float4(0,0,0,0);\n"
-			"   oColor1 = oColor2 = float4(1,1,1,1);\n";
+			"   oColor1 = float4(1,1,1,1);\n"
+			"   oColor2 = float4(0,0,0,0);\n";
  
 		if (tt != LOW_LOD)
 		{
@@ -994,7 +995,7 @@ namespace Ogre
  
 		// diffuse lighting
 		outStream << "	oColor0.rgb += diffuse;\n"
-				"   oColor0.a += specular;\n";
+				"   oColor0.a = 0;\n";
  
 		bool fog = terrain->getSceneManager()->getFogMode() != FOG_NONE && tt != RENDER_COMPOSITE_MAP;
 		if (fog)

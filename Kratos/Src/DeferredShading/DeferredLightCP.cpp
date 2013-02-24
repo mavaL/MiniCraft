@@ -30,6 +30,8 @@ DeferredLightRenderOperation::DeferredLightRenderOperation(
 	mTexName0 = instance->getTextureInstanceName(input0.name, input0.mrtIndex);
 	const CompositionPass::InputTex& input1 = pass->getInput(1);
 	mTexName1 = instance->getTextureInstanceName(input1.name, input1.mrtIndex);
+	const CompositionPass::InputTex& input2 = pass->getInput(2);
+	const String& specMap = instance->getTextureInstanceName(input2.name, input2.mrtIndex);
 
 	// Create lights material generator
 	mLightMaterialGenerator = new LightMaterialGenerator();
