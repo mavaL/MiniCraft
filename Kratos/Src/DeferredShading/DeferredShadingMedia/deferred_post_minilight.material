@@ -32,6 +32,12 @@ material DeferredShading/LightMaterial/Geometry
 				tex_address_mode clamp
 				filtering none
 			}
+			texture_unit GBuffer4
+			{
+				content_type compositor DeferredShading/GBuffer mrt_output 3
+				tex_address_mode clamp
+				filtering none
+			}
 		}
 	}
 }
@@ -46,6 +52,20 @@ material DeferredShading/LightMaterial/GeometryShadow : DeferredShading/LightMat
 			texture_unit ShadowMap
 			{
 				content_type shadow
+				tex_address_mode border
+				tex_border_colour 1 1 1 1
+			}
+			texture_unit ShadowMap2
+			{
+				content_type shadow
+				tex_address_mode border
+				tex_border_colour 1 1 1 1
+			}
+			texture_unit ShadowMap3
+			{
+				content_type shadow
+				tex_address_mode border
+				tex_border_colour 1 1 1 1
 			}
 		}
 	}

@@ -170,6 +170,7 @@ Ogre::GpuProgramPtr GBufferMaterialGeneratorImpl::generateFragmentShader(Materia
 	ss << "	out float4 oColor1 : COLOR1," << std::endl;
 	// specular map [2/24/2013 mavaL]
 	ss << " out float4 oColor2 : COLOR2," << std::endl;
+	ss << " out float4 oColor3 : COLOR3," << std::endl;
 
 	ss << std::endl;
 
@@ -231,16 +232,17 @@ Ogre::GpuProgramPtr GBufferMaterialGeneratorImpl::generateFragmentShader(Materia
 	{
 		ss << "	float3 texNormal = (tex2D(sNormalMap, iUV0)-0.5)*2;" << std::endl;
 		ss << "	float3x3 normalRotation = float3x3(iTangent, iBiNormal, iNormal);" << std::endl;
-		ss << "	oColor1.rgb = normalize(mul(texNormal, normalRotation));" << std::endl;
+		ss << "	oColor3.rgb = normalize(mul(texNormal, normalRotation));" << std::endl;
 	} 
 	else 
 	{
-		ss << "	oColor1.rgb = normalize(iNormal);" << std::endl;
+		ss << "	oColor3.rgb = normalize(iNormal);" << std::endl;
 	}
+	ss << "	oColor3.a = 0;" << std::endl;
 #ifdef WRITE_LINEAR_DEPTH
-    ss << "	oColor1.a = length(iViewPos) / cFarDistance;" << std::endl;
+    ss << "	oColor1.rgba = length(iViewPos) / cFarDistance;" << std::endl;
 #else
-    ss << "	oColor1.a = iDepth;" << std::endl;
+    ss << "	oColor1.rgba = iDepth;" << std::endl;
 #endif
 	// specular map [2/24/2013 mavaL]
 	if (permutation & GBufferMaterialGenerator::GBP_SPECULAR_MAP)

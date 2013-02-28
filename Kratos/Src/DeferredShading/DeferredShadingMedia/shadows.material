@@ -1,0 +1,41 @@
+// Template materials for integrated depth shadows
+
+vertex_program Ogre/shadow/caster/depth/vp cg
+{
+	source depthshadowobject.cg
+	profiles vs_1_1 arbvp1
+	entry_point main_vp
+
+	default_params
+	{
+		param_named_auto worldViewProj		worldviewproj_matrix
+		param_named_auto depthRange			scene_depth_range 0
+	}
+}
+
+fragment_program Ogre/shadow/caster/depth/fp cg
+{
+	source depthshadowobject.cg
+	profiles ps_2_x arbfp1
+	entry_point main_fp
+
+	default_params
+	{
+	}
+}
+
+material Ogre/shadow/depth/caster
+{
+	technique
+	{
+		pass
+		{
+			vertex_program_ref Ogre/shadow/caster/depth/vp
+			{
+			}
+			fragment_program_ref Ogre/shadow/caster/depth/fp
+			{
+			}
+		}
+	}
+}

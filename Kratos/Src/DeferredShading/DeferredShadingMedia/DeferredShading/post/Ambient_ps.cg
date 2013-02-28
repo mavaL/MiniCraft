@@ -53,16 +53,16 @@ void main(
 	)
 {
 	float4 a0 = tex2D(Tex0, texCoord); // Attribute 0: Diffuse color+shininess
-	float4 a1 = tex2D(Tex1, texCoord); // Attribute 1: Normal+depth
+	float depth = tex2D(Tex1, texCoord).r; // Attribute 1: depth
 
 	// Clip fragment if depth is too close, so the skybox can be rendered on the background
-	//clip(a1.w-0.0001);
+	//clip(depth-0.0001);
 
 	// Calculate ambient colour of fragment
 	oColour = float4( ambientColor*float4(a0.rgb ,0));
 
 	// Calculate depth of fragment;
-	float3 viewPos = normalize(ray) * farClipDistance * a1.w;
+	float3 viewPos = normalize(ray) * farClipDistance * depth;
 	float4 projPos = mul( proj, float4(viewPos, 1) );
 	oDepth = finalDepth(projPos);
 }

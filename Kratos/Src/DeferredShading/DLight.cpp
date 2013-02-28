@@ -67,7 +67,7 @@ void DLight::setAttenuation(float c, float b, float a)
 			c = c-threshold;
 			float d=sqrt(b*b-4*a*c);
 			outerRadius = (-2*c)/(b+d);
-			outerRadius *= 1.2;
+			outerRadius *= 1.2f;
 		}
 	}
 	else
@@ -346,6 +346,5 @@ void DLight::updateFromCamera(Ogre::Camera* camera)
 		{
 			params->setNamedConstant("shadowFarClip", shadowCam.getFarClipDistance());
 		}
-
 	}
 }

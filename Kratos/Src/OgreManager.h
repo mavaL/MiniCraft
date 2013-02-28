@@ -4,7 +4,7 @@
 #include "Singleton.h"
 #include <OgrePrerequisites.h>
 #include <OgreWindowEventUtilities.h>
-
+#include <OgreShadowCameraSetup.h>
 
 /*------------------------------------------------
 				 OGRE图形模块封装类
@@ -33,6 +33,7 @@ public:
 
 	//开启/关闭延迟渲染
 	void			EnableDeferredShading(bool bEnable);
+	void			InitShadowConfig();
 
 	Ogre::Root*			mRoot;
 	Ogre::RenderWindow* mWindow;
@@ -41,6 +42,7 @@ public:
 	Ogre::SceneManager*	m_pSceneMgr;
 	Ogre::Camera*		m_pMainCamera;
 	DeferredShadingSystem*		m_pDS;
+	Ogre::ShadowCameraSetupPtr mPSSMSetup;
 
 private:
 	bool				m_bHasInit;

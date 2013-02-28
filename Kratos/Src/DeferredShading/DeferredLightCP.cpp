@@ -109,13 +109,25 @@ void DeferredLightRenderOperation::execute(SceneManager *sm, RenderSystem *rs)
 			
 			Pass* pass = tech->getPass(0);
 			TextureUnitState* tus = pass->getTextureUnitState("ShadowMap");
-			assert(tus);
+			TextureUnitState* tus2 = pass->getTextureUnitState("ShadowMap2");
+			TextureUnitState* tus3 = pass->getTextureUnitState("ShadowMap3");
+			assert(tus && tus2 && tus3);
 			const TexturePtr& shadowTex = sm->getShadowTexture(0);
+			const TexturePtr& shadowTex2 = sm->getShadowTexture(1);
+			const TexturePtr& shadowTex3 = sm->getShadowTexture(2);
+
 			if (tus->_getTexturePtr() != shadowTex)
 			{
 				tus->_setTexturePtr(shadowTex);
 			}
-			
+			if (tus2->_getTexturePtr() != shadowTex2)
+			{
+				tus->_setTexturePtr(shadowTex2);
+			}
+			if (tus3->_getTexturePtr() != shadowTex3)
+			{
+				tus->_setTexturePtr(shadowTex3);
+			}
 		}
 		
         injectTechnique(sm, tech, dLight, &ll);

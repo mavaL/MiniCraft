@@ -4,6 +4,7 @@
 #include <Terrain/OgreTerrain.h>
 #include <Terrain/OgreTerrainGroup.h>
 #include "OgreManager.h"
+#include "DeferredShading/TerrainMaterialGeneratorD.h"
 
 
 using namespace Ogre;
@@ -41,39 +42,18 @@ void SceneSerializer::LoadScene( const std::string& sceneName, const std::string
 		return;
 	}
 
-	Ogre::SceneManager* sm = RenderManager.m_pSceneMgr;
-	sm->setShadowTechnique(/*SHADOWTYPE_TEXTURE_ADDITIVE_INTEGRATED*/SHADOWTYPE_NONE);
-	sm->setShadowFarDistance(3000);
-
-	// 3 textures per directional light (PSSM)
-	sm->setShadowTextureCountPerLightType(Ogre::Light::LT_DIRECTIONAL, 3);
-
-	// shadow camera setup
-	PSSMShadowCameraSetup* pssmSetup = new PSSMShadowCameraSetup();
-	pssmSetup->setSplitPadding(/*m_pOwner->->getNearClipDistance()*/0.1f);
-	pssmSetup->calculateSplitPoints(3, /*mCamera->getNearClipDistance()*/0.1f, sm->getShadowFarDistance());
-	pssmSetup->setOptimalAdjustFactor(0, 2);
-	pssmSetup->setOptimalAdjustFactor(1, 1);
-	pssmSetup->setOptimalAdjustFactor(2, 0.5);
-
-	sm->setShadowCameraSetup(ShadowCameraSetupPtr(pssmSetup));
-	sm->setShadowTextureCount(3);
-	sm->setShadowTextureConfig(0, 2048, 2048, PF_X8B8G8R8);
-	sm->setShadowTextureConfig(1, 1024, 1024, PF_X8B8G8R8);
-	sm->setShadowTextureConfig(2, 1024, 1024, PF_X8B8G8R8);
-	sm->setShadowTextureSelfShadow(false);
-	sm->setShadowCasterRenderBackFaces(false);
-	sm->setShadowTextureCasterMaterial(StringUtil::BLANK);
-
+	SceneManager* sm = RenderManager.m_pSceneMgr;
 	//环境光
 	const String strAmbient = XMLRoot->first_attribute("AmbientLight")->value();
-	RenderManager.m_pSceneMgr->setAmbientLight(Ogre::StringConverter::parseColourValue(strAmbient));
+	sm->setAmbientLight(Ogre::StringConverter::parseColourValue(strAmbient));
 
 	//全局光
-	Light* pSunLight = RenderManager.m_pSceneMgr->createLight("SunLight");
+	Light* pSunLight = sm->createLight("SunLight");
 	pSunLight->setType(Light::LT_DIRECTIONAL);
 	pSunLight->setDirection(pOwner->GetSunLightDirection());
 	pSunLight->setDiffuseColour(pOwner->GetSunLightDiffuse());
+	pSunLight->setShadowFarClipDistance(250);
+	pSunLight->setShadowFarDistance(1000);
 
 	rapidxml::xml_node<>* pElement = XMLRoot->first_node("terrain");
 	assert(pElement);
@@ -120,6 +100,7 @@ void SceneSerializer::SaveScene(const std::string& fullPath, Scene* pOwner)
 
 void SceneSerializer::_LoadTerrain( rapidxml::xml_node<>* node )
 {
+	Ogre::SceneManager* sm = RenderManager.m_pSceneMgr;
 	TerrainGlobalOptions* option = new TerrainGlobalOptions;
 
 	float worldSize = StringConverter::parseReal(node->first_attribute("worldSize")->value());
@@ -136,11 +117,14 @@ void SceneSerializer::_LoadTerrain( rapidxml::xml_node<>* node )
 // 	option->setCompositeMapAmbient(m_pOwner->m_pSceneMgr->getAmbientLight());
 // 	option->setCompositeMapDiffuse(pSunLight->getDiffuseColour());
 
-	TerrainGroup* pTerrainGroup = new TerrainGroup(RenderManager.m_pSceneMgr, Terrain::ALIGN_X_Z, mapSize, worldSize);
+	TerrainGroup* pTerrainGroup = new TerrainGroup(sm, Terrain::ALIGN_X_Z, mapSize, worldSize);
 	pTerrainGroup->setOrigin(Vector3::ZERO);
 
-	//在地形材质生成前开启
-	COgreManager::GetSingleton().EnableDeferredShading(true);
+// 	//在地形材质生成前开启
+ 	RenderManager.EnableDeferredShading(true);
+// 
+// 	//阴影
+ 	RenderManager.InitShadowConfig();
 
 	//加载地形数据
 	pTerrainGroup->setResourceGroup(m_sceneGroup);

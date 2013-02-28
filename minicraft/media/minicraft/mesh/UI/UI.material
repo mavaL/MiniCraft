@@ -3,6 +3,7 @@
 ///Ä£°å
 material MT_Console
 {
+	receive_shadows false
 	technique
 	{
 		pass
@@ -18,6 +19,7 @@ material MT_Console
 
 material Console_Terrain : MT_Console
 {
+	receive_shadows false
 	technique
 	{
 		pass
@@ -43,6 +45,7 @@ material Console_Terrain : MT_Console
 
 material Console_Protoss : MT_Console
 {
+	receive_shadows false
 	technique
 	{
 		pass
@@ -68,6 +71,7 @@ material Console_Protoss : MT_Console
 
 material ConsoleBlack : MT_Console
 {
+	receive_shadows false
 	technique
 	{
 		pass

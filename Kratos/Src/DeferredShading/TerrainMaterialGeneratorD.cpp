@@ -739,6 +739,7 @@ namespace Ogre
 			" out float4 oColor0 : COLOR0,\n"
 			" out float4 oColor1 : COLOR1,\n"
 			" out float4 oColor2 : COLOR2,\n"
+			" out float4 oColor3 : COLOR3,\n"
 			"uniform float cFarDistance,\n"
 			"uniform float4x4 viewMatrix,\n";
  
@@ -827,7 +828,6 @@ namespace Ogre
 			"	float2 uv = uvMisc.xy;\n"
 			// base colour
 			"	oColor0 = float4(0,0,0,0);\n"
-			"   oColor1 = float4(1,1,1,1);\n"
 			"   oColor2 = float4(0,0,0,0);\n";
  
 		if (tt != LOW_LOD)
@@ -843,7 +843,7 @@ namespace Ogre
 			"	float specular = 0;\n";
  
  
-		if (tt == LOW_LOD)
+		if (/*tt == LOW_LOD*/false)
 		{
 			// we just do a single calculation from composite map
 			outStream <<
@@ -912,6 +912,8 @@ namespace Ogre
 		if (layer && prof->_isSM3Available())
 			outStream << "  if (" << blendWeightStr << " > 0.0003)\n  { \n";
 		*/
+
+		outStream << "  oColor1.rgba = length(position) / cFarDistance;\n";
  
 		// generate UV
 		outStream << "	float2 uv" << layer << " = layerUV" << uvIdx << uvChannels << ";\n";
@@ -920,11 +922,11 @@ namespace Ogre
 		outStream << "	TSnormal = expand(tex2D(normtex" << layer << ", uv" << layer << ")).rgb;\n";
 		if (layer)
 		{	
-			outStream << "  oColor1.rgb = lerp(oColor1.rgb, TSnormal, " << blendWeightStr << ");\n";
+			outStream << "  oColor3.rgb = lerp(oColor3.rgb, TSnormal, " << blendWeightStr << ");\n";
 		}
 		else
 		{
-			outStream << "  oColor1.rgb = TSnormal;\n";
+			outStream << "  oColor3.rgb = TSnormal;\n";
 		}
  
 		// sample diffuse texture
@@ -987,14 +989,14 @@ namespace Ogre
 		const SM2Profile* prof, const Terrain* terrain, TechniqueType tt, StringUtil::StrStreamType& outStream)
 	{
  
-		if (terrain->getGlobalColourMapEnabled() && prof->isGlobalColourMapEnabled())
-		{
-			// sample colour map and apply to diffuse
-			outStream << "	diffuse *= tex2D(globalColourMap, uv).rgb;\n";
-		}
+// 		if (terrain->getGlobalColourMapEnabled() && prof->isGlobalColourMapEnabled())
+// 		{
+// 			// sample colour map and apply to diffuse
+// 			outStream << "	diffuse *= tex2D(globalColourMap, uv).rgb;\n";
+// 		}
  
 		// diffuse lighting
-		outStream << "	oColor0.rgb += diffuse;\n"
+		outStream << "	oColor0.rgb = diffuse;\n"
 				"   oColor0.a = 0;\n";
  
 		bool fog = terrain->getSceneManager()->getFogMode() != FOG_NONE && tt != RENDER_COMPOSITE_MAP;
@@ -1002,9 +1004,11 @@ namespace Ogre
 		{
 			outStream << "	oColor0.rgb = lerp(oColor0.rgb, fogColour, fogVal);\n";
 		}
+		//地形太亮,手动给个类似材质系数乘数
+		outStream << "	oColor0.rgb *= 0.4f;\n";
  
 		// Final return
-		outStream << "  oColor1 = float4(normalize(mul(oColor1.rgb, TBN)), length(position) / cFarDistance);\n"
+		outStream << "  oColor3 = float4(normalize(mul(oColor3.rgb, TBN)), 0);\n"
 			<< "}\n";
  
 	}

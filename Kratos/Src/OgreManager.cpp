@@ -87,7 +87,8 @@ bool COgreManager::Init(bool bEditor, HWND externalHwnd, HWND hwndParent,int wid
 
 	m_pSceneMgr = mRoot->createSceneManager(ST_GENERIC, "DefaultSceneMgr");
 	m_pMainCamera = m_pSceneMgr->createCamera("MainCamera");
-	m_pMainCamera->setNearClipDistance(0.1f);
+	m_pMainCamera->setNearClipDistance(1);
+	m_pMainCamera->setFarClipDistance(500);
 	m_pViewport = mWindow->addViewport(m_pMainCamera);
 	m_pViewport->setBackgroundColour(Ogre::ColourValue(0,0,0));
 	m_pMainCamera->setAspectRatio(
@@ -139,6 +140,8 @@ void COgreManager::Shutdown()
 		m_pDS = nullptr;
 	}
 
+	mPSSMSetup.setNull();
+
 	//Remove ourself as a Window listener
 	Ogre::WindowEventUtilities::removeWindowEventListener(mWindow, this);
 	//销毁输入系统
@@ -186,4 +189,50 @@ void COgreManager::EnableDeferredShading(bool bEnable)
 		Ogre::TerrainGlobalOptions::getSingleton().setDefaultMaterialGenerator(
 			Ogre::TerrainMaterialGeneratorPtr(new Ogre::TerrainMaterialGeneratorA));
 	}
+}
+
+void COgreManager::InitShadowConfig()
+{
+	//TODO: 看来PSSM之类的高级阴影技术十分需要teawk各参数
+	//		默认参数并不适用每种情况,需要场景根据自己的光源
+	//		裁减距离,视锥切分策略等来尝试适用参数.
+	//		所以应该在编辑器中提供阴影参数调节功能!
+	m_pSceneMgr->setShadowTechnique(SHADOWTYPE_TEXTURE_ADDITIVE_INTEGRATED);
+	m_pSceneMgr->setShadowFarDistance(300);
+
+	// 3 textures per directional light (PSSM)
+	m_pSceneMgr->setShadowTextureCountPerLightType(Ogre::Light::LT_DIRECTIONAL, 3);
+	//m_pSceneMgr->setShadowDirectionalLightExtrusionDistance(1000);
+
+	// shadow camera setup
+	PSSMShadowCameraSetup* pssmSetup = new PSSMShadowCameraSetup();
+	pssmSetup->setSplitPadding(m_pMainCamera->getNearClipDistance());
+	pssmSetup->calculateSplitPoints(3, m_pMainCamera->getNearClipDistance(), m_pSceneMgr->getShadowFarDistance(), 0.75f);
+	pssmSetup->setOptimalAdjustFactor(0, 0.5f);
+	pssmSetup->setOptimalAdjustFactor(1, 0.8f);
+	pssmSetup->setOptimalAdjustFactor(2, 2);
+	//pssmSetup->setUseSimpleOptimalAdjust(false);
+	pssmSetup->setCameraLightDirectionThreshold(Degree(45));
+
+	mPSSMSetup.bind(pssmSetup);
+
+	m_pSceneMgr->setShadowCameraSetup(mPSSMSetup);
+	m_pSceneMgr->setShadowTextureCount(3);
+	m_pSceneMgr->setShadowTextureConfig(0, 2048, 2048, PF_FLOAT32_R);
+	m_pSceneMgr->setShadowTextureConfig(1, 1024, 1024, PF_FLOAT32_R);
+	m_pSceneMgr->setShadowTextureConfig(2, 1024, 1024, PF_FLOAT32_R);
+	m_pSceneMgr->setShadowTextureSelfShadow(false);
+	m_pSceneMgr->setShadowCasterRenderBackFaces(true);
+	m_pSceneMgr->setShadowTextureCasterMaterial("Ogre/shadow/depth/caster");
+
+#ifdef FORWARD_RENDERING
+	TerrainMaterialGeneratorA::SM2Profile* matProfile = static_cast<TerrainMaterialGeneratorA::SM2Profile*>(
+		TerrainGlobalOptions::getSingleton().getDefaultMaterialGenerator()->getActiveProfile());
+	matProfile->setReceiveDynamicShadowsEnabled(true);
+	matProfile->setReceiveDynamicShadowsDepth(true);
+	matProfile->setReceiveDynamicShadowsPSSM(pssmSetup);
+#else	//deferred shading
+	TerrainGlobalOptions::getSingleton().setRenderQueueGroup(RENDER_QUEUE_WORLD_GEOMETRY_2);
+	m_pSceneMgr->getRenderQueue()->getQueueGroup(RENDER_QUEUE_WORLD_GEOMETRY_2)->setShadowsEnabled(false);
+#endif
 }
