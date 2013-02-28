@@ -1,0 +1,63 @@
+//DLAA¿¹¾â³ÝËã·¨,À´×ÔGDC 2011
+
+fragment_program DLAA/HighPassFilter/ps cg
+{
+	source DLAA.cg
+	profiles ps_2_x arbfp1
+	entry_point HighPassFilter_ps
+
+	default_params
+	{
+	}
+}
+
+fragment_program DLAA/MainFilter/ps cg
+{
+	source DLAA.cg
+	profiles ps_2_x arbfp1
+	entry_point MainFilter_ps
+
+	default_params
+	{
+	}
+}
+
+material DLAA/HighPassFilter
+{
+	technique
+	{
+		pass
+		{
+			cull_hardware none
+			cull_software none
+			depth_func always_pass
+
+			fragment_program_ref DLAA/HighPassFilter/ps
+			{
+			}
+			texture_unit
+			{
+			}
+		}
+	}
+}
+
+material DLAA/MainFilter
+{
+	technique
+	{
+		pass
+		{
+			cull_hardware none
+			cull_software none
+			depth_func always_pass
+
+			fragment_program_ref DLAA/MainFilter/ps
+			{
+			}
+			texture_unit
+			{
+			}
+		}
+	}
+}

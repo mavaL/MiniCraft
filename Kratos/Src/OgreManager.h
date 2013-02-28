@@ -34,6 +34,8 @@ public:
 	//ø™∆Ù/πÿ±’—”≥Ÿ‰÷»æ
 	void			EnableDeferredShading(bool bEnable);
 	void			InitShadowConfig();
+	void			EnableDLAA(bool bEnable);
+	bool			IsDLAAEnabled() const;
 
 	Ogre::Root*			mRoot;
 	Ogre::RenderWindow* mWindow;
@@ -43,6 +45,7 @@ public:
 	Ogre::Camera*		m_pMainCamera;
 	DeferredShadingSystem*		m_pDS;
 	Ogre::ShadowCameraSetupPtr mPSSMSetup;
+	Ogre::CompositorInstance*	m_dlaa;
 
 private:
 	bool				m_bHasInit;

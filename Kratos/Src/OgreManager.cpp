@@ -19,6 +19,7 @@ COgreManager::COgreManager(void)
 ,m_pSceneMgr(NULL)
 ,m_pMainCamera(NULL)
 ,m_pDS(nullptr)
+,m_dlaa(nullptr)
 {
 }
 
@@ -103,6 +104,9 @@ bool COgreManager::Init(bool bEditor, HWND externalHwnd, HWND hwndParent,int wid
 	m_pDS = new DeferredShadingSystem(m_pViewport, m_pSceneMgr, m_pMainCamera);
 	m_pDS->initialize();
 	m_pDS->setActive(false);
+
+	m_dlaa = CompositorManager::getSingleton().addCompositor(m_pViewport, "DLAA");
+	assert(m_dlaa);
 
 	m_Timer = new Ogre::Timer();
 	m_Timer->reset();
@@ -189,6 +193,8 @@ void COgreManager::EnableDeferredShading(bool bEnable)
 		Ogre::TerrainGlobalOptions::getSingleton().setDefaultMaterialGenerator(
 			Ogre::TerrainMaterialGeneratorPtr(new Ogre::TerrainMaterialGeneratorA));
 	}
+
+	EnableDLAA(bEnable);
 }
 
 void COgreManager::InitShadowConfig()
@@ -235,4 +241,14 @@ void COgreManager::InitShadowConfig()
 	TerrainGlobalOptions::getSingleton().setRenderQueueGroup(RENDER_QUEUE_WORLD_GEOMETRY_2);
 	m_pSceneMgr->getRenderQueue()->getQueueGroup(RENDER_QUEUE_WORLD_GEOMETRY_2)->setShadowsEnabled(false);
 #endif
+}
+
+void COgreManager::EnableDLAA( bool bEnable )
+{
+	m_dlaa->setEnabled(bEnable);
+}
+
+bool COgreManager::IsDLAAEnabled() const
+{
+	return m_dlaa->getEnabled();
 }

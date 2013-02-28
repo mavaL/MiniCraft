@@ -39,6 +39,7 @@ void CBattleState::enter()
 
 	m_pSelectionQuad = new Ogre::Rectangle2D(true);
 	m_pSelectionQuad->setMaterial("SelectionQuad");
+	m_pSelectionQuad->setRenderQueueGroup(RENDER_QUEUE_WORLD_GEOMETRY_2);
 	(const_cast<Ogre::AxisAlignedBox&>(m_pSelectionQuad->getBoundingBox())).setInfinite();
 	m_pQuadNode = RenderManager.m_pSceneMgr->getRootSceneNode()->createChildSceneNode("SelectionQuadNode");
 	m_pQuadNode->attachObject(m_pSelectionQuad);
@@ -252,38 +253,10 @@ bool CBattleState::OnInputSys_KeyReleased( const OIS::KeyEvent& arg )
 		m_bQuit = true;
 	else if(arg.key == OIS::KC_F1)
 		World::GetSingleton().EnableFreeCamera(!World::GetSingleton().IsFreeCameraEnabled());
+	else if(arg.key == OIS::KC_F2)
+		RenderManager.EnableDLAA(!RenderManager.IsDLAAEnabled());
 	else if (World::GetSingleton().IsFreeCameraEnabled())
 		World::GetSingleton().GetCameraMan()->injectKeyUp(arg);
 
 	return true;
 }
-
-// CommandBase* CBattleState::_ComputeCommand( Unit* pUnit, const Ogre::Vector3& targetPos )
-// {
-// 	CommandBase* pCmd = nullptr;
-// 
-// 	//检测是否目标点超出了游戏地图
-// 	//TODO:后面很有可能加入Map类,相关数据和操作封装进去
-// 	if(targetPos.x < -50 || targetPos.x > 50 || targetPos.z < -50 || targetPos.z > 50)
-// 		return nullptr;
-// 
-// 	static Ogre::Vector3 goldArea = World::GetSingleton().GetResAABB().getHalfSize();
-// 	if (targetPos.x >= -goldArea.x && 
-// 		targetPos.x <= goldArea.x &&
-// 		targetPos.y >= -goldArea.z &&
-// 		targetPos.y <= goldArea.z)
-// 	{
-// 		//采集资源
-// 		pCmd = new HarvestCommand(pUnit);
-// 	}
-// 	else
-// 	{
-// 		//将目标点调整至有效
-// 		Ogre::Vector3 adjustPos(targetPos);
-// 		World::GetSingleton().ClampPosToNavMesh(adjustPos);
-// 		//执行移动命令
-// 		pCmd = new MoveCommand(pUnit, adjustPos);
-// 	}
-// 
-// 	return pCmd;
-// }
