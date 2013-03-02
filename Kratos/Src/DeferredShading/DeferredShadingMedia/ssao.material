@@ -51,6 +51,8 @@ material ssao
     {
         pass
         {
+			depth_check off
+
             vertex_program_ref ssao_vs
             {
             }
@@ -59,13 +61,17 @@ material ssao
             {
             }
 
-            texture_unit geomMap
+            texture_unit depthMap
             {
                 tex_address_mode clamp
                 filtering bilinear
             }
-
-            texture_unit randMap
+			texture_unit normalMap
+            {
+                tex_address_mode clamp
+                filtering bilinear
+            }
+			texture_unit randMap
             {
                 texture random.png
                 filtering none
@@ -80,6 +86,8 @@ material ssaoBlurX
     {
         pass
         {
+			depth_check off
+
             fragment_program_ref ssaoBlurX_ps
             {
             }
@@ -90,7 +98,7 @@ material ssaoBlurX
                 filtering bilinear
             }
 
-            texture_unit geomMap
+            texture_unit normalMap
             {
                 tex_address_mode clamp
                 filtering bilinear
@@ -105,6 +113,7 @@ material ssaoBlurY
     {
         pass
         {
+			depth_check off
             fragment_program_ref ssaoBlurY_ps
             {
             }
@@ -115,7 +124,7 @@ material ssaoBlurY
                 filtering bilinear
             }
 
-            texture_unit geomMap
+            texture_unit normalMap
             {
                 tex_address_mode clamp
                 filtering bilinear

@@ -20,6 +20,7 @@ COgreManager::COgreManager(void)
 ,m_pMainCamera(NULL)
 ,m_pDS(nullptr)
 ,m_dlaa(nullptr)
+,m_ssao(nullptr)
 {
 }
 
@@ -105,8 +106,12 @@ bool COgreManager::Init(bool bEditor, HWND externalHwnd, HWND hwndParent,int wid
 	m_pDS->initialize();
 	m_pDS->setActive(false);
 
+	m_ssao = CompositorManager::getSingleton().addCompositor(m_pViewport, "DeferredShading/SSAO");
 	m_dlaa = CompositorManager::getSingleton().addCompositor(m_pViewport, "DLAA");
 	assert(m_dlaa);
+	assert(m_ssao);
+	m_dlaa->setEnabled(false);
+	m_ssao->setEnabled(false);
 
 	m_Timer = new Ogre::Timer();
 	m_Timer->reset();
@@ -195,6 +200,7 @@ void COgreManager::EnableDeferredShading(bool bEnable)
 	}
 
 	EnableDLAA(bEnable);
+	EnableSSAO(bEnable);
 }
 
 void COgreManager::InitShadowConfig()
@@ -251,4 +257,14 @@ void COgreManager::EnableDLAA( bool bEnable )
 bool COgreManager::IsDLAAEnabled() const
 {
 	return m_dlaa->getEnabled();
+}
+
+void COgreManager::EnableSSAO( bool bEnable )
+{
+	m_ssao->setEnabled(bEnable);
+}
+
+bool COgreManager::IsSSAOEnabled() const
+{
+	return m_ssao->getEnabled();
 }
