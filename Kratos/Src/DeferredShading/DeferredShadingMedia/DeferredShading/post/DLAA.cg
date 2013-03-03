@@ -1,8 +1,3 @@
-/////////////////////////
-///////////		屏蔽掉了短边的模糊,因为星际里面人物本来就小,经过模糊后就完全没了法线贴图效果,还是糊糊的感觉!
-
-
-
 #define		SCREEN_X	1280
 #define		SCREEN_Y	800
 #define		TFU2_HIGH_PASS
@@ -43,60 +38,60 @@ float4 MainFilter_ps(float2 tc  : TEXCOORD0,
 {
 	float2 inverse_input_size = float2( 1.0f, 1.0f ) / float2(SCREEN_X, SCREEN_Y);
 
-//     const float lambda = 3.0f;
-//     const float epsilon = 0.1f;
-//     
-//     //
-//     // Short Edges
-//     //
-//     
+    const float lambda = 3.0f;
+    const float epsilon = 0.1f;
+    
+    //
+    // Short Edges
+    //
+    
      float4 center, left_01, right_01, top_01, bottom_01;
-// 
-//     // sample 5x5 cross    
+
+    // sample 5x5 cross    
      LD( center,      0,   0 )
-//     LD( left_01,  -1.5,   0 )
-//     LD( right_01,  1.5,   0 )
-//     LD( top_01,      0,-1.5 )
-//     LD( bottom_01,   0, 1.5 )
-// 
-//     float4 w_h = 2.0f * ( left_01 + right_01 );
-//     float4 w_v = 2.0f * ( top_01 + bottom_01 );
-// 
-//     #ifdef TFU2_HIGH_PASS
-//     
-//         // Softer (5-pixel wide high-pass)
-//         float4 edge_h = abs( w_h - 4.0f * center ) / 4.0f;
-//         float4 edge_v = abs( w_v - 4.0f * center ) / 4.0f;
-//         
-//     #else
-//     
-//         // Sharper (3-pixel wide high-pass)
-//         float4 left, right, top, bottom;
-// 
-//         LD( left,  -1,  0 )
-//         LD( right,  1,  0 )
-//         LD( top,    0, -1 )
-//         LD( bottom, 0,  1 )
-//         
-//         float4 edge_h = abs( left + right - 2.0f * center ) / 2.0f;
-//         float4 edge_v = abs( top + bottom - 2.0f * center ) / 2.0f;
-//         
-//     #endif
-// 
-//     float4 blurred_h = ( w_h + 2.0f * center ) / 6.0f;
-//     float4 blurred_v = ( w_v + 2.0f * center ) / 6.0f;
-// 
-//     float edge_h_lum = GetIntensity( edge_h.xyz );
-//     float edge_v_lum = GetIntensity( edge_v.xyz );
-//     float blurred_h_lum = GetIntensity( blurred_h.xyz );
-//     float blurred_v_lum = GetIntensity( blurred_v.xyz );
-// 
-//     float edge_mask_h = saturate( ( lambda * edge_h_lum - epsilon ) / blurred_v_lum );
-//     float edge_mask_v = saturate( ( lambda * edge_v_lum - epsilon ) / blurred_h_lum );
-// 
+    LD( left_01,  -1.5,   0 )
+    LD( right_01,  1.5,   0 )
+    LD( top_01,      0,-1.5 )
+    LD( bottom_01,   0, 1.5 )
+
+    float4 w_h = 2.0f * ( left_01 + right_01 );
+    float4 w_v = 2.0f * ( top_01 + bottom_01 );
+
+    #ifdef TFU2_HIGH_PASS
+    
+        // Softer (5-pixel wide high-pass)
+        float4 edge_h = abs( w_h - 4.0f * center ) / 4.0f;
+        float4 edge_v = abs( w_v - 4.0f * center ) / 4.0f;
+        
+    #else
+    
+        // Sharper (3-pixel wide high-pass)
+        float4 left, right, top, bottom;
+
+        LD( left,  -1,  0 )
+        LD( right,  1,  0 )
+        LD( top,    0, -1 )
+        LD( bottom, 0,  1 )
+        
+        float4 edge_h = abs( left + right - 2.0f * center ) / 2.0f;
+        float4 edge_v = abs( top + bottom - 2.0f * center ) / 2.0f;
+        
+    #endif
+
+    float4 blurred_h = ( w_h + 2.0f * center ) / 6.0f;
+    float4 blurred_v = ( w_v + 2.0f * center ) / 6.0f;
+
+    float edge_h_lum = GetIntensity( edge_h.xyz );
+    float edge_v_lum = GetIntensity( edge_v.xyz );
+    float blurred_h_lum = GetIntensity( blurred_h.xyz );
+    float blurred_v_lum = GetIntensity( blurred_v.xyz );
+
+    float edge_mask_h = saturate( ( lambda * edge_h_lum - epsilon ) / blurred_v_lum );
+    float edge_mask_v = saturate( ( lambda * edge_v_lum - epsilon ) / blurred_h_lum );
+
      float4 clr = center;
-//     clr = lerp( clr, blurred_h, edge_mask_v );
-//     clr = lerp( clr, blurred_v, edge_mask_h * 0.5f ); // TFU2 uses 1.0f instead of 0.5f
+    clr = lerp( clr, blurred_h, edge_mask_v );
+    clr = lerp( clr, blurred_v, edge_mask_h * 0.5f ); // TFU2 uses 1.0f instead of 0.5f
 
     //
     // Long Edges

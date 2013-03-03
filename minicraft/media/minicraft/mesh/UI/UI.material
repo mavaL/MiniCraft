@@ -37,7 +37,12 @@ material Console_Terrain : MT_Console
 			texture_unit specularmap
 			{
 				texture consoleterran_spec.dds
-				filtering point point point
+				filtering linear linear linear
+			}
+			texture_unit emissivemap
+			{
+				texture consoleterran_emiss.dds
+				filtering linear linear linear
 			}
 		}
 	}
@@ -63,7 +68,12 @@ material Console_Protoss : MT_Console
 			texture_unit specularmap
 			{
 				texture consoleprotoss_spec.dds
-				filtering point point point
+				filtering linear linear linear
+			}
+			texture_unit emissivemap
+			{
+				texture consoleprotoss_emiss.dds
+				filtering linear linear linear
 			}
 		}
 	}

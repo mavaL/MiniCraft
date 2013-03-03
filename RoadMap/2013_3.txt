@@ -1,1 +1,3 @@
-1. Mainly focus on graphics, like SSAO, HDR, deferred light(point, spot).
+1. Study on rendering techniques, like SSAO, HDR, deferred light(point, spot).
+2. For some added graphic effect, I must provide convienient parameters tune support in SceneEdit, like PSSM, SSAO.
+3. Simple Material parameter editor in which can set differcent material's specular intensity, specular multiplier, emissive multiplier, blend type and so on.

@@ -21,6 +21,7 @@ using namespace Ogre;
 
 const String GBufferSchemeHandler::NORMAL_MAP_PATTERN = "normal";
 const String SPECULAR_MAP_PATTERN = "specularmap";
+const String EMISSIVE_MAP_PATTERN = "emissivemap";
 
 //检测到材质名含有Unit子串
 const String TEAM_COLOR_PATTERN = "Unit";
@@ -141,6 +142,33 @@ bool GBufferSchemeHandler::checkSpecularMap(
 	return isSpec;
 }
 
+bool GBufferSchemeHandler::checkEmissiveMap(
+	TextureUnitState* tus, GBufferSchemeHandler::PassProperties& props)
+{
+	bool hasEmi = false;
+	Ogre::String lowerCaseAlias = tus->getTextureNameAlias();
+	Ogre::StringUtil::toLowerCase(lowerCaseAlias);
+	if (lowerCaseAlias.find(EMISSIVE_MAP_PATTERN) != Ogre::String::npos)
+	{
+		hasEmi = true;
+	}
+
+	if (hasEmi)
+	{
+		if (props.emissiveMap == 0)
+		{
+			props.emissiveMap = tus;
+		}
+		else
+		{
+			OGRE_EXCEPT(Exception::ERR_DUPLICATE_ITEM,
+				"Multiple emissive map patterns matches",
+				"GBufferSchemeHandler::inspectPass");
+		}
+	}
+	return hasEmi;
+}
+
 GBufferSchemeHandler::PassProperties GBufferSchemeHandler::inspectPass(
 	Pass* pass, unsigned short lodIndex, const Renderable* rend)
 {
@@ -160,7 +188,9 @@ GBufferSchemeHandler::PassProperties GBufferSchemeHandler::inspectPass(
 	for (unsigned short i=0; i<pass->getNumTextureUnitStates(); i++) 
 	{
 		TextureUnitState* tus = pass->getTextureUnitState(i);
-		if (!checkNormalMap(tus, props) && !checkSpecularMap(tus, props))
+		if (!checkNormalMap(tus, props) && 
+			!checkSpecularMap(tus, props) && 
+			!checkEmissiveMap(tus, props))
 		{
 			props.regularTextures.push_back(tus);
 		}
@@ -193,7 +223,7 @@ MaterialGenerator::Perm GBufferSchemeHandler::getPermutation(const PassPropertie
 	case 0:
 		perm |= GBufferMaterialGenerator::GBP_NO_TEXTURES;
 		
-		if (props.normalMap != 0 || props.specularMap != 0)
+		if (props.normalMap != 0 || props.specularMap != 0 || props.emissiveMap != 0)
 		{
 			perm |= GBufferMaterialGenerator::GBP_ONE_TEXCOORD;
 		}
@@ -236,6 +266,11 @@ MaterialGenerator::Perm GBufferSchemeHandler::getPermutation(const PassPropertie
 		perm |= GBufferMaterialGenerator::GBP_SPECULAR_MAP;
 	}
 
+	if (props.emissiveMap != 0)
+	{
+		perm |= GBufferMaterialGenerator::GBP_EMISSIVE_MAP;
+	}
+
     if (props.hasDiffuseColour)
     {
         perm |= GBufferMaterialGenerator::GBP_HAS_DIFFUSE_COLOUR;
@@ -256,6 +291,11 @@ void GBufferSchemeHandler::fillPass(
 	if (props.specularMap != 0)
 	{
 		*(gBufferPass->getTextureUnitState(texUnitIndex)) = *(props.specularMap);
+		texUnitIndex++;
+	}
+	if (props.emissiveMap != 0)
+	{
+		*(gBufferPass->getTextureUnitState(texUnitIndex)) = *(props.emissiveMap);
 		texUnitIndex++;
 	}
 	for (size_t i=0; i<props.regularTextures.size(); i++)

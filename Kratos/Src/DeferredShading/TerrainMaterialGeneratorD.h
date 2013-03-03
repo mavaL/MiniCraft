@@ -35,7 +35,7 @@ namespace Ogre
 			SM2Profile(TerrainMaterialGenerator* parent, const String& name, const String& desc);
 			~SM2Profile();
 			MaterialPtr generate(const Terrain* terrain);
-			MaterialPtr generateForCompositeMap(const Terrain* terrain);
+			MaterialPtr generateForCompositeMap(const Terrain* terrain) { return MaterialPtr(); }
 			uint8 getMaxLayers(const Terrain* terrain) const;
 			void updateParams(const MaterialPtr& mat, const Terrain* terrain);
 			void updateParamsForCompositeMap(const MaterialPtr& mat, const Terrain* terrain);

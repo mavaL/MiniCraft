@@ -27,11 +27,13 @@ DeferredLightRenderOperation::DeferredLightRenderOperation(
 	
 	//Get the names of the GBuffer textures
 	const CompositionPass::InputTex& input0 = pass->getInput(0);
-	mTexName0 = instance->getTextureInstanceName(input0.name, input0.mrtIndex);
+	const String& diffuseMap = instance->getTextureInstanceName(input0.name, input0.mrtIndex);
 	const CompositionPass::InputTex& input1 = pass->getInput(1);
-	mTexName1 = instance->getTextureInstanceName(input1.name, input1.mrtIndex);
+	const String& emissiveMap = instance->getTextureInstanceName(input1.name, input1.mrtIndex);
 	const CompositionPass::InputTex& input2 = pass->getInput(2);
 	const String& specMap = instance->getTextureInstanceName(input2.name, input2.mrtIndex);
+	const CompositionPass::InputTex& input3 = pass->getInput(3);
+	const String& normalMap = instance->getTextureInstanceName(input3.name, input3.mrtIndex);
 
 	// Create lights material generator
 	mLightMaterialGenerator = new LightMaterialGenerator();

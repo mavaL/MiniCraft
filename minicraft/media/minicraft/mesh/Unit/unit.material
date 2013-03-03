@@ -12,13 +12,13 @@ material marine
 			}
 			texture_unit normalmap
 			{
-				texture marine_normal.dds
+				texture marine_normal_blood.dds
 				filtering point point point
 			}
 			texture_unit specularmap
 			{
 				texture marine_specular.dds
-				filtering point point point
+				filtering linear linear linear
 			}
 		}
 	}
@@ -41,7 +41,17 @@ material scv
 				texture scv_normal.dds
 				filtering point point point
 			}
-			//为什么就我木有specular map呢?偏心
+			//SCV的高光贴图max里面就是这样的,它还有个midtone=-0.2,不知道什么影响
+			texture_unit specularmap
+			{
+				texture SCV_Diffuse.dds
+				filtering linear linear linear
+			}
+			texture_unit emissivemap
+			{
+				texture scv_emissive.dds
+				filtering linear linear linear
+			}
 		}
 	}
 }
@@ -66,7 +76,12 @@ material drone
 			texture_unit specularmap
 			{
 				texture drone_specular.dds
-				filtering point point point
+				filtering linear linear linear
+			}
+			texture_unit emissivemap
+			{
+				texture drone_emissive.dds
+				filtering linear linear linear
 			}
 		}
 	}
@@ -92,7 +107,12 @@ material zergling
 			texture_unit specularmap
 			{
 				texture zergling_specular.dds
-				filtering point point point
+				filtering linear linear linear
+			}
+			texture_unit emissivemap
+			{
+				texture zergling_emissive.dds
+				filtering linear linear linear
 			}
 		}
 	}
@@ -118,7 +138,12 @@ material Barracks
 			texture_unit specularmap
 			{
 				texture barracks_specular.dds
-				filtering point point point
+				filtering linear linear linear
+			}
+			texture_unit emissivemap
+			{
+				texture barracks_emissive.dds
+				filtering linear linear linear
 			}
 		}
 	}
@@ -144,7 +169,12 @@ material CommandCenter
 			texture_unit specularmap
 			{
 				texture commandcenter_specular.dds
-				filtering point point point
+				filtering linear linear linear
+			}
+			texture_unit emissivemap
+			{
+				texture commandcenter_emissive.dds
+				filtering linear linear linear
 			}
 		}
 	}
@@ -170,7 +200,12 @@ material sc2material
 			texture_unit specularmap
 			{
 				texture spawningpool_specular.dds
-				filtering point point point
+				filtering linear linear linear
+			}
+			texture_unit emissivemap
+			{
+				texture spawningpool_emissive.dds
+				filtering linear linear linear
 			}
 		}
 	}
@@ -196,7 +231,12 @@ material hatchery
 			texture_unit specularmap
 			{
 				texture hatchery_specular.dds
-				filtering point point point
+				filtering linear linear linear
+			}
+			texture_unit emissivemap
+			{
+				texture hatchery_emissive.dds
+				filtering linear linear linear
 			}
 		}
 	}
@@ -216,8 +256,18 @@ material CrystalJade
 			texture_unit specularmap
 			{
 				texture resourcecrystalspec_blue.dds
+				filtering linear linear linear
+			}
+			texture_unit normalmap
+			{
+				texture trev_crystal_norms.dds
 				filtering point point point
 			}
+			//texture_unit emissivemap
+			//{
+			//	texture crystal_enviorment2.dds
+			//	filtering linear linear linear
+			//}
 		}
 	}
 }

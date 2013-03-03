@@ -39,10 +39,6 @@ private:
 	/** Create a new deferred light
 	 */
 	DLight *createDLight(Ogre::Light* light);
-	
-	//The texture names of the GBuffer components
-	Ogre::String mTexName0;
-	Ogre::String mTexName1;
 
 	//The material generator for the light geometry
 	MaterialGenerator* mLightMaterialGenerator;

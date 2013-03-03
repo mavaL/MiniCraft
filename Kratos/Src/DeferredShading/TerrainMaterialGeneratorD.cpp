@@ -139,49 +139,49 @@ namespace Ogre
  
 		addTechnique(mat, terrain, HIGH_LOD);
  
-		// LOD
-		if(mCompositeMapEnabled)
-		{
-			addTechnique(mat, terrain, LOW_LOD);
-			Material::LodValueList lodValues;
-			lodValues.push_back(TerrainGlobalOptions::getSingleton().getCompositeMapDistance());
-			mat->setLodLevels(lodValues);
-			Technique* lowLodTechnique = mat->getTechnique(1);
-			lowLodTechnique->setLodIndex(1);
-		}
+// 		// LOD
+// 		if(mCompositeMapEnabled)
+// 		{
+// 			addTechnique(mat, terrain, LOW_LOD);
+// 			Material::LodValueList lodValues;
+// 			lodValues.push_back(TerrainGlobalOptions::getSingleton().getCompositeMapDistance());
+// 			mat->setLodLevels(lodValues);
+// 			Technique* lowLodTechnique = mat->getTechnique(1);
+// 			lowLodTechnique->setLodIndex(1);
+// 		}
  
 		updateParams(mat, terrain);
 
 		return mat;
 	}
 	//---------------------------------------------------------------------
-	MaterialPtr TerrainMaterialGeneratorD::SM2Profile::generateForCompositeMap(const Terrain* terrain)
-	{
-		// re-use old material if exists
-		MaterialPtr mat = terrain->_getCompositeMapMaterial();
-		if (mat.isNull())
-		{
-			MaterialManager& matMgr = MaterialManager::getSingleton();
- 
-			// it's important that the names are deterministic for a given terrain, so
-			// use the terrain pointer as an ID
-			const String& matName = terrain->getMaterialName() + "/comp";
-			mat = matMgr.getByName(matName);
-			if (mat.isNull())
-			{
-				mat = matMgr.create(matName, ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
-			}
-		}
-		// clear everything
-		mat->removeAllTechniques();
- 
-		addTechnique(mat, terrain, RENDER_COMPOSITE_MAP);
- 
-		updateParamsForCompositeMap(mat, terrain);
- 
-		return mat;
- 
-	}
+// 	MaterialPtr TerrainMaterialGeneratorD::SM2Profile::generateForCompositeMap(const Terrain* terrain)
+// 	{
+// 		// re-use old material if exists
+// 		MaterialPtr mat = terrain->_getCompositeMapMaterial();
+// 		if (mat.isNull())
+// 		{
+// 			MaterialManager& matMgr = MaterialManager::getSingleton();
+//  
+// 			// it's important that the names are deterministic for a given terrain, so
+// 			// use the terrain pointer as an ID
+// 			const String& matName = terrain->getMaterialName() + "/comp";
+// 			mat = matMgr.getByName(matName);
+// 			if (mat.isNull())
+// 			{
+// 				mat = matMgr.create(matName, ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+// 			}
+// 		}
+// 		// clear everything
+// 		mat->removeAllTechniques();
+//  
+// 		addTechnique(mat, terrain, RENDER_COMPOSITE_MAP);
+//  
+// 		updateParamsForCompositeMap(mat, terrain);
+//  
+// 		return mat;
+//  
+// 	}
 	//---------------------------------------------------------------------
 	void TerrainMaterialGeneratorD::SM2Profile::addTechnique(
 		const MaterialPtr& mat, const Terrain* terrain, TechniqueType tt)
@@ -259,6 +259,7 @@ namespace Ogre
 		}
 		else
 		{
+			assert(0);
 			// LOW_LOD textures
 			// composite map
 			TextureUnitState* tu = pass->createTextureUnitState();
@@ -327,14 +328,11 @@ namespace Ogre
 	{
 		generateVpHeader(prof, terrain, tt, outStream);
  
-		if (tt != LOW_LOD)
-		{
-			uint maxLayers = prof->getMaxLayers(terrain);
-			uint numLayers = std::min(maxLayers, static_cast<uint>(terrain->getLayerCount()));
- 
-			for (uint i = 0; i < numLayers; ++i)
-				generateVpLayer(prof, terrain, tt, i, outStream);
-		}
+		uint maxLayers = prof->getMaxLayers(terrain);
+		uint numLayers = std::min(maxLayers, static_cast<uint>(terrain->getLayerCount()));
+
+		for (uint i = 0; i < numLayers; ++i)
+			generateVpLayer(prof, terrain, tt, i, outStream);
  
 		generateVpFooter(prof, terrain, tt, outStream);
  
@@ -345,14 +343,11 @@ namespace Ogre
 	{
 		generateFpHeader(prof, terrain, tt, outStream);
  
-		if (tt != LOW_LOD)
-		{
-			uint maxLayers = prof->getMaxLayers(terrain);
-			uint numLayers = std::min(maxLayers, static_cast<uint>(terrain->getLayerCount()));
- 
-			for (uint i = 0; i < numLayers; ++i)
-				generateFpLayer(prof, terrain, tt, i, outStream);
-		}
+		uint maxLayers = prof->getMaxLayers(terrain);
+		uint numLayers = std::min(maxLayers, static_cast<uint>(terrain->getLayerCount()));
+
+		for (uint i = 0; i < numLayers; ++i)
+			generateFpLayer(prof, terrain, tt, i, outStream);
  
 		generateFpFooter(prof, terrain, tt, outStream);
 	}
@@ -394,24 +389,24 @@ namespace Ogre
 		const SM2Profile* prof, const MaterialPtr& mat, const Terrain* terrain, bool compositeMap)
 	{
 		Pass* p = mat->getTechnique(0)->getPass(0);
-		if (compositeMap)
-		{
-			updateVpParams(prof, terrain, RENDER_COMPOSITE_MAP, p->getVertexProgramParameters());
-			updateFpParams(prof, terrain, RENDER_COMPOSITE_MAP, p->getFragmentProgramParameters());
-		}
-		else
+// 		if (compositeMap)
+// 		{
+// 			updateVpParams(prof, terrain, RENDER_COMPOSITE_MAP, p->getVertexProgramParameters());
+// 			updateFpParams(prof, terrain, RENDER_COMPOSITE_MAP, p->getFragmentProgramParameters());
+// 		}
+//		else
 		{
 			// high lod
 			updateVpParams(prof, terrain, HIGH_LOD, p->getVertexProgramParameters());
 			updateFpParams(prof, terrain, HIGH_LOD, p->getFragmentProgramParameters());
  
-			if(prof->isCompositeMapEnabled())
-			{
-				// low lod
-				p = mat->getTechnique(1)->getPass(0);
-				updateVpParams(prof, terrain, LOW_LOD, p->getVertexProgramParameters());
-				updateFpParams(prof, terrain, LOW_LOD, p->getFragmentProgramParameters());
-			}
+// 			if(prof->isCompositeMapEnabled())
+// 			{
+// 				// low lod
+// 				p = mat->getTechnique(1)->getPass(0);
+// 				updateVpParams(prof, terrain, LOW_LOD, p->getVertexProgramParameters());
+// 				updateFpParams(prof, terrain, LOW_LOD, p->getFragmentProgramParameters());
+// 			}
 		}
 	}
 	//---------------------------------------------------------------------
@@ -475,18 +470,19 @@ namespace Ogre
 	{
 		String progName = terrain->getMaterialName() + "/sm2/vp";
  
-		switch(tt)
-		{
-		case HIGH_LOD:
-			progName += "/hlod";
-			break;
-		case LOW_LOD:
-			progName += "/llod";
-			break;
-		case RENDER_COMPOSITE_MAP:
-			progName += "/comp";
-			break;
-		}
+// 		switch(tt)
+// 		{
+// 		case HIGH_LOD:
+// 			progName += "/hlod";
+// 			break;
+// 		case LOW_LOD:
+// 			progName += "/llod";
+// 			break;
+// 		case RENDER_COMPOSITE_MAP:
+// 			progName += "/comp";
+// 			break;
+// 		}
+		progName += "/hlod";
  
 		return progName;
  
@@ -498,18 +494,20 @@ namespace Ogre
  
 		String progName = terrain->getMaterialName() + "/sm2/fp";
  
-		switch(tt)
-		{
-		case HIGH_LOD:
-			progName += "/hlod";
-			break;
-		case LOW_LOD:
-			progName += "/llod";
-			break;
-		case RENDER_COMPOSITE_MAP:
-			progName += "/comp";
-			break;
-		}
+// 		switch(tt)
+// 		{
+// 		case HIGH_LOD:
+// 			progName += "/hlod";
+// 			break;
+// 		case LOW_LOD:
+// 			progName += "/llod";
+// 			break;
+// 		case RENDER_COMPOSITE_MAP:
+// 			progName += "/comp";
+// 			break;
+// 		}
+
+		progName += "/hlod";
  
 		return progName;
 	}
@@ -619,13 +617,11 @@ namespace Ogre
 		uint numUVSets = numLayers / 2;
 		if (numLayers % 2)
 			++numUVSets;
-		if (tt != LOW_LOD)
+
+		for (uint i = 0; i < numUVSets; ++i)
 		{
-			for (uint i = 0; i < numUVSets; ++i)
-			{
-				outStream <<
-					", out float4 oUV" << i << " : TEXCOORD" << texCoordSet++ << "\n";
-			}
+			outStream <<
+				", out float4 oUV" << i << " : TEXCOORD" << texCoordSet++ << "\n";
 		}
  
 		if (prof->getParent()->getDebugLevel() && tt != RENDER_COMPOSITE_MAP)
@@ -702,23 +698,17 @@ namespace Ogre
  
  
 		// generate UVs
-		if (tt != LOW_LOD)
+		for (uint i = 0; i < numUVSets; ++i)
 		{
-			for (uint i = 0; i < numUVSets; ++i)
-			{
-				uint layer  =  i * 2;
-				uint uvMulIdx = layer / 4;
- 
-				outStream <<
-					"	oUV" << i << ".xy = " << " uv.xy * uvMul_" << uvMulIdx << "." << getChannel(layer) << ";\n";
-				outStream <<
-					"	oUV" << i << ".zw = " << " uv.xy * uvMul_" << uvMulIdx << "." << getChannel(layer+1) << ";\n";
- 
-			}
- 
-		}	
- 
- 
+			uint layer  =  i * 2;
+			uint uvMulIdx = layer / 4;
+
+			outStream <<
+				"	oUV" << i << ".xy = " << " uv.xy * uvMul_" << uvMulIdx << "." << getChannel(layer) << ";\n";
+			outStream <<
+				"	oUV" << i << ".zw = " << " uv.xy * uvMul_" << uvMulIdx << "." << getChannel(layer+1) << ";\n";
+
+		}
 	}
 	//---------------------------------------------------------------------
 	void TerrainMaterialGeneratorD::SM2Profile::ShaderHelperCg::generateFpHeader(
@@ -755,15 +745,13 @@ namespace Ogre
 		uint numUVSets = numLayers / 2;
 		if (numLayers % 2)
 			++numUVSets;
-		if (tt != LOW_LOD)
+
+		for (uint i = 0; i < numUVSets; ++i)
 		{
-			for (uint i = 0; i < numUVSets; ++i)
-			{
-				outStream <<
-					"float4 layerUV" << i << " : TEXCOORD" << texCoordSet++ << ", \n";
-			}
- 
+			outStream <<
+				"float4 layerUV" << i << " : TEXCOORD" << texCoordSet++ << ", \n";
 		}
+ 
 		if (prof->getParent()->getDebugLevel() && tt != RENDER_COMPOSITE_MAP)
 		{
 			outStream << "float2 lodInfo : TEXCOORD" << texCoordSet++ << ", \n";
@@ -779,7 +767,7 @@ namespace Ogre
  
 		uint currentSamplerIdx = 0;
  
-		if (tt == LOW_LOD)
+		if (/*tt == LOW_LOD*/false)
 		{
 			// single composite map covers all the others below
 			outStream << 
@@ -789,13 +777,6 @@ namespace Ogre
 		{
 			outStream << 
 				"uniform sampler2D globalNormal : register(s" << currentSamplerIdx++ << ")\n";
- 
- 
-			if (terrain->getGlobalColourMapEnabled() && prof->isGlobalColourMapEnabled())
-			{
-				outStream << ", uniform sampler2D globalColourMap : register(s" 
-					<< currentSamplerIdx++ << ")\n";
-			}
  
 			// Blend textures - sampler definitions
 			for (uint i = 0; i < numBlendTextures; ++i)
@@ -828,15 +809,12 @@ namespace Ogre
 			"	float2 uv = uvMisc.xy;\n"
 			// base colour
 			"	oColor0 = float4(0,0,0,0);\n"
+			"   oColor1 = float4(0,0,0,0);\n";
 			"   oColor2 = float4(0,0,0,0);\n";
+			"   oColor3 = float4(0,0,0,0);\n";
  
-		if (tt != LOW_LOD)
-		{
-			outStream << 
-				"	float3 normal = expand(tex2D(globalNormal, uv));\n";
-		}
- 
- 
+		outStream << "	float3 normal = expand(tex2D(globalNormal, uv));\n";
+
  
 			// set up accumulation areas
 		outStream << "	float3 diffuse = float3(0,0,0);\n"
@@ -906,14 +884,6 @@ namespace Ogre
 		String blendChannel = getChannel(layer-1);
 		String blendWeightStr = String("blendTexVal") + StringConverter::toString(blendIdx) + 
 			"." + blendChannel;
- 
-		// generate early-out conditional
-		/* Disable - causing some issues even when trying to force the use of texldd
-		if (layer && prof->_isSM3Available())
-			outStream << "  if (" << blendWeightStr << " > 0.0003)\n  { \n";
-		*/
-
-		outStream << "  oColor1.rgba = length(position) / cFarDistance;\n";
  
 		// generate UV
 		outStream << "	float2 uv" << layer << " = layerUV" << uvIdx << uvChannels << ";\n";
@@ -988,29 +958,20 @@ namespace Ogre
 	void TerrainMaterialGeneratorD::SM2Profile::ShaderHelperCg::generateFpFooter(
 		const SM2Profile* prof, const Terrain* terrain, TechniqueType tt, StringUtil::StrStreamType& outStream)
 	{
+		// diffuse
+		outStream << "	oColor0.rgb = diffuse;\n";
+				"   oColor0.a = 1;\n";
+		//specualr
+		outStream << "	oColor2.a = specular;\n";
  
-// 		if (terrain->getGlobalColourMapEnabled() && prof->isGlobalColourMapEnabled())
-// 		{
-// 			// sample colour map and apply to diffuse
-// 			outStream << "	diffuse *= tex2D(globalColourMap, uv).rgb;\n";
-// 		}
- 
-		// diffuse lighting
-		outStream << "	oColor0.rgb = diffuse;\n"
-				"   oColor0.a = 0;\n";
- 
-		bool fog = terrain->getSceneManager()->getFogMode() != FOG_NONE && tt != RENDER_COMPOSITE_MAP;
-		if (fog)
-		{
-			outStream << "	oColor0.rgb = lerp(oColor0.rgb, fogColour, fogVal);\n";
-		}
 		//地形太亮,手动给个类似材质系数乘数
 		outStream << "	oColor0.rgb *= 0.4f;\n";
  
 		// Final return
 		outStream << "  oColor3 = float4(normalize(mul(oColor3.rgb, TBN)), 0);\n"
+			//depth
+			<< "  oColor3.a = length(position) / cFarDistance;\n"
 			<< "}\n";
- 
 	}
 	//---------------------------------------------------------------------
 }

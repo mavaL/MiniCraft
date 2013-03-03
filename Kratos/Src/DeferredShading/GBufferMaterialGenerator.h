@@ -55,6 +55,9 @@ public:
 		//高光Color+SpecularPower纹理
 		GBP_SPECULAR_MAP	=		0x00000020,
 
+		//自发光图
+		GBP_EMISSIVE_MAP	=		0x00000040,
+
 		//Are we skinned?
 		GBP_SKINNED =				0x00010000,
 

@@ -5,20 +5,23 @@ compositor DeferredShading/GBuffer
 	{
 		//GBuffer:
 		//RT0:diffuse map + material id
-		//RT1:linear depth
+		//RT1:emissive map
 		//RT2:specular map + shiness
-		//RT3:normal map
+		//RT3:normal map + depth			//SC2这种深度精度真心不需要32位
 		//TODO: normal可编码保存为两个通道,8位法线通道居然不够....会artifact
-		texture mrt_output target_width target_height PF_R8G8B8A8 PF_FLOAT32_R PF_R8G8B8A8 PF_FLOAT16_RGBA chain_scope
+		texture mrt_output target_width target_height PF_R8G8B8A8 PF_R8G8B8A8 PF_R8G8B8A8 PF_FLOAT16_RGBA chain_scope
 		
 		target mrt_output
 		{
 			input none
+			shadows off	
+
 			pass clear
 			{
+				buffers colour depth stencil
+				depth_value 1.0 
 			}
 			
-			shadows off
 			material_scheme GBuffer
 			
 			// everything but the lights and their meshes

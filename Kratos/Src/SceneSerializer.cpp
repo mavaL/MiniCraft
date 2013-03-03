@@ -105,25 +105,27 @@ void SceneSerializer::_LoadTerrain( rapidxml::xml_node<>* node )
 
 	float worldSize = StringConverter::parseReal(node->first_attribute("worldSize")->value());
 	int mapSize = StringConverter::parseInt(node->first_attribute("mapSize")->value());
-	//bool colourmapEnabled = DotSceneLoader::getAttribBool(XMLNode, "colourmapEnabled");
-	//int colourMapTextureSize = Ogre::StringConverter::parseInt(XMLNode->first_attribute("colourMapTextureSize")->value());
-	//int compositeMapDistance = Ogre::StringConverter::parseInt(XMLNode->first_attribute("tuningCompositeMapDistance")->value());
 	int maxPixelError = StringConverter::parseInt(node->first_attribute("tuningMaxPixelError")->value());
 
 	option->setMaxPixelError((Ogre::Real)maxPixelError);
-	option->setCompositeMapDistance(3000);
-// 	option->setUseRayBoxDistanceCalculation(true);
-// 	option->setLightMapDirection(pSunLight->getDirection());
-// 	option->setCompositeMapAmbient(m_pOwner->m_pSceneMgr->getAmbientLight());
-// 	option->setCompositeMapDiffuse(pSunLight->getDiffuseColour());
-
+	
 	TerrainGroup* pTerrainGroup = new TerrainGroup(sm, Terrain::ALIGN_X_Z, mapSize, worldSize);
 	pTerrainGroup->setOrigin(Vector3::ZERO);
 
-// 	//在地形材质生成前开启
+#ifdef FORWARD_RENDERING
+	TerrainMaterialGeneratorA::SM2Profile* matProfile = static_cast<TerrainMaterialGeneratorA::SM2Profile*>(
+		TerrainGlobalOptions::getSingleton().getDefaultMaterialGenerator()->getActiveProfile());
+	matProfile->setCompositeMapEnabled(false);
+#else	//deferred shading
+	TerrainMaterialGeneratorD::SM2Profile* matProfile = static_cast<TerrainMaterialGeneratorD::SM2Profile*>(
+		TerrainGlobalOptions::getSingleton().getDefaultMaterialGenerator()->getActiveProfile());
+	matProfile->setCompositeMapEnabled(false);
+#endif
+
+ 	//在地形材质生成前开启
  	RenderManager.EnableDeferredShading(true);
-// 
-// 	//阴影
+ 
+ 	//阴影
  	RenderManager.InitShadowConfig();
 
 	//加载地形数据

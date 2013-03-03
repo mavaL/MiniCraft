@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8' ?>
 <scene formatVersion="0.3"
-       AmbientLight="0.6 0.6 0.6 1">
+       AmbientLight="0.3 0.3 0.3 1">
 	<terrain worldSize="128" mapSize="65" tuningMaxPixelError="8"/>
 	<objects count="16">
 		<entity meshname="Barracks_0.mesh" isnavmesh="true" isbuilding="true" buildingname="Barracks" 

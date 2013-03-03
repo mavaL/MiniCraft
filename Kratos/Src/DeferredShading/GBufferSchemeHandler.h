@@ -44,12 +44,13 @@ protected:
 	//You might need to expand this class to support more options
 	struct PassProperties 
 	{
-		PassProperties() : isDeferred(true), normalMap(0), specularMap(0), isSkinned(false) {}
+		PassProperties() : isDeferred(true), normalMap(0), specularMap(0), emissiveMap(0), isSkinned(false) {}
 
 		bool isDeferred;
 		Ogre::vector<Ogre::TextureUnitState*>::type regularTextures;
 		Ogre::TextureUnitState* normalMap;
 		Ogre::TextureUnitState* specularMap;
+		Ogre::TextureUnitState* emissiveMap;
 		bool isSkinned;
         bool hasDiffuseColour;
 		
@@ -69,8 +70,8 @@ protected:
 
 	//Check if a texture is a normal map, and fill property sheet accordingly
 	bool checkNormalMap(Ogre::TextureUnitState* tus, PassProperties& props);
-
 	bool checkSpecularMap(Ogre::TextureUnitState* tus, PassProperties& props);
+	bool checkEmissiveMap(Ogre::TextureUnitState* tus, PassProperties& props);
 };
 
 #endif

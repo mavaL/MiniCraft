@@ -199,7 +199,7 @@ void COgreManager::EnableDeferredShading(bool bEnable)
 			Ogre::TerrainMaterialGeneratorPtr(new Ogre::TerrainMaterialGeneratorA));
 	}
 
-	EnableDLAA(bEnable);
+	//EnableDLAA(bEnable);
 	EnableSSAO(bEnable);
 }
 

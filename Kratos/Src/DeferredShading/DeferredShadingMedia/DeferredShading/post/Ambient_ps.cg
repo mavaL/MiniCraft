@@ -52,8 +52,8 @@ void main(
 	uniform float farClipDistance
 	)
 {
-	float4 a0 = tex2D(Tex0, texCoord); // Attribute 0: Diffuse color+shininess
-	float depth = tex2D(Tex1, texCoord).r; // Attribute 1: depth
+	float4 a0 = tex2D(Tex0, texCoord);			// Attribute 0: Diffuse color
+	float depth = tex2D(Tex1, texCoord).w;		// Attribute 1: depth
 
 	// Clip fragment if depth is too close, so the skybox can be rendered on the background
 	//clip(depth-0.0001);

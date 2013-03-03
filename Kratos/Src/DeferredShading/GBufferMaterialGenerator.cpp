@@ -168,7 +168,6 @@ Ogre::GpuProgramPtr GBufferMaterialGeneratorImpl::generateFragmentShader(Materia
 
 	ss << "	out float4 oColor0 : COLOR0," << std::endl;
 	ss << "	out float4 oColor1 : COLOR1," << std::endl;
-	// specular map [2/24/2013 mavaL]
 	ss << " out float4 oColor2 : COLOR2," << std::endl;
 	ss << " out float4 oColor3 : COLOR3," << std::endl;
 
@@ -183,6 +182,11 @@ Ogre::GpuProgramPtr GBufferMaterialGeneratorImpl::generateFragmentShader(Materia
 	if (permutation & GBufferMaterialGenerator::GBP_SPECULAR_MAP)
 	{
 		ss << "	uniform sampler sSpecMap : register(s" << samplerNum++ << ")," << std::endl;
+	}
+	// emissive map [3/3/2013 mavaL]
+	if (permutation & GBufferMaterialGenerator::GBP_EMISSIVE_MAP)
+	{
+		ss << "	uniform sampler sEmisMap : register(s" << samplerNum++ << ")," << std::endl;
 	}
 	Ogre::uint32 numTextures = permutation & GBufferMaterialGenerator::GBP_TEXTURE_MASK;
 	for (Ogre::uint32 i=0; i<numTextures; i++) {
@@ -202,7 +206,7 @@ Ogre::GpuProgramPtr GBufferMaterialGeneratorImpl::generateFragmentShader(Materia
 		ss << "	uniform float4 TeamColor," << std::endl;
 	}
 	
-	ss << "	uniform float bSpecularMap" << std::endl;
+	ss << "	uniform float materialID" << std::endl;
 
 	ss << "	)" << std::endl;
 	
@@ -227,7 +231,7 @@ Ogre::GpuProgramPtr GBufferMaterialGeneratorImpl::generateFragmentShader(Materia
 		ss << "	oColor0 = oColor0 * oColor0.a + TeamColor * (1 - oColor0.a);" << std::endl;
 	}
 	
-	ss << "	oColor0.a = bSpecularMap;" << std::endl;
+	ss << "	oColor0.a = materialID;" << std::endl;
 	if (permutation & GBufferMaterialGenerator::GBP_NORMAL_MAP) 
 	{
 		ss << "	float3 texNormal = (tex2D(sNormalMap, iUV0)-0.5)*2;" << std::endl;
@@ -238,12 +242,12 @@ Ogre::GpuProgramPtr GBufferMaterialGeneratorImpl::generateFragmentShader(Materia
 	{
 		ss << "	oColor3.rgb = normalize(iNormal);" << std::endl;
 	}
-	ss << "	oColor3.a = 0;" << std::endl;
 #ifdef WRITE_LINEAR_DEPTH
-    ss << "	oColor1.rgba = length(iViewPos) / cFarDistance;" << std::endl;
+    ss << "	oColor3.a = length(iViewPos) / cFarDistance;" << std::endl;
 #else
-    ss << "	oColor1.rgba = iDepth;" << std::endl;
+    ss << "	oColor3.a = iDepth;" << std::endl;
 #endif
+
 	// specular map [2/24/2013 mavaL]
 	if (permutation & GBufferMaterialGenerator::GBP_SPECULAR_MAP)
 	{
@@ -252,6 +256,16 @@ Ogre::GpuProgramPtr GBufferMaterialGeneratorImpl::generateFragmentShader(Materia
 	else
 	{
 		ss << "	oColor2 = float4(0,0,0,0);" << std::endl;
+	}
+
+	// emissive map [3/3/2013 mavaL]
+	if (permutation & GBufferMaterialGenerator::GBP_EMISSIVE_MAP)
+	{
+		ss << "	oColor1 = tex2D(sEmisMap, iUV0);" << std::endl;
+	}
+	else
+	{
+		ss << "	oColor1 = float4(0,0,0,0);" << std::endl;
 	}
 
 	ss << "}" << std::endl;
@@ -273,11 +287,17 @@ Ogre::GpuProgramPtr GBufferMaterialGeneratorImpl::generateFragmentShader(Materia
 
 	const Ogre::GpuProgramParametersSharedPtr& params = ptrProgram->getDefaultParameters();
 
-	// like material id works [2/24/2013 mavaL]
+	// material id [2/24/2013 mavaL]
+	int materiaiID = 0;
+
 	if(permutation & GBufferMaterialGenerator::GBP_SPECULAR_MAP)
-		params->setNamedConstant("bSpecularMap", 1.0f);
-	else
-		params->setNamedConstant("bSpecularMap", 0.0f);
+		materiaiID |= 1<<0;
+
+	if(permutation & GBufferMaterialGenerator::GBP_EMISSIVE_MAP)
+		materiaiID |= 1<<2;
+
+	//±ØÐë×ª»»µ½[0,1]
+	params->setNamedConstant("materialID", materiaiID / 256.0f);
 
 	if (numTextures == 0 || permutation & GBufferMaterialGenerator::GBP_HAS_DIFFUSE_COLOUR)
 	{
@@ -312,6 +332,10 @@ Ogre::MaterialPtr GBufferMaterialGeneratorImpl::generateTemplateMaterial(Materia
 		pass->createTextureUnitState();
 	}
 	if (permutation & GBufferMaterialGenerator::GBP_SPECULAR_MAP)
+	{
+		pass->createTextureUnitState();
+	}
+	if (permutation & GBufferMaterialGenerator::GBP_EMISSIVE_MAP)
 	{
 		pass->createTextureUnitState();
 	}

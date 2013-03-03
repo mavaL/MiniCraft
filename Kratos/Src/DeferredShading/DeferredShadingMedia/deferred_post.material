@@ -29,7 +29,7 @@ material DeferredShading/AmbientLight
 			}
 			texture_unit
 			{
-				content_type compositor DeferredShading/GBuffer mrt_output 1
+				content_type compositor DeferredShading/GBuffer mrt_output 3
 				tex_address_mode clamp
 				filtering none
 			}
