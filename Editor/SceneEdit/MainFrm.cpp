@@ -15,6 +15,7 @@ String
 #include "UI/TerrainPropertyPane.h"
 #include "UI/ObjectPropertyPane.h"
 #include "UI/DialogGameDataBuilding.h"
+#include "UI/EffectPropertyPane.h"
 
 
 // CMainFrame
@@ -65,6 +66,10 @@ BEGIN_MESSAGE_MAP(CMainFrame, CXTPFrameWnd)
 	ON_NOTIFY(CBN_SELCHANGE, IDC_Animation_Names, OnAnimSelectChange)
 	ON_COMMAND(IDC_GameData_Building, OnDataBuilding)
 	ON_UPDATE_COMMAND_UI(IDC_GameData_Building, OnUpdateUI_DataBuilding)
+	ON_COMMAND(IDC_Shadow_OnOff, OnShadowOnOff)
+	ON_UPDATE_COMMAND_UI(IDC_Shadow_OnOff, OnUpdateUI_ShadowOnOff)
+	ON_COMMAND(IDC_SSAO_OnOff, OnSSAOOnOff)
+	ON_UPDATE_COMMAND_UI(IDC_SSAO_OnOff, OnUpdateUI_SSAOOnOff)
 END_MESSAGE_MAP()
 
 
@@ -75,7 +80,9 @@ CMainFrame::CMainFrame()
 ,m_paneResSelector(NULL)
 ,m_paneTerrain(NULL)
 ,m_propertyObject(new PropertyPaneObject)
+,m_propertyEffect(new PropertyPaneEffect)
 ,m_paneObject(NULL)
+,m_paneEffect(NULL)
 ,m_animTab(NULL)
 {
 }
@@ -85,6 +92,7 @@ CMainFrame::~CMainFrame()
 	SAFE_DELETE(m_propertyTerrain);
 	SAFE_DELETE(m_wndView);
 	SAFE_DELETE(m_propertyObject);
+	SAFE_DELETE(m_propertyEffect);
 }
 
 int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
@@ -267,6 +275,19 @@ bool CMainFrame::_OnCreateRibbon()
 	pGroup = pTab->AddGroup(L"Data");
 	//RibbonGameData - GroupData - Building
 	pGroup->Add(xtpControlButton, IDC_GameData_Building);
+
+	///RibbonEffect
+	pTab = pRibbonBar->AddTab(L"Effect");
+
+	//RibbonEffect - GroupShadow
+	pGroup = pTab->AddGroup(L"Shadow");
+	//RibbonEffect - GroupShadow - OnOff
+	pGroup->Add(xtpControlButton, IDC_Shadow_OnOff);
+
+	//RibbonEffect - GroupSSAO
+	pGroup = pTab->AddGroup(L"SSAO");
+	//RibbonEffect - GroupSSAO - OnOff
+	pGroup->Add(xtpControlButton, IDC_SSAO_OnOff);
 	
 	return true;
 }
@@ -290,6 +311,8 @@ void CMainFrame::_LoadIcon()
 	icon[0] = IDC_Object_Scale;				pImageMgr->SetIcons(IDB_Button, icon, _countof(icon), CSize(32, 32));
 	icon[0] = IDC_Object_Select;			pImageMgr->SetIcons(IDB_Button, icon, _countof(icon), CSize(32, 32));
 	icon[0] = IDC_GameData_Building;		pImageMgr->SetIcons(IDB_Button, icon, _countof(icon), CSize(32, 32));
+	icon[0] = IDC_Shadow_OnOff;				pImageMgr->SetIcons(IDB_Button, icon, _countof(icon), CSize(32, 32));
+	icon[0] = IDC_SSAO_OnOff;				pImageMgr->SetIcons(IDB_Button, icon, _countof(icon), CSize(32, 32));
 }
 
 BOOL CMainFrame::OnCreateClient( LPCREATESTRUCT lpcs, CCreateContext* pContext )
@@ -312,6 +335,7 @@ void CMainFrame::OnTimer( UINT_PTR nIDEvent )
 	{
 		m_paneManager.AttachPane(m_paneTerrain, m_paneResSelector);
 		m_paneManager.AttachPane(m_paneObject, m_paneResSelector);
+		m_paneManager.AttachPane(m_paneEffect, m_paneResSelector);
 		bInitLayout = true;
 	}
 
@@ -334,6 +358,7 @@ void CMainFrame::_CreateDockPane()
 	m_paneResSelector = m_paneManager.CreatePane(IDR_Pane_ResourceSelector, CRect(0, 0, 250, 120), xtpPaneDockRight);
 	m_paneTerrain = m_paneManager.CreatePane(IDR_Pane_TerrainProperty, CRect(0, 0, 250, 120), xtpPaneDockRight);
 	m_paneObject = m_paneManager.CreatePane(IDR_Pane_ObjectProperty, CRect(0, 0, 250, 120), xtpPaneDockRight);
+	m_paneEffect = m_paneManager.CreatePane(IDR_Pane_EffectProperty, CRect(0, 0, 250, 120), xtpPaneDockRight);
 }
 
 LRESULT CMainFrame::_AttachDockPane( WPARAM wParam, LPARAM lParam )
@@ -356,6 +381,10 @@ LRESULT CMainFrame::_AttachDockPane( WPARAM wParam, LPARAM lParam )
 
 			case IDR_Pane_ObjectProperty:
 				pPane->Attach(m_propertyObject);
+				break;
+
+			case IDR_Pane_EffectProperty:
+				pPane->Attach(m_propertyEffect);
 				break;
 
 			default: assert(0);
@@ -436,9 +465,11 @@ bool CMainFrame::CreateEditorMainUI()
 
 	m_propertyTerrain->Create(L"STATIC", NULL, WS_CHILD|WS_VISIBLE|WS_CLIPCHILDREN|WS_CLIPSIBLINGS, CXTPEmptyRect(), this, IDR_Pane_TerrainProperty);
 	m_propertyObject->Create(L"STATIC", NULL, WS_CHILD|WS_VISIBLE|WS_CLIPCHILDREN|WS_CLIPSIBLINGS, CXTPEmptyRect(), this, IDR_Pane_ObjectProperty);
+	m_propertyEffect->Create(L"STATIC", NULL, WS_CHILD|WS_VISIBLE|WS_CLIPCHILDREN|WS_CLIPSIBLINGS, CXTPEmptyRect(), this, IDR_Pane_EffectProperty);
 
 	m_propertyTerrain->m_wndPropertyGrid.SetTheme(xtpGridThemeVisualStudio2010);
 	m_propertyObject->m_wndPropertyGrid.SetTheme(xtpGridThemeVisualStudio2010);
+	m_propertyEffect->m_wndPropertyGrid.SetTheme(xtpGridThemeVisualStudio2010);
 
 	_CreateDockPane();
 
@@ -453,19 +484,24 @@ bool CMainFrame::CreateEditorMainUI()
 void CMainFrame::OnSceneNew()
 {
 	m_propertyTerrain->UpdateAllFromEngine();
+	m_propertyEffect->UpdateAllFromEngine();
 	m_propertyTerrain->EnableMutableProperty(TRUE);
+	m_propertyEffect->EnableMutableProperty(TRUE);
 }
 
 void CMainFrame::OnSceneOpen()
 {
 	m_propertyTerrain->UpdateAllFromEngine();
+	m_propertyEffect->UpdateAllFromEngine();
 	m_propertyTerrain->EnableMutableProperty(TRUE);
+	m_propertyEffect->EnableMutableProperty(TRUE);
 }
 
 void CMainFrame::OnSceneClose()
 {
 	m_propertyTerrain->EnableMutableProperty(FALSE);
 	m_propertyObject->EnableMutableProperty(FALSE);
+	m_propertyEffect->EnableMutableProperty(FALSE);
 }
 
 void CMainFrame::OnUpdateUI_TerrainBrushSize1( CCmdUI* pCmdUI )
@@ -860,4 +896,40 @@ void CMainFrame::OnDataBuilding()
 	s_Dlg.ShowWindow(bCurVisible ? SW_SHOW : SW_HIDE);
 	s_Dlg.UpdateWindow();
 	m_dlgVisibleFlags[IDD_DlgGameDataBuilding] = bCurVisible;
+}
+
+void CMainFrame::OnUpdateUI_ShadowOnOff( CCmdUI* pCmdUI )
+{
+	if(!ManipulatorSystem.GetIsSceneReady())
+	{
+		pCmdUI->Enable(FALSE);
+		return;
+	}
+
+	pCmdUI->Enable(TRUE);
+	pCmdUI->SetCheck(ManipulatorSystem.GetEffect().GetShadowEnable());
+}
+
+void CMainFrame::OnShadowOnOff()
+{
+	bool bEnable = !ManipulatorSystem.GetEffect().GetShadowEnable();
+	ManipulatorSystem.GetEffect().SetShadowEnable(bEnable);
+}
+
+void CMainFrame::OnUpdateUI_SSAOOnOff( CCmdUI* pCmdUI )
+{
+	if(!ManipulatorSystem.GetIsSceneReady())
+	{
+		pCmdUI->Enable(FALSE);
+		return;
+	}
+
+	pCmdUI->Enable(TRUE);
+	pCmdUI->SetCheck(ManipulatorSystem.GetEffect().GetSSAOEnable());
+}
+
+void CMainFrame::OnSSAOOnOff()
+{
+	bool bEnable = !ManipulatorSystem.GetEffect().GetSSAOEnable();
+	ManipulatorSystem.GetEffect().SetSSAOEnable(bEnable);
 }

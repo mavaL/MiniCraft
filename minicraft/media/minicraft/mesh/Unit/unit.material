@@ -242,6 +242,7 @@ material hatchery
 	}
 }
 
+///水晶矿是半透物体
 material CrystalJade
 {
 	technique Map#4

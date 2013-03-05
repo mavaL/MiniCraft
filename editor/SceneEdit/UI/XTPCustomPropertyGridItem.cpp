@@ -106,3 +106,16 @@ void CXTPPropertyGridItemVec4::SetChildItemID( int idX, int idY, int idZ, int id
 }
 
 
+
+Ogre::Vector3 UpdateVec3ItemProperty( CXTPPropertyGridItemVec3* pItem )
+{
+	std::wstring strX = Utility::StringCutPrecision(pItem->GetStrX());
+	std::wstring strY = Utility::StringCutPrecision(pItem->GetStrY());
+	std::wstring strZ = Utility::StringCutPrecision(pItem->GetStrZ());
+
+	float fX = Ogre::StringConverter::parseReal(Utility::UnicodeToEngine(strX));
+	float fY = Ogre::StringConverter::parseReal(Utility::UnicodeToEngine(strY));
+	float fZ = Ogre::StringConverter::parseReal(Utility::UnicodeToEngine(strZ));
+
+	return Ogre::Vector3(fX, fY, fZ);
+}

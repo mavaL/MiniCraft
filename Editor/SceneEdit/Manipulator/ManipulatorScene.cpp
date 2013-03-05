@@ -23,12 +23,13 @@ void ManipulatorScene::Init()
 	m_scenePath = Utility::EngineToUnicode(loc->at(0));
 	m_scenePath += L"\\";
 
+	m_manipulatorObject = new ManipulatorObject;	//first!
 	m_manipulatorTerrain = new ManipulatorTerrain;
-	m_manipulatorObject = new ManipulatorObject;
 	m_manipulatorNavMesh = new ManipulatorNavMesh;
 	m_manipulatorCamera = new ManipulatorCamera;
 	m_manipulatorResource = new ManipulatorResource;
 	m_manipulatorGameData = new ManipulatorGameData;
+	m_manipulatorEffect = new ManipulatorEffect;
 
 	m_pCurScene = new Scene;
 }
@@ -42,6 +43,7 @@ void ManipulatorScene::Shutdown()
 	SAFE_DELETE(m_manipulatorCamera);
 	SAFE_DELETE(m_manipulatorResource);
 	SAFE_DELETE(m_manipulatorGameData);
+	SAFE_DELETE(m_manipulatorEffect);
 }
 
 void ManipulatorScene::SceneNew(const std::wstring& sceneName)
@@ -131,6 +133,11 @@ void ManipulatorScene::_SaveTerrain( rapidxml::xml_document<>* doc, rapidxml::xm
 void ManipulatorScene::_SaveObjects( rapidxml::xml_document<>* doc, rapidxml::xml_node<>* XMLNode )
 {
 	m_manipulatorObject->Serialize(doc, XMLNode);
+}
+
+void ManipulatorScene::_SaveEffect( rapidxml::xml_document<>* doc, rapidxml::xml_node<>* XMLNode )
+{
+	m_manipulatorEffect->Serialize(doc, XMLNode);
 }
 
 

@@ -6,14 +6,14 @@ float4 Crytek_fp(
     uniform sampler sRotSampler4x4	: register(s1),  // rotation sampler -> pseudo random spherical weighted sampling
 	uniform float4 cViewportSize, // auto param width/height/inv. width/inv. height
     uniform float cFov, // vertical field of view in radians
-    uniform float farClipDistance
+    uniform float farClipDistance,
+	uniform float cSampleLengthScreenSpace, // The sample length in screen space [0, 1]
+	uniform float cOffsetScale,				// [0, 1] The distance of the first sample. samples are the placed in [cOffsetScale * cSampleLengthScreenSpace, cSampleLengthScreenSpace]
+	uniform float cDefaultAccessibility, // the default value used in the lerp() expression for invalid samples [0, 1]
+	uniform float cEdgeHighlight			// multiplier for edge highlighting in [1, 2] 1 is full highlighting 2 is off
 	): COLOR0
 {
     const int nSampleNum = 32; // number of samples
-	const float cSampleLengthScreenSpace = 0.2f; // The sample length in screen space [0, 1]
-	const float cOffsetScale = 0.01f;				// [0, 1] The distance of the first sample. samples are the placed in [cOffsetScale * cSampleLengthScreenSpace, cSampleLengthScreenSpace]
-	const float cDefaultAccessibility = 0.5f; // the default value used in the lerp() expression for invalid samples [0, 1]
-	const float cEdgeHighlight = 1.99f;			// multiplier for edge highlighting in [1, 2] 1 is full highlighting 2 is off
 
     // compute the distance between the clipping planes to convert [0, 1] depth to world space units
     //const float clipDepth = farClipDistance - nearClipDistance;

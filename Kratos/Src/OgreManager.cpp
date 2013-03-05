@@ -107,11 +107,14 @@ bool COgreManager::Init(bool bEditor, HWND externalHwnd, HWND hwndParent,int wid
 	m_pDS->setActive(false);
 
 	m_ssao = CompositorManager::getSingleton().addCompositor(m_pViewport, "DeferredShading/SSAO");
-	m_dlaa = CompositorManager::getSingleton().addCompositor(m_pViewport, "DLAA");
-	assert(m_dlaa);
+	//m_dlaa = CompositorManager::getSingleton().addCompositor(m_pViewport, "DLAA");
+	//assert(m_dlaa);
 	assert(m_ssao);
-	m_dlaa->setEnabled(false);
+	//m_dlaa->setEnabled(false);
 	m_ssao->setEnabled(false);
+
+	PSSMShadowCameraSetup* pssmSetup = new PSSMShadowCameraSetup;
+	mPSSMSetup.bind(pssmSetup);
 
 	m_Timer = new Ogre::Timer();
 	m_Timer->reset();
@@ -184,87 +187,50 @@ void COgreManager::GetMainWndHandle( unsigned long& hwnd )
 	mWindow->getCustomAttribute("WINDOW", &hwnd);
 }
 
-void COgreManager::EnableDeferredShading(bool bEnable)
-{
-	if (bEnable)
-	{
-		m_pDS->setActive(true);
-		Ogre::TerrainGlobalOptions::getSingleton().setDefaultMaterialGenerator(
-			Ogre::TerrainMaterialGeneratorPtr(new Ogre::TerrainMaterialGeneratorD));
-	}
-	else
-	{
-		m_pDS->setActive(false);
-		Ogre::TerrainGlobalOptions::getSingleton().setDefaultMaterialGenerator(
-			Ogre::TerrainMaterialGeneratorPtr(new Ogre::TerrainMaterialGeneratorA));
-	}
-
-	//EnableDLAA(bEnable);
-	EnableSSAO(bEnable);
-}
-
-void COgreManager::InitShadowConfig()
-{
-	//TODO: 看来PSSM之类的高级阴影技术十分需要teawk各参数
-	//		默认参数并不适用每种情况,需要场景根据自己的光源
-	//		裁减距离,视锥切分策略等来尝试适用参数.
-	//		所以应该在编辑器中提供阴影参数调节功能!
-	m_pSceneMgr->setShadowTechnique(SHADOWTYPE_TEXTURE_ADDITIVE_INTEGRATED);
-	m_pSceneMgr->setShadowFarDistance(300);
-
-	// 3 textures per directional light (PSSM)
-	m_pSceneMgr->setShadowTextureCountPerLightType(Ogre::Light::LT_DIRECTIONAL, 3);
-	//m_pSceneMgr->setShadowDirectionalLightExtrusionDistance(1000);
-
-	// shadow camera setup
-	PSSMShadowCameraSetup* pssmSetup = new PSSMShadowCameraSetup();
-	pssmSetup->setSplitPadding(m_pMainCamera->getNearClipDistance());
-	pssmSetup->calculateSplitPoints(3, m_pMainCamera->getNearClipDistance(), m_pSceneMgr->getShadowFarDistance(), 0.75f);
-	pssmSetup->setOptimalAdjustFactor(0, 0.5f);
-	pssmSetup->setOptimalAdjustFactor(1, 0.8f);
-	pssmSetup->setOptimalAdjustFactor(2, 2);
-	//pssmSetup->setUseSimpleOptimalAdjust(false);
-	pssmSetup->setCameraLightDirectionThreshold(Degree(45));
-
-	mPSSMSetup.bind(pssmSetup);
-
-	m_pSceneMgr->setShadowCameraSetup(mPSSMSetup);
-	m_pSceneMgr->setShadowTextureCount(3);
-	m_pSceneMgr->setShadowTextureConfig(0, 2048, 2048, PF_FLOAT32_R);
-	m_pSceneMgr->setShadowTextureConfig(1, 1024, 1024, PF_FLOAT32_R);
-	m_pSceneMgr->setShadowTextureConfig(2, 1024, 1024, PF_FLOAT32_R);
-	m_pSceneMgr->setShadowTextureSelfShadow(false);
-	m_pSceneMgr->setShadowCasterRenderBackFaces(true);
-	m_pSceneMgr->setShadowTextureCasterMaterial("Ogre/shadow/depth/caster");
-
-#ifdef FORWARD_RENDERING
-	TerrainMaterialGeneratorA::SM2Profile* matProfile = static_cast<TerrainMaterialGeneratorA::SM2Profile*>(
-		TerrainGlobalOptions::getSingleton().getDefaultMaterialGenerator()->getActiveProfile());
-	matProfile->setReceiveDynamicShadowsEnabled(true);
-	matProfile->setReceiveDynamicShadowsDepth(true);
-	matProfile->setReceiveDynamicShadowsPSSM(pssmSetup);
-#else	//deferred shading
-	TerrainGlobalOptions::getSingleton().setRenderQueueGroup(RENDER_QUEUE_WORLD_GEOMETRY_2);
-	m_pSceneMgr->getRenderQueue()->getQueueGroup(RENDER_QUEUE_WORLD_GEOMETRY_2)->setShadowsEnabled(false);
-#endif
-}
-
-void COgreManager::EnableDLAA( bool bEnable )
-{
-	m_dlaa->setEnabled(bEnable);
-}
-
-bool COgreManager::IsDLAAEnabled() const
-{
-	return m_dlaa->getEnabled();
-}
+// void COgreManager::EnableDLAA( bool bEnable )
+// {
+// 	m_dlaa->setEnabled(bEnable);
+// }
 
 void COgreManager::EnableSSAO( bool bEnable )
 {
 	m_ssao->setEnabled(bEnable);
+	m_effectCfg.bSSAO = bEnable;
 }
 
-bool COgreManager::IsSSAOEnabled() const
+void COgreManager::EnableShadow( bool bEnable )
 {
-	return m_ssao->getEnabled();
+	if(bEnable)
+		m_pSceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_TEXTURE_ADDITIVE_INTEGRATED);
+	else
+		m_pSceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_NONE);
+
+	m_effectCfg.bShadow = bEnable;
+}
+
+void COgreManager::ResetEffect()
+{
+	m_effectCfg.Reset();
+	EnableShadow(m_effectCfg.bShadow);
+	EnableSSAO(m_effectCfg.bSSAO);
+}
+
+void COgreManager::SetSSAOParam( const Ogre::String& name, float val, bool bRemoveAndAdd )
+{
+	assert(m_ssao);
+
+	// remove compositor first
+	if(bRemoveAndAdd)
+		CompositorManager::getSingleton().removeCompositor(m_pViewport, "DeferredShading/SSAO");
+
+	Material* mat = static_cast<Material*>(MaterialManager::getSingleton().getByName("SSAO/Crytek").get());
+	assert(mat);
+	mat->getTechnique(0)->getPass(0)->getFragmentProgramParameters()->setNamedConstant(name, val);
+
+	// adding again
+	if(bRemoveAndAdd)
+	{
+		m_ssao = CompositorManager::getSingleton().addCompositor(m_pViewport, "DeferredShading/SSAO");
+		m_ssao->setEnabled(m_effectCfg.bSSAO);
+	}
 }

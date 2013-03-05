@@ -44,8 +44,7 @@ void Scene::Save(const std::string& fullPath, SceneSerializer* pHandler)
 
 void Scene::Reset()
 {
-	if(m_terrainOption)
-		RenderManager.EnableDeferredShading(false);
+	RenderManager.ResetEffect();
 
 	if(m_pTerrain)
 	{
@@ -98,10 +97,6 @@ void Scene::New()
 	Ogre::TerrainMaterialGeneratorA::SM2Profile* matProfile = 
 		static_cast<Ogre::TerrainMaterialGeneratorA::SM2Profile*>(m_terrainOption->getDefaultMaterialGenerator()->getActiveProfile());
 	matProfile->setLightmapEnabled(false);
-	// Important to set these so that the terrain knows what to use for derived (non-realtime) data
-	// 	m_terrainOption->setLightMapDirection(pSunLight->getDirection().normalisedCopy());
-	// 	m_terrainOption->setCompositeMapAmbient(RenderManager.m_pSceneMgr->getAmbientLight());
-	// 	m_terrainOption->setCompositeMapDiffuse(pSunLight->getDiffuseColour());
 
 	// Configure default import settings for if we use imported image
 	Terrain::ImportData& defaultimp = m_terrainGroup->getDefaultImportSettings();

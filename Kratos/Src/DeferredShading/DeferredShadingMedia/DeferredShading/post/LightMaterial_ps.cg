@@ -29,7 +29,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define LIGHT_DIRECTIONAL	3
 #define SHADOW_INTENSITY	0.5f		//[0,1]
 #define SPECULAR_MULTIPLIER 2.0f
-#define EMISSIVE_MULTIPLIER	5.0F
+#define EMISSIVE_MULTIPLIER	8.0F
 
 //////////////////////////////////////////////////////////////////////////////
 // Helper function section
@@ -108,7 +108,6 @@ float4 main(
 	uniform float flip,
 #endif
 
-#ifdef IS_SHADOW_CASTER
 	uniform float4x4 invView,
 	uniform float4x4 shadowViewProjMat,
 	uniform sampler ShadowTex : register(s4),
@@ -116,7 +115,6 @@ float4 main(
 	uniform sampler ShadowTex3 : register(s6),
 	uniform float3 shadowCamPos,
 	uniform float shadowFarClip,
-#endif
 
 	uniform float farClipDistance,
 	// Attributes of light
@@ -220,7 +218,7 @@ float4 main(
 	//×Ô·¢¹â
 	if(materiaiID%3 > 1)
 	{
-		final.rgb += emissive.rgb * emissive.a * EMISSIVE_MULTIPLIER;
+		final.rgb += emissive.rgb /** emissive.a*/ * EMISSIVE_MULTIPLIER;
 	}
 
 	return final;

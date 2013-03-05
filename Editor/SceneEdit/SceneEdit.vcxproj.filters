@@ -144,6 +144,12 @@
     <ClInclude Include="..\..\MiniCraft\Game\Client\GameDataDef.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="Manipulator\ManipulatorEffect.h">
+      <Filter>Manipulator</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\EffectPropertyPane.h">
+      <Filter>UI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SceneEdit.cpp">
@@ -229,6 +235,12 @@
     </ClCompile>
     <ClCompile Include="..\..\MiniCraft\Game\Client\GameDataDef.cpp">
       <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Manipulator\ManipulatorEffect.cpp">
+      <Filter>Manipulator</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\EffectPropertyPane.cpp">
+      <Filter>UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

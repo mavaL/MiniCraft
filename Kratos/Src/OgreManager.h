@@ -6,9 +6,23 @@
 #include <OgreWindowEventUtilities.h>
 #include <OgreShadowCameraSetup.h>
 
+//效果设置
+struct SEffectConfig 
+{
+	SEffectConfig() { Reset(); }
+	void	Reset() { bShadow = false; bSSAO = false; }
+
+	bool	bShadow;
+	bool	bSSAO;
+};
+
 /*------------------------------------------------
 				 OGRE图形模块封装类
 -------------------------------------------------*/
+namespace Ogre
+{
+	class PSSMShadowCameraSetup;
+}
 class DeferredShadingSystem;
 
 class COgreManager : public Ogre::WindowEventListener, public CSingleton<COgreManager>
@@ -19,26 +33,25 @@ class COgreManager : public Ogre::WindowEventListener, public CSingleton<COgreMa
 
 public:
 	//编辑器与客户端初始化不同.后4个参数用于编辑器初始化
-	bool Init(bool bEditor, HWND externalHwnd=nullptr, HWND hwndParent=nullptr, int width=0, int height=0);
+	bool			Init(bool bEditor, HWND externalHwnd=nullptr, HWND hwndParent=nullptr, int width=0, int height=0);
 	//更新图形.返回true表示游戏继续进行,返回false表示退出.
-	bool Update(float dt);
-	void Shutdown();
-	bool IsInit() { return m_bHasInit; }
+	bool			Update(float dt);
+	void			Shutdown();
+	bool			IsInit() { return m_bHasInit; }
+	void			ResetEffect();
 
 	void			MessagePump()		{ Ogre::WindowEventUtilities::messagePump(); }
 	bool			IsMainWndClosed();
 	bool			IsMainWndActive();
 	Ogre::Timer*	GetTimer()			{ return m_Timer; }
 	void			GetMainWndHandle(unsigned long& hwnd);
+	Ogre::PSSMShadowCameraSetup*	GetShadowCameraSetup() { return (Ogre::PSSMShadowCameraSetup*)mPSSMSetup.get(); }
 
-	//开启/关闭延迟渲染
-	void			EnableDeferredShading(bool bEnable);
-	void			InitShadowConfig();
-
-	void			EnableDLAA(bool bEnable);
+	const SEffectConfig&	GetEffectConfig() const { return m_effectCfg; }
+	void			EnableShadow(bool bEnable);
+	//void			EnableDLAA(bool bEnable);
 	void			EnableSSAO(bool bEnable);
-	bool			IsSSAOEnabled() const;
-	bool			IsDLAAEnabled() const;
+	void			SetSSAOParam(const Ogre::String& name, float val, bool bRemoveAndAdd = true);
 
 	Ogre::Root*			mRoot;
 	Ogre::RenderWindow* mWindow;
@@ -46,14 +59,15 @@ public:
 	Ogre::Timer*		m_Timer;
 	Ogre::SceneManager*	m_pSceneMgr;
 	Ogre::Camera*		m_pMainCamera;
-	DeferredShadingSystem*		m_pDS;
+	DeferredShadingSystem*	m_pDS;
 	Ogre::ShadowCameraSetupPtr mPSSMSetup;
-
-	Ogre::CompositorInstance*	m_dlaa;
-	Ogre::CompositorInstance*	m_ssao;
 
 private:
 	bool				m_bHasInit;
+	SEffectConfig		m_effectCfg;
+	
+	Ogre::CompositorInstance*	m_dlaa;
+	Ogre::CompositorInstance*	m_ssao;
 
 	void windowResized(Ogre::RenderWindow* rw);
 	void windowClosed(Ogre::RenderWindow* rw);

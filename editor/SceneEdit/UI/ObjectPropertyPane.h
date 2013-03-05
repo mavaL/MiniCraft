@@ -58,8 +58,6 @@ protected:
 	afx_msg LRESULT OnGridNotify(WPARAM, LPARAM);
 
 private:
-	Ogre::Vector3	_UpdateVec3ItemProperty(CXTPPropertyGridItemVec3* pItem);
-
 	std::unordered_map<int, CXTPPropertyGridItem*>	m_mapItem;
 };
 

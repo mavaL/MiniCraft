@@ -10,7 +10,7 @@ ManipulatorGameData::ManipulatorGameData()
 
 void ManipulatorGameData::LoadAllXml()
 {
-	m_dataMgr->LoadAllData();
+	//m_dataMgr->LoadAllData();
 }
 
 void ManipulatorGameData::SaveAllXml()

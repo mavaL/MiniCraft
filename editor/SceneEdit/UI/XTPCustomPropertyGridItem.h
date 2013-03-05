@@ -68,6 +68,8 @@ private:
 	Ogre::Vector4	m_value;
 };
 
+//helper
+Ogre::Vector3	UpdateVec3ItemProperty(CXTPPropertyGridItemVec3* pItem);
 
 #endif // XTPCustomPropertyGridItem_h__
 

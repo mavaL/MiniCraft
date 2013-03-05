@@ -62,11 +62,21 @@ Technique* GBufferSchemeHandler::handleSchemeNotFound(unsigned short schemeIndex
 
 		if (originalTechnique->getName().find(TEAM_COLOR_PATTERN) != Ogre::String::npos)
 		{
-			const Ogre::ColourValue teamColor = Ogre::any_cast<Ogre::ColourValue>(rend->getUserAny());
-			if(teamColor == Ogre::ColourValue::Red)
+			const Ogre::Any& any = rend->getUserAny();
+			if (any.isEmpty())
+			{
+				//±à¼­Æ÷
 				perm |= GBufferMaterialGenerator::GBP_TEAM_COLOR_RED;
-			else if(teamColor == Ogre::ColourValue::Blue)
-				perm |= GBufferMaterialGenerator::GBP_TEAM_COLOR_Blue;
+			}
+			else
+			{
+				//¿Í»§¶Ë
+				const Ogre::ColourValue teamColor = Ogre::any_cast<Ogre::ColourValue>(any);
+				if(teamColor == Ogre::ColourValue::Red)
+					perm |= GBufferMaterialGenerator::GBP_TEAM_COLOR_RED;
+				else if(teamColor == Ogre::ColourValue::Blue)
+					perm |= GBufferMaterialGenerator::GBP_TEAM_COLOR_Blue;
+			}
 		}
 
 		const Ogre::MaterialPtr& templateMat = mMaterialGenerator.getMaterial(perm);

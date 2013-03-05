@@ -129,6 +129,7 @@
     <ClInclude Include="Manipulator\ManipulatorAction.h" />
     <ClInclude Include="Manipulator\ManipulatorCamera.h" />
     <ClInclude Include="Manipulator\ManipulatorEditorResource.h" />
+    <ClInclude Include="Manipulator\ManipulatorEffect.h" />
     <ClInclude Include="Manipulator\ManipulatorEventCallback.h" />
     <ClInclude Include="Manipulator\ManipulatorGameData.h" />
     <ClInclude Include="Manipulator\ManipulatorNavMesh.h" />
@@ -141,6 +142,7 @@
     <ClInclude Include="targetver.h" />
     <ClInclude Include="UI\DialogGameDataBuilding.h" />
     <ClInclude Include="UI\DialogSceneNew.h" />
+    <ClInclude Include="UI\EffectPropertyPane.h" />
     <ClInclude Include="UI\ObjectPropertyPane.h" />
     <ClInclude Include="UI\PropertiesPane.h" />
     <ClInclude Include="UI\TerrainPropertyPane.h" />
@@ -162,6 +164,7 @@
     <ClCompile Include="Manipulator\ManipulatorAction.cpp" />
     <ClCompile Include="Manipulator\ManipulatorCamera..cpp" />
     <ClCompile Include="Manipulator\ManipulatorEditorResource.cpp" />
+    <ClCompile Include="Manipulator\ManipulatorEffect.cpp" />
     <ClCompile Include="Manipulator\ManipulatorGameData.cpp" />
     <ClCompile Include="Manipulator\ManipulatorNavMesh.cpp" />
     <ClCompile Include="Manipulator\ManipulatorObject.cpp" />
@@ -174,6 +177,7 @@
     </ClCompile>
     <ClCompile Include="UI\DialogGameDataBuilding.cpp" />
     <ClCompile Include="UI\DialogSceneNew.cpp" />
+    <ClCompile Include="UI\EffectPropertyPane.cpp" />
     <ClCompile Include="UI\ObjectPropertyPane.cpp" />
     <ClCompile Include="UI\PropertiesPane.cpp" />
     <ClCompile Include="UI\TerrainPropertyPane.cpp" />

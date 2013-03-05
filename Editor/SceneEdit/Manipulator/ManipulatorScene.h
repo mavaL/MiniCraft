@@ -18,6 +18,7 @@
 #include "ManipulatorEditorResource.h"
 #include "ManipulatorGameData.h"
 #include "SceneSerializer.h"
+#include "ManipulatorEffect.h"
 
 namespace Ogre
 {
@@ -29,7 +30,7 @@ class Scene;
 class ManipulatorScene : 
 	public CSingleton<ManipulatorScene>, 
 	public ManipulatorCallbackManager<ManipulatorSceneEventCallback>,
-	public SceneSerializer
+	private SceneSerializer
 {
 	ManipulatorScene();
 	~ManipulatorScene();
@@ -40,6 +41,7 @@ protected:
 	virtual void	_LoadObjects(rapidxml::xml_node<>* node);
 	virtual void	_SaveTerrain(rapidxml::xml_document<>* doc, rapidxml::xml_node<>* XMLNode);
 	virtual void	_SaveObjects(rapidxml::xml_document<>* doc, rapidxml::xml_node<>* XMLNode);
+	virtual void	_SaveEffect(rapidxml::xml_document<>* doc, rapidxml::xml_node<>* XMLNode);
 
 public:
 	Scene*	GetScene() { return m_pCurScene; }
@@ -67,6 +69,7 @@ public:
 	ManipulatorCamera&		GetCamera()		{ return *m_manipulatorCamera; }
 	ManipulatorResource&	GetResource()	{ return *m_manipulatorResource; }
 	ManipulatorGameData&	GetGameData()	{ return *m_manipulatorGameData; }
+	ManipulatorEffect&		GetEffect()		{ return *m_manipulatorEffect; }
 
 private:
 	std::wstring		m_scenePath;
@@ -79,6 +82,7 @@ private:
 	ManipulatorCamera*	m_manipulatorCamera;
 	ManipulatorResource* m_manipulatorResource;
 	ManipulatorGameData* m_manipulatorGameData;
+	ManipulatorEffect*	m_manipulatorEffect;
 };
 
 #define	ManipulatorSystem	ManipulatorScene::GetSingleton()

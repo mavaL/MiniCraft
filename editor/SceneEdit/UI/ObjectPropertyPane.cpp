@@ -79,7 +79,7 @@ LRESULT PropertyPaneObject::OnGridNotify( WPARAM wParam, LPARAM lParam )
 		case propPosition: 
 		{
 			CXTPPropertyGridItemVec3* pItemPos = dynamic_cast<CXTPPropertyGridItemVec3*>(pItem);
-			manObject.SelectionSetPosition(_UpdateVec3ItemProperty(pItemPos));
+			manObject.SelectionSetPosition(UpdateVec3ItemProperty(pItemPos));
 		}
 		break;
 
@@ -103,7 +103,7 @@ LRESULT PropertyPaneObject::OnGridNotify( WPARAM wParam, LPARAM lParam )
 		case propScale: 
 		{
 			CXTPPropertyGridItemVec3* pItemScale = dynamic_cast<CXTPPropertyGridItemVec3*>(pItem);
-			manObject.SelectionSetScale(_UpdateVec3ItemProperty(pItemScale));
+			manObject.SelectionSetScale(UpdateVec3ItemProperty(pItemScale));
 		}
 		break;
 
@@ -207,17 +207,4 @@ void PropertyPaneObject::EnableMutableProperty( BOOL bEnable )
 
 	CXTPPropertyGridItemBool* pItem = dynamic_cast<CXTPPropertyGridItemBool*>(m_mapItem[propIsBuilding]);
 	m_mapItem[propBuildingName]->SetReadOnly(!pItem->GetBool());
-}
-
-Ogre::Vector3 PropertyPaneObject::_UpdateVec3ItemProperty(CXTPPropertyGridItemVec3* pItem)
-{
-	std::wstring strX = Utility::StringCutPrecision(pItem->GetStrX());
-	std::wstring strY = Utility::StringCutPrecision(pItem->GetStrY());
-	std::wstring strZ = Utility::StringCutPrecision(pItem->GetStrZ());
-
-	float fX = Ogre::StringConverter::parseReal(Utility::UnicodeToEngine(strX));
-	float fY = Ogre::StringConverter::parseReal(Utility::UnicodeToEngine(strY));
-	float fZ = Ogre::StringConverter::parseReal(Utility::UnicodeToEngine(strZ));
-
-	return Ogre::Vector3(fX, fY, fZ);
 }
