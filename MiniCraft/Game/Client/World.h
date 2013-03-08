@@ -11,6 +11,7 @@ class OgreDetourCrowd;
 class Faction;
 class UiCommandPanel;
 class UiInfoPanel;
+class UiPortraitPanel;
 class Scene;
 
 //常用成员全局环境
@@ -84,6 +85,7 @@ public:
 	///获取UI组件
 	UiCommandPanel*	GetCommandPanel() { return m_cmdPanel; }
 	UiInfoPanel*	GetInfoPanel()	{ return m_infoPanel; }
+	UiPortraitPanel* GetPortraitPanel() { return m_portraitPanel; }
 
 private:
 	SelectedContainer			m_vecSelectUnis;	//所有选中单位
@@ -110,6 +112,7 @@ private:
 
 	UiCommandPanel*				m_cmdPanel;
 	UiInfoPanel*				m_infoPanel;
+	UiPortraitPanel*			m_portraitPanel;
 
 	Faction*					m_player[eGameRace_Count];
 	Scene*						m_pTestScene;

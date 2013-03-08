@@ -1,0 +1,54 @@
+void VS(float4 position : POSITION,
+						  float2 uv		  : TEXCOORD0,
+						  
+						  out float4 oPosition : POSITION,
+						  out float2 oUv	   : TEXCOORD0,
+						  out float4 oViewPos  : TEXCOORD1,
+						  out float4 colour    : COLOR0,
+
+						  uniform float4x4 worldViewProj,
+						  uniform float4x4 worldView,
+						  uniform float4 ambient)
+{
+	oPosition = mul(worldViewProj, position);
+	oViewPos = mul(worldView, position);
+	oUv = uv;
+	colour = ambient;
+}
+
+const float shiness = 20.0f;
+const float emissivemulti = 10.0f;
+const float specmulti =	1.96f;
+
+void PS(				  float2 uv                : TEXCOORD0,
+						  float4 viewPos           : TEXCOORD1,
+						  float4 ambient           : COLOR0,
+						  out float4 colour        : COLOR0,
+						  uniform float3 LightDir,
+						  uniform float4 LightColor,
+						  uniform sampler2D diffusemap : register(s0),
+						  uniform sampler2D normalmap : register(s1),
+						  uniform sampler2D emismap : register(s2),
+						  uniform sampler2D aomap : register(s3))
+{
+	float4 diffuse = tex2D(diffusemap,uv);
+	float3 normal = tex2D(normalmap, uv).xyz;
+	float4 emissive = tex2D(emismap,uv);
+	float ao = tex2D(aomap,uv).r;
+
+	//diffuse
+	float3 diffColor = diffuse.rgb * max(0, dot(-LightDir, normal)) * LightColor.rgb;
+
+	//specular
+	float3 viewDir = -normalize(viewPos).xyz;
+	float3 h = normalize(viewDir - LightDir);
+	normal = normalize(normal);
+	float3 specular = pow(dot(normal, h), shiness) * diffuse.a;
+
+	//final combine
+	colour.rgb = ambient.rgb * diffuse.rgb  + diffColor + specular * specmulti + emissive.rgb * emissivemulti;
+	colour.rgb *= ao;
+	colour.a = 1;
+}
+
+

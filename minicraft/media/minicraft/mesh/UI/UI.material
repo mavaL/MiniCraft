@@ -93,3 +93,65 @@ material ConsoleBlack : MT_Console
 		}
 	}
 }
+
+///////////////////////////////////////////		Portrait
+
+vertex_program Portrait_VS cg
+{
+    source portrait.cg
+    entry_point VS
+    profiles vs_2_x arbvp1
+
+    default_params
+    {
+        param_named_auto worldViewProj worldviewproj_matrix
+		param_named_auto worldView worldview_matrix
+        param_named_auto ambient ambient_light_colour
+    }
+}
+
+fragment_program Portrait_PS cg
+{
+    source portrait.cg
+    entry_point PS
+    profiles ps_2_x arbfp1
+
+    default_params
+    {
+		param_named LightDir float3 0 0 0
+		param_named LightColor float4 0 0 0 0
+    }
+}
+
+material MarinePortrait
+{
+	technique
+	{
+		pass
+		{
+			vertex_program_ref Portrait_VS {}
+			fragment_program_ref Portrait_PS {}
+
+			texture_unit diffusemap
+			{
+				texture marineportrait_diff.dds
+				filtering linear linear linear
+			}
+			texture_unit normalmap
+			{
+				texture marineportrait_nm.dds
+				filtering point point point
+			}
+			texture_unit emissivemap
+			{
+				texture marineportrait_emiss.dds
+				filtering linear linear linear
+			}
+			texture_unit aomap
+			{
+				texture marineportrait_ao.dds
+				filtering linear linear linear
+			}
+		}
+	}
+}

@@ -47,6 +47,7 @@ public:
 	void			StopAction();
 	void			SetStopTime(float fTime) { m_fStopTime = fTime; }
 	float			GetStopTime() const	{ return m_fStopTime; }
+	Ogre::Entity*	GetPortrait(Ogre::SceneManager* sm, Ogre::Light* light);
 
 public:
 	///lua导出函数
@@ -61,11 +62,15 @@ public:
 	int				AttachRes(lua_State* L);
 	int				DetachRes(lua_State* L);
 
+protected:
+	virtual void	_OnSelected(bool bSelected);
+
 private:
 	STRING					m_unitName;		//单位名称,如:scv,marine...
 	Ogre::AnimationState*	m_pAnimState;	//当前播放动画
 	float					m_fStopTime;	//已经进入停止状态多久
-	
+	Ogre::Entity*			m_portraitEnt;	//3D肖像模型
+	Ogre::AnimationState*	m_pPortraitAnim;	//3D肖像动画
 };
 
 

@@ -29,7 +29,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define LIGHT_DIRECTIONAL	3
 #define SHADOW_INTENSITY	0.5f		//[0,1]
 #define SPECULAR_MULTIPLIER 2.0f
-#define EMISSIVE_MULTIPLIER	8.0F
+#define EMISSIVE_MULTIPLIER	3.0F
 
 //////////////////////////////////////////////////////////////////////////////
 // Helper function section

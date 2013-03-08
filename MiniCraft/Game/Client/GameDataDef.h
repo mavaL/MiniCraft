@@ -57,6 +57,7 @@ struct SUnitData
 	AnimTable	m_anims;				//该单位所有动画的真实名字.因为各模型的导出动画名字不一定一致
 	std::vector<STRING>	m_vecAbilities;	//技能
 	eGameRace	m_race;					//种族
+	STRING		m_portrait;				//3D肖像模型名
 };
 
 //设计基于值对象而不是指针,是因为一旦初始化完毕,在程序退出前,就不会去改变了,

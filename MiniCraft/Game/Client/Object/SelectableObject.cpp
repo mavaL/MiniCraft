@@ -5,6 +5,7 @@
 #include "CommandPanel.h"
 #include "InfoPanel.h"
 #include "OgreManager.h"
+#include "PortraitPanel.h"
 
 /** This is ogre-procedural's temporary mesh buffer.
  * It stores all the info needed to build an Ogre Mesh, yet is intented to be more flexible, since
@@ -475,6 +476,8 @@ void SelectableObject::_OnSelected( bool bSelected )
 {
 	UiCommandPanel* pCmdPanel = World::GetSingleton().GetCommandPanel();
 	UiInfoPanel*	pInfoPanel = World::GetSingleton().GetInfoPanel();
+	UiPortraitPanel* pPortraitPanel = World::GetSingleton().GetPortraitPanel();
+
 	//¸üÐÂÃüÁîÃæ°å
 	if (bSelected)
 	{
@@ -492,6 +495,7 @@ void SelectableObject::_OnSelected( bool bSelected )
 
 		pCmdPanel->SetActiveObject(this);
 		pInfoPanel->SetActiveObject(this);
+		pPortraitPanel->SetActiveObject(this);
 	}
 	else
 	{
@@ -503,7 +507,8 @@ void SelectableObject::_OnSelected( bool bSelected )
 		}
 
 		pCmdPanel->SetActiveObject(nullptr);
-		pInfoPanel->SetActiveObject(this);
+		pInfoPanel->SetActiveObject(nullptr);
+		pPortraitPanel->SetActiveObject(nullptr);
 	}
 }
 

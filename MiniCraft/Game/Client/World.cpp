@@ -12,6 +12,7 @@
 #include "InfoPanel.h"
 #include "Scene.h"
 #include "Building.h"
+#include "PortraitPanel.h"
 
 
 SGlobalEnvironment	g_Environment;
@@ -28,6 +29,7 @@ World::World()
 ,m_pRaySceneQuery(nullptr)
 ,m_cmdPanel(new UiCommandPanel)
 ,m_infoPanel(new UiInfoPanel)
+,m_portraitPanel(new UiPortraitPanel)
 {
 	
 }
@@ -36,6 +38,7 @@ World::~World()
 {
 	SAFE_DELETE(m_cmdPanel);
 	SAFE_DELETE(m_infoPanel);
+	SAFE_DELETE(m_portraitPanel);
 }
 
 void World::Init()
@@ -136,6 +139,7 @@ void World::Init()
 
 	m_cmdPanel->Init();
 	m_infoPanel->Init();
+	m_portraitPanel->Init();
 
 	CEGUI::WindowManager& wndMgr = CEGUI::WindowManager::getSingleton();
 	CEGUI::Window* pRoot = wndMgr.getWindow("Root");
@@ -171,6 +175,7 @@ void World::Shutdown()
 
 	m_cmdPanel->Destroy();
 	m_infoPanel->Destroy();
+	m_portraitPanel->Destroy();
 }
 
 void World::Update(float dt)
@@ -179,7 +184,8 @@ void World::Update(float dt)
 
 	ObjectManager::GetSingleton().UpdateAll(dt);
 
-	World::GetSingleton().GetInfoPanel()->Update();
+	m_infoPanel->Update();
+	m_portraitPanel->Update();
 }
 
 bool World::ClampPosToNavMesh( Ogre::Vector3& wPos )

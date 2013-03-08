@@ -2,9 +2,7 @@
 #define OGRE_MANAGER_H
 
 #include "Singleton.h"
-#include <OgrePrerequisites.h>
-#include <OgreWindowEventUtilities.h>
-#include <OgreShadowCameraSetup.h>
+#include "Ogre.h"
 
 //效果设置
 struct SEffectConfig 
@@ -40,12 +38,17 @@ public:
 	bool			IsInit() { return m_bHasInit; }
 	void			ResetEffect();
 
+	//Ogre damn bug.见 http://www.ogre3d.org/forums/viewtopic.php?p=189032#189032
+	void			updateSceneManagersAfterMaterialsChange();
+
 	void			MessagePump()		{ Ogre::WindowEventUtilities::messagePump(); }
 	bool			IsMainWndClosed();
 	bool			IsMainWndActive();
 	Ogre::Timer*	GetTimer()			{ return m_Timer; }
 	void			GetMainWndHandle(unsigned long& hwnd);
 	Ogre::PSSMShadowCameraSetup*	GetShadowCameraSetup() { return (Ogre::PSSMShadowCameraSetup*)mPSSMSetup.get(); }
+	//创建RT
+	Ogre::TexturePtr	CreateRT(const Ogre::String& name, int w, int h, Ogre::PixelFormat format);
 
 	const SEffectConfig&	GetEffectConfig() const { return m_effectCfg; }
 	void			EnableShadow(bool bEnable);

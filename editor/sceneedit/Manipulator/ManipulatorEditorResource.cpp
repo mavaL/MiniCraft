@@ -2,6 +2,7 @@
 #include "ManipulatorEditorResource.h"
 #include "EditorDefine.h"
 #include "Utility.h"
+#include "OgreManager.h"
 
 
 ManipulatorResource::~ManipulatorResource()
@@ -26,10 +27,8 @@ void ManipulatorResource::RenderAllMeshIcons( CImageList& retImageList, Ogre::St
 
 	//准备工作...
 	const PixelFormat imageFormat = PF_A8R8G8B8;
-	TexturePtr texture = TextureManager::getSingleton().createManual( "MeshIconRtt", ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, 
-		TEX_TYPE_2D, 256, 256, 0, imageFormat , TU_RENDERTARGET );
-
-	RenderTexture *rttTex = texture->getBuffer()->getRenderTarget();
+	TexturePtr tex = RenderManager.CreateRT("MeshIconRtt", 256, 256, imageFormat);
+	RenderTexture *rttTex = tex->getBuffer()->getRenderTarget();
 	SceneManager *SceneMgr = Root::getSingletonPtr()->createSceneManager("OctreeSceneManager", "MeshIconSceneMgr");
 
 	Light *dirl = SceneMgr->createLight("DisplayLight");
@@ -96,8 +95,8 @@ void ManipulatorResource::RenderAllMeshIcons( CImageList& retImageList, Ogre::St
 	//清理工作...
 	rttTex->removeAllViewports();
 	Root::getSingletonPtr()->destroySceneManager(SceneMgr);
-	TextureManager::getSingletonPtr()->unload(texture->getName());
-	TextureManager::getSingletonPtr()->remove(texture->getName());
+	TextureManager::getSingletonPtr()->unload("MeshIconRtt");
+	TextureManager::getSingletonPtr()->remove("MeshIconRtt");
 }
 
 void ManipulatorResource::PrepareAllIcons()
@@ -114,10 +113,8 @@ void ManipulatorResource::PrepareAllIcons()
 	fullScreenQuad.setMaterial("RenderIcon");
 
 	const PixelFormat imageFormat = PF_A8R8G8B8;
-	TexturePtr texture = TextureManager::getSingleton().createManual( "IconRtt", ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, 
-		TEX_TYPE_2D, origSize, origSize, 0, imageFormat , TU_RENDERTARGET );
-
-	RenderTexture *rttTex = texture->getBuffer()->getRenderTarget();
+	TexturePtr tex = RenderManager.CreateRT("IconRtt", origSize, origSize, imageFormat);
+	RenderTexture *rttTex = tex->getBuffer()->getRenderTarget();
 	SceneManager *SceneMgr = Root::getSingletonPtr()->createSceneManager("OctreeSceneManager", "IconSceneMgr");
 	Camera* RTTCam = SceneMgr->createCamera("IconCamera");
 
@@ -154,8 +151,8 @@ void ManipulatorResource::PrepareAllIcons()
 	//清理工作...
 	rttTex->removeAllViewports();
 	Root::getSingletonPtr()->destroySceneManager(SceneMgr);
-	TextureManager::getSingletonPtr()->unload(texture->getName());
-	TextureManager::getSingletonPtr()->remove(texture->getName());
+	TextureManager::getSingletonPtr()->unload("IconRtt");
+	TextureManager::getSingletonPtr()->remove("IconRtt");
 }
 
 Gdiplus::Bitmap* ManipulatorResource::GetIcon( const std::wstring& iconName ) const

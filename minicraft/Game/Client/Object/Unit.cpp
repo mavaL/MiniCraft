@@ -38,6 +38,8 @@ Unit::Unit()
 ,m_pAnimState(nullptr)
 ,m_unitName(Ogre::StringUtil::BLANK)
 ,m_fStopTime(0)
+,m_portraitEnt(nullptr)
+,m_pPortraitAnim(nullptr)
 {
 	Ogre::ParamDictionary* dict = getParamDictionary();
 	dict->addParameter(Ogre::ParameterDef("clamppos", "clamp position of the object", Ogre::PT_VECTOR3), &m_sCmdClampPos);
@@ -56,6 +58,9 @@ void Unit::Update( float dt )
 {
 	if(m_pAnimState)
 		m_pAnimState->addTime(dt);
+
+	if(m_bSelected)
+		m_pPortraitAnim->addTime(dt);
 
 	__super::Update(dt);
 }
@@ -254,4 +259,39 @@ void Unit::StopAction()
 	GetAi()->CancelAllCommand();
 	StopAnimation();
 	SetStopTime(0);
+}
+
+Ogre::Entity* Unit::GetPortrait(Ogre::SceneManager* sm, Ogre::Light* light)
+{
+	if(!m_portraitEnt)
+	{
+		SUnitData* pUnitData = &GameDataDefManager::GetSingleton().m_unitData[m_unitName];
+		assert(pUnitData);
+		m_portraitEnt = sm->createEntity(pUnitData->m_portrait);
+		m_pPortraitAnim = m_portraitEnt->getAnimationState("Portrait");
+		assert(m_pPortraitAnim);
+		m_pPortraitAnim->setEnabled(false);
+		m_pPortraitAnim->setLoop(true);
+
+		auto params = m_portraitEnt->getSubEntity(0)->getMaterial()->getBestTechnique()->getPass(0)->getFragmentProgramParameters();
+		params->setNamedConstant("LightDir", light->getDirection().normalisedCopy());
+		params->setNamedConstant("LightColor", light->getDiffuseColour());
+	}
+
+	return m_portraitEnt;
+}
+
+void Unit::_OnSelected( bool bSelected )
+{
+	__super::_OnSelected(bSelected);
+
+	if (bSelected)
+	{
+		m_pPortraitAnim->setEnabled(true);
+		m_pPortraitAnim->setTimePosition(0);
+	}
+	else
+	{
+		m_pPortraitAnim->setEnabled(false);
+	}
 }

@@ -16,6 +16,9 @@
 
 //CEGUI
 #include <CEGUI.h>
+#include <RendererModules\Ogre\CEGUIOgreRenderer.h>
+#include <RendererModules\Ogre\CEGUIOgreTexture.h>
+#include <RendererModules\Ogre\CEGUIOgreTexture.h>
 
 //RecastÑ°Â·¿â
 #include "Recast/Recast.h"

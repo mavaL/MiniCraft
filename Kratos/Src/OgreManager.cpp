@@ -234,3 +234,40 @@ void COgreManager::SetSSAOParam( const Ogre::String& name, float val, bool bRemo
 		m_ssao->setEnabled(m_effectCfg.bSSAO);
 	}
 }
+
+Ogre::TexturePtr COgreManager::CreateRT(const Ogre::String& name, int w, int h, Ogre::PixelFormat format)
+{
+	return TextureManager::getSingleton().createManual( name, ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, 
+		TEX_TYPE_2D, w, h, 0, format , TU_RENDERTARGET );
+}
+
+void COgreManager::updateSceneManagersAfterMaterialsChange()
+{
+	if(Root::getSingletonPtr() && (Ogre::Pass::getDirtyHashList().size()!=0 || Ogre::Pass::getPassGraveyard().size()!=0))
+	{
+		Ogre::SceneManagerEnumerator::SceneManagerIterator scenesIter = Root::getSingletonPtr()->getSceneManagerIterator();
+
+		while(scenesIter.hasMoreElements())
+		{
+			Ogre::SceneManager* pScene = scenesIter.getNext();
+			if(pScene)
+			{
+				Ogre::RenderQueue* pQueue = pScene->getRenderQueue();
+				if(pQueue)
+				{
+					Ogre::RenderQueue::QueueGroupIterator groupIter = pQueue->_getQueueGroupIterator();
+					while(groupIter.hasMoreElements())
+					{
+						Ogre::RenderQueueGroup* pGroup = groupIter.getNext();
+						if(pGroup)
+							pGroup->clear(false);
+					}//end_while(groupIter.hasMoreElements())
+				}//end_if(pScene)
+			}//end_if(pScene)
+		}//end_while(scenesIter.hasMoreElements())      
+
+		// Now trigger the pending pass updates
+		Ogre::Pass::processPendingPassUpdates();
+
+	}//end_if(m_Root..
+}

@@ -16,6 +16,7 @@ same license as the rest of the engine.
 
 #include <OgreMaterialManager.h>
 #include <OgreTechnique.h>
+#include "OgreManager.h"
 
 using namespace Ogre;
 
@@ -85,6 +86,8 @@ Technique* GBufferSchemeHandler::handleSchemeNotFound(unsigned short schemeIndex
 		*newPass = *(templateMat->getTechnique(0)->getPass(0));
 		fillPass(newPass, originalPass, props);    
 	}
+
+	COgreManager::GetSingleton().updateSceneManagersAfterMaterialsChange();
     
 	return gBufferTech;
 }

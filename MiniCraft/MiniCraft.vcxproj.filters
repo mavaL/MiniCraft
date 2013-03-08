@@ -88,6 +88,9 @@
     <ClInclude Include="Game\Client\Application.h">
       <Filter>Client</Filter>
     </ClInclude>
+    <ClInclude Include="Game\Client\UI\PortraitPanel.h">
+      <Filter>Client\UI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game\Client\BattleState.cpp">
@@ -152,6 +155,9 @@
     </ClCompile>
     <ClCompile Include="Game\Client\MiniCraft.cpp">
       <Filter>Client</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Client\UI\PortraitPanel.cpp">
+      <Filter>Client\UI</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

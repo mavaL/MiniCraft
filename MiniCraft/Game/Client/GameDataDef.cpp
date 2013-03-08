@@ -95,10 +95,11 @@ void GameDataDefManager::LoadAllData()
  	pNode = XMLDoc.first_node("Root")->first_node("Unit");
  	while(pNode)
  	{
- 		const char* szName = pNode->first_attribute("name")->value();
- 		const char* szTimeCost = pNode->first_attribute("timecost")->value();
-		const char* szMeshName = pNode->first_attribute("meshname")->value();
-		const char* szRace = pNode->first_attribute("race")->value();
+ 		const char* szName		= pNode->first_attribute("name")->value();
+ 		const char* szTimeCost	= pNode->first_attribute("timecost")->value();
+		const char* szMeshName	= pNode->first_attribute("meshname")->value();
+		const char* szRace		= pNode->first_attribute("race")->value();
+		const char* szPortrait	= pNode->first_attribute("portrait")->value();
 
  		SUnitData data = { Ogre::StringConverter::parseReal(szTimeCost), szMeshName };
 
@@ -108,6 +109,9 @@ void GameDataDefManager::LoadAllData()
 		mapRace["Zerg"]		= eGameRace_Zerg;
 
 		data.m_race = mapRace[szRace];
+
+		//3DÐ¤Ïñ
+		data.m_portrait = szPortrait;
 
 		//¶¯»­Êý¾Ý
 		std::unordered_map<STRING, eAnimation> mapName;
