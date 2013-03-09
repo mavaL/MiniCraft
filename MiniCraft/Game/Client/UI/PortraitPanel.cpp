@@ -46,8 +46,9 @@ void UiPortraitPanel::Init()
 	//cam->setProjectionType(Ogre::PT_ORTHOGRAPHIC);
 	cam->setNearClipDistance(0.1f);
 	cam->setFarClipDistance(100);
-	cam->setPosition(0, 0.7f, 0.45f);
+	cam->setPosition(-0.1f, 0.72f, 0.3f);
 	cam->setDirection(Ogre::Vector3::NEGATIVE_UNIT_Z);
+	cam->yaw(Ogre::Degree(-20));
 	Ogre::Viewport* vp = rt->addViewport(cam);
 	cam->setFOVy(Ogre::Radian(Ogre::Math::PI / 4));
 	cam->setAspectRatio((Ogre::Real)vp->getActualWidth()/(Ogre::Real)vp->getActualHeight());

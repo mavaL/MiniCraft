@@ -6,6 +6,7 @@
 #include "AIComponent.h"
 #include "PathComponent.h"
 #include "HarvestComponent.h"
+#include "OgreManager.h"
 
 IMPL_PARAM_COMMAND(Unit, ClampPos, Vector3)
 IMPL_PARAM_COMMAND_STR(Unit, UnitName)
@@ -267,14 +268,13 @@ Ogre::Entity* Unit::GetPortrait(Ogre::SceneManager* sm, Ogre::Light* light)
 	{
 		SUnitData* pUnitData = &GameDataDefManager::GetSingleton().m_unitData[m_unitName];
 		assert(pUnitData);
-		m_portraitEnt = sm->createEntity(pUnitData->m_portrait);
+		m_portraitEnt = RenderManager.CreateEntityWithTangent(pUnitData->m_portrait, sm);
 		m_pPortraitAnim = m_portraitEnt->getAnimationState("Portrait");
 		assert(m_pPortraitAnim);
 		m_pPortraitAnim->setEnabled(false);
 		m_pPortraitAnim->setLoop(true);
 
 		auto params = m_portraitEnt->getSubEntity(0)->getMaterial()->getBestTechnique()->getPass(0)->getFragmentProgramParameters();
-		params->setNamedConstant("LightDir", light->getDirection().normalisedCopy());
 		params->setNamedConstant("LightColor", light->getDiffuseColour());
 	}
 

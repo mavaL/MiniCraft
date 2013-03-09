@@ -49,6 +49,8 @@ public:
 	Ogre::PSSMShadowCameraSetup*	GetShadowCameraSetup() { return (Ogre::PSSMShadowCameraSetup*)mPSSMSetup.get(); }
 	//创建RT
 	Ogre::TexturePtr	CreateRT(const Ogre::String& name, int w, int h, Ogre::PixelFormat format);
+	//创建Entity,带tangent vector
+	Ogre::Entity*	CreateEntityWithTangent(const Ogre::String& meshname, Ogre::SceneManager* sm);
 
 	const SEffectConfig&	GetEffectConfig() const { return m_effectCfg; }
 	void			EnableShadow(bool bEnable);

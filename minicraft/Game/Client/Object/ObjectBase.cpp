@@ -112,8 +112,9 @@ void RenderableObject::CreateRenderInstance()
 
 	DestroyRenderInstance();
 
-	m_pSceneNode = RenderManager.m_pSceneMgr->getRootSceneNode()->createChildSceneNode();
-	m_pEntity = RenderManager.m_pSceneMgr->createEntity(m_meshname);
+	Ogre::SceneManager* sm = RenderManager.m_pSceneMgr;
+	m_pSceneNode = sm->getRootSceneNode()->createChildSceneNode();
+	m_pEntity = RenderManager.CreateEntityWithTangent(m_meshname, sm);
 	m_pSceneNode->attachObject(m_pEntity);
 
 	m_bRenderableReady = true;

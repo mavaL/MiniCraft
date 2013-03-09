@@ -118,7 +118,7 @@ fragment_program Portrait_PS cg
 
     default_params
     {
-		param_named LightDir float3 0 0 0
+		param_named_auto LightDir light_position_object_space 0
 		param_named LightColor float4 0 0 0 0
     }
 }

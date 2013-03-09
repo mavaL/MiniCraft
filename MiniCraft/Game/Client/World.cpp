@@ -105,7 +105,7 @@ void World::Init()
 	m_pTestScene->Load("MyStarCraft.Scene", "General", this);
 
 	//UI for test
-	Ogre::Entity* pEntConsole = sm->createEntity("ConsoleTerran_0.mesh");
+	Ogre::Entity* pEntConsole = RenderManager.CreateEntityWithTangent("ConsoleTerran_0.mesh", sm);
 	pEntConsole->setRenderQueueGroup(Ogre::RENDER_QUEUE_WORLD_GEOMETRY_2);
 	pEntConsole->setCastShadows(false);
 	m_pUISceneNode1 = sm->getRootSceneNode()->createChildSceneNode("UIConsoleNode");
@@ -114,7 +114,7 @@ void World::Init()
 	assert(m_pConsoleAnim1);
 	(const_cast<Ogre::AxisAlignedBox&>(pEntConsole->getMesh()->getBounds())).setInfinite();
 
-	pEntConsole = sm->createEntity("ConsoleTerran_1.mesh");
+	pEntConsole = RenderManager.CreateEntityWithTangent("ConsoleTerran_1.mesh", sm);
 	pEntConsole->setRenderQueueGroup(Ogre::RENDER_QUEUE_WORLD_GEOMETRY_2);
 	pEntConsole->setCastShadows(false);
 	m_pUISceneNode2 = m_pUISceneNode1->createChildSceneNode("InfoPanelNode");
@@ -123,14 +123,14 @@ void World::Init()
 	assert(m_pConsoleAnim2);
 	(const_cast<Ogre::AxisAlignedBox&>(pEntConsole->getMesh()->getBounds())).setInfinite();
 
-	pEntConsole = sm->createEntity("ConsoleTerran_2.mesh");
+	pEntConsole = RenderManager.CreateEntityWithTangent("ConsoleTerran_2.mesh", sm);
 	pEntConsole->setRenderQueueGroup(Ogre::RENDER_QUEUE_WORLD_GEOMETRY_2);
 	pEntConsole->setCastShadows(false);
 	m_pUISceneNode3 = m_pUISceneNode1->createChildSceneNode("CmdPanelNode");
 	m_pUISceneNode3->attachObject(pEntConsole);
 	(const_cast<Ogre::AxisAlignedBox&>(pEntConsole->getMesh()->getBounds())).setInfinite();
 
-	pEntConsole = sm->createEntity("ConsoleProtoss_6.mesh");
+	pEntConsole = RenderManager.CreateEntityWithTangent("ConsoleProtoss_6.mesh", sm);
 	pEntConsole->setRenderQueueGroup(Ogre::RENDER_QUEUE_WORLD_GEOMETRY_2);
 	pEntConsole->setCastShadows(false);
 	m_pUISceneNode4 = m_pUISceneNode1->createChildSceneNode("PortraitPanelNode");

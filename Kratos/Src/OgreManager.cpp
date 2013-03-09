@@ -271,3 +271,13 @@ void COgreManager::updateSceneManagersAfterMaterialsChange()
 
 	}//end_if(m_Root..
 }
+
+Ogre::Entity* COgreManager::CreateEntityWithTangent( const Ogre::String& meshname, Ogre::SceneManager* sm )
+{
+	MeshPtr mesh = MeshManager::getSingleton().load(meshname, ResourceGroupManager::AUTODETECT_RESOURCE_GROUP_NAME);
+	unsigned short src, dest;
+	if (!mesh->suggestTangentVectorBuildParams(VES_TANGENT, src, dest))
+		mesh->buildTangentVectors(VES_TANGENT, src, dest);
+
+	return sm->createEntity(mesh);
+}
