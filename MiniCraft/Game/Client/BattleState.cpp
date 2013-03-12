@@ -46,7 +46,7 @@ void CBattleState::enter()
 	m_pQuadNode->setVisible(false);
 	
 	//绑定输入事件
-	CInputManager& inputMgr = CInputManager::GetSingleton();
+	Kratos::CInputManager& inputMgr = INPUTMANAGER;
 	inputMgr.BindKeyPressed(boost::bind(&CBattleState::OnInputSys_KeyPressed, this, _1));
 	inputMgr.BindKeyReleased(boost::bind(&CBattleState::OnInputSys_KeyReleased, this, _1));
 	inputMgr.BindMousePressed(boost::bind(&CBattleState::OnInputSys_MousePressed, this, _1, _2));
@@ -68,10 +68,10 @@ void CBattleState::resume()
 
 void CBattleState::exit()
 {
-	CInputManager& InputMgr = CInputManager::GetSingleton();
-	InputMgr.UnbindMouseMove(eInputEventPriority_default);
-	InputMgr.UnbindMousePressed(eInputEventPriority_default);
-	InputMgr.UnbindMouseRelease(eInputEventPriority_default);
+	Kratos::CInputManager& InputMgr = INPUTMANAGER;
+	InputMgr.UnbindMouseMove(Kratos::eInputEventPriority_default);
+	InputMgr.UnbindMousePressed(Kratos::eInputEventPriority_default);
+	InputMgr.UnbindMouseRelease(Kratos::eInputEventPriority_default);
 
 	World::GetSingleton().Shutdown();
 	SAFE_DELETE(m_pSelectionQuad);

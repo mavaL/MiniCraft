@@ -15,6 +15,7 @@
 #include "Command.h"
 #include "AIComponent.h"
 #include "PathComponent.h"
+#include "AnimatedComponent.h"
 
 ///该类实现来自OgreProcedural库
 class SelectableObject : public RenderableObject
@@ -40,8 +41,9 @@ public:
 	const SAbilityData*	GetActiveAbility() const { return m_pActiveAbility; }
 	bool			HasAbility(eCommandType type);
 
-	inline AiComponent*		GetAi() { return QueryComponent(this, eComponentType_AI, AiComponent); }
-	inline PathComponent*	GetPath() { return QueryComponent(this, eComponentType_Path, PathComponent); }
+	inline AiComponent*			GetAi() { return QueryComponent(this, eComponentType_AI, AiComponent); }
+	inline PathComponent*		GetPath() { return QueryComponent(this, eComponentType_Path, PathComponent); }
+	inline AnimatedComponent*	GetAnim() { return QueryComponent(this, eComponentType_Animated, AnimatedComponent); }
 
 protected:
 	virtual void	_OnSelected(bool bSelected);

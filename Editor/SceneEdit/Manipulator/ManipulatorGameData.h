@@ -34,6 +34,8 @@ public:
 	const SAbilityData*			GetAbilityData(const std::wstring& name);
 	//设置建筑的能力
 	void						SetBuildingAbility(const std::wstring& buildingName, int slotIndex, const std::wstring& abilName);
+	//获取单位数据.注意参数是mesh名字
+	SUnitData*					GetUnitData(const std::string& meshname);
 
 private:
 	GameDataDefManager*			m_dataMgr;

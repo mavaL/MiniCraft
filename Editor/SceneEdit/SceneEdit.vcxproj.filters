@@ -150,6 +150,9 @@
     <ClInclude Include="UI\EffectPropertyPane.h">
       <Filter>UI</Filter>
     </ClInclude>
+    <ClInclude Include="UI\AttachmentPropertyPane.h">
+      <Filter>UI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SceneEdit.cpp">
@@ -240,6 +243,9 @@
       <Filter>Manipulator</Filter>
     </ClCompile>
     <ClCompile Include="UI\EffectPropertyPane.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\AttachmentPropertyPane.cpp">
       <Filter>UI</Filter>
     </ClCompile>
   </ItemGroup>

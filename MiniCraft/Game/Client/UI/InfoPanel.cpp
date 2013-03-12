@@ -16,7 +16,7 @@ UiInfoPanel::UiInfoPanel()
 
 void UiInfoPanel::Init()
 {
-	m_pLayout = CGUIManager::GetSingleton().LoadWindowLayout("InfoPanel.layout");
+	m_pLayout = GUIMANAGER.LoadWindowLayout("InfoPanel.layout");
 	assert(m_pLayout);
 	ShowInfoIcon(false);
 	ShowProgressQueue(false);
@@ -24,7 +24,7 @@ void UiInfoPanel::Init()
 
 void UiInfoPanel::Destroy()
 {
-	CGUIManager::GetSingleton().UnloadWindowLayout(m_pLayout);
+	GUIMANAGER.UnloadWindowLayout(m_pLayout);
 	m_pLayout = nullptr;
 }
 

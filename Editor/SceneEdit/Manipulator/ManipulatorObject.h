@@ -12,7 +12,9 @@
 #include "ManipulatorEventCallback.h"
 #include "EditorDefine.h"
 
+
 class GizmoAxis;
+
 
 ///物体信息封装结构
 struct SObjectInfo 
@@ -89,10 +91,6 @@ public:
 	Ogre::MovableObject* DoRaySceneQuery(const Ogre::Ray& ray, int queryMask = 0xffffffff);
 	void		DoAABBSceneQuery(const Ogre::AxisAlignedBox& aabb, int queryMask = 0xffffffff);
 
-	//Animation
-	std::vector<std::wstring> GetAnimationNames(Ogre::Entity* pEntity) const;
-	void		PlayAnimation(Ogre::Entity* pEntity, int animIndex);
-
 private:
 	void		_UpdateAABBOfEntity(Ogre::Entity* pEntity);
 
@@ -103,8 +101,6 @@ private:
 	GizmoAxis*		m_pGizmoAixs;		//坐标轴指示器
 	Ogre::RaySceneQuery* m_pRaySceneQuery;
 	Ogre::AxisAlignedBoxSceneQuery*	m_pAABBSceneQuery;
-	Ogre::Entity*	m_pAnimEntity;		//当前播放动画物体
-	Ogre::AnimationState*	m_pAnimState;
 };
 
 

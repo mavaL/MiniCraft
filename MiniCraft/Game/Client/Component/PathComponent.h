@@ -11,6 +11,7 @@
 
 #include "GameDefine.h"
 #include "Component.h"
+#include "KratosPrerequisites.h"
 
 class OgreRecast;
 class OgreDetourCrowd;

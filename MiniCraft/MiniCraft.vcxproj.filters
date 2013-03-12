@@ -91,6 +91,9 @@
     <ClInclude Include="Game\Client\UI\PortraitPanel.h">
       <Filter>Client\UI</Filter>
     </ClInclude>
+    <ClInclude Include="Game\Client\Component\AnimatedComponent.h">
+      <Filter>Client\Component</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game\Client\BattleState.cpp">
@@ -158,6 +161,9 @@
     </ClCompile>
     <ClCompile Include="Game\Client\UI\PortraitPanel.cpp">
       <Filter>Client\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Client\Component\AnimatedComponent.cpp">
+      <Filter>Client\Component</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -17,6 +17,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Kratos", "..\Kratos\Kratos.
 	ProjectSection(ProjectDependencies) = postProject
 		{7A18F419-4956-4B41-80A1-ACCCEB79B654} = {7A18F419-4956-4B41-80A1-ACCCEB79B654}
 		{B3973624-A51E-4EB8-ACAF-7595A101A863} = {B3973624-A51E-4EB8-ACAF-7595A101A863}
+		{1C741C2F-3278-43D8-9FD2-E631A64B70AE} = {1C741C2F-3278-43D8-9FD2-E631A64B70AE}
 		{F0617CC5-2D7E-4765-8412-F3AE01726DF9} = {F0617CC5-2D7E-4765-8412-F3AE01726DF9}
 		{D12113E2-D6DD-364C-A421-AD834D645AEC} = {D12113E2-D6DD-364C-A421-AD834D645AEC}
 	EndProjectSection
@@ -28,6 +29,11 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RenderSystem_Direct3D9", "..\..\Ogre_1_8_0\build\RenderSystems\Direct3D9\RenderSystem_Direct3D9.vcxproj", "{B3973624-A51E-4EB8-ACAF-7595A101A863}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CEGUIOgreRenderer", "..\..\CEGUI-0.7.9\projects\premake\RendererModules\Ogre\CEGUIOgreRenderer.vcxproj", "{A8206C2E-FB64-944D-9392-83742AFCF535}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ParticleUniverse", "..\..\Ogre_1_8_0\build\PlugIns\ParticleUniverse\scripts\ParticleUniverse_vc9.vcxproj", "{1C741C2F-3278-43D8-9FD2-E631A64B70AE}"
+	ProjectSection(ProjectDependencies) = postProject
+		{7A18F419-4956-4B41-80A1-ACCCEB79B654} = {7A18F419-4956-4B41-80A1-ACCCEB79B654}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -267,6 +273,33 @@ Global
 		{A8206C2E-FB64-944D-9392-83742AFCF535}.Unicode Release|Win32.ActiveCfg = Release|Win32
 		{A8206C2E-FB64-944D-9392-83742AFCF535}.Unicode Release|Win32.Build.0 = Release|Win32
 		{A8206C2E-FB64-944D-9392-83742AFCF535}.Unicode Release|x64.ActiveCfg = Release|Win32
+		{1C741C2F-3278-43D8-9FD2-E631A64B70AE}.Debug_Static|Win32.ActiveCfg = Debug|Win32
+		{1C741C2F-3278-43D8-9FD2-E631A64B70AE}.Debug_Static|Win32.Build.0 = Debug|Win32
+		{1C741C2F-3278-43D8-9FD2-E631A64B70AE}.Debug_Static|x64.ActiveCfg = Debug|Win32
+		{1C741C2F-3278-43D8-9FD2-E631A64B70AE}.Debug|Win32.ActiveCfg = Debug|Win32
+		{1C741C2F-3278-43D8-9FD2-E631A64B70AE}.Debug|Win32.Build.0 = Debug|Win32
+		{1C741C2F-3278-43D8-9FD2-E631A64B70AE}.Debug|x64.ActiveCfg = Debug|Win32
+		{1C741C2F-3278-43D8-9FD2-E631A64B70AE}.MinSizeRel|Win32.ActiveCfg = Release|Win32
+		{1C741C2F-3278-43D8-9FD2-E631A64B70AE}.MinSizeRel|Win32.Build.0 = Release|Win32
+		{1C741C2F-3278-43D8-9FD2-E631A64B70AE}.MinSizeRel|x64.ActiveCfg = Release|Win32
+		{1C741C2F-3278-43D8-9FD2-E631A64B70AE}.Release_Static|Win32.ActiveCfg = Release|Win32
+		{1C741C2F-3278-43D8-9FD2-E631A64B70AE}.Release_Static|Win32.Build.0 = Release|Win32
+		{1C741C2F-3278-43D8-9FD2-E631A64B70AE}.Release_Static|x64.ActiveCfg = Release|Win32
+		{1C741C2F-3278-43D8-9FD2-E631A64B70AE}.Release|Win32.ActiveCfg = Release|Win32
+		{1C741C2F-3278-43D8-9FD2-E631A64B70AE}.Release|Win32.Build.0 = Release|Win32
+		{1C741C2F-3278-43D8-9FD2-E631A64B70AE}.Release|x64.ActiveCfg = Release|Win32
+		{1C741C2F-3278-43D8-9FD2-E631A64B70AE}.ReleaseWithSymbols|Win32.ActiveCfg = Release|Win32
+		{1C741C2F-3278-43D8-9FD2-E631A64B70AE}.ReleaseWithSymbols|Win32.Build.0 = Release|Win32
+		{1C741C2F-3278-43D8-9FD2-E631A64B70AE}.ReleaseWithSymbols|x64.ActiveCfg = Release|Win32
+		{1C741C2F-3278-43D8-9FD2-E631A64B70AE}.RelWithDebInfo|Win32.ActiveCfg = Release|Win32
+		{1C741C2F-3278-43D8-9FD2-E631A64B70AE}.RelWithDebInfo|Win32.Build.0 = Release|Win32
+		{1C741C2F-3278-43D8-9FD2-E631A64B70AE}.RelWithDebInfo|x64.ActiveCfg = Release|Win32
+		{1C741C2F-3278-43D8-9FD2-E631A64B70AE}.Unicode Debug|Win32.ActiveCfg = Debug|Win32
+		{1C741C2F-3278-43D8-9FD2-E631A64B70AE}.Unicode Debug|Win32.Build.0 = Debug|Win32
+		{1C741C2F-3278-43D8-9FD2-E631A64B70AE}.Unicode Debug|x64.ActiveCfg = Debug|Win32
+		{1C741C2F-3278-43D8-9FD2-E631A64B70AE}.Unicode Release|Win32.ActiveCfg = Release|Win32
+		{1C741C2F-3278-43D8-9FD2-E631A64B70AE}.Unicode Release|Win32.Build.0 = Release|Win32
+		{1C741C2F-3278-43D8-9FD2-E631A64B70AE}.Unicode Release|x64.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

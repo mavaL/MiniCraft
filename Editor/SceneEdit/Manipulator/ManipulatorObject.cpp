@@ -12,8 +12,6 @@
 ManipulatorObject::ManipulatorObject()
 :m_curEditMode(eEditMode_None)
 ,m_pSelectEntity(nullptr)
-,m_pAnimEntity(nullptr)
-,m_pAnimState(nullptr)
 {
 	//默认查询掩码
 	Ogre::MovableObject::setDefaultQueryFlags(eQueryMask_Default);
@@ -44,11 +42,12 @@ void ManipulatorObject::OnSceneClose()
 {
 	m_curEditMode = eEditMode_None; 
 	m_pSelectEntity = nullptr;
-	m_pAnimEntity = nullptr;
-	m_pAnimState = nullptr;
 
 	for(auto iter=m_objects.begin(); iter!=m_objects.end(); ++iter)
-		delete iter->second;
+	{
+		SObjectInfo* obj = iter->second;
+		delete obj;
+	}
 	m_objects.clear();
 }
 
@@ -223,14 +222,14 @@ void ManipulatorObject::ClearSelection()
 {
 	if (m_pSelectEntity)
 	{
+		//回调事件
+		Excute([=,this](ManipulatorObjectEventCallback* callback){ callback->OnObjectClearSelection(m_pSelectEntity); });
+
 		//隐藏所有gizmo
 		ShowEntityGizmo(m_pSelectEntity, false, eEditMode_Select);
 		ShowEntityGizmo(m_pSelectEntity, false, eEditMode_Move);
-		Ogre::Entity* pSelection = m_pSelectEntity;
-		m_pSelectEntity = nullptr;
 
-		//回调事件
-		Excute([=,this](ManipulatorObjectEventCallback* callback){ callback->OnObjectClearSelection(pSelection); });
+		m_pSelectEntity = nullptr;
 	}
 }
 
@@ -239,10 +238,6 @@ void ManipulatorObject::OnFrameMove( float dt )
 	//更新选中物体的包围盒
 	if (m_pSelectEntity)
 		_UpdateAABBOfEntity(m_pSelectEntity);
-
-	//更新动画
-	if(m_pAnimState)
-		m_pAnimState->addTime(dt);
 }
 
 Ogre::WireBoundingBox* ManipulatorObject::GetEntityAABBGizmo(Ogre::Entity* pEntity)
@@ -352,48 +347,6 @@ bool ManipulatorObject::GetObjectNavMeshFlag( Ogre::Entity* pEntity ) const
 	assert(iter != m_objects.end());
 
 	return (iter->second)->m_bAddToNavmesh;
-}
-
-std::vector<std::wstring> ManipulatorObject::GetAnimationNames( Ogre::Entity* pEntity ) const
-{
-	assert(pEntity);
-	std::vector<std::wstring> vecRet;
-	Ogre::Skeleton* pSkeleton = pEntity->getSkeleton();
-
-	vecRet.push_back(L"None");
-
-	//没有可用动画
-	if(!pSkeleton || pSkeleton->getNumAnimations()==0)
-		return vecRet;
-
-	for(size_t i=0; i<pSkeleton->getNumAnimations(); ++i)
-		vecRet.push_back(Utility::EngineToUnicode(pSkeleton->getAnimation(i)->getName()));
-
-	return vecRet;
-}
-
-void ManipulatorObject::PlayAnimation( Ogre::Entity* pEntity, int animIndex )
-{
-	assert(pEntity);
-
-	//停止之前的动画
-	if (m_pAnimState)
-	{
-		m_pAnimState->setEnabled(false);
-		m_pAnimEntity = nullptr;
-		m_pAnimState = nullptr;
-	}
-
-	if (animIndex != -1)
-	{
-		const Ogre::String& animName = pEntity->getSkeleton()->getAnimation(animIndex)->getName();
-		m_pAnimEntity = pEntity;
-		m_pAnimState = pEntity->getAnimationState(animName);
-		assert(m_pAnimState);
-
-		m_pAnimState->setEnabled(true);
-		m_pAnimState->setLoop(true);
-	}
 }
 
 void ManipulatorObject::SetObjectIsBuilding( Ogre::Entity* pEntity, bool bIsBuilding )

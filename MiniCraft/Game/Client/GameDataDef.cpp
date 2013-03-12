@@ -148,57 +148,140 @@ void GameDataDefManager::LoadAllData()
  	}
  	free(szData);
  	XMLDoc.clear();
+
+	///加载挂接特效配表
+	stream = Ogre::ResourceGroupManager::getSingleton().openResource("Effect.xml", "Config");
+	szData = strdup(stream->getAsString().c_str());
+
+	XMLDoc.parse<0>(szData);
+	pNode = XMLDoc.first_node("Root")->first_node("Unit");
+	while(pNode)
+	{
+		const char* szName = pNode->first_attribute("name")->value();
+		SUnitData& unitData = m_unitData[szName];
+
+		rapidxml::xml_node<>* pEffectNode = pNode->first_node("ParticleEffect");
+		while(pEffectNode)
+		{
+			const char* szAnim		= pEffectNode->first_attribute("animation")->value();
+			const char* szLocator	= pEffectNode->first_attribute("locator")->value();
+			const char* szTemplate	= pEffectNode->first_attribute("template")->value();
+			float fStartTime		= Ogre::StringConverter::parseReal(pEffectNode->first_attribute("starttime")->value());
+			float fLifeTime			= Ogre::StringConverter::parseReal(pEffectNode->first_attribute("lifetime")->value());
+
+			SEffectData effect = { szLocator, szAnim, szTemplate, fStartTime, fLifeTime };
+			unitData.m_effects.push_back(effect);
+
+			pEffectNode = pEffectNode->next_sibling();
+		}
+
+		pNode = pNode->next_sibling();
+	}
+	free(szData);
+	XMLDoc.clear();
 }
 
 void GameDataDefManager::SaveAllData()
 {
 	using namespace rapidxml;
 
-	xml_document<> doc;  
-	//文件头
-	xml_node<>* header = doc.allocate_node(rapidxml::node_pi, doc.allocate_string("xml version='1.0' encoding='utf-8'"));
-	doc.append_node(header);
-
-	//Root
-	xml_node<>* root =   doc.allocate_node(node_element, "Root");
-	doc.append_node(root);
-
-	std::unordered_map<eGameRace, std::string> raceNameMap;
-	raceNameMap.insert(std::make_pair(eGameRace_Terran, "Terran"));
-	raceNameMap.insert(std::make_pair(eGameRace_Zerg, "Zerg"));
-
 	//building数据
-	for (auto itData=m_buildingData.begin(); itData!=m_buildingData.end(); ++itData)
 	{
-		const SBuildingData& data = itData->second;
-		const std::string strIcon = data.m_iconName;
-		const std::string strBuilding = itData->first;
+		xml_document<> doc;  
+		//文件头
+		xml_node<>* header = doc.allocate_node(rapidxml::node_pi, doc.allocate_string("xml version='1.0' encoding='utf-8'"));
+		doc.append_node(header);
+		//Root
+		xml_node<>* root =   doc.allocate_node(node_element, "Root");
+		doc.append_node(root);
 
-		xml_node<>* node =   doc.allocate_node(node_element, "Building");
-		node->append_attribute(doc.allocate_attribute("race", doc.allocate_string(raceNameMap[data.m_race].c_str())));
-		node->append_attribute(doc.allocate_attribute("name", doc.allocate_string(strBuilding.c_str())));
-		node->append_attribute(doc.allocate_attribute("iconname", doc.allocate_string(strIcon.c_str())));
-		node->append_attribute(doc.allocate_attribute("meshname", doc.allocate_string(data.m_meshname.c_str())));
-		root->append_node(node);
+		std::unordered_map<eGameRace, std::string> raceNameMap;
+		raceNameMap.insert(std::make_pair(eGameRace_Terran, "Terran"));
+		raceNameMap.insert(std::make_pair(eGameRace_Zerg, "Zerg"));
 
-		//ability数据
-		for (int i=0; i<MAX_ABILITY_SLOT; ++i)
+		for (auto itData=m_buildingData.begin(); itData!=m_buildingData.end(); ++itData)
 		{
-			if(data.m_vecAbilities[i] == "")
+			const SBuildingData& data = itData->second;
+			const std::string strIcon = data.m_iconName;
+			const std::string strBuilding = itData->first;
+			const std::string strRallyPt = Ogre::StringConverter::toString(data.m_rallyPoint);
+			const std::string strFlags = Ogre::StringConverter::toString(data.m_flags);
+
+			xml_node<>* node =   doc.allocate_node(node_element, "Building");
+			node->append_attribute(doc.allocate_attribute("race", doc.allocate_string(raceNameMap[data.m_race].c_str())));
+			node->append_attribute(doc.allocate_attribute("name", doc.allocate_string(strBuilding.c_str())));
+			node->append_attribute(doc.allocate_attribute("iconname", doc.allocate_string(strIcon.c_str())));
+			node->append_attribute(doc.allocate_attribute("meshname", doc.allocate_string(data.m_meshname.c_str())));
+			node->append_attribute(doc.allocate_attribute("rallypoint", doc.allocate_string(strRallyPt.c_str())));
+			node->append_attribute(doc.allocate_attribute("flags", doc.allocate_string(strFlags.c_str())));
+			root->append_node(node);
+
+			//ability数据
+			for (int i=0; i<MAX_ABILITY_SLOT; ++i)
+			{
+				if(data.m_vecAbilities[i] == "")
+					continue;
+
+				const std::string strAbil = data.m_vecAbilities[i];
+				const std::string strSlotIdx = Ogre::StringConverter::toString(i);
+
+				xml_node<>* abilNode =   doc.allocate_node(node_element, "Ability");
+				abilNode->append_attribute(doc.allocate_attribute("name", doc.allocate_string(strAbil.c_str())));
+				abilNode->append_attribute(doc.allocate_attribute("slotindex", doc.allocate_string(strSlotIdx.c_str())));
+				node->append_node(abilNode);
+			}
+		}
+
+		Ogre::StringVectorPtr loc = Ogre::ResourceGroupManager::getSingleton().findResourceLocation("Config", "*Config");
+		const Ogre::String filename = loc->at(0) + "\\RaceBuildingData.xml";
+		std::ofstream out(filename);
+		out << doc;
+	}
+	
+
+	//挂接特效
+	{
+		xml_document<> doc;  
+		//文件头
+		xml_node<>* header = doc.allocate_node(rapidxml::node_pi, doc.allocate_string("xml version='1.0' encoding='utf-8'"));
+		doc.append_node(header);
+		//Root
+		xml_node<>* root =   doc.allocate_node(node_element, "Root");
+		doc.append_node(root);
+
+		for (auto itUnit=m_unitData.begin(); itUnit!=m_unitData.end(); ++itUnit)
+		{
+			//per unit
+			const SUnitData& unitData = itUnit->second;
+
+			if(unitData.m_effects.empty())
 				continue;
 
-			const std::string strAbil = data.m_vecAbilities[i];
-			const std::string strSlotIdx = Ogre::StringConverter::toString(i);
+			xml_node<>* unitNode =   doc.allocate_node(node_element, "Unit");
+			unitNode->append_attribute(doc.allocate_attribute("name", doc.allocate_string(itUnit->first.c_str())));
+			root->append_node(unitNode);
 
-			xml_node<>* abilNode =   doc.allocate_node(node_element, "Ability");
-			abilNode->append_attribute(doc.allocate_attribute("name", doc.allocate_string(strAbil.c_str())));
-			abilNode->append_attribute(doc.allocate_attribute("slotindex", doc.allocate_string(strSlotIdx.c_str())));
-			node->append_node(abilNode);
+			//per effect
+			for (size_t iEffect=0; iEffect<unitData.m_effects.size(); ++iEffect)
+			{
+				const SEffectData& effect = unitData.m_effects[iEffect];
+				xml_node<>* effectNode =   doc.allocate_node(node_element, "ParticleEffect");
+				const std::string strStartTime = Ogre::StringConverter::toString(effect.m_fStartTime);
+				const std::string strLifeTime = Ogre::StringConverter::toString(effect.m_fLifeTime);
+
+				effectNode->append_attribute(doc.allocate_attribute("animation"	, doc.allocate_string(effect.m_anim.c_str())));
+				effectNode->append_attribute(doc.allocate_attribute("locator"	, doc.allocate_string(effect.m_locator.c_str())));
+				effectNode->append_attribute(doc.allocate_attribute("template"	, doc.allocate_string(effect.m_particleTmp.c_str())));
+				effectNode->append_attribute(doc.allocate_attribute("starttime"	, doc.allocate_string(strStartTime.c_str())));
+				effectNode->append_attribute(doc.allocate_attribute("lifetime"	, doc.allocate_string(strLifeTime.c_str())));
+				unitNode->append_node(effectNode);
+			}
 		}
-	}
 
-	Ogre::StringVectorPtr loc = Ogre::ResourceGroupManager::getSingleton().findResourceLocation("Config", "*Config");
-	const Ogre::String filename = loc->at(0) + "\\RaceBuildingData.xml";
-	std::ofstream out(filename);
-	out << doc;
+		Ogre::StringVectorPtr loc = Ogre::ResourceGroupManager::getSingleton().findResourceLocation("Config", "*Config");
+		const Ogre::String filename = loc->at(0) + "\\Effect.xml";
+		std::ofstream out(filename);
+		out << doc;
+	}
+	
 }

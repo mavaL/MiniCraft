@@ -57,8 +57,8 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>.\Build\Bin\$(Configuration);..\Kratos\Dependency\Lua5_1_4\lib;..\Kratos\Dependency\CEGUI\lib\debug;..\Kratos\Dependency\boost\Lib;..\Kratos\Dependency\OIS\Lib\$(Configuration);..\Kratos\Dependency\Ogre\Lib\$(Configuration)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>OgreMain_d.lib;OIS_d.lib;OgreTerrain_d.lib;CEGUIBase_d.lib;CEGUIOgreRenderer_d.lib;lua51.lib;Kratos_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>.\Build\Bin\$(Configuration);..\Kratos\Dependency\Lua5_1_4\lib;..\Kratos\Dependency\CEGUI\lib\debug;..\Kratos\Dependency\boost\Lib;..\Kratos\Dependency\OIS\Lib\$(Configuration);..\Kratos\Dependency\Ogre\Lib\$(Configuration)\opt;..\Kratos\Dependency\Ogre\Lib\$(Configuration)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>OgreMain_d.lib;ParticleUniverse_d.lib;OIS_d.lib;OgreTerrain_d.lib;CEGUIBase_d.lib;CEGUIOgreRenderer_d.lib;lua51.lib;Kratos_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -84,6 +84,7 @@
     <ClInclude Include="Game\Client\Application.h" />
     <ClInclude Include="Game\Client\BattleState.h" />
     <ClInclude Include="Game\Client\Component\AIComponent.h" />
+    <ClInclude Include="Game\Client\Component\AnimatedComponent.h" />
     <ClInclude Include="Game\Client\Component\Component.h" />
     <ClInclude Include="Game\Client\Component\HarvestComponent.h" />
     <ClInclude Include="Game\Client\Component\PathComponent.h" />
@@ -109,6 +110,7 @@
     <ClCompile Include="Game\Client\Application.cpp" />
     <ClCompile Include="Game\Client\BattleState.cpp" />
     <ClCompile Include="Game\Client\Component\AIComponent.cpp" />
+    <ClCompile Include="Game\Client\Component\AnimatedComponent.cpp" />
     <ClCompile Include="Game\Client\Component\HarvestComponent.cpp" />
     <ClCompile Include="Game\Client\Component\PathComponent.cpp" />
     <ClCompile Include="Game\Client\Faction.cpp" />

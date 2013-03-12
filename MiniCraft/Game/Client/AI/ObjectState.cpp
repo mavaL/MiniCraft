@@ -15,9 +15,8 @@ void StateIdle::Enter( SelectableObject* pOwner )
 {
 	if(pOwner->GetType() == eObjectType_Unit)
 	{
-		Unit* pUnit = static_cast<Unit*>(pOwner);
 		//播放休闲动画
-		pUnit->PlayAnimation(eAnimation_Idle, true);
+		pOwner->GetAnim()->PlayAnimation(eAnimation_Idle, true);
 	}
 }
 
@@ -25,9 +24,8 @@ void StateIdle::Exit( SelectableObject* pOwner )
 {
 	if(pOwner->GetType() == eObjectType_Unit)
 	{
-		Unit* pUnit = static_cast<Unit*>(pOwner);
 		//停止播放休闲动画
-		pUnit->StopAnimation();
+		pOwner->GetAnim()->StopAnimation();
 	}
 }
 
@@ -41,8 +39,7 @@ void StateMove::Enter( SelectableObject* pOwner )
 	assert(bSucceed);
 
 	//播放移动动画
-	Unit* pUnit = static_cast<Unit*>(pOwner);
-	pUnit->PlayAnimation(eAnimation_Move, true);
+	pOwner->GetAnim()->PlayAnimation(eAnimation_Move, true);
 }
 
 void StateMove::Update( float dt, SelectableObject* pOwner )
@@ -59,10 +56,9 @@ void StateMove::Update( float dt, SelectableObject* pOwner )
 void StateMove::Exit( SelectableObject* pOwner )
 {
 	assert(pOwner->GetType() == eObjectType_Unit);
-	Unit* pUnit = static_cast<Unit*>(pOwner);
-	//停止播放移动动画
-	pUnit->StopAnimation();
 
+	//停止播放移动动画
+	pOwner->GetAnim()->StopAnimation();
 	pOwner->_OnCommandFinished(eCommandType_Move);
 }
 
@@ -90,7 +86,7 @@ void StateProduce::Update( float dt, SelectableObject* pOwner )
 
 		//鲜活的单位出炉了
 		SelectableObject* pNewObj = static_cast<SelectableObject*>(ObjectManager::GetSingleton().CreateObject(eObjectType_Unit));
-		pNewObj->setParameter("unitName", unitName);
+		pNewObj->setParameter("unitname", unitName);
 		pNewObj->setParameter("position", pOwner->getParameter("rallypoint"));
 
 		//新单位进入空闲状态
@@ -110,16 +106,16 @@ void StateProduce::Exit(SelectableObject* pOwner)
 ///////////////////////////////////////////////////////////////
 void StateTargeting::Enter( SelectableObject* pOwner )
 {
-	CInputManager& inputMgr = CInputManager::GetSingleton();
-	inputMgr.BindMouseRelease(boost::bind(&StateTargeting::OnInputSys_MouseReleased, this, _1, _2), eInputEventPriority_Targeting);
-	inputMgr.BlockMousePressed(eInputEventPriority_default, true);
+	Kratos::CInputManager& inputMgr = INPUTMANAGER;
+	inputMgr.BindMouseRelease(boost::bind(&StateTargeting::OnInputSys_MouseReleased, this, _1, _2), Kratos::eInputEventPriority_Targeting);
+	inputMgr.BlockMousePressed(Kratos::eInputEventPriority_default, true);
 }
 
 void StateTargeting::Exit( SelectableObject* pOwner )
 {
-	CInputManager& inputMgr = CInputManager::GetSingleton();
-	inputMgr.UnbindMouseRelease(eInputEventPriority_Targeting);
-	inputMgr.BlockMousePressed(eInputEventPriority_default, false);
+	Kratos::CInputManager& inputMgr = INPUTMANAGER;
+	inputMgr.UnbindMouseRelease(Kratos::eInputEventPriority_Targeting);
+	inputMgr.BlockMousePressed(Kratos::eInputEventPriority_default, false);
 }
 
 bool StateTargeting::OnInputSys_MouseReleased( const OIS::MouseEvent& arg, OIS::MouseButtonID id )

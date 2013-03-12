@@ -101,7 +101,7 @@ void World::Init()
 	g_Environment.m_pCrowd = m_pDetourCrowd;
 
 	//¼ÓÔØ²âÊÔ³¡¾°
-	m_pTestScene = new Scene();
+	m_pTestScene = new Kratos::Scene();
 	m_pTestScene->Load("MyStarCraft.Scene", "General", this);
 
 	//UI for test
@@ -144,7 +144,7 @@ void World::Init()
 	CEGUI::WindowManager& wndMgr = CEGUI::WindowManager::getSingleton();
 	CEGUI::Window* pRoot = wndMgr.getWindow("Root");
 	assert(pRoot);
-	CGUIManager::GetSingleton().SetGUISheet(pRoot);
+	GUIMANAGER.SetGUISheet(pRoot);
 	pRoot->addChildWindow(wndMgr.getWindow("InfoPanelFrame"));
 }
 

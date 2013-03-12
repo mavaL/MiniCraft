@@ -38,8 +38,6 @@ public:
 public:
 	void			SetUnitName(const STRING& name);
 	const STRING&	GetUnitName() const {return m_unitName; } 
-	void			PlayAnimation(eAnimation type, bool bLoop);
-	void			StopAnimation();
 	//设置单位坐标,内部会自动夹持到地形上
 	void			SetClampPos(const POS& pos);
 	const POS&		GetClampPos() const { return GetPosition(); }
@@ -67,10 +65,9 @@ protected:
 
 private:
 	STRING					m_unitName;		//单位名称,如:scv,marine...
-	Ogre::AnimationState*	m_pAnimState;	//当前播放动画
 	float					m_fStopTime;	//已经进入停止状态多久
-	Ogre::Entity*			m_portraitEnt;	//3D肖像模型
-	Ogre::AnimationState*	m_pPortraitAnim;	//3D肖像动画
+	static std::unordered_map<STRING, Ogre::Entity*>			m_portraitCache;		//cache每种单位的3D肖像模型
+	static std::unordered_map<STRING, Ogre::AnimationState*>	m_portraitAnimCache;	//cache每种单位的3D肖像动画
 };
 
 

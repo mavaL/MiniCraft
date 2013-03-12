@@ -50,6 +50,9 @@
     <Filter Include="源文件\DeferredShading">
       <UniqueIdentifier>{2b5b0e1c-b675-4d3e-a156-fc43534cd62c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="源文件\Effect">
+      <UniqueIdentifier>{c0e83eab-71a2-4a76-bfbd-059fc29876d8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\AppState.h">
@@ -214,6 +217,15 @@
     <ClInclude Include="Src\DeferredShading\TerrainMaterialGeneratorD.h">
       <Filter>源文件\DeferredShading</Filter>
     </ClInclude>
+    <ClInclude Include="Src\Effect\ParticleEffect.h">
+      <Filter>源文件\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Effect\EffectController.h">
+      <Filter>源文件\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\KratosPrerequisites.h">
+      <Filter>源文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\AppStateManager.cpp">
@@ -362,6 +374,12 @@
     </ClCompile>
     <ClCompile Include="Src\DeferredShading\TerrainMaterialGeneratorD.cpp">
       <Filter>源文件\DeferredShading</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Effect\ParticleEffect.cpp">
+      <Filter>源文件\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Effect\EffectController.cpp">
+      <Filter>源文件\Effect</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

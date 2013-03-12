@@ -16,6 +16,7 @@ String
 #include "UI/ObjectPropertyPane.h"
 #include "UI/DialogGameDataBuilding.h"
 #include "UI/EffectPropertyPane.h"
+#include "UI/AttachmentPropertyPane.h"
 
 
 // CMainFrame
@@ -70,6 +71,10 @@ BEGIN_MESSAGE_MAP(CMainFrame, CXTPFrameWnd)
 	ON_UPDATE_COMMAND_UI(IDC_Shadow_OnOff, OnUpdateUI_ShadowOnOff)
 	ON_COMMAND(IDC_SSAO_OnOff, OnSSAOOnOff)
 	ON_UPDATE_COMMAND_UI(IDC_SSAO_OnOff, OnUpdateUI_SSAOOnOff)
+	ON_COMMAND(IDC_Animation_Play, OnAnimPlay)
+	ON_COMMAND(IDC_Animation_Stop, OnAnimStop)
+	ON_UPDATE_COMMAND_UI(IDC_Animation_Play, OnUpdateUI_AnimPlay)
+	ON_UPDATE_COMMAND_UI(IDC_Animation_Stop, OnUpdateUI_AnimStop)
 END_MESSAGE_MAP()
 
 
@@ -81,9 +86,12 @@ CMainFrame::CMainFrame()
 ,m_paneTerrain(NULL)
 ,m_propertyObject(new PropertyPaneObject)
 ,m_propertyEffect(new PropertyPaneEffect)
+,m_propertyAttachment(new PropertyPaneAttachment)
 ,m_paneObject(NULL)
 ,m_paneEffect(NULL)
+,m_paneAttachment(NULL)
 ,m_animTab(NULL)
+,m_animList(NULL)
 {
 }
 
@@ -93,6 +101,7 @@ CMainFrame::~CMainFrame()
 	SAFE_DELETE(m_wndView);
 	SAFE_DELETE(m_propertyObject);
 	SAFE_DELETE(m_propertyEffect);
+	SAFE_DELETE(m_propertyAttachment);
 }
 
 int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
@@ -288,6 +297,26 @@ bool CMainFrame::_OnCreateRibbon()
 	pGroup = pTab->AddGroup(L"SSAO");
 	//RibbonEffect - GroupSSAO - OnOff
 	pGroup->Add(xtpControlButton, IDC_SSAO_OnOff);
+
+	///RibbonAnimation
+	m_animTab = pRibbonBar->InsertTab(-1, L"Animation");
+	m_animTab->SetContextTab(xtpRibbonTabContextColorRed, L"Animation");
+	//选中了带动画物体才显示
+	m_animTab->SetVisible(FALSE);
+
+	//RibbonAnimation - GroupAnim
+	pGroup = m_animTab->AddGroup(L"Anim");
+
+	//RibbonAnimation - GroupAnim - AnimList
+	m_animList = dynamic_cast<CXTPControlComboBox*>(pGroup->Add(xtpControlComboBox, IDC_Animation_Names));
+	m_animList->SetDropDownListStyle();
+	m_animList->SetWidth(150);
+
+	//RibbonAnimation - GroupAnim - Play
+	pGroup->Add(xtpControlButton, IDC_Animation_Play);
+
+	//RibbonAnimation - GroupAnim - Stop
+	pGroup->Add(xtpControlButton, IDC_Animation_Stop);
 	
 	return true;
 }
@@ -313,6 +342,8 @@ void CMainFrame::_LoadIcon()
 	icon[0] = IDC_GameData_Building;		pImageMgr->SetIcons(IDB_Button, icon, _countof(icon), CSize(32, 32));
 	icon[0] = IDC_Shadow_OnOff;				pImageMgr->SetIcons(IDB_Button, icon, _countof(icon), CSize(32, 32));
 	icon[0] = IDC_SSAO_OnOff;				pImageMgr->SetIcons(IDB_Button, icon, _countof(icon), CSize(32, 32));
+	icon[0] = IDC_Animation_Play;			pImageMgr->SetIcons(IDB_Button, icon, _countof(icon), CSize(32, 32));
+	icon[0] = IDC_Animation_Stop;			pImageMgr->SetIcons(IDB_Button, icon, _countof(icon), CSize(32, 32));
 }
 
 BOOL CMainFrame::OnCreateClient( LPCREATESTRUCT lpcs, CCreateContext* pContext )
@@ -336,6 +367,7 @@ void CMainFrame::OnTimer( UINT_PTR nIDEvent )
 		m_paneManager.AttachPane(m_paneTerrain, m_paneResSelector);
 		m_paneManager.AttachPane(m_paneObject, m_paneResSelector);
 		m_paneManager.AttachPane(m_paneEffect, m_paneResSelector);
+		m_paneManager.AttachPane(m_paneAttachment, m_paneResSelector);
 		bInitLayout = true;
 	}
 
@@ -355,10 +387,11 @@ void CMainFrame::_CreateDockPane()
 	m_paneManager.SetShowContentsWhileDragging(TRUE);
 	m_paneManager.SetDefaultPaneOptions(xtpPaneNoHideable);
 
-	m_paneResSelector = m_paneManager.CreatePane(IDR_Pane_ResourceSelector, CRect(0, 0, 250, 120), xtpPaneDockRight);
-	m_paneTerrain = m_paneManager.CreatePane(IDR_Pane_TerrainProperty, CRect(0, 0, 250, 120), xtpPaneDockRight);
-	m_paneObject = m_paneManager.CreatePane(IDR_Pane_ObjectProperty, CRect(0, 0, 250, 120), xtpPaneDockRight);
-	m_paneEffect = m_paneManager.CreatePane(IDR_Pane_EffectProperty, CRect(0, 0, 250, 120), xtpPaneDockRight);
+	m_paneResSelector	= m_paneManager.CreatePane(IDR_Pane_ResourceSelector, CRect(0, 0, 250, 120), xtpPaneDockRight);
+	m_paneTerrain		= m_paneManager.CreatePane(IDR_Pane_TerrainProperty, CRect(0, 0, 250, 120), xtpPaneDockRight);
+	m_paneObject		= m_paneManager.CreatePane(IDR_Pane_ObjectProperty, CRect(0, 0, 250, 120), xtpPaneDockRight);
+	m_paneEffect		= m_paneManager.CreatePane(IDR_Pane_EffectProperty, CRect(0, 0, 250, 120), xtpPaneDockRight);
+	m_paneAttachment	= m_paneManager.CreatePane(IDR_Pane_AttachmentProperty, CRect(0, 0, 250, 120), xtpPaneDockRight);
 }
 
 LRESULT CMainFrame::_AttachDockPane( WPARAM wParam, LPARAM lParam )
@@ -385,6 +418,10 @@ LRESULT CMainFrame::_AttachDockPane( WPARAM wParam, LPARAM lParam )
 
 			case IDR_Pane_EffectProperty:
 				pPane->Attach(m_propertyEffect);
+				break;
+
+			case IDR_Pane_AttachmentProperty:
+				pPane->Attach(m_propertyAttachment);
 				break;
 
 			default: assert(0);
@@ -466,10 +503,12 @@ bool CMainFrame::CreateEditorMainUI()
 	m_propertyTerrain->Create(L"STATIC", NULL, WS_CHILD|WS_VISIBLE|WS_CLIPCHILDREN|WS_CLIPSIBLINGS, CXTPEmptyRect(), this, IDR_Pane_TerrainProperty);
 	m_propertyObject->Create(L"STATIC", NULL, WS_CHILD|WS_VISIBLE|WS_CLIPCHILDREN|WS_CLIPSIBLINGS, CXTPEmptyRect(), this, IDR_Pane_ObjectProperty);
 	m_propertyEffect->Create(L"STATIC", NULL, WS_CHILD|WS_VISIBLE|WS_CLIPCHILDREN|WS_CLIPSIBLINGS, CXTPEmptyRect(), this, IDR_Pane_EffectProperty);
+	m_propertyAttachment->Create(L"STATIC", NULL, WS_CHILD|WS_VISIBLE|WS_CLIPCHILDREN|WS_CLIPSIBLINGS, CXTPEmptyRect(), this, IDR_Pane_AttachmentProperty);
 
 	m_propertyTerrain->m_wndPropertyGrid.SetTheme(xtpGridThemeVisualStudio2010);
 	m_propertyObject->m_wndPropertyGrid.SetTheme(xtpGridThemeVisualStudio2010);
 	m_propertyEffect->m_wndPropertyGrid.SetTheme(xtpGridThemeVisualStudio2010);
+	m_propertyAttachment->m_wndPropertyGrid.SetTheme(xtpGridThemeVisualStudio2010);
 
 	_CreateDockPane();
 
@@ -502,6 +541,7 @@ void CMainFrame::OnSceneClose()
 	m_propertyTerrain->EnableMutableProperty(FALSE);
 	m_propertyObject->EnableMutableProperty(FALSE);
 	m_propertyEffect->EnableMutableProperty(FALSE);
+	m_propertyAttachment->EnableMutableProperty(FALSE);
 }
 
 void CMainFrame::OnUpdateUI_TerrainBrushSize1( CCmdUI* pCmdUI )
@@ -793,7 +833,7 @@ void CMainFrame::OnObjectEdit()
 	ManipulatorAction::GetSingleton().SetActiveAction(action);
 }
 
-void CMainFrame::OnObjectPropertyChanged( Ogre::Entity* )
+void CMainFrame::OnObjectPropertyChanged( Ogre::Entity* pEntity )
 {
 	if(!ManipulatorSystem.GetObject().GetSelection())
 	{
@@ -813,29 +853,26 @@ void CMainFrame::OnObjectSetSelection( Ogre::Entity* pObject )
 	m_propertyObject->EnableMutableProperty(TRUE);
 
 	//如果带骨骼动画,则显示动画Ribbon
-	if (pObject->getSkeleton())
+	if (pObject->hasSkeleton())
 	{
-		CXTPRibbonBar* pRibbonBar = dynamic_cast<CXTPRibbonBar*>(GetCommandBars()->GetAt(0));
-		m_animTab = pRibbonBar->AddTab(L"Animation");
-		m_animTab->SetContextTab(xtpRibbonTabContextColorRed, L"Animation");
-
-		//骨骼动画列表
-		CXTPRibbonGroup* pGroup = m_animTab->AddGroup(L"Anim");
-		CXTPControlComboBox* pCtrlAnimNames = dynamic_cast<CXTPControlComboBox*>(pGroup->Add(xtpControlComboBox, IDC_Animation_Names));
-		pCtrlAnimNames->SetDropDownListStyle();
-		pCtrlAnimNames->SetWidth(150);
+		m_animTab->Select();
+		m_animTab->SetVisible(TRUE);
+		m_animList->ResetContent();
 
 		ManipulatorObject& manObject = ManipulatorSystem.GetObject();
-		auto vecNames = manObject.GetAnimationNames(pObject);
+		auto vecNames = ManipulatorSystem.GetEffect().GetAnimationNames();
 		for(size_t i=0; i<vecNames.size(); ++i)
-			pCtrlAnimNames->AddString(vecNames[i].c_str());
-		
-		pCtrlAnimNames->SetCurSel(0);
-		m_animTab->Select();
+			m_animList->AddString(vecNames[i].c_str());
+		m_animList->SetCurSel(0);
 
 		//改变摄像机模式
 		ManipulatorSystem.GetCamera().SetType(eCameraType_ModelViewer);
 		ManipulatorSystem.GetCamera().SetModelViewerTarget(pObject);
+
+		//显示挂接物编辑面板
+		m_propertyAttachment->UpdateAllFromEngine();
+		m_propertyAttachment->EnableMutableProperty(TRUE);
+		m_paneAttachment->Select();
 	}
 }
 
@@ -847,12 +884,16 @@ void CMainFrame::OnObjectClearSelection( Ogre::Entity* pObject )
 	if (pObject->getSkeleton())
 	{
 		//隐藏动画Ribbon
-		CXTPRibbonBar* pRibbonBar = dynamic_cast<CXTPRibbonBar*>(GetCommandBars()->GetAt(0));
-		pRibbonBar->RemoveTab(m_animTab->GetIndex());
-		m_animTab = nullptr;
+		m_animTab->SetVisible(FALSE);
 
 		//改变摄像机模式
 		ManipulatorSystem.GetCamera().SetType(eCameraType_RTS);
+
+		//隐藏挂接物编辑面板
+		m_propertyAttachment->EnableMutableProperty(FALSE);
+
+		ManipulatorSystem.GetEffect().PlayAnimation(m_animList->GetCurSel(), false);
+		ManipulatorSystem.GetEffect().SetCurAnimationName("");
 	}
 }
 
@@ -866,9 +907,17 @@ void CMainFrame::OnAnimSelectChange( NMHDR* pNMHDR, LRESULT* pResult )
 	NMXTPCONTROL* tagNMCONTROL = (NMXTPCONTROL*)pNMHDR;
 	CXTPControlComboBox* pControl = DYNAMIC_DOWNCAST(CXTPControlComboBox, tagNMCONTROL->pControl);
 
-	//根据选择索引播放动画
-	ManipulatorObject& manObject = ManipulatorSystem.GetObject();
-	manObject.PlayAnimation(manObject.GetSelection(), pControl->GetCurSel() - 1);
+	CString animName;
+	int curSel = m_animList->GetCurSel();
+	m_animList->GetLBText(curSel, animName);
+
+	ManipulatorEffect& manEffect = ManipulatorSystem.GetEffect();
+	manEffect.SetCurAnimationName(Utility::UnicodeToEngine(animName));
+
+	if(manEffect.GetIsPlayingAnim())
+		manEffect.PlayAnimation(curSel, true);
+
+	m_propertyAttachment->UpdateProperty(PropertyPaneAttachment::propAnimName);
 }
 
 void CMainFrame::OnUpdateUI_DataBuilding( CCmdUI* pCmdUI )
@@ -932,4 +981,26 @@ void CMainFrame::OnSSAOOnOff()
 {
 	bool bEnable = !ManipulatorSystem.GetEffect().GetSSAOEnable();
 	ManipulatorSystem.GetEffect().SetSSAOEnable(bEnable);
+}
+
+void CMainFrame::OnUpdateUI_AnimPlay( CCmdUI* pCmdUI )
+{
+	pCmdUI->Enable(m_animTab->IsVisible());
+	pCmdUI->SetCheck(ManipulatorSystem.GetEffect().GetIsPlayingAnim());
+}
+
+void CMainFrame::OnUpdateUI_AnimStop( CCmdUI* pCmdUI )
+{
+	pCmdUI->Enable(m_animTab->IsVisible());
+	pCmdUI->SetCheck(!ManipulatorSystem.GetEffect().GetIsPlayingAnim());
+}
+
+void CMainFrame::OnAnimPlay()
+{
+	ManipulatorSystem.GetEffect().PlayAnimation(m_animList->GetCurSel(), true);
+}
+
+void CMainFrame::OnAnimStop()
+{
+	ManipulatorSystem.GetEffect().PlayAnimation(m_animList->GetCurSel(), false);
 }

@@ -4,6 +4,7 @@
 #include "Singleton.h"
 #include "GameDefine.h"
 #include "SceneSerializer.h"
+#include "KratosPrerequisites.h"
 
 class SelectableObject;
 class OgreRecast;
@@ -37,7 +38,7 @@ typedef	std::vector<SelectableObject*>	SelectedContainer;
 /*								世界管理器                                */
 /************************************************************************/
 
-class World : public CSingleton<World>, public SceneSerializer
+class World : public CSingleton<World>, public Kratos::SceneSerializer
 {
 	World();
 	~World();
@@ -115,7 +116,7 @@ private:
 	UiPortraitPanel*			m_portraitPanel;
 
 	Faction*					m_player[eGameRace_Count];
-	Scene*						m_pTestScene;
+	Kratos::Scene*				m_pTestScene;
 };
 
 

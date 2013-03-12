@@ -6,6 +6,7 @@ class CEditorView;
 class PropertyPaneTerrain;
 class PropertyPaneObject;
 class PropertyPaneEffect;
+class PropertyPaneAttachment;
 
 class CMainFrame : public CXTPFrameWnd, public ManipulatorSceneEventCallback, public ManipulatorObjectEventCallback
 {
@@ -91,6 +92,11 @@ private:
 	///Animation
 	void			OnUpdateUI_AnimNames(CCmdUI* pCmdUI);
 	void			OnAnimSelectChange(NMHDR* pNMHDR, LRESULT* pResult);
+	void			OnUpdateUI_AnimPlay(CCmdUI* pCmdUI);
+	void			OnUpdateUI_AnimStop(CCmdUI* pCmdUI);
+	void			OnAnimPlay();
+	void			OnAnimStop();
+
 	///GameData
 	void			OnUpdateUI_DataBuilding(CCmdUI* pCmdUI);
 	void			OnDataBuilding();		
@@ -108,12 +114,16 @@ private:
 	CXTPControlGalleryItems* m_terrainTexGallery;	//地形纹理控件
 	PropertyPaneObject*		m_propertyObject;		//物体属性面板
 	PropertyPaneEffect*		m_propertyEffect;		//特效属性面板
+	PropertyPaneAttachment*	m_propertyAttachment;	//挂接物属性面板
+
 	CXTPRibbonTab*			m_animTab;
+	CXTPControlComboBox*	m_animList;
 
 	CXTPDockingPane*		m_paneResSelector;		
 	CXTPDockingPane*		m_paneTerrain;
 	CXTPDockingPane*		m_paneObject;
 	CXTPDockingPane*		m_paneEffect;
+	CXTPDockingPane*		m_paneAttachment;
 
 	typedef std::unordered_map<int, bool> DialogVisibleFlags;
 	DialogVisibleFlags		m_dlgVisibleFlags;

@@ -52,8 +52,7 @@ void HarvestComponent::Update( float dt )
 		else if (path->_UpdatePathFinding(dt))
 		{
 			//到达目的点
-			Unit* pUnit = dynamic_cast<Unit*>(m_pOwner);
-			pUnit->PlayAnimation(eAnimation_Gather, true);
+			m_pOwner->GetAnim()->PlayAnimation(eAnimation_Gather, true);
 			m_fGatherTime = 0;
 			SetCurStage(eHarvestStage_Gather);
 		}
@@ -75,7 +74,7 @@ void HarvestComponent::Update( float dt )
 	}
 	else/* if(m_curStage == eHarvestStage_Return)*/
 	{
-		const STRING& unitName = m_pOwner->getParameter("unitName");
+		const STRING& unitName = m_pOwner->getParameter("unitname");
 		SUnitData* unitData = &GameDataDefManager::GetSingleton().m_unitData[unitName];
 		Faction* player = World::GetSingleton().GetFaction(unitData->m_race);
 

@@ -87,7 +87,7 @@ Technique* GBufferSchemeHandler::handleSchemeNotFound(unsigned short schemeIndex
 		fillPass(newPass, originalPass, props);    
 	}
 
-	COgreManager::GetSingleton().updateSceneManagersAfterMaterialsChange();
+	RenderManager.updateSceneManagersAfterMaterialsChange();
     
 	return gBufferTech;
 }

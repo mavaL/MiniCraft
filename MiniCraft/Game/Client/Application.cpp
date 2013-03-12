@@ -24,10 +24,10 @@ Applicaton::~Applicaton()
 
 bool Applicaton::Init()
 {
-	m_stateMgr = CAppStateManager::GetSingletonPtr();
-	m_inputMgr = CInputManager::GetSingletonPtr();
-	m_ogreMgr =	COgreManager::GetSingletonPtr();
-	m_guiMgr = CGUIManager::GetSingletonPtr();
+	m_stateMgr = Kratos::CAppStateManager::GetSingletonPtr();
+	m_inputMgr = Kratos::CInputManager::GetSingletonPtr();
+	m_ogreMgr =	Kratos::COgreManager::GetSingletonPtr();
+	m_guiMgr = Kratos::CGUIManager::GetSingletonPtr();
 
 	CBattleState::create(m_stateMgr, CBattleState::StateName);
 
@@ -36,7 +36,7 @@ bool Applicaton::Init()
 		!m_guiMgr->Init()		)
 		return false;
 
-	ScriptSystem::GetSingleton().Init();
+	SCRIPTNAMAGER.Init();
 
 	return true;
 }
@@ -61,7 +61,7 @@ void Applicaton::Run()
 			startTime = m_ogreMgr->GetTimer()->getMillisecondsCPU();
 
 			//各子系统进行更新
-			CInputManager::GetSingleton().Capture();
+			m_inputMgr->Capture();
 			if(!m_stateMgr->UpdateCurrentState(timeSinceLastFrame))
 				break;
 			if(!m_ogreMgr->Update(timeSinceLastFrame))
@@ -79,7 +79,7 @@ void Applicaton::Run()
 
 void Applicaton::Shutdown()
 {
-	ScriptSystem::GetSingleton().Shutdown();
+	SCRIPTNAMAGER.Shutdown();
 	m_guiMgr->Shutdown();
 	m_stateMgr->shutdown();	
 	m_inputMgr->Shutdown();

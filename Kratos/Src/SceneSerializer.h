@@ -15,29 +15,35 @@
 #include <rapidxml_utils.hpp>
 #include <rapidxml_print.hpp>
 
-class Scene;
-
-class SceneSerializer
+namespace Kratos
 {
-public:
-	SceneSerializer();
-	virtual ~SceneSerializer() {}
 
-public:
-	void			LoadScene(const std::string& sceneName, const std::string& sceneGroup, Scene* pOwner);
-	void			SaveScene(const std::string& fullPath, Scene* pOwner);
+	class Scene;
 
-private:
-	virtual	void	_LoadTerrain(rapidxml::xml_node<>* node);
-	virtual void	_LoadObjects(rapidxml::xml_node<>* node) {}
-	virtual void	_LoadEffect(rapidxml::xml_node<>* node);
-	virtual void	_SaveTerrain(rapidxml::xml_document<>* doc, rapidxml::xml_node<>* XMLNode) {}
-	virtual void	_SaveObjects(rapidxml::xml_document<>* doc, rapidxml::xml_node<>* XMLNode) {}
-	virtual void	_SaveEffect(rapidxml::xml_document<>* doc, rapidxml::xml_node<>* XMLNode) {}
+	class SceneSerializer
+	{
+	public:
+		SceneSerializer();
+		virtual ~SceneSerializer() {}
 
-private:
-	Scene*				m_pOwner;
-	std::string			m_sceneGroup;
-};
+	public:
+		void			LoadScene(const std::string& sceneName, const std::string& sceneGroup, Scene* pOwner);
+		void			SaveScene(const std::string& fullPath, Scene* pOwner);
+
+	private:
+		virtual	void	_LoadTerrain(rapidxml::xml_node<>* node);
+		virtual void	_LoadObjects(rapidxml::xml_node<>* node) {}
+		virtual void	_LoadEffect(rapidxml::xml_node<>* node);
+		virtual void	_SaveTerrain(rapidxml::xml_document<>* doc, rapidxml::xml_node<>* XMLNode) {}
+		virtual void	_SaveObjects(rapidxml::xml_document<>* doc, rapidxml::xml_node<>* XMLNode) {}
+		virtual void	_SaveEffect(rapidxml::xml_document<>* doc, rapidxml::xml_node<>* XMLNode) {}
+
+	private:
+		Scene*				m_pOwner;
+		std::string			m_sceneGroup;
+	};
+
+}
+
 
 #endif // SceneSerializer_h__

@@ -31,7 +31,7 @@ void ManipulatorScene::Init()
 	m_manipulatorGameData = new ManipulatorGameData;
 	m_manipulatorEffect = new ManipulatorEffect;
 
-	m_pCurScene = new Scene;
+	m_pCurScene = new Kratos::Scene;
 }
 
 void ManipulatorScene::Shutdown()
@@ -74,6 +74,12 @@ void ManipulatorScene::SceneOpen(const std::wstring& filepath)
 	Excute([](ManipulatorSceneEventCallback* callback){ callback->OnSceneOpen(); });
 
 	OnGizmoNodeReset();
+
+	ParticleUniverse::ParticleSystem* ps = ParticleUniverse::ParticleSystemManager::getSingleton().createParticleSystem(
+		"mp_torch", RenderManager.m_pSceneMgr);
+	ps->setScale(FLOAT3(10,10,10));
+	RenderManager.m_pSceneMgr->getRootSceneNode()->attachObject(ps);
+	ps->start();
 }
 
 void ManipulatorScene::SceneSave()
@@ -118,6 +124,7 @@ void ManipulatorScene::OnGizmoNodeReset()
 void ManipulatorScene::OnFrameMove( float dt )
 {
 	m_manipulatorObject->OnFrameMove(dt);
+	m_manipulatorEffect->OnFrameMove(dt);
 }
 
 void ManipulatorScene::_LoadObjects( rapidxml::xml_node<>* node )

@@ -10,12 +10,12 @@ ManipulatorGameData::ManipulatorGameData()
 
 void ManipulatorGameData::LoadAllXml()
 {
-	//m_dataMgr->LoadAllData();
+	m_dataMgr->LoadAllData();
 }
 
 void ManipulatorGameData::SaveAllXml()
 {
-	//m_dataMgr->SaveAllData();
+	m_dataMgr->SaveAllData();
 }
 
 std::vector<std::wstring> ManipulatorGameData::GetRaceBuildingNames( eGameRace race ) const
@@ -63,4 +63,18 @@ void ManipulatorGameData::SetBuildingAbility( const std::wstring& buildingName, 
 {
 	assert(slotIndex >= 0 && slotIndex < 15);
 	(const_cast<SBuildingData*>(GetBuildingData(buildingName)))->m_vecAbilities[slotIndex] = Utility::UnicodeToEngine(abilName);
+}
+
+SUnitData* ManipulatorGameData::GetUnitData( const std::string& meshname )
+{
+	UnitTable& units = GameDataDefManager::GetSingleton().m_unitData;
+
+	for(auto iter=units.begin(); iter!=units.end(); ++iter)
+	{
+		SUnitData& unitData = iter->second;
+		if(unitData.m_meshname == meshname)
+			return &unitData;
+	}
+	
+	return nullptr;
 }

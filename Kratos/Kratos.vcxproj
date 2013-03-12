@@ -49,7 +49,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>.\Src;.\Dependency\rapidxml;.\Dependency\Lua5_1_4\src;.\Dependency\CEGUI\include;.\Dependency\boost;.\Dependency\OgreRecast\Include;.\Dependency\OIS\include;.\Dependency\Ogre\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\Src;.\Dependency\rapidxml;.\Dependency\Lua5_1_4\src;.\Dependency\CEGUI\include;.\Dependency\boost;.\Dependency\OgreRecast\Include;.\Dependency\OIS\include;.\Dependency\Ogre\include;.\Dependency\Ogre\include\ParticleUniverse;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -119,8 +119,11 @@
     <ClInclude Include="Src\DeferredShading\NullSchemeHandler.h" />
     <ClInclude Include="Src\DeferredShading\SSAOLogic.h" />
     <ClInclude Include="Src\DeferredShading\TerrainMaterialGeneratorD.h" />
+    <ClInclude Include="Src\Effect\EffectController.h" />
+    <ClInclude Include="Src\Effect\ParticleEffect.h" />
     <ClInclude Include="Src\GUIManager.h" />
     <ClInclude Include="Src\InputManager.h" />
+    <ClInclude Include="Src\KratosPrerequisites.h" />
     <ClInclude Include="Src\luna.h" />
     <ClInclude Include="Src\OgreManager.h" />
     <ClInclude Include="Src\Scene.h" />
@@ -172,6 +175,8 @@
     <ClCompile Include="Src\DeferredShading\MaterialGenerator.cpp" />
     <ClCompile Include="Src\DeferredShading\SSAOLogic.cpp" />
     <ClCompile Include="Src\DeferredShading\TerrainMaterialGeneratorD.cpp" />
+    <ClCompile Include="Src\Effect\EffectController.cpp" />
+    <ClCompile Include="Src\Effect\ParticleEffect.cpp" />
     <ClCompile Include="Src\GUIManager.cpp" />
     <ClCompile Include="Src\InputManager.cpp" />
     <ClCompile Include="Src\OgreManager.cpp" />

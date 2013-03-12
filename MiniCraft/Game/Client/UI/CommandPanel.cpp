@@ -17,7 +17,7 @@ UiCommandPanel::UiCommandPanel()
 
 void UiCommandPanel::Init()
 {
-	m_pLayout = CGUIManager::GetSingleton().LoadWindowLayout("CommandPanel.layout");
+	m_pLayout = GUIMANAGER.LoadWindowLayout("CommandPanel.layout");
 	assert(m_pLayout);
 
 	for (int i=0; i<MAX_ABILITY_SLOT; ++i)
@@ -43,8 +43,8 @@ void UiCommandPanel::Init()
 
 void UiCommandPanel::Destroy()
 {
-	CGUIManager::GetSingleton().SetGUISheet(nullptr);
-	CGUIManager::GetSingleton().UnloadWindowLayout(m_pLayout);
+	GUIMANAGER.SetGUISheet(nullptr);
+	GUIMANAGER.UnloadWindowLayout(m_pLayout);
 	m_pLayout = nullptr;
 }
 

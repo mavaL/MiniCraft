@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<Root>
+	<Unit name="Scv">
+		<ParticleEffect animation="Attack" locator="Ref_Weapon" template="mp_torch.pu" starttime="0" lifetime="0"/>
+	</Unit>
+</Root>
+

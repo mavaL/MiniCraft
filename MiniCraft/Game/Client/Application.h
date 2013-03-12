@@ -2,10 +2,7 @@
 #define APPLICATION_H
 
 
-class CAppStateManager;
-class CInputManager;
-class COgreManager;
-class CGUIManager;
+#include "KratosPrerequisites.h"
 
 
 /************************************************************************/
@@ -23,10 +20,10 @@ public:
 	void	Shutdown();
 
 private:
-	CAppStateManager*	m_stateMgr;
-	CInputManager*		m_inputMgr;
-	COgreManager*		m_ogreMgr;
-	CGUIManager*		m_guiMgr;
+	Kratos::CAppStateManager*	m_stateMgr;
+	Kratos::CInputManager*		m_inputMgr;
+	Kratos::COgreManager*		m_ogreMgr;
+	Kratos::CGUIManager*		m_guiMgr;
 };
 
 

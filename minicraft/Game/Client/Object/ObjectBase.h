@@ -12,6 +12,7 @@
 #include "GameDefine.h"
 #include <OgreStringInterface.h>
 #include "Component.h"
+#include "KratosPrerequisites.h"
 
 
 ////////////////////////////////////////////////////
@@ -66,6 +67,7 @@ public:
 	const POS&		GetPosition() const;
 	const ORIENT&	GetOrientation() const;
 	const SCALE&	GetScale() const;
+	Ogre::Entity*	GetEntity() { return m_pEntity; }
 	Ogre::SceneNode* GetSceneNode() { return m_pSceneNode; }
 	void			SetTeamColor(const COLOR& c) { m_teamColor = c; }
 	const COLOR&	GetTeamColor() const { return m_teamColor; }

@@ -31,6 +31,10 @@
 #include <Terrain/OgreTerrainQuadTreeNode.h>
 #include <Terrain/OgreTerrainMaterialGeneratorA.h>
 
+//ParticleUniverse
+#include <ParticleUniverseSystemManager.h>
+
+
 //rapidxml
 #include "rapidxml/rapidxml.hpp"       
 #include "rapidxml/rapidxml_utils.hpp"

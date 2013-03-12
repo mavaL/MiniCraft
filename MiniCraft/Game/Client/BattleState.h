@@ -23,7 +23,7 @@ class CommandBase;
 /*							游戏进行状态类                                */
 /************************************************************************/
 
-class CBattleState : public CAppState
+class CBattleState : public Kratos::CAppState
 {
 public:
 	CBattleState();

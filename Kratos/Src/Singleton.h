@@ -2,7 +2,6 @@
 #define SINGLETON_H
 
 
-
 /*------------------------------------------------
 						单例模式基类
 -------------------------------------------------*/
@@ -28,6 +27,7 @@ protected:
 	CSingleton(const CSingleton&);
 	CSingleton& operator= (const CSingleton&);
 };
+
 
 #define DECLEAR_SINGLETON(classname) friend class CSingleton<classname>; 
 

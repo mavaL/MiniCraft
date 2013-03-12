@@ -20,35 +20,40 @@ namespace Ogre
 	class Terrain;
 }
 
-class SceneSerializer;
-
-class Scene
+namespace Kratos
 {
-	friend class SceneSerializer;
-public:
-	Scene();
-	~Scene() {}
 
-public:
-	void	New();
-	void	Load(const std::string& sceneName, const std::string& sceneGroup, SceneSerializer* pHandler);
-	void	Load(const std::string& fullPath, SceneSerializer* pHandler);
-	void	Save(const std::string& fullPath, SceneSerializer* pHandler);
-	void	Reset();
+	class SceneSerializer;
 
-	Ogre::TerrainGroup*			GetTerrainGroup() { return m_terrainGroup; }
-	Ogre::TerrainGlobalOptions* GetTerrainOption() { return m_terrainOption; }
-	Ogre::Terrain*				GetTerrain() { return m_pTerrain; }
-	size_t						GetTerrainMaxLayer() const { return 5; }
-	const Ogre::Vector3&		GetSunLightDirection() const { return m_sunLightDir; }
-	const Ogre::ColourValue&	GetSunLightDiffuse() const { return m_sunLightDiffuse; }
+	class Scene
+	{
+		friend class SceneSerializer;
+	public:
+		Scene();
+		~Scene() {}
 
-private:
-	Ogre::TerrainGroup*			m_terrainGroup;
-	Ogre::TerrainGlobalOptions*	m_terrainOption;
-	Ogre::Terrain*				m_pTerrain;
-	Ogre::Vector3				m_sunLightDir;			//全局光方向
-	Ogre::ColourValue			m_sunLightDiffuse;		//全局光颜色
-};
+	public:
+		void	New();
+		void	Load(const std::string& sceneName, const std::string& sceneGroup, SceneSerializer* pHandler);
+		void	Load(const std::string& fullPath, SceneSerializer* pHandler);
+		void	Save(const std::string& fullPath, SceneSerializer* pHandler);
+		void	Reset();
+
+		Ogre::TerrainGroup*			GetTerrainGroup() { return m_terrainGroup; }
+		Ogre::TerrainGlobalOptions* GetTerrainOption() { return m_terrainOption; }
+		Ogre::Terrain*				GetTerrain() { return m_pTerrain; }
+		size_t						GetTerrainMaxLayer() const { return 5; }
+		const Ogre::Vector3&		GetSunLightDirection() const { return m_sunLightDir; }
+		const Ogre::ColourValue&	GetSunLightDiffuse() const { return m_sunLightDiffuse; }
+
+	private:
+		Ogre::TerrainGroup*			m_terrainGroup;
+		Ogre::TerrainGlobalOptions*	m_terrainOption;
+		Ogre::Terrain*				m_pTerrain;
+		Ogre::Vector3				m_sunLightDir;			//全局光方向
+		Ogre::ColourValue			m_sunLightDiffuse;		//全局光颜色
+	};
+
+}
 
 #endif // Scene_h__

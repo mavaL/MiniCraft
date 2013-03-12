@@ -61,7 +61,7 @@ void ManipulatorCamera::OnMouseMove( const SActionParam& param )
 
 void ManipulatorCamera::OnMouseWheel( short nNotch )
 {
-	m_pCamera->move(Ogre::Vector3(0,-(float)nNotch*2,0));
+	m_pCamera->move(Ogre::Vector3(0,(float)nNotch*2,0));
 }
 
 void ManipulatorCamera::SetModelViewerTarget( Ogre::Entity* pTarget )
@@ -69,7 +69,7 @@ void ManipulatorCamera::SetModelViewerTarget( Ogre::Entity* pTarget )
 	assert(pTarget);
 	if (m_type == eCameraType_ModelViewer)
 	{
-		m_pCamera->lookAt(pTarget->getParentSceneNode()->_getDerivedPosition());
+		m_pCamera->setAutoTracking(true, pTarget->getParentSceneNode());
 		m_pTarget = pTarget;
 	}
 }
@@ -83,6 +83,7 @@ void ManipulatorCamera::SetType( eCameraType type )
 	{
 		//»Ö¸´ÎªRTSÊÓ½Ç
 		const Ogre::Vector3& pos = m_pCamera->getRealPosition();
+		m_pCamera->setAutoTracking(false);
 		m_pCamera->setPosition(pos.x, 30, pos.z);
 		m_pCamera->lookAt(pos.x, 0, pos.z + 10);
 	}

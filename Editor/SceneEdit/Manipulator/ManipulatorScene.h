@@ -19,18 +19,12 @@
 #include "ManipulatorGameData.h"
 #include "SceneSerializer.h"
 #include "ManipulatorEffect.h"
-
-namespace Ogre
-{
-	class SceneManager;
-}
-class Scene;
-
+#include "KratosPrerequisites.h"
 
 class ManipulatorScene : 
 	public CSingleton<ManipulatorScene>, 
 	public ManipulatorCallbackManager<ManipulatorSceneEventCallback>,
-	private SceneSerializer
+	private Kratos::SceneSerializer
 {
 	ManipulatorScene();
 	~ManipulatorScene();
@@ -44,7 +38,7 @@ protected:
 	virtual void	_SaveEffect(rapidxml::xml_document<>* doc, rapidxml::xml_node<>* XMLNode);
 
 public:
-	Scene*	GetScene() { return m_pCurScene; }
+	Kratos::Scene*	GetScene() { return m_pCurScene; }
 
 	void	SceneNew(const std::wstring& sceneName);
 	void	SceneOpen(const std::wstring& filepath);
@@ -74,7 +68,7 @@ public:
 private:
 	std::wstring		m_scenePath;
 	std::wstring		m_sceneName;
-	Scene*				m_pCurScene;
+	Kratos::Scene*		m_pCurScene;
 	bool				m_bIsSceneReay;
 	ManipulatorTerrain*	m_manipulatorTerrain;
 	ManipulatorObject*	m_manipulatorObject;

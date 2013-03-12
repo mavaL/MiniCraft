@@ -33,18 +33,17 @@ Luna<Unit>::RegType Unit::methods[] =
 };
 
 const STRING Unit::UNIT_TABLE_NAME	=	"UnitTable";
+std::unordered_map<STRING, Ogre::Entity*>			Unit::m_portraitCache;
+std::unordered_map<STRING, Ogre::AnimationState*>	Unit::m_portraitAnimCache;
 
 Unit::Unit()
 :SelectableObject()
-,m_pAnimState(nullptr)
 ,m_unitName(Ogre::StringUtil::BLANK)
 ,m_fStopTime(0)
-,m_portraitEnt(nullptr)
-,m_pPortraitAnim(nullptr)
 {
 	Ogre::ParamDictionary* dict = getParamDictionary();
 	dict->addParameter(Ogre::ParameterDef("clamppos", "clamp position of the object", Ogre::PT_VECTOR3), &m_sCmdClampPos);
-	dict->addParameter(Ogre::ParameterDef("unitName", "logic representation of the unit", Ogre::PT_STRING), &m_sCmdUnitName);
+	dict->addParameter(Ogre::ParameterDef("unitname", "logic representation of the unit", Ogre::PT_STRING), &m_sCmdUnitName);
 
 	//将对象绑定到lua
 	//ScriptSystem::GetSingleton().BindObjectToLua<Unit>(UNIT_TABLE_NAME, GetID(), this);
@@ -57,37 +56,10 @@ Unit::~Unit()
 
 void Unit::Update( float dt )
 {
-	if(m_pAnimState)
-		m_pAnimState->addTime(dt);
-
 	if(m_bSelected)
-		m_pPortraitAnim->addTime(dt);
+		m_portraitAnimCache[m_unitName]->addTime(dt);
 
 	__super::Update(dt);
-}
-
-void Unit::PlayAnimation( eAnimation type, bool bLoop )
-{
-	//停止当前动画
-	StopAnimation();
-
-	SUnitData* pUnitData = &GameDataDefManager::GetSingleton().m_unitData[m_unitName];
-	const STRING& animName = (pUnitData->m_anims)[type];
-
-	m_pAnimState = m_pEntity->getAnimationState(animName);
-	assert(m_pAnimState);
-	m_pAnimState->setEnabled(true);
-	m_pAnimState->setTimePosition(0);
-	m_pAnimState->setLoop(bLoop);
-}
-
-void Unit::StopAnimation()
-{
-	if(m_pAnimState)
-	{
-		m_pAnimState->setEnabled(false);
-		m_pAnimState = nullptr;
-	}
 }
 
 int Unit::PlayAnimation( lua_State* L )
@@ -101,7 +73,7 @@ int Unit::PlayAnimation( lua_State* L )
 
 int Unit::StopAnimation( lua_State* L )
 {
-	StopAnimation();
+	//StopAnimation();
 	return 0;
 }
 
@@ -170,12 +142,12 @@ int Unit::UpdatePathFinding( lua_State* L )
 
 int Unit::AttachRes( lua_State* L )
 {
-	ScriptSystem& system = ScriptSystem::GetSingleton();
-	float x = system.Get_Float(-4);
-	float y = system.Get_Float(-3);
-	float z = system.Get_Float(-2);
-	float fScale = system.Get_Float(-1);
-	const STRING meshname = system.Get_String(-5);
+// 	ScriptSystem& system = ScriptSystem::GetSingleton();
+// 	float x = system.Get_Float(-4);
+// 	float y = system.Get_Float(-3);
+// 	float z = system.Get_Float(-2);
+// 	float fScale = system.Get_Float(-1);
+// 	const STRING meshname = system.Get_String(-5);
 
 // 	//创建背负资源
 // 	if(m_pResEnt == nullptr)
@@ -252,46 +224,54 @@ void Unit::SetUnitName( const STRING& name )
 			if(pAbil.m_type == eCommandType_Gather)
 				AddComponent(eComponentType_Harvest, new HarvestComponent(this));
 		}
-	}	
+	}
+
+	if(GetEntity()->hasSkeleton())
+		AddComponent(eComponentType_Animated, new AnimatedComponent(this));
 }
 
 void Unit::StopAction()
 {
 	GetAi()->CancelAllCommand();
-	StopAnimation();
+	GetAnim()->StopAnimation();
 	SetStopTime(0);
 }
 
 Ogre::Entity* Unit::GetPortrait(Ogre::SceneManager* sm, Ogre::Light* light)
 {
-	if(!m_portraitEnt)
+	auto iter = m_portraitCache.find(m_unitName);
+	if(iter == m_portraitCache.end())
 	{
 		SUnitData* pUnitData = &GameDataDefManager::GetSingleton().m_unitData[m_unitName];
 		assert(pUnitData);
-		m_portraitEnt = RenderManager.CreateEntityWithTangent(pUnitData->m_portrait, sm);
-		m_pPortraitAnim = m_portraitEnt->getAnimationState("Portrait");
-		assert(m_pPortraitAnim);
-		m_pPortraitAnim->setEnabled(false);
-		m_pPortraitAnim->setLoop(true);
+		Ogre::Entity* ent = RenderManager.CreateEntityWithTangent(pUnitData->m_portrait, sm);
+		Ogre::AnimationState* anim = ent->getAnimationState("Portrait");
+		assert(anim);
+		anim->setEnabled(false);
+		anim->setLoop(true);
 
-		auto params = m_portraitEnt->getSubEntity(0)->getMaterial()->getBestTechnique()->getPass(0)->getFragmentProgramParameters();
+		auto params = ent->getSubEntity(0)->getMaterial()->getBestTechnique()->getPass(0)->getFragmentProgramParameters();
 		params->setNamedConstant("LightColor", light->getDiffuseColour());
+
+		iter = m_portraitCache.insert(std::make_pair(m_unitName, ent)).first;
+		m_portraitAnimCache.insert(std::make_pair(m_unitName, anim));
 	}
 
-	return m_portraitEnt;
+	return iter->second;
 }
 
 void Unit::_OnSelected( bool bSelected )
 {
 	__super::_OnSelected(bSelected);
 
+	Ogre::AnimationState* anim = m_portraitAnimCache[m_unitName];
 	if (bSelected)
 	{
-		m_pPortraitAnim->setEnabled(true);
-		m_pPortraitAnim->setTimePosition(0);
+		anim->setEnabled(true);
+		anim->setTimePosition(0);
 	}
 	else
 	{
-		m_pPortraitAnim->setEnabled(false);
+		anim->setEnabled(false);
 	}
 }

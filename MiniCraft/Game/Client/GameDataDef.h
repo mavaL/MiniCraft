@@ -10,6 +10,8 @@
 
 #include "Singleton.h"
 #include "GameDefine.h"
+#include "KratosPrerequisites.h"
+
 
 //建筑物属性标志
 enum eBuildingFlag
@@ -17,7 +19,20 @@ enum eBuildingFlag
 	eBuildingFlag_ResDropOff = 1		//可以接受资源(主基地)
 };
 
-//Building相关数据,见RaceBuildingData.xml
+//单位的可用动画类型
+enum eAnimation
+{
+	eAnimation_Idle,					//休闲动画
+	eAnimation_Move	,					//移动动画
+	eAnimation_Gather					//采集动画
+};
+
+//命令附加参数
+const	STRING		FORCE_EXECUTE					=	"ForceExecute";
+const	STRING		TARGETING_AND_FORCE_EXECUTE		=	"TargetingAndForceExecute";
+
+/////////////////////////////////////////////////////////////////////////
+////	Building相关数据,见RaceBuildingData.xml
 struct SBuildingData
 {
 	eGameRace		m_race;				//所属种族
@@ -28,7 +43,8 @@ struct SBuildingData
 	int				m_flags;			//属性集
 };
 
-//Ability相关数据,见AbilityData.xml
+/////////////////////////////////////////////////////////////////////////
+////	Ability相关数据,见AbilityData.xml
 struct SAbilityData
 {
 	STRING			m_iconName;			//图标文件名
@@ -36,19 +52,15 @@ struct SAbilityData
 	STRING			m_param;			//附加参数,见下
 };
 
-//命令附加参数
-const	STRING		FORCE_EXECUTE					=	"ForceExecute";
-const	STRING		TARGETING_AND_FORCE_EXECUTE		=	"TargetingAndForceExecute";
-
-//单位的可用动画类型
-enum eAnimation
+/////////////////////////////////////////////////////////////////////////
+////	粒子等特效配表,见Effect.xml
+struct SEffectData
 {
-	eAnimation_Idle,					//休闲动画
-	eAnimation_Move	,					//移动动画
-	eAnimation_Gather					//采集动画
+	Ogre::NameValuePairList params;															
 };
 
-//Unit配表,见UnitTable.xml
+/////////////////////////////////////////////////////////////////////////
+////	Unit配表,见UnitTable.xml
 struct SUnitData
 {
 	float		m_fTimeCost;			//生产所需时间
@@ -58,6 +70,7 @@ struct SUnitData
 	std::vector<STRING>	m_vecAbilities;	//技能
 	eGameRace	m_race;					//种族
 	STRING		m_portrait;				//3D肖像模型名
+	std::vector<SEffectData> m_effects;	//挂接特效
 };
 
 //设计基于值对象而不是指针,是因为一旦初始化完毕,在程序退出前,就不会去改变了,
