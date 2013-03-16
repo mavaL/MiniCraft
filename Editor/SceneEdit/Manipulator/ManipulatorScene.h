@@ -33,6 +33,7 @@ class ManipulatorScene :
 protected:
 	///////////////////÷ÿ–¥SceneSerializer∑Ω∑®
 	virtual void	_LoadObjects(rapidxml::xml_node<>* node);
+	virtual void	_LoadEffect(rapidxml::xml_node<>* node);
 	virtual void	_SaveTerrain(rapidxml::xml_document<>* doc, rapidxml::xml_node<>* XMLNode);
 	virtual void	_SaveObjects(rapidxml::xml_document<>* doc, rapidxml::xml_node<>* XMLNode);
 	virtual void	_SaveEffect(rapidxml::xml_document<>* doc, rapidxml::xml_node<>* XMLNode);

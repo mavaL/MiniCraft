@@ -38,7 +38,7 @@ typedef	std::vector<SelectableObject*>	SelectedContainer;
 /*								世界管理器                                */
 /************************************************************************/
 
-class World : public CSingleton<World>, public Kratos::SceneSerializer
+class World : public CSingleton<World>, private Kratos::SceneSerializer
 {
 	World();
 	~World();

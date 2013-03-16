@@ -18,13 +18,15 @@
 #include <CEGUI.h>
 #include <RendererModules\Ogre\CEGUIOgreRenderer.h>
 #include <RendererModules\Ogre\CEGUIOgreTexture.h>
-#include <RendererModules\Ogre\CEGUIOgreTexture.h>
 
 //RecastÑ°Â·¿â
 #include "Recast/Recast.h"
 #include "DetourCrowd/DetourCrowd.h"
 #include "OgreDetourTileCache.h"
 #include "OgreDetourCrowd.h"
+
+//ParticleUniverse
+#include <ParticleUniverseSystemManager.h>
 
 //STL
 #include <string>

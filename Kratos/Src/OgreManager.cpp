@@ -79,6 +79,7 @@ namespace Kratos
 			NameValuePairList params;
 			params["externalWindowHandle"] = StringConverter::toString((unsigned int)externalHwnd);
 			params["parentWindowHandle"] = StringConverter::toString((unsigned int)hwndParent);
+			params["vsync"] = "true";
 			mWindow = mRoot->createRenderWindow("MainWindow", width, height, false, &params);
 		}
 		else

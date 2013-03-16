@@ -18,11 +18,9 @@ public:
 	{
 		////property range [propStart, propEnd)
 		propStart = 0,
-		////These are ReadOnly items
-		propAnimName = propStart,						//模型当前动画
 		////////These are Mutable items					
-		propMutableItemStart,							
-		propLocator = propMutableItemStart,				//挂接点选择
+		propMutableItemStart = propStart,
+		propLocator = propMutableItemStart,				//挂接点				
 		propParticle,									//挂接粒子特效
 		propStartTime,									//特效相对动画开始的时间
 		propLifeTime,									//特效时长

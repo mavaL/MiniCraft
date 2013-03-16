@@ -16,7 +16,6 @@ int PropertyPaneAttachment::OnCreate( LPCREATESTRUCT lpCreateStruct )
 		return -1;
 
 	CXTPPropertyGridItem* pCategory = m_wndPropertyGrid.AddCategory(L"Particle Effect");
-	PROPERTY_REG(pCategory,			, L"Animation"		, L""	, propAnimName		);
 	PROPERTY_REG(pCategory,			, L"Locator"		, L""	, propLocator		);
 	PROPERTY_REG(pCategory,			, L"Particle"		, L""	, propParticle		);
 	PROPERTY_REG(pCategory,	  Double, L"Start Time"		, 0		, propStartTime		);
@@ -42,38 +41,14 @@ LRESULT PropertyPaneAttachment::OnGridNotify( WPARAM wParam, LPARAM lParam )
 		ManipulatorEffect& manEffect = ManipulatorSystem.GetEffect();
 		CXTPPropertyGridItem* pItem = (CXTPPropertyGridItem*)lParam;
 		const UINT id = pItem->GetID();
+		const std::string& paramValue = Utility::UnicodeToEngine(pItem->GetValue());
 
 		switch (id)
 		{
-		case propLocator:	
-			{
-				const std::string locator = Utility::UnicodeToEngine(pItem->GetValue());
-				if(!locator.empty()) 
-				{
-					manEffect.SetActiveEffect(manEffect.GetCurAnimationName(), locator);
-					UpdateAllFromEngine();
-				}
-			}
-			break;
-
-		case propParticle:	
-			{
-				const std::string locator = Utility::UnicodeToEngine(m_mapItem[propLocator]->GetValue());
-				if(!locator.empty()) 
-				{
-					manEffect.SetActiveEffect(manEffect.GetCurAnimationName(), locator);
-
-					const std::string templateName = Utility::UnicodeToEngine(pItem->GetValue());
-					manEffect.SetEffectParam("template", templateName);
-
-					UpdateAllFromEngine();
-				}
-			}
-			break;
-
-		case propStartTime: manEffect.SetEffectParam("starttime", Utility::UnicodeToEngine(pItem->GetValue())); break;
-		case propLifeTime: manEffect.SetEffectParam("lifetime", Utility::UnicodeToEngine(pItem->GetValue())); break;
-
+		case propLocator:	manEffect.SetEffectParam("locator", paramValue); break;
+		case propParticle:	manEffect.SetEffectParam("template", paramValue); break;
+		case propStartTime: manEffect.SetEffectParam("starttime", paramValue); break;
+		case propLifeTime: manEffect.SetEffectParam("lifetime", paramValue); break;
 		default: assert(0);
 		}
 
@@ -99,8 +74,6 @@ void PropertyPaneAttachment::UpdateProperty( int id )
 
 	switch (id)
 	{
-	case propAnimName:		strNewValue = manEffect.GetCurAnimationName(); break;
-
 	case propLocator:
 		{
 			const auto locators = manEffect.GetLocatorNames();

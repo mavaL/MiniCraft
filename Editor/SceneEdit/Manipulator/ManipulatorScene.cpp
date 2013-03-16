@@ -74,12 +74,6 @@ void ManipulatorScene::SceneOpen(const std::wstring& filepath)
 	Excute([](ManipulatorSceneEventCallback* callback){ callback->OnSceneOpen(); });
 
 	OnGizmoNodeReset();
-
-	ParticleUniverse::ParticleSystem* ps = ParticleUniverse::ParticleSystemManager::getSingleton().createParticleSystem(
-		"mp_torch", RenderManager.m_pSceneMgr);
-	ps->setScale(FLOAT3(10,10,10));
-	RenderManager.m_pSceneMgr->getRootSceneNode()->attachObject(ps);
-	ps->start();
 }
 
 void ManipulatorScene::SceneSave()
@@ -145,6 +139,12 @@ void ManipulatorScene::_SaveObjects( rapidxml::xml_document<>* doc, rapidxml::xm
 void ManipulatorScene::_SaveEffect( rapidxml::xml_document<>* doc, rapidxml::xml_node<>* XMLNode )
 {
 	m_manipulatorEffect->Serialize(doc, XMLNode);
+}
+
+void ManipulatorScene::_LoadEffect( rapidxml::xml_node<>* node )
+{
+	Kratos::SceneSerializer::_LoadEffect(node);
+	m_manipulatorEffect->LoadEffect(node);
 }
 
 

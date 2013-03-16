@@ -24,6 +24,7 @@ public:
 public:
 	void	OnFrameMove(float dt);	
 	void	Serialize(rapidxml::xml_document<>* doc, rapidxml::xml_node<>* XMLNode);
+	void	LoadEffect(rapidxml::xml_node<>* node);
 
 	void	SetShadowEnable(bool bEnable);
 	bool	GetShadowEnable() const;
@@ -63,16 +64,23 @@ public:
 	std::vector<std::wstring>	GetAnimationNames() const;
 	void						PlayAnimation(int animIndex, bool bPlayOrStop);
 	const std::string			GetCurAnimationName();
-	void						SetCurAnimationName(const std::string& anim);
+	void						OnAnimSelectChange(const std::string& anim);
+	void						OnAttachEffectSelChange(const std::string& effect);
 	bool						GetIsPlayingAnim() const;
 	std::vector<std::wstring>	GetLocatorNames() const;
+	void						BindEntityToEffectTemplate(Ogre::Entity* ent);
+	std::vector<std::wstring>	GetAttachEffectNames();
+	//增加/去除一个绑定特效
+	const std::wstring			AddEffect();
+	void						RemoveEffect(const std::string& name);
 	//获取PU所有粒子模板名字
 	std::vector<std::wstring>	GetParticleTmpNames() const;
-	//设置当前正在编辑的特效
-	void	SetActiveEffect(const std::string& animName, const std::string& locator);
-	//设置/获取特效参数,返回false表示设置失败
-	bool						SetEffectParam(const std::string& param, const std::string& value);
-	const std::string			GetEffectParam(const std::string& param) const;
+	//设置/获取挂接特效属性
+	void						SetEffectParam(const std::string& param, const std::string& value);
+	const std::string			GetEffectParam(const std::string& param);
+
+private:
+	Kratos::EffectController*	_GetCurEffectController();
 
 private:
 	float			m_pssmLambda;
@@ -81,11 +89,12 @@ private:
 	float			m_ssaoDefaultAccessibility;
 	float			m_ssaoEdgeHighlight;
 
-	typedef std::unordered_map<Ogre::Entity*, Kratos::EffectController*> EffectMap;
-	EffectMap				m_effects;			//所有模型的相关特效
-	Kratos::ParticleEffect*	m_curEditEffect;	//当前编辑特效
-	std::string				m_curAnim;			//当前选择动画
-	bool					m_bIsPlayAnim;
+	typedef std::unordered_map<std::string, Kratos::EffectController*> EffectTemplate;
+	EffectTemplate		m_effectTemplates;	//所有模型的挂接特效模板.编辑器对它们编辑
+	bool				m_bIsPlayAnim;
+	std::string			m_curAnim;
+	std::string			m_curEffect;
+	int					m_effectNameID;
 };
 
 

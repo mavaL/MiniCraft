@@ -14,6 +14,7 @@
     <AnimationSet>
       <Animation type="Idle" name="Stand"/>
       <Animation type="Move" name="Walk"/>
+      <Animation type="Attack" name="Attack"/>
     </AnimationSet>
     <Ability name="Move" slotindex="0"/>
     <Ability name="Stop" slotindex="1"/>

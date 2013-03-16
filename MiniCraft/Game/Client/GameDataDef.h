@@ -22,9 +22,10 @@ enum eBuildingFlag
 //单位的可用动画类型
 enum eAnimation
 {
-	eAnimation_Idle,					//休闲动画
-	eAnimation_Move	,					//移动动画
-	eAnimation_Gather					//采集动画
+	eAnimation_Idle,					//休闲
+	eAnimation_Move	,					//移动
+	eAnimation_Gather,					//采集
+	eAnimation_Attack					//攻击
 };
 
 //命令附加参数
@@ -63,21 +64,22 @@ struct SEffectData
 ////	Unit配表,见UnitTable.xml
 struct SUnitData
 {
-	float		m_fTimeCost;			//生产所需时间
-	STRING		m_meshname;				//模型文件名
-	typedef std::unordered_map<eAnimation, STRING>	AnimTable;
-	AnimTable	m_anims;				//该单位所有动画的真实名字.因为各模型的导出动画名字不一定一致
-	std::vector<STRING>	m_vecAbilities;	//技能
-	eGameRace	m_race;					//种族
-	STRING		m_portrait;				//3D肖像模型名
-	std::vector<SEffectData> m_effects;	//挂接特效
+	float			m_fTimeCost;			//生产所需时间
+	STRING			m_meshname;				//模型文件名
+	typedef HashMap<eAnimation, STRING>	AnimTable;
+	AnimTable		m_anims;				//该单位所有动画的真实名字.因为各模型的导出动画名字不一定一致
+	std::vector<STRING>	m_vecAbilities;		//技能
+	eGameRace		m_race;					//种族
+	STRING			m_portrait;				//3D肖像模型名
+	typedef HashMap<STRING, std::vector<SEffectData>> EffectDataMap;
+	EffectDataMap	m_effects;				//挂接特效
 };
 
 //设计基于值对象而不是指针,是因为一旦初始化完毕,在程序退出前,就不会去改变了,
 //根据map的实现,其内部亦不会进行改动.所以效率问题不大.
-typedef std::unordered_map<STRING, SBuildingData> BuildingNameIndexTable;
-typedef std::unordered_map<STRING, SAbilityData> AbilityNameIdxTable;
-typedef std::unordered_map<STRING, SUnitData>	UnitTable;
+typedef HashMap<STRING, SBuildingData> BuildingNameIndexTable;
+typedef HashMap<STRING, SAbilityData> AbilityNameIdxTable;
+typedef HashMap<STRING, SUnitData>	UnitTable;
 
 
 class GameDataDefManager : public CSingleton<GameDataDefManager>

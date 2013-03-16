@@ -75,6 +75,13 @@ BEGIN_MESSAGE_MAP(CMainFrame, CXTPFrameWnd)
 	ON_COMMAND(IDC_Animation_Stop, OnAnimStop)
 	ON_UPDATE_COMMAND_UI(IDC_Animation_Play, OnUpdateUI_AnimPlay)
 	ON_UPDATE_COMMAND_UI(IDC_Animation_Stop, OnUpdateUI_AnimStop)
+	ON_COMMAND(IDC_Animation_EffectAdd, OnAnimEffectAdd)
+	ON_COMMAND(IDC_Animation_EffectRemove, OnAnimEffectRemove)
+	ON_UPDATE_COMMAND_UI(IDC_Animation_EffectAdd, OnUpdateUI_AnimEffectAdd)
+	ON_UPDATE_COMMAND_UI(IDC_Animation_EffectRemove, OnUpdateUI_AnimEffectRemove)
+	ON_UPDATE_COMMAND_UI(IDC_Animation_EffectList, OnUpdateUI_AnimEffectList)
+	ON_NOTIFY(CBN_SELCHANGE, IDC_Animation_EffectList, OnAnimEffectSelectChange)
+
 END_MESSAGE_MAP()
 
 
@@ -92,6 +99,7 @@ CMainFrame::CMainFrame()
 ,m_paneAttachment(NULL)
 ,m_animTab(NULL)
 ,m_animList(NULL)
+,m_effectList(NULL)
 {
 }
 
@@ -317,6 +325,20 @@ bool CMainFrame::_OnCreateRibbon()
 
 	//RibbonAnimation - GroupAnim - Stop
 	pGroup->Add(xtpControlButton, IDC_Animation_Stop);
+
+	//RibbonAnimation - GroupEffect
+	pGroup = m_animTab->AddGroup(L"Effect");
+
+	//RibbonAnimation - GroupEffect - EffectList
+	m_effectList = dynamic_cast<CXTPControlComboBox*>(pGroup->Add(xtpControlComboBox, IDC_Animation_EffectList));
+	m_effectList->SetDropDownListStyle();
+	m_effectList->SetWidth(150);
+
+	//RibbonAnimation - GroupEffect - EffectAdd
+	pGroup->Add(xtpControlButton, IDC_Animation_EffectAdd);
+
+	//RibbonAnimation - GroupEffect - EffectRemove
+	pGroup->Add(xtpControlButton, IDC_Animation_EffectRemove);
 	
 	return true;
 }
@@ -857,10 +879,12 @@ void CMainFrame::OnObjectSetSelection( Ogre::Entity* pObject )
 	{
 		m_animTab->Select();
 		m_animTab->SetVisible(TRUE);
-		m_animList->ResetContent();
 
 		ManipulatorObject& manObject = ManipulatorSystem.GetObject();
-		auto vecNames = ManipulatorSystem.GetEffect().GetAnimationNames();
+		ManipulatorEffect& manEffect = ManipulatorSystem.GetEffect();
+		const auto vecNames = manEffect.GetAnimationNames();
+		//动画列表
+		m_animList->ResetContent();
 		for(size_t i=0; i<vecNames.size(); ++i)
 			m_animList->AddString(vecNames[i].c_str());
 		m_animList->SetCurSel(0);
@@ -869,10 +893,7 @@ void CMainFrame::OnObjectSetSelection( Ogre::Entity* pObject )
 		ManipulatorSystem.GetCamera().SetType(eCameraType_ModelViewer);
 		ManipulatorSystem.GetCamera().SetModelViewerTarget(pObject);
 
-		//显示挂接物编辑面板
-		m_propertyAttachment->UpdateAllFromEngine();
-		m_propertyAttachment->EnableMutableProperty(TRUE);
-		m_paneAttachment->Select();
+		manEffect.BindEntityToEffectTemplate(pObject);
 	}
 }
 
@@ -892,8 +913,9 @@ void CMainFrame::OnObjectClearSelection( Ogre::Entity* pObject )
 		//隐藏挂接物编辑面板
 		m_propertyAttachment->EnableMutableProperty(FALSE);
 
-		ManipulatorSystem.GetEffect().PlayAnimation(m_animList->GetCurSel(), false);
-		ManipulatorSystem.GetEffect().SetCurAnimationName("");
+		ManipulatorEffect& manEffect = ManipulatorSystem.GetEffect();
+		manEffect.PlayAnimation(m_animList->GetCurSel(), false);
+		manEffect.OnAnimSelectChange("");
 	}
 }
 
@@ -906,18 +928,24 @@ void CMainFrame::OnAnimSelectChange( NMHDR* pNMHDR, LRESULT* pResult )
 {
 	NMXTPCONTROL* tagNMCONTROL = (NMXTPCONTROL*)pNMHDR;
 	CXTPControlComboBox* pControl = DYNAMIC_DOWNCAST(CXTPControlComboBox, tagNMCONTROL->pControl);
+	ManipulatorEffect& manEffect = ManipulatorSystem.GetEffect();
 
 	CString animName;
 	int curSel = m_animList->GetCurSel();
 	m_animList->GetLBText(curSel, animName);
+	const std::string anim = Utility::UnicodeToEngine(animName);
+	manEffect.OnAnimSelectChange(anim);
 
-	ManipulatorEffect& manEffect = ManipulatorSystem.GetEffect();
-	manEffect.SetCurAnimationName(Utility::UnicodeToEngine(animName));
+	//挂接特效列表
+	const auto effectNames = manEffect.GetAttachEffectNames();
+	m_effectList->ResetContent();
+	m_effectList->AddString(L"");
+	for(size_t i=0; i<effectNames.size(); ++i)
+		m_effectList->AddString(effectNames[i].c_str());
+	m_effectList->SetCurSel(0);
 
-	if(manEffect.GetIsPlayingAnim())
-		manEffect.PlayAnimation(curSel, true);
-
-	m_propertyAttachment->UpdateProperty(PropertyPaneAttachment::propAnimName);
+	manEffect.OnAttachEffectSelChange("");
+	m_propertyAttachment->EnableMutableProperty(FALSE);
 }
 
 void CMainFrame::OnUpdateUI_DataBuilding( CCmdUI* pCmdUI )
@@ -1003,4 +1031,70 @@ void CMainFrame::OnAnimPlay()
 void CMainFrame::OnAnimStop()
 {
 	ManipulatorSystem.GetEffect().PlayAnimation(m_animList->GetCurSel(), false);
+}
+
+void CMainFrame::OnUpdateUI_AnimEffectAdd( CCmdUI* pCmdUI )
+{
+	Ogre::Entity* curSel = ManipulatorSystem.GetObject().GetSelection();
+	if (curSel && curSel->hasSkeleton())
+		pCmdUI->Enable(TRUE);
+	else
+		pCmdUI->Enable(FALSE);
+}
+
+void CMainFrame::OnUpdateUI_AnimEffectRemove( CCmdUI* pCmdUI )
+{
+	if(m_effectList->GetCurSel() > 0)
+		pCmdUI->Enable(TRUE);
+	else
+		pCmdUI->Enable(FALSE);
+}
+
+void CMainFrame::OnAnimEffectAdd()
+{
+	const std::wstring name = ManipulatorSystem.GetEffect().AddEffect();
+	int index = m_effectList->AddString(name.c_str());
+	assert(index != LB_ERR);
+	m_effectList->SetCurSel(index);
+
+	m_propertyAttachment->UpdateAllFromEngine();
+	m_propertyAttachment->EnableMutableProperty(TRUE);
+	m_paneAttachment->Select();
+}
+
+void CMainFrame::OnAnimEffectRemove()
+{
+	CString effectName;
+	int curSel = m_effectList->GetCurSel();
+	m_effectList->GetLBText(curSel, effectName);
+	m_effectList->SetCurSel(0);
+	m_propertyAttachment->EnableMutableProperty(FALSE);
+
+	ManipulatorSystem.GetEffect().RemoveEffect(Utility::UnicodeToEngine(effectName));
+}
+
+void CMainFrame::OnUpdateUI_AnimEffectList( CCmdUI* pCmdUI )
+{
+	pCmdUI->Enable(TRUE);
+}
+
+void CMainFrame::OnAnimEffectSelectChange( NMHDR* pNMHDR, LRESULT* pResult )
+{
+	NMXTPCONTROL* tagNMCONTROL = (NMXTPCONTROL*)pNMHDR;
+	CXTPControlComboBox* pControl = DYNAMIC_DOWNCAST(CXTPControlComboBox, tagNMCONTROL->pControl);
+
+	CString effectName;
+	int curSel = m_effectList->GetCurSel();
+	m_effectList->GetLBText(curSel, effectName);
+
+	ManipulatorSystem.GetEffect().OnAttachEffectSelChange(Utility::UnicodeToEngine(effectName));
+	
+	//显示挂接物编辑面板
+	if (curSel != 0)
+	{
+		m_propertyAttachment->EnableMutableProperty(TRUE);
+		m_paneAttachment->Select();
+	}
+
+	m_propertyAttachment->UpdateAllFromEngine();
 }

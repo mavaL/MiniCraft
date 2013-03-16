@@ -30,7 +30,7 @@ namespace Kratos
 		void			LoadScene(const std::string& sceneName, const std::string& sceneGroup, Scene* pOwner);
 		void			SaveScene(const std::string& fullPath, Scene* pOwner);
 
-	private:
+	protected:
 		virtual	void	_LoadTerrain(rapidxml::xml_node<>* node);
 		virtual void	_LoadObjects(rapidxml::xml_node<>* node) {}
 		virtual void	_LoadEffect(rapidxml::xml_node<>* node);

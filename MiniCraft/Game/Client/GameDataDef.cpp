@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "GameDataDef.h"
+#include "Effect/ParticleEffect.h"
 
 void GameDataDefManager::LoadAllData()
 {
@@ -118,6 +119,7 @@ void GameDataDefManager::LoadAllData()
 		mapName["Idle"] = eAnimation_Idle;
 		mapName["Move"] = eAnimation_Move;
 		mapName["Gather"] = eAnimation_Gather;
+		mapName["Attack"] = eAnimation_Attack;
 
 		rapidxml::xml_node<>* pAnimNode = pNode->first_node("AnimationSet")->first_node("Animation");
 		while(pAnimNode)
@@ -154,29 +156,38 @@ void GameDataDefManager::LoadAllData()
 	szData = strdup(stream->getAsString().c_str());
 
 	XMLDoc.parse<0>(szData);
-	pNode = XMLDoc.first_node("Root")->first_node("Unit");
-	while(pNode)
+	rapidxml::xml_node<>* pUnitNode = XMLDoc.first_node("Root")->first_node("Unit");
+	//per unit
+	while(pUnitNode)
 	{
-		const char* szName = pNode->first_attribute("name")->value();
+		const char* szName = pUnitNode->first_attribute("name")->value();
 		SUnitData& unitData = m_unitData[szName];
 
-		rapidxml::xml_node<>* pEffectNode = pNode->first_node("ParticleEffect");
-		while(pEffectNode)
+		//per animation
+		rapidxml::xml_node<>* pAnimNode = pUnitNode->first_node("Animation");
+		while(pAnimNode)
 		{
-			const char* szAnim		= pEffectNode->first_attribute("animation")->value();
-			const char* szLocator	= pEffectNode->first_attribute("locator")->value();
-			const char* szTemplate	= pEffectNode->first_attribute("template")->value();
-			float fStartTime		= Ogre::StringConverter::parseReal(pEffectNode->first_attribute("starttime")->value());
-			float fLifeTime			= Ogre::StringConverter::parseReal(pEffectNode->first_attribute("lifetime")->value());
+			const char* szAnim = pAnimNode->first_attribute("name")->value();
 
-			SEffectData effect = { szLocator, szAnim, szTemplate, fStartTime, fLifeTime };
-			unitData.m_effects.push_back(effect);
+			//per effect
+			rapidxml::xml_node<>* pEffectNode = pAnimNode->first_node("ParticleEffect");
+			while(pEffectNode)
+			{
+				SEffectData effect;
+				Kratos::ParticleEffect hack(nullptr);
+				Kratos::ParticleEffect* pHack = &hack;
 
-			pEffectNode = pEffectNode->next_sibling();
+				PARAMS_LOAD(pHack, effect.params, pEffectNode);
+
+				unitData.m_effects[szAnim].push_back(effect);
+				pEffectNode = pEffectNode->next_sibling();
+			}
+
+			pAnimNode = pAnimNode->next_sibling();
 		}
-
-		pNode = pNode->next_sibling();
+		pUnitNode = pUnitNode->next_sibling();
 	}
+
 	free(szData);
 	XMLDoc.clear();
 }
@@ -189,7 +200,7 @@ void GameDataDefManager::SaveAllData()
 	{
 		xml_document<> doc;  
 		//文件头
-		xml_node<>* header = doc.allocate_node(rapidxml::node_pi, doc.allocate_string("xml version='1.0' encoding='utf-8'"));
+		xml_node<>* header = doc.allocate_node(rapidxml::node_pi, "xml version='1.0' encoding='utf-8'");
 		doc.append_node(header);
 		//Root
 		xml_node<>* root =   doc.allocate_node(node_element, "Root");
@@ -243,7 +254,7 @@ void GameDataDefManager::SaveAllData()
 	{
 		xml_document<> doc;  
 		//文件头
-		xml_node<>* header = doc.allocate_node(rapidxml::node_pi, doc.allocate_string("xml version='1.0' encoding='utf-8'"));
+		xml_node<>* header = doc.allocate_node(rapidxml::node_pi, "xml version='1.0' encoding='utf-8'");
 		doc.append_node(header);
 		//Root
 		xml_node<>* root =   doc.allocate_node(node_element, "Root");
@@ -258,23 +269,29 @@ void GameDataDefManager::SaveAllData()
 				continue;
 
 			xml_node<>* unitNode =   doc.allocate_node(node_element, "Unit");
-			unitNode->append_attribute(doc.allocate_attribute("name", doc.allocate_string(itUnit->first.c_str())));
+			unitNode->append_attribute(doc.allocate_attribute("name", itUnit->first.c_str()));
 			root->append_node(unitNode);
 
-			//per effect
-			for (size_t iEffect=0; iEffect<unitData.m_effects.size(); ++iEffect)
+			//per animation
+			for (auto itAnim=unitData.m_effects.begin(); itAnim!=unitData.m_effects.end(); ++itAnim)
 			{
-				const SEffectData& effect = unitData.m_effects[iEffect];
-				xml_node<>* effectNode =   doc.allocate_node(node_element, "ParticleEffect");
-				const std::string strStartTime = Ogre::StringConverter::toString(effect.m_fStartTime);
-				const std::string strLifeTime = Ogre::StringConverter::toString(effect.m_fLifeTime);
+				xml_node<>* animNode =   doc.allocate_node(node_element, "Animation");
+				animNode->append_attribute(doc.allocate_attribute("name", itAnim->first.c_str()));
+				unitNode->append_node(animNode);
 
-				effectNode->append_attribute(doc.allocate_attribute("animation"	, doc.allocate_string(effect.m_anim.c_str())));
-				effectNode->append_attribute(doc.allocate_attribute("locator"	, doc.allocate_string(effect.m_locator.c_str())));
-				effectNode->append_attribute(doc.allocate_attribute("template"	, doc.allocate_string(effect.m_particleTmp.c_str())));
-				effectNode->append_attribute(doc.allocate_attribute("starttime"	, doc.allocate_string(strStartTime.c_str())));
-				effectNode->append_attribute(doc.allocate_attribute("lifetime"	, doc.allocate_string(strLifeTime.c_str())));
-				unitNode->append_node(effectNode);
+				//per effect
+				const auto& effectSlots = itAnim->second;
+				for (auto itEffect=effectSlots.begin(); itEffect!=effectSlots.end(); ++itEffect)
+				{
+					const SEffectData& effect = *itEffect;
+					const Ogre::NameValuePairList& params = effect.params;
+					xml_node<>* effectNode =   doc.allocate_node(node_element, "ParticleEffect");
+
+					for(auto iter=params.begin(); iter!=params.end(); ++iter)
+						effectNode->append_attribute(doc.allocate_attribute(iter->first.c_str(), iter->second.c_str()));
+
+					animNode->append_node(effectNode);
+				}
 			}
 		}
 

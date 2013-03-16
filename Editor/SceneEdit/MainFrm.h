@@ -96,6 +96,12 @@ private:
 	void			OnUpdateUI_AnimStop(CCmdUI* pCmdUI);
 	void			OnAnimPlay();
 	void			OnAnimStop();
+	void			OnUpdateUI_AnimEffectAdd(CCmdUI* pCmdUI);
+	void			OnUpdateUI_AnimEffectRemove(CCmdUI* pCmdUI);
+	void			OnAnimEffectAdd();
+	void			OnAnimEffectRemove();
+	void			OnUpdateUI_AnimEffectList(CCmdUI* pCmdUI);
+	void			OnAnimEffectSelectChange(NMHDR* pNMHDR, LRESULT* pResult);
 
 	///GameData
 	void			OnUpdateUI_DataBuilding(CCmdUI* pCmdUI);
@@ -118,6 +124,7 @@ private:
 
 	CXTPRibbonTab*			m_animTab;
 	CXTPControlComboBox*	m_animList;
+	CXTPControlComboBox*	m_effectList;
 
 	CXTPDockingPane*		m_paneResSelector;		
 	CXTPDockingPane*		m_paneTerrain;

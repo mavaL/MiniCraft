@@ -12,18 +12,19 @@ ManipulatorEffect::ManipulatorEffect()
 ,m_ssaoOffsetScale(1)
 ,m_ssaoDefaultAccessibility(0.5f)
 ,m_ssaoEdgeHighlight(1.99f)
-,m_curEditEffect(nullptr)
 ,m_bIsPlayAnim(false)
 ,m_curAnim(Ogre::StringUtil::BLANK)
+,m_curEffect(Ogre::StringUtil::BLANK)
+,m_effectNameID(0)
 {
 
 }
 
 ManipulatorEffect::~ManipulatorEffect()
 {
-	for(auto iter=m_effects.begin(); iter!=m_effects.end(); ++iter)
+	for(auto iter=m_effectTemplates.begin(); iter!=m_effectTemplates.end(); ++iter)
 		delete iter->second;
-	m_effects.clear();
+	m_effectTemplates.clear();
 }
 
 void ManipulatorEffect::SetShadowEnable( bool bEnable )
@@ -212,28 +213,26 @@ void ManipulatorEffect::Serialize( rapidxml::xml_document<>* doc, rapidxml::xml_
 	XMLNode->append_node(ssaoNode);
 
 	///保存所有单位的挂接特效信息
-	for (auto itUnit=m_effects.begin(); itUnit!=m_effects.end(); ++itUnit)
+	for (auto itTmpl=m_effectTemplates.begin(); itTmpl!=m_effectTemplates.end(); ++itTmpl)
 	{
-		Kratos::EffectController* pCtrl = itUnit->second;
+		Kratos::EffectController* pCtrl = itTmpl->second;
 		const auto& effects = pCtrl->_GetEffects();
 
-		const std::string& meshname = itUnit->first->getMesh()->getName();
-		SUnitData* unitData = ManipulatorSystem.GetGameData().GetUnitData(meshname);
+		SUnitData* unitData = ManipulatorSystem.GetGameData().GetUnitData(itTmpl->first);
+		unitData->m_effects.clear();
 
 		for (auto itAnim=effects.begin(); itAnim!=effects.end(); ++itAnim)
 		{
 			const auto& slots = itAnim->second;
 			for (auto itEffect=slots.begin(); itEffect!=slots.end(); ++itEffect)
 			{
-				Kratos::ParticleEffect* particle = itEffect->second;
+				Kratos::ParticleEffect* effect = *itEffect;
+				const Ogre::ParameterList& attributes = effect->getParameters();
 				SEffectData data;
-				data.m_locator		= particle->GetLocator();
-				data.m_anim			= itAnim->first;
-				data.m_particleTmp	= particle->GetParticleTemplate();
-				data.m_fStartTime	= particle->GetStartTime();
-				data.m_fLifeTime	= particle->GetLifeTime();
 
-				unitData->m_effects.push_back(data);
+				PARAMS_SAVE(effect, data.params);
+	
+				unitData->m_effects[itAnim->first].push_back(data);
 			}
 		}
 	}
@@ -293,7 +292,9 @@ std::vector<std::wstring> ManipulatorEffect::GetParticleTmpNames() const
 	for(auto iter=fileinfo->begin(); iter!=fileinfo->end(); ++iter)
 	{
 		const Ogre::FileInfo& info = *iter;
-		ret.push_back(Utility::EngineToUnicode(info.basename));
+		STRING obasename, oextname;
+		Ogre::StringUtil::splitBaseFilename(info.basename, obasename, oextname);
+		ret.push_back(Utility::EngineToUnicode(obasename));
 	}
 
 	return std::move(ret);
@@ -318,26 +319,30 @@ std::vector<std::wstring> ManipulatorEffect::GetAnimationNames() const
 
 void ManipulatorEffect::PlayAnimation( int animIndex, bool bPlayOrStop )
 {
-	Ogre::Entity* ent = ManipulatorSystem.GetObject().GetSelection();
-	assert(ent);
-
+	Kratos::EffectController* pCtrl = _GetCurEffectController();
 	if (bPlayOrStop)
 	{
+		Ogre::Entity* ent = ManipulatorSystem.GetObject().GetSelection();
 		const Ogre::String& animName = ent->getSkeleton()->getAnimation(animIndex)->getName();
-		m_effects[ent]->PlayAnimation(animName, true);
+		pCtrl->PlayAnimation(animName, true);
 	}
 	else
 	{
-		m_effects[ent]->StopAnimation();
+		pCtrl->StopAnimation();
 	}
 
 	m_bIsPlayAnim = bPlayOrStop;
 }
 
-void ManipulatorEffect::SetCurAnimationName( const std::string& anim )
+void ManipulatorEffect::OnAnimSelectChange( const std::string& anim )
 {
-	Ogre::Entity* ent = ManipulatorSystem.GetObject().GetSelection();
-	SetActiveEffect("", "");
+	if(m_bIsPlayAnim)
+	{
+		Kratos::EffectController* pCtrl = _GetCurEffectController();
+		pCtrl->StopAnimation();
+		if(!anim.empty())
+			pCtrl->PlayAnimation(anim, true);
+	}
 	m_curAnim = anim;
 }
 
@@ -368,55 +373,136 @@ std::vector<std::wstring> ManipulatorEffect::GetLocatorNames() const
 	return std::move(ret);
 }
 
-bool ManipulatorEffect::SetEffectParam( const std::string& param, const std::string& value )
+void ManipulatorEffect::SetEffectParam( const std::string& param, const std::string& value )
 {
-	if(!m_curEditEffect)
-		return false;
+	if(m_curEffect.empty())
+		return;
 
-	bool ret = m_curEditEffect->setParameter(param, value);
+	Kratos::ParticleEffect* pEffect = _GetCurEffectController()->GetEffect(m_curEffect);
+	bool ret = pEffect->setParameter(param, value);
 	assert(ret);
-
-	return true;
 }
 
-const std::string ManipulatorEffect::GetEffectParam( const std::string& param ) const
+const std::string ManipulatorEffect::GetEffectParam( const std::string& param )
 {
-	if(!m_curEditEffect)
+	if(m_curEffect.empty())
 		return Ogre::StringUtil::BLANK;
 
-	return m_curEditEffect->getParameter(param);
-}
-
-void ManipulatorEffect::SetActiveEffect( const std::string& animName, const std::string& locator )
-{
-	Ogre::Entity* ent = ManipulatorSystem.GetObject().GetSelection();
-	//获取控制器
-	auto iter = m_effects.find(ent);
-	if (iter == m_effects.end())
-		iter = m_effects.insert(std::make_pair(ent, new Kratos::EffectController(ent))).first;
-
-	if (!animName.empty() && !locator.empty())
-	{
-		//获取特效
-		Kratos::EffectController* controller = iter->second;
-		m_curEditEffect = controller->GetEffect(animName, locator);
-		if(!m_curEditEffect)
-		{
-			m_curEditEffect = new Kratos::ParticleEffect(ent);
-			controller->AddEffect(animName, locator, m_curEditEffect);
-		}
-	}
+	Kratos::ParticleEffect* pEffect = _GetCurEffectController()->GetEffect(m_curEffect);
+	return pEffect->getParameter(param);
 }
 
 void ManipulatorEffect::OnFrameMove( float dt )
 {
 	Ogre::Entity* ent = ManipulatorSystem.GetObject().GetSelection();
-	auto iter = m_effects.find(ent);
-	if(iter != m_effects.end())
-		iter->second->Update(dt);
+	if (ent)
+	{
+		Kratos::EffectController* controller = m_effectTemplates[ent->getMesh()->getName()];
+		controller->Update(dt);
+	}
 }
 
 bool ManipulatorEffect::GetIsPlayingAnim() const
 {
 	return m_bIsPlayAnim;
+}
+
+void ManipulatorEffect::LoadEffect( rapidxml::xml_node<>* node )
+{
+	std::string nameID("");
+	//per unit
+	auto& unitTable = GameDataDefManager::GetSingleton().m_unitData;
+	for (auto itUnit=unitTable.begin(); itUnit!=unitTable.end(); ++itUnit)
+	{
+		SUnitData& unitData = itUnit->second;
+		Kratos::EffectController* effectTmpl = new Kratos::EffectController(NULL);
+		m_effectTemplates.insert(std::make_pair(unitData.m_meshname, effectTmpl));
+
+		//per animation
+		for (auto itAnim=unitData.m_effects.begin(); itAnim!=unitData.m_effects.end(); ++itAnim)
+		{
+			const auto& slots = itAnim->second;
+			//per effect
+			for (size_t iEffect=0; iEffect<slots.size(); ++iEffect)
+			{
+				const Ogre::NameValuePairList& info = slots[iEffect].params;
+				Kratos::ParticleEffect* effect = effectTmpl->AddEffect(itAnim->first);
+				effect->setParameterList(info);
+
+				//查找最大名字ID,以后命名新的特效以此为据
+				const std::string& name = effect->GetName();
+				if(name > nameID)
+					nameID = name;
+			}
+		}
+		//特效模板已加载,清空原始数据,因为发生编辑,它们即无效了
+		unitData.m_effects.clear();
+	}
+
+	if(!nameID.empty())
+	{
+		int len = strlen("Effect_");
+		m_effectNameID = Ogre::StringConverter::parseInt(nameID.substr(len));
+		m_effectNameID++;
+	}
+}
+
+void ManipulatorEffect::BindEntityToEffectTemplate( Ogre::Entity* ent )
+{
+	Kratos::EffectController* pCtrl = _GetCurEffectController();
+	pCtrl->_SetParent(ent);
+}
+
+const std::wstring ManipulatorEffect::AddEffect()
+{
+	assert(!m_curAnim.empty());
+
+	std::string newName("Effect_");
+	newName += Ogre::StringConverter::toString(m_effectNameID++);
+
+	Kratos::EffectController* pCtrl = _GetCurEffectController();
+	pCtrl->AddEffect(m_curAnim)->SetName(newName);
+	m_curEffect = newName;
+
+	return Utility::EngineToUnicode(newName);
+}
+
+void ManipulatorEffect::RemoveEffect( const std::string& name )
+{
+	Kratos::EffectController* pCtrl = _GetCurEffectController();
+	Kratos::ParticleEffect* effect = pCtrl->GetEffect(name);
+	assert(effect);
+	m_curEffect = "";
+
+	pCtrl->RemoveEffect(name);
+	
+}
+
+Kratos::EffectController* ManipulatorEffect::_GetCurEffectController()
+{
+	Ogre::Entity* ent = ManipulatorSystem.GetObject().GetSelection();
+	auto iter = m_effectTemplates.find(ent->getMesh()->getName());
+	assert(iter != m_effectTemplates.end());
+	return iter->second;
+}
+
+std::vector<std::wstring> ManipulatorEffect::GetAttachEffectNames()
+{
+	std::vector<std::wstring> ret;
+	if(m_curAnim.empty())
+		return ret;
+
+	const auto& effects = _GetCurEffectController()->_GetEffects().find(m_curAnim)->second;
+	for(size_t i=0; i<effects.size(); ++i)
+	{
+		const std::string& name = effects[i]->GetName();
+		ret.push_back(Utility::EngineToUnicode(name));
+	}
+
+	return ret;
+}
+
+void ManipulatorEffect::OnAttachEffectSelChange( const std::string& effect )
+{
+	m_curEffect = effect;
 }
