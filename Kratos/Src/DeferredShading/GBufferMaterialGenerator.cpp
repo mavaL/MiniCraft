@@ -234,9 +234,12 @@ Ogre::GpuProgramPtr GBufferMaterialGeneratorImpl::generateFragmentShader(Materia
 	ss << "	oColor0.a = materialID;" << std::endl;
 	if (permutation & GBufferMaterialGenerator::GBP_NORMAL_MAP) 
 	{
-		ss << "	float3 texNormal = (tex2D(sNormalMap, iUV0)-0.5)*2;" << std::endl;
+		//SC2的法线贴图格式!
+		ss << "	float4 texNormal = (tex2D(sNormalMap, iUV0)-0.5)*2;" << std::endl;
 		ss << "	float3x3 normalRotation = float3x3(iTangent, iBiNormal, iNormal);" << std::endl;
-		ss << "	oColor3.rgb = normalize(mul(texNormal, normalRotation));" << std::endl;
+		ss << "	oColor3.xy = texNormal.wy;" << std::endl;
+		ss << "	oColor3.z = sqrt(max(0, 1 - dot(oColor3.xy, oColor3.xy)));" << std::endl;
+		ss << "	oColor3.xyz = normalize(mul(oColor3.xyz, normalRotation));" << std::endl;
 	} 
 	else 
 	{

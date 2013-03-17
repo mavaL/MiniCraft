@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8' ?>
 <scene formatVersion="0.4">
 	<effect>
-		<shadow AmbientLight="0.3 0.3 0.3 1" EnableShadow="true" FarDistance="300" SplitPadding="1" AdjustFactor="0.5 0.8 2" UseSimpleAdjust="true" CameraLightDirectionThreshold="45" ShadowMapSize="2048 1024 1024" SelfShadow="false" RenderBackFace="true" PssmLambda="0.75" LightExtrusionDistance="10000"/>
+		<shadow AmbientLight="0.2 0.2 0.2 1" EnableShadow="true" FarDistance="300" SplitPadding="1" AdjustFactor="0.5 0.8 2" UseSimpleAdjust="true" CameraLightDirectionThreshold="45" ShadowMapSize="2048 1024 1024" SelfShadow="false" RenderBackFace="true" PssmLambda="0.75" LightExtrusionDistance="10000"/>
 		<ssao EnableSSAO="true" SampleLength="10" OffsetScale="5" DefaultAccessibility="0.5" EdgeHighlight="1.99"/>
 	</effect>
 	<terrain worldSize="128" mapSize="65" tuningMaxPixelError="8"/>
