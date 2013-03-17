@@ -33,7 +33,7 @@ public:
 	void		SceneNew();
 	void		SceneOpen();
 	void		SceneSave();
-	void		SceneClose();
+	bool		SceneClose();
 
 	void		OnLButtonDown(const POINT& pt);
 	void		OnLButtonUp(const POINT& pt);
@@ -45,6 +45,9 @@ public:
 private:
 	void		_UpdateInput(float dt);
 	void		_CreateActionParam(const POINT& viewClientPt, SActionParam& retParam);
+
+private:
+	int			m_appSnapshot;
 };
 
 #endif // Application_h__

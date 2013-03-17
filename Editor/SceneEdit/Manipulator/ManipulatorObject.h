@@ -11,7 +11,7 @@
 
 #include "ManipulatorEventCallback.h"
 #include "EditorDefine.h"
-
+#include "KratosPrerequisites.h"
 
 class GizmoAxis;
 
@@ -24,6 +24,10 @@ struct SObjectInfo
 	bool			m_bIsBuilding;		//是否是游戏建筑
 	std::string		m_buildingName;		//若是建筑,建筑名称
 	bool			m_bIsResource;		//是否是游戏资源
+	std::string		m_meshname;
+	Ogre::Vector3	m_pos;
+	Ogre::Quaternion m_rot;
+	Ogre::Vector3	m_scale;
 };
 
 typedef std::unordered_map<Ogre::Entity*, SObjectInfo*> ObjectContainer;
@@ -50,42 +54,39 @@ public:
 	~ManipulatorObject();
 
 public:
-	void		Load(rapidxml::xml_node<>* XMLNode);
-	void		Serialize(rapidxml::xml_document<>* doc, rapidxml::xml_node<>* XMLNode);
-	void		OnFrameMove(float dt);
-	eEditMode	GetCurEditMode() const { return m_curEditMode; }
-	void		SetCurEditMode(eEditMode mode) { m_curEditMode = mode; }
+	void					Load(rapidxml::xml_node<>* XMLNode);
+	void					Serialize(rapidxml::xml_document<>* doc, rapidxml::xml_node<>* XMLNode);
+	void					OnFrameMove(float dt);
+	eEditMode				GetCurEditMode() const { return m_curEditMode; }
+	void					SetCurEditMode(eEditMode mode) { m_curEditMode = mode; }
 	const ObjectContainer&	GetAllObjects() const { return m_objects; }
+	void					SetObjectInfo(Ogre::Entity* ent, const SObjectInfo& info);
+	SObjectInfo*			GetObjectInfo(Ogre::Entity* ent);
 
 	//创建Entity
-	Ogre::Entity* AddEntity(const Ogre::String& meshname, const Ogre::Vector3& worldPos, 
-		const Ogre::Quaternion& orient = Ogre::Quaternion::IDENTITY, const Ogre::Vector3& scale = Ogre::Vector3(1,1,1));
-	Ogre::Entity* AddEntity(const Ogre::String& meshname, const Ogre::Vector2& screenPos);
+	Ogre::Entity*			AddEntity(const STRING& meshname, const POS& worldPos, bool bOp = true,
+		const ORIENT& orient = ORIENT::IDENTITY, const SCALE& scale = SCALE(1,1,1));
+	Ogre::Entity*			AddEntity(const Ogre::String& meshname, const Ogre::Vector2& screenPos);
+	//删除物体
+	void					RemoveEntity(Ogre::Entity* ent, bool bOp = true);
 
-	///物体选择
-	void		SetSelection(Ogre::Entity* pEnt);
-	Ogre::Entity*	GetSelection() const { return m_pSelectEntity; }
-	void		ClearSelection();
-	void		SelectionSetPosition(const Ogre::Vector3& newPos);
-	void		SelectionSetOrientation(const Ogre::Quaternion& orient);
-	void		SelectionSetScale(const Ogre::Vector3 scale);
-	void		SelectionRotate(float radian);
-	void		SelectionScale(const Ogre::Vector3& scaleMultiplier);
+	///物体选择/编辑
+	void					SetSelection(Ogre::Entity* pEnt);
+	Ogre::Entity*			GetSelection() const { return m_pSelectEntity; }
+	void					ClearSelection();
+	void					SetPosition(Ogre::Entity* ent, const Ogre::Vector3& newPos, bool bOp = true);
+	void					SetOrientation(Ogre::Entity* ent, const Ogre::Quaternion& orient, bool bOp = true);
+	void					SetScale(Ogre::Entity* ent, const Ogre::Vector3 scale, bool bOp = true);
+	void					Rotate(Ogre::Entity* ent, float radian, bool bOp = true);
+	void					Scale(Ogre::Entity* ent, const Ogre::Vector3& scaleMultiplier, bool bOp = true);
 
 	//取得Entity的包围盒Gizmo.包围盒显示由我们自己管理,不使用OGRE默认的showBoundingBox
 	Ogre::WireBoundingBox*	GetEntityAABBGizmo(Ogre::Entity* pEntity);
 	//根据操作模式,显示物体相应的Gizmo
-	void		ShowEntityGizmo(Ogre::Entity* pEntity, bool bShow, eEditMode mode, bool bDrift = false);
-	GizmoAxis*	GetGizmoAxis() const { return m_pGizmoAixs; }
-	void		OnGizmoNodeReset();
-	void		SetObjectNavMeshFlag(Ogre::Entity* pEntity, bool bIsNavMesh);
-	bool		GetObjectNavMeshFlag(Ogre::Entity* pEntity) const;
-	void		SetObjectIsBuilding(Ogre::Entity* pEntity, bool bIsBuilding);
-	bool		GetObjectIsBuilding(Ogre::Entity* pEntity) const;
-	void		SetObjectBuildingName(Ogre::Entity* pEntity, const std::string& name);
-	const std::string&		GetObjectBuildingName(Ogre::Entity* pEntity) const;
-	void		SetObjectIsResource(Ogre::Entity* pEntity, bool bIsResource);
-	bool		GetObjectIsResource(Ogre::Entity* pEntity) const;
+	void					ShowEntityGizmo(Ogre::Entity* pEntity, bool bShow, eEditMode mode, bool bDrift = false);
+	GizmoAxis*				GetGizmoAxis() const { return m_pGizmoAixs; }
+	void					OnGizmoNodeReset();
+	void					CommitEditOperation(Ogre::Entity* ent, eEditMode mode, const Ogre::Any& oldValue, const Ogre::Any& newValue);
 
 	//射线查询
 	Ogre::MovableObject* DoRaySceneQuery(const Ogre::Ray& ray, int queryMask = 0xffffffff);

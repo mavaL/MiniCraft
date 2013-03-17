@@ -62,7 +62,7 @@ public:
 	float	GetSSAODefaultAccessibility() const;
 
 	std::vector<std::wstring>	GetAnimationNames() const;
-	void						PlayAnimation(int animIndex, bool bPlayOrStop);
+	void						PlayAnimation(Ogre::Entity* ent, int animIndex, bool bPlayOrStop);
 	const std::string			GetCurAnimationName();
 	void						OnAnimSelectChange(const std::string& anim);
 	void						OnAttachEffectSelChange(const std::string& effect);
@@ -80,7 +80,7 @@ public:
 	const std::string			GetEffectParam(const std::string& param);
 
 private:
-	Kratos::EffectController*	_GetCurEffectController();
+	Kratos::EffectController*	_GetEffectController(Ogre::Entity* ent);
 
 private:
 	float			m_pssmLambda;

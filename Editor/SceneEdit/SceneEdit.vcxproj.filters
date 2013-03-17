@@ -22,6 +22,9 @@
     <Filter Include="EditorAction">
       <UniqueIdentifier>{d11f9afa-1e67-4388-a448-db8bf6b8a699}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Operation">
+      <UniqueIdentifier>{8ee60ae6-302d-4ee1-a0e3-b71047ae5e22}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
@@ -153,6 +156,12 @@
     <ClInclude Include="UI\AttachmentPropertyPane.h">
       <Filter>UI</Filter>
     </ClInclude>
+    <ClInclude Include="Manipulator\ManipulatorOperation.h">
+      <Filter>Manipulator</Filter>
+    </ClInclude>
+    <ClInclude Include="Operation\Operation.h">
+      <Filter>Operation</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SceneEdit.cpp">
@@ -247,6 +256,12 @@
     </ClCompile>
     <ClCompile Include="UI\AttachmentPropertyPane.cpp">
       <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Manipulator\ManipulatorOperation.cpp">
+      <Filter>Manipulator</Filter>
+    </ClCompile>
+    <ClCompile Include="Operation\Operation.cpp">
+      <Filter>Operation</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

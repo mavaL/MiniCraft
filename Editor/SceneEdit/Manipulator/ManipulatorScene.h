@@ -10,6 +10,7 @@
 #define ManipulatorScene_h__
 
 #include "../Singleton.h"
+#include "KratosPrerequisites.h"
 #include "ManipulatorObject.h"
 #include "ManipulatorTerrain.h"
 #include "ManipulatorEventCallback.h"
@@ -19,7 +20,7 @@
 #include "ManipulatorGameData.h"
 #include "SceneSerializer.h"
 #include "ManipulatorEffect.h"
-#include "KratosPrerequisites.h"
+#include "ManipulatorOperation.h"
 
 class ManipulatorScene : 
 	public CSingleton<ManipulatorScene>, 
@@ -59,12 +60,13 @@ public:
 	const std::wstring	GenerateSceneFullPath();
 
 	ManipulatorTerrain&		GetTerrain()	{ return *m_manipulatorTerrain; }
-	ManipulatorObject&		GetObject()		{ return *m_manipulatorObject; }
+	ManipulatorObject&		GetObject()		{ return *m_manipulatorObject;	}
 	ManipulatorNavMesh&		GetNavMesh()	{ return *m_manipulatorNavMesh; }
-	ManipulatorCamera&		GetCamera()		{ return *m_manipulatorCamera; }
+	ManipulatorCamera&		GetCamera()		{ return *m_manipulatorCamera;	}
 	ManipulatorResource&	GetResource()	{ return *m_manipulatorResource; }
 	ManipulatorGameData&	GetGameData()	{ return *m_manipulatorGameData; }
-	ManipulatorEffect&		GetEffect()		{ return *m_manipulatorEffect; }
+	ManipulatorEffect&		GetEffect()		{ return *m_manipulatorEffect;	}
+	ManipulatorOperation&	GetOperation()	{ return *m_manipualtorOp;		}
 
 private:
 	std::wstring		m_scenePath;
@@ -78,6 +80,7 @@ private:
 	ManipulatorResource* m_manipulatorResource;
 	ManipulatorGameData* m_manipulatorGameData;
 	ManipulatorEffect*	m_manipulatorEffect;
+	ManipulatorOperation* m_manipualtorOp;
 };
 
 #define	ManipulatorSystem	ManipulatorScene::GetSingleton()

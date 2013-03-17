@@ -63,6 +63,11 @@ void ManipulatorNavMesh::Generate()
 
 void ManipulatorNavMesh::Reset()
 {
+	if(!m_pRecast)
+		m_pRecast = new OgreRecast(RenderManager.m_pSceneMgr);
+	if(!m_pDetourTileCache )
+		m_pDetourTileCache = new OgreDetourTileCache(m_pRecast);
+
 	m_pRecast->RecastCleanup();
 	SAFE_DELETE(m_pInputGeom);
 
@@ -152,13 +157,4 @@ void ManipulatorNavMesh::OnSceneClose()
 {
 	SAFE_DELETE(m_pDetourTileCache);
 	SAFE_DELETE(m_pRecast);
-	assert(RenderManager.m_pSceneMgr);
-	m_pRecast = new OgreRecast(RenderManager.m_pSceneMgr);
-	m_pDetourTileCache = new OgreDetourTileCache(m_pRecast);
-	Reset();
-}
-
-void ManipulatorNavMesh::OnGizmoNodeReset()
-{
-
 }

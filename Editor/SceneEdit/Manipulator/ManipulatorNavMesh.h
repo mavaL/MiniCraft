@@ -35,7 +35,7 @@ public:
 	void		ShowNavMesh(bool bShow);//œ‘ æµº∫ΩÕ¯∏Ò
 	bool		GetIsShowNavMesh() const { return m_bShowNavMesh; }
 	bool		HasGenerate() const { return m_bHasGenerate; }
-	void		OnGizmoNodeReset();
+	void		OnGizmoNodeReset() {}
 
 private:
 	OgreRecast*				m_pRecast;

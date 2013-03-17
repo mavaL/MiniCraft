@@ -7,6 +7,7 @@
 
 ActionObjectEdit::ActionObjectEdit()
 :m_bLBDown(false)
+,m_bChanged(false)
 {
 
 }
@@ -34,8 +35,11 @@ void ActionObjectEdit::Leave()
 void ActionObjectEdit::OnMouseLButtonDown( const SActionParam& param )
 {
 	m_bLBDown = true;
-	GizmoAxis* pGizmo = ManipulatorSystem.GetObject().GetGizmoAxis();
-	ManipulatorObject::eEditMode mode = ManipulatorSystem.GetObject().GetCurEditMode();
+	ManipulatorObject& manObject = ManipulatorSystem.GetObject();
+	GizmoAxis* pGizmo = manObject.GetGizmoAxis();
+	ManipulatorObject::eEditMode mode = manObject.GetCurEditMode();
+	Ogre::Entity* ent = manObject.GetSelection();
+
 	if (pGizmo->IsActive())
 	{
 		assert(pGizmo->GetActiveAxis() != eAxis_None);
@@ -45,11 +49,37 @@ void ActionObjectEdit::OnMouseLButtonDown( const SActionParam& param )
 		else if(mode == ManipulatorObject::eEditMode_Scale)
 			m_vecAdjust = _ComputeTranslateVector(ray, pGizmo->GetActiveAxis(), true);
 	}
+
+	//为撤销操作做准备
+	m_bChanged = false;
+	switch (mode)
+	{
+	case ManipulatorObject::eEditMode_Move: m_oldValue = Ogre::Any(ent->getParentSceneNode()->_getDerivedPosition()); break;
+	case ManipulatorObject::eEditMode_Rotate: m_oldValue = Ogre::Any(ent->getParentSceneNode()->_getDerivedOrientation()); break;
+	case ManipulatorObject::eEditMode_Scale: m_oldValue = Ogre::Any(ent->getParentSceneNode()->_getDerivedScale()); break;
+	}
 }
 
 void ActionObjectEdit::OnMouseLButtonUp( const SActionParam& param )
 {
+	ManipulatorObject& manObject = ManipulatorSystem.GetObject();
+	Ogre::Entity* curSel = manObject.GetSelection();
+	const ManipulatorObject::eEditMode mode = manObject.GetCurEditMode();
 	m_bLBDown = false;
+
+	if (m_bChanged)
+	{
+		Ogre::Any newValue;
+		switch (mode)
+		{
+		case ManipulatorObject::eEditMode_Move: newValue = Ogre::Any(curSel->getParentSceneNode()->_getDerivedPosition()); break;
+		case ManipulatorObject::eEditMode_Rotate: newValue = Ogre::Any(curSel->getParentSceneNode()->_getDerivedOrientation()); break;
+		case ManipulatorObject::eEditMode_Scale: newValue = Ogre::Any(curSel->getParentSceneNode()->_getDerivedScale()); break;
+		}
+
+		//可撤销操作
+		manObject.CommitEditOperation(curSel, mode, m_oldValue, newValue);
+	}
 }
 
 void ActionObjectEdit::OnMouseMove( const SActionParam& param )
@@ -58,10 +88,11 @@ void ActionObjectEdit::OnMouseMove( const SActionParam& param )
 	GizmoAxis* pGizmo = manObject.GetGizmoAxis();
 	const Ogre::Ray ray = RenderManager.m_pMainCamera->getCameraToViewportRay(param.m_ptRelative.x, param.m_ptRelative.y);
 	ManipulatorObject::eEditMode mode = manObject.GetCurEditMode();
+	Ogre::Entity* curSel = manObject.GetSelection();
 
 	if (pGizmo->IsActive() && m_bLBDown)
 	{
-		Ogre::Vector3 oldPos = manObject.GetSelection()->getParentSceneNode()->_getDerivedPosition();
+		Ogre::Vector3 oldPos = curSel->getParentSceneNode()->_getDerivedPosition();
 
 		if(mode == ManipulatorObject::eEditMode_Move)
 		{
@@ -69,12 +100,12 @@ void ActionObjectEdit::OnMouseMove( const SActionParam& param )
 			Ogre::Vector3 delta = _ComputeTranslateVector(ray, pGizmo->GetActiveAxis(), false);
 			//移动
 			Ogre::Vector3 newPos = delta - m_vecAdjust + oldPos;
-			manObject.SelectionSetPosition(newPos);
+			manObject.SetPosition(curSel, newPos, false);
 		}
 		else if (mode == ManipulatorObject::eEditMode_Rotate)
 		{
 			//旋转
-			manObject.SelectionRotate(param.m_ptDeltaRel.x * 15.0f);
+			manObject.Rotate(curSel, param.m_ptDeltaRel.x * 15.0f, false);
 		}
 		else if (mode == ManipulatorObject::eEditMode_Scale)
 		{
@@ -88,8 +119,9 @@ void ActionObjectEdit::OnMouseMove( const SActionParam& param )
 			case eAxis_Y: scale.y = axisScale; break;
 			case eAxis_Z: scale.z = axisScale; break;
 			}
-			manObject.SelectionScale(scale);
+			manObject.Scale(curSel, scale, false);
 		}
+		m_bChanged = true;
 	}
 	else
 	{

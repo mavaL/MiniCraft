@@ -30,6 +30,7 @@ void ManipulatorScene::Init()
 	m_manipulatorResource = new ManipulatorResource;
 	m_manipulatorGameData = new ManipulatorGameData;
 	m_manipulatorEffect = new ManipulatorEffect;
+	m_manipualtorOp		= new ManipulatorOperation;
 
 	m_pCurScene = new Kratos::Scene;
 }
@@ -44,6 +45,7 @@ void ManipulatorScene::Shutdown()
 	SAFE_DELETE(m_manipulatorResource);
 	SAFE_DELETE(m_manipulatorGameData);
 	SAFE_DELETE(m_manipulatorEffect);
+	SAFE_DELETE(m_manipualtorOp);
 }
 
 void ManipulatorScene::SceneNew(const std::wstring& sceneName)
@@ -90,11 +92,11 @@ void ManipulatorScene::SceneSave()
 
 void ManipulatorScene::SceneClose()
 {
-	m_pCurScene->Reset();
-	m_bIsSceneReay = false;
-
 	//回调事件
 	Excute([](ManipulatorSceneEventCallback* callback){ callback->OnSceneClose(); });
+
+	m_pCurScene->Reset();
+	m_bIsSceneReay = false;
 }
 
 const std::wstring ManipulatorScene::GenerateSceneFullPath()

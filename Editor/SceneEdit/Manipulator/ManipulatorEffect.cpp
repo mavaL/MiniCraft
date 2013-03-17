@@ -317,12 +317,11 @@ std::vector<std::wstring> ManipulatorEffect::GetAnimationNames() const
 	return std::move(vecRet);
 }
 
-void ManipulatorEffect::PlayAnimation( int animIndex, bool bPlayOrStop )
+void ManipulatorEffect::PlayAnimation( Ogre::Entity* ent, int animIndex, bool bPlayOrStop )
 {
-	Kratos::EffectController* pCtrl = _GetCurEffectController();
+	Kratos::EffectController* pCtrl = _GetEffectController(ent);
 	if (bPlayOrStop)
 	{
-		Ogre::Entity* ent = ManipulatorSystem.GetObject().GetSelection();
 		const Ogre::String& animName = ent->getSkeleton()->getAnimation(animIndex)->getName();
 		pCtrl->PlayAnimation(animName, true);
 	}
@@ -338,7 +337,7 @@ void ManipulatorEffect::OnAnimSelectChange( const std::string& anim )
 {
 	if(m_bIsPlayAnim)
 	{
-		Kratos::EffectController* pCtrl = _GetCurEffectController();
+		Kratos::EffectController* pCtrl = _GetEffectController(ManipulatorSystem.GetObject().GetSelection());
 		pCtrl->StopAnimation();
 		if(!anim.empty())
 			pCtrl->PlayAnimation(anim, true);
@@ -378,7 +377,7 @@ void ManipulatorEffect::SetEffectParam( const std::string& param, const std::str
 	if(m_curEffect.empty())
 		return;
 
-	Kratos::ParticleEffect* pEffect = _GetCurEffectController()->GetEffect(m_curEffect);
+	Kratos::ParticleEffect* pEffect = _GetEffectController(ManipulatorSystem.GetObject().GetSelection())->GetEffect(m_curEffect);
 	bool ret = pEffect->setParameter(param, value);
 	assert(ret);
 }
@@ -388,14 +387,14 @@ const std::string ManipulatorEffect::GetEffectParam( const std::string& param )
 	if(m_curEffect.empty())
 		return Ogre::StringUtil::BLANK;
 
-	Kratos::ParticleEffect* pEffect = _GetCurEffectController()->GetEffect(m_curEffect);
+	Kratos::ParticleEffect* pEffect = _GetEffectController(ManipulatorSystem.GetObject().GetSelection())->GetEffect(m_curEffect);
 	return pEffect->getParameter(param);
 }
 
 void ManipulatorEffect::OnFrameMove( float dt )
 {
 	Ogre::Entity* ent = ManipulatorSystem.GetObject().GetSelection();
-	if (ent)
+	if (ent && ent->hasSkeleton())
 	{
 		Kratos::EffectController* controller = m_effectTemplates[ent->getMesh()->getName()];
 		controller->Update(dt);
@@ -449,7 +448,7 @@ void ManipulatorEffect::LoadEffect( rapidxml::xml_node<>* node )
 
 void ManipulatorEffect::BindEntityToEffectTemplate( Ogre::Entity* ent )
 {
-	Kratos::EffectController* pCtrl = _GetCurEffectController();
+	Kratos::EffectController* pCtrl = _GetEffectController(ManipulatorSystem.GetObject().GetSelection());
 	pCtrl->_SetParent(ent);
 }
 
@@ -460,7 +459,7 @@ const std::wstring ManipulatorEffect::AddEffect()
 	std::string newName("Effect_");
 	newName += Ogre::StringConverter::toString(m_effectNameID++);
 
-	Kratos::EffectController* pCtrl = _GetCurEffectController();
+	Kratos::EffectController* pCtrl = _GetEffectController(ManipulatorSystem.GetObject().GetSelection());
 	pCtrl->AddEffect(m_curAnim)->SetName(newName);
 	m_curEffect = newName;
 
@@ -469,7 +468,7 @@ const std::wstring ManipulatorEffect::AddEffect()
 
 void ManipulatorEffect::RemoveEffect( const std::string& name )
 {
-	Kratos::EffectController* pCtrl = _GetCurEffectController();
+	Kratos::EffectController* pCtrl = _GetEffectController(ManipulatorSystem.GetObject().GetSelection());
 	Kratos::ParticleEffect* effect = pCtrl->GetEffect(name);
 	assert(effect);
 	m_curEffect = "";
@@ -478,9 +477,8 @@ void ManipulatorEffect::RemoveEffect( const std::string& name )
 	
 }
 
-Kratos::EffectController* ManipulatorEffect::_GetCurEffectController()
+Kratos::EffectController* ManipulatorEffect::_GetEffectController(Ogre::Entity* ent)
 {
-	Ogre::Entity* ent = ManipulatorSystem.GetObject().GetSelection();
 	auto iter = m_effectTemplates.find(ent->getMesh()->getName());
 	assert(iter != m_effectTemplates.end());
 	return iter->second;
@@ -492,7 +490,8 @@ std::vector<std::wstring> ManipulatorEffect::GetAttachEffectNames()
 	if(m_curAnim.empty())
 		return ret;
 
-	const auto& effects = _GetCurEffectController()->_GetEffects().find(m_curAnim)->second;
+	Ogre::Entity* ent = ManipulatorSystem.GetObject().GetSelection();
+	const auto& effects = _GetEffectController(ent)->_GetEffects().find(m_curAnim)->second;
 	for(size_t i=0; i<effects.size(); ++i)
 	{
 		const std::string& name = effects[i]->GetName();

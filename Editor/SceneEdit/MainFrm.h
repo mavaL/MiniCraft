@@ -89,6 +89,8 @@ private:
 	///Object
 	template<int mode> void OnObjectEdit();
 	template<int mode> void	OnUpdateUI_ObjectEdit(CCmdUI* pCmdUI);
+	void			OnUpdateUI_ObjectRemove(CCmdUI* pCmdUI);
+	void			OnObjectRemove();
 	///Animation
 	void			OnUpdateUI_AnimNames(CCmdUI* pCmdUI);
 	void			OnAnimSelectChange(NMHDR* pNMHDR, LRESULT* pResult);

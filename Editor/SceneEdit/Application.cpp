@@ -11,6 +11,7 @@
 
 
 Application::Application()
+:m_appSnapshot(0)
 {
 }
 
@@ -37,6 +38,7 @@ bool Application::Update()
 
 void Application::Shutdown()
 {
+	SceneClose();
 	ManipulatorSystem.Shutdown();
 }
 
@@ -46,10 +48,11 @@ void Application::SceneNew()
 	std::wstring newSceneName;
 	if (IDOK == dlg.DoModal(ManipulatorSystem.GetScenePath(), newSceneName))
 	{
-		//先关闭当前场景
-		//TODO:检测改动,提示保存
-		SceneClose();
-		ManipulatorSystem.SceneNew(newSceneName);
+		if(SceneClose())
+		{
+			ManipulatorSystem.SceneNew(newSceneName);
+			m_appSnapshot = ManipulatorSystem.GetOperation().SnapshotMake();
+		}
 	}
 }
 
@@ -64,23 +67,36 @@ void Application::SceneOpen()
 
 	if(IDOK == dlgFile.DoModal())
 	{
-		//先关闭当前场景
-		//TODO:检测改动,提示保存
-		SceneClose();
-
-		strFilename = dlgFile.GetOFN().lpstrFile;
-		ManipulatorSystem.SceneOpen(strFilename);
+		if(SceneClose())
+		{
+			strFilename = dlgFile.GetOFN().lpstrFile;
+			ManipulatorSystem.SceneOpen(strFilename);
+			m_appSnapshot = ManipulatorSystem.GetOperation().SnapshotMake();
+		}
 	}
 }
 
 void Application::SceneSave()
 {
 	ManipulatorSystem.SceneSave();
+	m_appSnapshot = ManipulatorSystem.GetOperation().SnapshotMake();
 }
 
-void Application::SceneClose()
+bool Application::SceneClose()
 {
-	ManipulatorSystem.SceneClose();
+	//提示保存
+	bool bNeedSave = !ManipulatorSystem.GetOperation().SnapshotCheck(m_appSnapshot);
+	if (bNeedSave)
+	{
+		int ret = MessageBox(nullptr, L"Warning! The scene has changed, save it?", L"Warning", MB_ICONWARNING|MB_YESNOCANCEL);
+		if(ret == IDYES)
+			ManipulatorScene::GetSingleton().SceneSave();
+		else if(ret == IDCANCEL)
+			return false;
+	}
+
+	ManipulatorScene::GetSingleton().SceneClose();
+	return true;
 }
 
 void Application::OnViewportResized()
@@ -100,9 +116,42 @@ void Application::OnViewportResized()
 
 void Application::_UpdateInput(float dt)
 {
+	static bool bZKeyDown = false;
+	static bool bYKeyDown = false;
+
 	//取消当前编辑器激活状态
 	if(GetAsyncKeyState(VK_ESCAPE) < 0)
+	{
 		ManipulatorAction::GetSingleton().SetActiveAction(eActionType_None);
+	}
+
+	//Undo?
+	if (GetAsyncKeyState('Z') < 0)
+	{
+		if (!bZKeyDown && GetAsyncKeyState(VK_CONTROL) < 0)
+		{
+			bZKeyDown = true;
+			ManipulatorSystem.GetOperation().Undo();
+		}
+	}
+	else
+	{
+		bZKeyDown = false;
+	}
+	
+	//Redo?
+	if (GetAsyncKeyState('Y') < 0)
+	{
+		if (!bYKeyDown && GetAsyncKeyState(VK_CONTROL) < 0)
+		{
+			bYKeyDown = true;
+			ManipulatorSystem.GetOperation().Redo();
+		}
+	}
+	else
+	{
+		bYKeyDown = false;
+	}
 }
 
 void Application::OnLButtonDown( const POINT& pt )

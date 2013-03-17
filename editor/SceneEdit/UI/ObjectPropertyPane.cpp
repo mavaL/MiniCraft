@@ -12,11 +12,11 @@ BEGIN_MESSAGE_MAP(PropertyPaneObject, CPropertiesPane)
 END_MESSAGE_MAP()
 
 
-#define UPDATE_PROP_SHORTCUT(d1, d2, fun, item)		\
+#define UPDATE_PROP_SHORTCUT(ent, d1, d2, fun, item)		\
 {	\
 	Ogre::String str = Utility::UnicodeToEngine(Utility::StringCutPrecision(item->GetValue()));	\
 	d1.d2 = Ogre::StringConverter::parseReal(str);	\
-	ManipulatorSystem.GetObject().SelectionSet##fun(d1);		\
+	ManipulatorSystem.GetObject().Set##fun(ent, d1);		\
 }
 
 
@@ -70,81 +70,81 @@ LRESULT PropertyPaneObject::OnGridNotify( WPARAM wParam, LPARAM lParam )
 	{
 		CXTPPropertyGridItem* pItem = (CXTPPropertyGridItem*)lParam;
 		const UINT id = pItem->GetID();
-		Ogre::Vector3 objPos = manObject.GetSelection()->getParentSceneNode()->_getDerivedPosition();
-		Ogre::Quaternion objOrient = manObject.GetSelection()->getParentSceneNode()->_getDerivedOrientation();
-		Ogre::Vector3 objScale = manObject.GetSelection()->getParentSceneNode()->_getDerivedScale();
+		Ogre::Entity* ent			= manObject.GetSelection();
+		Ogre::Vector3 objPos		= ent->getParentSceneNode()->_getDerivedPosition();
+		Ogre::Quaternion objOrient	= ent->getParentSceneNode()->_getDerivedOrientation();
+		Ogre::Vector3 objScale		= ent->getParentSceneNode()->_getDerivedScale();
+		SObjectInfo* objInfo		= manObject.GetObjectInfo(ent);
 
 		switch (id)
 		{
 		case propPosition: 
-		{
-			CXTPPropertyGridItemVec3* pItemPos = dynamic_cast<CXTPPropertyGridItemVec3*>(pItem);
-			manObject.SelectionSetPosition(UpdateVec3ItemProperty(pItemPos));
-		}
-		break;
+			{
+				CXTPPropertyGridItemVec3* pItemPos = dynamic_cast<CXTPPropertyGridItemVec3*>(pItem);
+				manObject.SetPosition(ent, UpdateVec3ItemProperty(pItemPos));
+			}
+			break;
 
 		case propOrientation:
-		{
-			CXTPPropertyGridItemVec4* pItemOrient = dynamic_cast<CXTPPropertyGridItemVec4*>(pItem);
-			std::wstring strX = Utility::StringCutPrecision(pItemOrient->GetStrX());
-			std::wstring strY = Utility::StringCutPrecision(pItemOrient->GetStrY());
-			std::wstring strZ = Utility::StringCutPrecision(pItemOrient->GetStrZ());
-			std::wstring strW = Utility::StringCutPrecision(pItemOrient->GetStrW());
+			{
+				CXTPPropertyGridItemVec4* pItemOrient = dynamic_cast<CXTPPropertyGridItemVec4*>(pItem);
+				std::wstring strX = Utility::StringCutPrecision(pItemOrient->GetStrX());
+				std::wstring strY = Utility::StringCutPrecision(pItemOrient->GetStrY());
+				std::wstring strZ = Utility::StringCutPrecision(pItemOrient->GetStrZ());
+				std::wstring strW = Utility::StringCutPrecision(pItemOrient->GetStrW());
 
-			float fX = Ogre::StringConverter::parseReal(Utility::UnicodeToEngine(strX));
-			float fY = Ogre::StringConverter::parseReal(Utility::UnicodeToEngine(strY));
-			float fZ = Ogre::StringConverter::parseReal(Utility::UnicodeToEngine(strZ));
-			float fW = Ogre::StringConverter::parseReal(Utility::UnicodeToEngine(strW));
+				float fX = Ogre::StringConverter::parseReal(Utility::UnicodeToEngine(strX));
+				float fY = Ogre::StringConverter::parseReal(Utility::UnicodeToEngine(strY));
+				float fZ = Ogre::StringConverter::parseReal(Utility::UnicodeToEngine(strZ));
+				float fW = Ogre::StringConverter::parseReal(Utility::UnicodeToEngine(strW));
 
-			manObject.SelectionSetOrientation(Ogre::Quaternion(fW, fX, fY, fZ));
-		}
-		break;
+				manObject.SetOrientation(ent, Ogre::Quaternion(fW, fX, fY, fZ));
+			}
+			break;
 
 		case propScale: 
-		{
-			CXTPPropertyGridItemVec3* pItemScale = dynamic_cast<CXTPPropertyGridItemVec3*>(pItem);
-			manObject.SelectionSetScale(UpdateVec3ItemProperty(pItemScale));
-		}
-		break;
+			{
+				CXTPPropertyGridItemVec3* pItemScale = dynamic_cast<CXTPPropertyGridItemVec3*>(pItem);
+				manObject.SetScale(ent, UpdateVec3ItemProperty(pItemScale));
+			}
+			break;
 
-		case propPosX: UPDATE_PROP_SHORTCUT(objPos, x, Position, pItem); break;
-		case propPosY: UPDATE_PROP_SHORTCUT(objPos, y, Position, pItem); break;
-		case propPosZ: UPDATE_PROP_SHORTCUT(objPos, z, Position, pItem); break;
-		case propOrientX: UPDATE_PROP_SHORTCUT(objOrient, x, Orientation, pItem); break;
-		case propOrientY: UPDATE_PROP_SHORTCUT(objOrient, y, Orientation, pItem); break;
-		case propOrientZ: UPDATE_PROP_SHORTCUT(objOrient, z, Orientation, pItem); break;
-		case propOrientW: UPDATE_PROP_SHORTCUT(objOrient, w, Orientation, pItem); break;
-		case propScaleX: UPDATE_PROP_SHORTCUT(objScale, x, Scale, pItem); break;
-		case propScaleY: UPDATE_PROP_SHORTCUT(objScale, y, Scale, pItem); break;
-		case propScaleZ: UPDATE_PROP_SHORTCUT(objScale, z, Scale, pItem); break;
+		case propPosX: UPDATE_PROP_SHORTCUT(ent, objPos, x, Position, pItem); break;
+		case propPosY: UPDATE_PROP_SHORTCUT(ent, objPos, y, Position, pItem); break;
+		case propPosZ: UPDATE_PROP_SHORTCUT(ent, objPos, z, Position, pItem); break;
+		case propOrientX: UPDATE_PROP_SHORTCUT(ent, objOrient, x, Orientation, pItem); break;
+		case propOrientY: UPDATE_PROP_SHORTCUT(ent, objOrient, y, Orientation, pItem); break;
+		case propOrientZ: UPDATE_PROP_SHORTCUT(ent, objOrient, z, Orientation, pItem); break;
+		case propOrientW: UPDATE_PROP_SHORTCUT(ent, objOrient, w, Orientation, pItem); break;
+		case propScaleX: UPDATE_PROP_SHORTCUT(ent, objScale, x, Scale, pItem); break;
+		case propScaleY: UPDATE_PROP_SHORTCUT(ent, objScale, y, Scale, pItem); break;
+		case propScaleZ: UPDATE_PROP_SHORTCUT(ent, objScale, z, Scale, pItem); break;
 
 		case propAddToNavmesh:
-		{
-			CXTPPropertyGridItemBool* pItemBool = dynamic_cast<CXTPPropertyGridItemBool*>(pItem);
-			manObject.SetObjectNavMeshFlag(manObject.GetSelection(), pItemBool->GetBool());
-		}
-		break;
+			{
+				CXTPPropertyGridItemBool* pItemBool = dynamic_cast<CXTPPropertyGridItemBool*>(pItem);
+				objInfo->m_bAddToNavmesh = pItemBool->GetBool();
+			}
+			break;
 
 		case propIsBuilding:
-		{
-			CXTPPropertyGridItemBool* pItemBool = dynamic_cast<CXTPPropertyGridItemBool*>(pItem);
-			BOOL bIsBuilding = pItemBool->GetBool();
-			manObject.SetObjectIsBuilding(manObject.GetSelection(), bIsBuilding);
-			m_mapItem[propBuildingName]->SetReadOnly(!bIsBuilding);
-		}
-		break;
+			{
+				CXTPPropertyGridItemBool* pItemBool = dynamic_cast<CXTPPropertyGridItemBool*>(pItem);
+				objInfo->m_bIsBuilding = pItemBool->GetBool();
+			}
+			break;
 
 		case propBuildingName:
 			{
 				std::string name = Utility::UnicodeToEngine(pItem->GetValue());
-				manObject.SetObjectBuildingName(manObject.GetSelection(), name);
+				objInfo->m_buildingName = name;
 			}
 			break;
 
 		case propIsResource:
 			{
 				CXTPPropertyGridItemBool* pItemBool = dynamic_cast<CXTPPropertyGridItemBool*>(pItem);
-				manObject.SetObjectIsResource(manObject.GetSelection(), pItemBool->GetBool());
+				objInfo->m_bIsResource = pItemBool->GetBool();
 			}
 			break;
 
@@ -169,9 +169,15 @@ LRESULT PropertyPaneObject::OnGridNotify( WPARAM wParam, LPARAM lParam )
 void PropertyPaneObject::UpdateProperty( int id )
 {
 	Ogre::Entity* curSel = ManipulatorSystem.GetObject().GetSelection();
+	if (!curSel)
+	{
+		m_mapItem[id]->SetValue(L"");
+		return;
+	}
+
 	Ogre::SceneNode* pNode = curSel->getParentSceneNode();
-	assert(curSel);
 	std::string strNewValue;
+	const SObjectInfo* objInfo = ManipulatorSystem.GetObject().GetObjectInfo(curSel);
 
 	switch (id)
 	{
@@ -189,10 +195,10 @@ void PropertyPaneObject::UpdateProperty( int id )
 	case propScaleY:
 	case propScaleZ:		id = propScale;
 	case propScale:			strNewValue = Ogre::StringConverter::toString(pNode->_getDerivedScale()); break;
-	case propAddToNavmesh:	strNewValue = Ogre::StringConverter::toString(ManipulatorSystem.GetObject().GetObjectNavMeshFlag(curSel)); break;
-	case propIsBuilding:	strNewValue = Ogre::StringConverter::toString(ManipulatorSystem.GetObject().GetObjectIsBuilding(curSel)); break;
-	case propBuildingName:	strNewValue = ManipulatorSystem.GetObject().GetObjectBuildingName(curSel); break;
-	case propIsResource:	strNewValue = Ogre::StringConverter::toString(ManipulatorSystem.GetObject().GetObjectIsResource(curSel)); break;
+	case propAddToNavmesh:	strNewValue = Ogre::StringConverter::toString(objInfo->m_bAddToNavmesh); break;
+	case propIsBuilding:	strNewValue = Ogre::StringConverter::toString(objInfo->m_bIsBuilding); break;
+	case propBuildingName:	strNewValue = objInfo->m_buildingName; break;
+	case propIsResource:	strNewValue = Ogre::StringConverter::toString(objInfo->m_bIsResource); break;
 	default: assert(0);
 	}
 	

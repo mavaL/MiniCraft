@@ -134,8 +134,10 @@
     <ClInclude Include="Manipulator\ManipulatorGameData.h" />
     <ClInclude Include="Manipulator\ManipulatorNavMesh.h" />
     <ClInclude Include="Manipulator\ManipulatorObject.h" />
+    <ClInclude Include="Manipulator\ManipulatorOperation.h" />
     <ClInclude Include="Manipulator\ManipulatorScene.h" />
     <ClInclude Include="Manipulator\ManipulatorTerrain.h" />
+    <ClInclude Include="Operation\Operation.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="SceneEdit.h" />
     <ClInclude Include="stdafx.h" />
@@ -169,8 +171,10 @@
     <ClCompile Include="Manipulator\ManipulatorGameData.cpp" />
     <ClCompile Include="Manipulator\ManipulatorNavMesh.cpp" />
     <ClCompile Include="Manipulator\ManipulatorObject.cpp" />
+    <ClCompile Include="Manipulator\ManipulatorOperation.cpp" />
     <ClCompile Include="Manipulator\ManipulatorScene.cpp" />
     <ClCompile Include="Manipulator\ManipulatorTerrain.cpp" />
+    <ClCompile Include="Operation\Operation.cpp" />
     <ClCompile Include="SceneEdit.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

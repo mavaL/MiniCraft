@@ -81,6 +81,8 @@ BEGIN_MESSAGE_MAP(CMainFrame, CXTPFrameWnd)
 	ON_UPDATE_COMMAND_UI(IDC_Animation_EffectRemove, OnUpdateUI_AnimEffectRemove)
 	ON_UPDATE_COMMAND_UI(IDC_Animation_EffectList, OnUpdateUI_AnimEffectList)
 	ON_NOTIFY(CBN_SELCHANGE, IDC_Animation_EffectList, OnAnimEffectSelectChange)
+	ON_UPDATE_COMMAND_UI(IDC_Object_Remove, OnUpdateUI_ObjectRemove)
+	ON_COMMAND(IDC_Object_Remove, OnObjectRemove)
 
 END_MESSAGE_MAP()
 
@@ -234,6 +236,8 @@ bool CMainFrame::_OnCreateRibbon()
 	pGroup->Add(xtpControlButton, IDC_Object_Rotate);
 	//RibbonHome - GroupObject - Scale
 	pGroup->Add(xtpControlButton, IDC_Object_Scale);
+	//RibbonHome - GroupObject - Rmove
+	pGroup->Add(xtpControlButton, IDC_Object_Remove);
 
 	///RibbonHome - GroupTerrainModify
 	pGroup = pTab->AddGroup(L"Terrain Modify");
@@ -361,6 +365,7 @@ void CMainFrame::_LoadIcon()
 	icon[0] = IDC_Object_Rotate;			pImageMgr->SetIcons(IDB_Button, icon, _countof(icon), CSize(32, 32));
 	icon[0] = IDC_Object_Scale;				pImageMgr->SetIcons(IDB_Button, icon, _countof(icon), CSize(32, 32));
 	icon[0] = IDC_Object_Select;			pImageMgr->SetIcons(IDB_Button, icon, _countof(icon), CSize(32, 32));
+	icon[0] = IDC_Object_Remove;			pImageMgr->SetIcons(IDB_Button, icon, _countof(icon), CSize(32, 32));
 	icon[0] = IDC_GameData_Building;		pImageMgr->SetIcons(IDB_Button, icon, _countof(icon), CSize(32, 32));
 	icon[0] = IDC_Shadow_OnOff;				pImageMgr->SetIcons(IDB_Button, icon, _countof(icon), CSize(32, 32));
 	icon[0] = IDC_SSAO_OnOff;				pImageMgr->SetIcons(IDB_Button, icon, _countof(icon), CSize(32, 32));
@@ -857,11 +862,12 @@ void CMainFrame::OnObjectEdit()
 
 void CMainFrame::OnObjectPropertyChanged( Ogre::Entity* pEntity )
 {
-	if(!ManipulatorSystem.GetObject().GetSelection())
+	Ogre::Entity* curSel = ManipulatorSystem.GetObject().GetSelection();
+	if(!curSel)
 	{
 		m_propertyObject->EnableMutableProperty(FALSE);
 	}
-	else
+	else if(curSel == pEntity)
 	{
 		m_propertyObject->UpdateAllFromEngine();
 		m_propertyObject->EnableMutableProperty(TRUE);
@@ -888,18 +894,13 @@ void CMainFrame::OnObjectSetSelection( Ogre::Entity* pObject )
 		for(size_t i=0; i<vecNames.size(); ++i)
 			m_animList->AddString(vecNames[i].c_str());
 		m_animList->SetCurSel(0);
-
-		//改变摄像机模式
-		ManipulatorSystem.GetCamera().SetType(eCameraType_ModelViewer);
-		ManipulatorSystem.GetCamera().SetModelViewerTarget(pObject);
-
-		manEffect.BindEntityToEffectTemplate(pObject);
 	}
 }
 
 void CMainFrame::OnObjectClearSelection( Ogre::Entity* pObject )
 {
 	assert(pObject);
+	m_propertyObject->UpdateAllFromEngine();
 	m_propertyObject->EnableMutableProperty(FALSE);
 
 	if (pObject->getSkeleton())
@@ -907,14 +908,11 @@ void CMainFrame::OnObjectClearSelection( Ogre::Entity* pObject )
 		//隐藏动画Ribbon
 		m_animTab->SetVisible(FALSE);
 
-		//改变摄像机模式
-		ManipulatorSystem.GetCamera().SetType(eCameraType_RTS);
-
 		//隐藏挂接物编辑面板
 		m_propertyAttachment->EnableMutableProperty(FALSE);
 
 		ManipulatorEffect& manEffect = ManipulatorSystem.GetEffect();
-		manEffect.PlayAnimation(m_animList->GetCurSel(), false);
+		manEffect.PlayAnimation(pObject, m_animList->GetCurSel(), false);
 		manEffect.OnAnimSelectChange("");
 	}
 }
@@ -1025,12 +1023,14 @@ void CMainFrame::OnUpdateUI_AnimStop( CCmdUI* pCmdUI )
 
 void CMainFrame::OnAnimPlay()
 {
-	ManipulatorSystem.GetEffect().PlayAnimation(m_animList->GetCurSel(), true);
+	Ogre::Entity* ent = ManipulatorSystem.GetObject().GetSelection();
+	ManipulatorSystem.GetEffect().PlayAnimation(ent, m_animList->GetCurSel(), true);
 }
 
 void CMainFrame::OnAnimStop()
 {
-	ManipulatorSystem.GetEffect().PlayAnimation(m_animList->GetCurSel(), false);
+	Ogre::Entity* ent = ManipulatorSystem.GetObject().GetSelection();
+	ManipulatorSystem.GetEffect().PlayAnimation(ent, m_animList->GetCurSel(), false);
 }
 
 void CMainFrame::OnUpdateUI_AnimEffectAdd( CCmdUI* pCmdUI )
@@ -1097,4 +1097,21 @@ void CMainFrame::OnAnimEffectSelectChange( NMHDR* pNMHDR, LRESULT* pResult )
 	}
 
 	m_propertyAttachment->UpdateAllFromEngine();
+}
+
+void CMainFrame::OnUpdateUI_ObjectRemove( CCmdUI* pCmdUI )
+{
+	if(!ManipulatorSystem.GetIsSceneReady())
+	{
+		pCmdUI->Enable(FALSE);
+		return;
+	}
+
+	pCmdUI->Enable(ManipulatorSystem.GetObject().GetSelection() != nullptr);
+}
+
+void CMainFrame::OnObjectRemove()
+{
+	ManipulatorObject& manObject = ManipulatorSystem.GetObject();
+	manObject.RemoveEntity(manObject.GetSelection());
 }

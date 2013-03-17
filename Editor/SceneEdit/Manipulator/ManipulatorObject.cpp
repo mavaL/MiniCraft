@@ -7,6 +7,7 @@
 #include "Utility.h"
 #include <OgreWireBoundingBox.h>
 #include "OgreManager.h"
+#include "Operation/Operation.h"
 
 
 ManipulatorObject::ManipulatorObject()
@@ -41,7 +42,7 @@ void ManipulatorObject::OnGizmoNodeReset()
 void ManipulatorObject::OnSceneClose()
 {
 	m_curEditMode = eEditMode_None; 
-	m_pSelectEntity = nullptr;
+	ClearSelection();
 
 	for(auto iter=m_objects.begin(); iter!=m_objects.end(); ++iter)
 	{
@@ -61,8 +62,7 @@ void ManipulatorObject::OnSceneOpen()
 	m_pGizmoAixs->Reset();
 }
 
-Ogre::Entity* ManipulatorObject::AddEntity( const Ogre::String& meshname, const Ogre::Vector3& worldPos, 
-	const Ogre::Quaternion& orient, const Ogre::Vector3& scale )
+Ogre::Entity* ManipulatorObject::AddEntity( const STRING& meshname, const POS& worldPos, bool bOp, const ORIENT& orient, const SCALE& scale )
 {
 	static int counter = 0;
 
@@ -90,7 +90,25 @@ Ogre::Entity* ManipulatorObject::AddEntity( const Ogre::String& meshname, const 
 	//设置查询掩码
 	newEntity->setQueryFlags(eQueryMask_Entity);
 
-	m_objects.insert(std::make_pair(newEntity, new SObjectInfo));
+	SObjectInfo* objInfo = new SObjectInfo;
+	objInfo->m_meshname = meshname;
+	objInfo->m_pos = worldPos;
+	objInfo->m_rot = orient;
+	objInfo->m_scale = scale;
+
+	m_objects.insert(std::make_pair(newEntity, objInfo));
+
+	//可撤销操作
+	if (bOp)
+	{
+		opObjectAddRemove* op = ManipulatorSystem.GetOperation().NewOperation<opObjectAddRemove>();
+		opObjectAddRemove::SOpItem item;
+		item.bAddOrRemove = true;
+		item.ent = newEntity;
+		item.objInfo = *objInfo;
+		op->AddOp(item);
+		ManipulatorSystem.GetOperation().Commit(op);
+	}
 	
 	return newEntity;
 }
@@ -114,15 +132,24 @@ void ManipulatorObject::SetSelection( Ogre::Entity* pEnt )
 	ShowEntityGizmo(pEnt, true, m_curEditMode, false);
 	m_pSelectEntity = pEnt;
 
+	//改变摄像机模式
+	if(pEnt->hasSkeleton())
+	{
+		ManipulatorSystem.GetCamera().SetType(eCameraType_ModelViewer);
+		ManipulatorSystem.GetCamera().SetModelViewerTarget(pEnt);
+		ManipulatorSystem.GetEffect().BindEntityToEffectTemplate(pEnt);
+	}
+
 	//回调事件
 	Excute([this](ManipulatorObjectEventCallback* callback){ callback->OnObjectSetSelection(m_pSelectEntity); });
 }
 
 void ManipulatorObject::ShowEntityGizmo(Ogre::Entity* pEntity, bool bShow, eEditMode mode, bool bDrift/* = false*/)
 {
-	assert(pEntity);
-	assert(mode != eEditMode_None);
+	if(!pEntity)
+		return;
 
+	assert(mode != eEditMode_None);
 	if (mode == eEditMode_Select)
 	{
 		Ogre::SceneNode* aabbNode = dynamic_cast<Ogre::SceneNode*>(pEntity->getParentSceneNode()->getChild(pEntity->getName()));
@@ -167,69 +194,98 @@ void ManipulatorObject::DoAABBSceneQuery( const Ogre::AxisAlignedBox& aabb, int 
 	auto movableList = queryResults.movables;
 }
 
-void ManipulatorObject::SelectionSetPosition( const Ogre::Vector3& vecMove )
+void ManipulatorObject::SetPosition( Ogre::Entity* ent, const Ogre::Vector3& vecMove, bool bOp )
 {
-	assert(m_pSelectEntity);
-	m_pSelectEntity->getParentSceneNode()->_setDerivedPosition(vecMove);
+	assert(ent);
+
+	//可撤销操作
+	if (bOp)
+	{
+		Ogre::Any oldValue(ent->getParentNode()->_getDerivedPosition());
+		CommitEditOperation(ent, eEditMode_Move, oldValue, Ogre::Any(vecMove));
+	}
+
+	ent->getParentSceneNode()->_setDerivedPosition(vecMove);
 
 	//回调事件
-	Excute([this](ManipulatorObjectEventCallback* callback){ callback->OnObjectPropertyChanged(m_pSelectEntity); });
+	Excute([=,this](ManipulatorObjectEventCallback* callback){ callback->OnObjectPropertyChanged(ent); });
 }
 
-void ManipulatorObject::SelectionRotate( float radian )
+void ManipulatorObject::Rotate( Ogre::Entity* ent, float radian, bool bOp )
 {
-	assert(m_pSelectEntity);
+	assert(ent);
 
 	switch (m_pGizmoAixs->GetActiveAxis())
 	{
-	case eAxis_X: m_pSelectEntity->getParentSceneNode()->pitch(Ogre::Radian(radian)); break;
-	case eAxis_Y: m_pSelectEntity->getParentSceneNode()->yaw(Ogre::Radian(radian)); break;
-	case eAxis_Z: m_pSelectEntity->getParentSceneNode()->roll(Ogre::Radian(radian)); break;
+	case eAxis_X: ent->getParentSceneNode()->pitch(Ogre::Radian(radian)); break;
+	case eAxis_Y: ent->getParentSceneNode()->yaw(Ogre::Radian(radian)); break;
+	case eAxis_Z: ent->getParentSceneNode()->roll(Ogre::Radian(radian)); break;
 	}
 
 	//回调事件
-	Excute([this](ManipulatorObjectEventCallback* callback){ callback->OnObjectPropertyChanged(m_pSelectEntity); });
+	Excute([=,this](ManipulatorObjectEventCallback* callback){ callback->OnObjectPropertyChanged(ent); });
 }
 
-void ManipulatorObject::SelectionScale( const Ogre::Vector3& scaleMultiplier )
+void ManipulatorObject::Scale( Ogre::Entity* ent, const Ogre::Vector3& scaleMultiplier, bool bOp )
 {
-	assert(m_pSelectEntity);
-	m_pSelectEntity->getParentSceneNode()->scale(scaleMultiplier);
+	assert(ent);
+	ent->getParentSceneNode()->scale(scaleMultiplier);
 
 	//回调事件
-	Excute([this](ManipulatorObjectEventCallback* callback){ callback->OnObjectPropertyChanged(m_pSelectEntity); });
+	Excute([=,this](ManipulatorObjectEventCallback* callback){ callback->OnObjectPropertyChanged(ent); });
 }
 
-void ManipulatorObject::SelectionSetOrientation( const Ogre::Quaternion& orient )
+void ManipulatorObject::SetOrientation( Ogre::Entity* ent, const Ogre::Quaternion& orient, bool bOp )
 {
-	assert(m_pSelectEntity);
-	m_pSelectEntity->getParentSceneNode()->_setDerivedOrientation(orient);
+	assert(ent);
+
+	//可撤销操作
+	if (bOp)
+	{
+		Ogre::Any oldValue(ent->getParentNode()->_getDerivedOrientation());
+		CommitEditOperation(ent, eEditMode_Rotate, oldValue, Ogre::Any(orient));
+	}
+
+	ent->getParentSceneNode()->_setDerivedOrientation(orient);
 
 	//回调事件
-	Excute([this](ManipulatorObjectEventCallback* callback){ callback->OnObjectPropertyChanged(m_pSelectEntity); });
+	Excute([=,this](ManipulatorObjectEventCallback* callback){ callback->OnObjectPropertyChanged(ent); });
 }
 
-void ManipulatorObject::SelectionSetScale( const Ogre::Vector3 scale )
+void ManipulatorObject::SetScale( Ogre::Entity* ent, const Ogre::Vector3 scale, bool bOp )
 {
-	assert(m_pSelectEntity);
-	m_pSelectEntity->getParentSceneNode()->setScale(scale);
+	assert(ent);
+
+	//可撤销操作
+	if (bOp)
+	{
+		Ogre::Any oldValue(ent->getParentNode()->_getDerivedScale());
+		CommitEditOperation(ent, eEditMode_Scale, oldValue, Ogre::Any(scale));
+	}
+
+	ent->getParentSceneNode()->setScale(scale);
 
 	//回调事件
-	Excute([this](ManipulatorObjectEventCallback* callback){ callback->OnObjectPropertyChanged(m_pSelectEntity); });
+	Excute([=,this](ManipulatorObjectEventCallback* callback){ callback->OnObjectPropertyChanged(ent); });
 }
 
 void ManipulatorObject::ClearSelection()
 {
 	if (m_pSelectEntity)
 	{
-		//回调事件
-		Excute([=,this](ManipulatorObjectEventCallback* callback){ callback->OnObjectClearSelection(m_pSelectEntity); });
-
 		//隐藏所有gizmo
 		ShowEntityGizmo(m_pSelectEntity, false, eEditMode_Select);
 		ShowEntityGizmo(m_pSelectEntity, false, eEditMode_Move);
 
+		Ogre::Entity* ent = m_pSelectEntity;
 		m_pSelectEntity = nullptr;
+
+		//改变摄像机模式
+		if(ent->hasSkeleton())
+			ManipulatorSystem.GetCamera().SetType(eCameraType_RTS);
+
+		//回调事件
+		Excute([=,this](ManipulatorObjectEventCallback* callback){ callback->OnObjectClearSelection(ent); });
 	}
 }
 
@@ -263,18 +319,21 @@ void ManipulatorObject::Load( rapidxml::xml_node<>* XMLNode )
 		const Ogre::Quaternion orient = Ogre::StringConverter::parseQuaternion(curObjNode->first_attribute("orientation")->value());
 		const Ogre::Vector3 scale = Ogre::StringConverter::parseVector3(curObjNode->first_attribute("scale")->value());
 
-		Ogre::Entity* pNewEnt = AddEntity(strMesh, pos, orient, scale);
+		Ogre::Entity* pNewEnt = AddEntity(strMesh, pos, false, orient, scale);
 		assert(pNewEnt);
 
-		SetObjectNavMeshFlag(pNewEnt, bIsNavMesh);
-		SetObjectIsBuilding(pNewEnt, bIsBuilding);
-		SetObjectIsResource(pNewEnt, bIsResource);
+		SObjectInfo objInfo;
+		objInfo.m_bIsBuilding = bIsBuilding;
+		objInfo.m_bAddToNavmesh = bIsNavMesh;
+		objInfo.m_bIsResource = bIsResource;
+
 		if(bIsBuilding)
 		{
 			const String strBuildingName = curObjNode->first_attribute("buildingname")->value();
-			SetObjectBuildingName(pNewEnt, strBuildingName);
+			objInfo.m_buildingName = strBuildingName;
 		}
 
+		SetObjectInfo(pNewEnt, objInfo);
 		curObjNode = curObjNode->next_sibling();
 	}
 }
@@ -333,68 +392,57 @@ void ManipulatorObject::_UpdateAABBOfEntity( Ogre::Entity* pEntity )
 	aabbNode->_updateBounds();
 }
 
-void ManipulatorObject::SetObjectNavMeshFlag( Ogre::Entity* pEntity, bool bIsNavMesh )
+void ManipulatorObject::RemoveEntity(Ogre::Entity* ent, bool bOp)
 {
-	auto iter = m_objects.find(pEntity);
-	assert(iter != m_objects.end());
+	if (bOp)
+	{
+		opObjectAddRemove* op = ManipulatorSystem.GetOperation().NewOperation<opObjectAddRemove>();
+		opObjectAddRemove::SOpItem item;
+		item.bAddOrRemove = false;
+		item.ent = nullptr;
+		item.objInfo = *GetObjectInfo(ent);
+		op->AddOp(item);
+		ManipulatorSystem.GetOperation().Commit(op);
+	}
 
-	(iter->second)->m_bAddToNavmesh = bIsNavMesh;
+	auto iter = m_objects.find(ent);
+	assert(iter != m_objects.end());
+	delete iter->second;
+	m_objects.erase(iter);
+	
+	if(ent == m_pSelectEntity)
+	{
+		ClearSelection();
+		ManipulatorAction::GetSingleton().SetActiveAction(eActionType_None);
+	}
+
+	RenderManager.m_pSceneMgr->destroyEntity(ent);
 }
 
-bool ManipulatorObject::GetObjectNavMeshFlag( Ogre::Entity* pEntity ) const
+void ManipulatorObject::SetObjectInfo( Ogre::Entity* ent, const SObjectInfo& info )
 {
-	auto iter = m_objects.find(pEntity);
+	auto iter = m_objects.find(ent);
 	assert(iter != m_objects.end());
-
-	return (iter->second)->m_bAddToNavmesh;
+	*(iter->second) = info;
 }
 
-void ManipulatorObject::SetObjectIsBuilding( Ogre::Entity* pEntity, bool bIsBuilding )
+SObjectInfo* ManipulatorObject::GetObjectInfo( Ogre::Entity* ent )
 {
-	auto iter = m_objects.find(pEntity);
+	auto iter = m_objects.find(ent);
 	assert(iter != m_objects.end());
-
-	(iter->second)->m_bIsBuilding = bIsBuilding;
+	return iter->second;
 }
 
-bool ManipulatorObject::GetObjectIsBuilding( Ogre::Entity* pEntity ) const
+void ManipulatorObject::CommitEditOperation( Ogre::Entity* ent, eEditMode mode, const Ogre::Any& oldValue, const Ogre::Any& newValue )
 {
-	auto iter = m_objects.find(pEntity);
-	assert(iter != m_objects.end());
-
-	return (iter->second)->m_bIsBuilding;
-}
-
-void ManipulatorObject::SetObjectIsResource( Ogre::Entity* pEntity, bool bIsResource )
-{
-	auto iter = m_objects.find(pEntity);
-	assert(iter != m_objects.end());
-
-	(iter->second)->m_bIsResource = bIsResource;
-}
-
-bool ManipulatorObject::GetObjectIsResource( Ogre::Entity* pEntity ) const
-{
-	auto iter = m_objects.find(pEntity);
-	assert(iter != m_objects.end());
-
-	return (iter->second)->m_bIsResource;
-}
-
-void ManipulatorObject::SetObjectBuildingName( Ogre::Entity* pEntity, const std::string& name )
-{
-	auto iter = m_objects.find(pEntity);
-	assert(iter != m_objects.end());
-
-	(iter->second)->m_buildingName = name;
-}
-
-const std::string& ManipulatorObject::GetObjectBuildingName( Ogre::Entity* pEntity ) const
-{
-	auto iter = m_objects.find(pEntity);
-	assert(iter != m_objects.end());
-
-	return (iter->second)->m_buildingName;
+	opObjectEdit* op = ManipulatorSystem.GetOperation().NewOperation<opObjectEdit>();
+	opObjectEdit::SOpItem item;
+	item.pEntity = ent;
+	item.type = mode;
+	item.oldValue = oldValue;
+	item.newValue = newValue;
+	op->AddOp(item);
+	ManipulatorSystem.GetOperation().Commit(op);
 }
 
 

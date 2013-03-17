@@ -31,6 +31,8 @@ public:
 private:
 	bool			m_bLBDown;
 	Ogre::Vector3	m_vecAdjust;
+	bool			m_bChanged;
+	Ogre::Any		m_oldValue;
 
 	//³éÈ¡×ÔOgitor
 	const Ogre::Vector3	_ComputeTranslateVector(const Ogre::Ray& ray, eAxis axis, bool bAxisLocal);
