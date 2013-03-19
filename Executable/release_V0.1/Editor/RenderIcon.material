@@ -1,0 +1,24 @@
+fragment_program RenderIcon_ps cg
+{
+	source RenderIcon.cg
+	entry_point main
+	profiles ps_2_0 arbfp1
+}
+
+material RenderIcon
+{
+	technique
+	{
+		pass
+		{
+			fragment_program_ref RenderIcon_ps
+			{
+			}
+
+			texture_unit
+			{
+				filtering linear linear linear
+			}
+		}
+	}
+}

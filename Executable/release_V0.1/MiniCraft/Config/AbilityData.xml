@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<Root>
+  <Ability name="Produce_Scv" iconname="btn-unit-terran-scv.dds" type="produce" extraparam="Scv"/>
+  <Ability name="Produce_Marine" iconname="btn-unit-terran-marine.dds" type="produce" extraparam="Marine"/>
+  <Ability name="Produce_Drone" iconname="btn-unit-zerg-drone.dds" type="produce" extraparam="Drone"/>
+  <Ability name="Produce_Zergling" iconname="btn-unit-zerg-zergling.dds" type="produce" extraparam="Zergling"/>
+  <Ability name="Move" iconname="btn-command-move.dds" type="move" extraparam="TargetingAndForceExecute"/>
+  <Ability name="Stop" iconname="btn-command-stop.dds" type="stop" extraparam="ForceExecute"/>
+  <Ability name="Gather" iconname="btn-ability-terran-gather.dds" type="gather" extraparam="TargetingAndForceExecute"/>
+</Root>
+

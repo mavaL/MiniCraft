@@ -1,0 +1,157 @@
+//场景中有一个主光sun light,控制台mesh也由它光照(法线贴图)
+
+///模板
+material MT_Console
+{
+	receive_shadows false
+	technique
+	{
+		pass
+		{
+            depth_check off
+
+ 			//ambient 0.698039 0.698039 0.698039 1
+ 			//diffuse 0.698039 0.698039 0.698039 1
+ 			//specular 0.898039 0.898039 0.898039 1 20
+		}
+	}
+}
+
+material Console_Terrain : MT_Console
+{
+	receive_shadows false
+	technique
+	{
+		pass
+		{
+			texture_unit diffusemap
+			{
+				texture consoleterran_diff.dds
+				filtering linear linear linear
+			}
+			texture_unit normalmap
+			{
+				texture consoleterran_nm.dds
+				filtering point point point
+			}
+			texture_unit specularmap
+			{
+				texture consoleterran_spec.dds
+				filtering linear linear linear
+			}
+			texture_unit emissivemap
+			{
+				texture consoleterran_emiss.dds
+				filtering linear linear linear
+			}
+		}
+	}
+}
+
+material Console_Protoss : MT_Console
+{
+	receive_shadows false
+	technique
+	{
+		pass
+		{
+			texture_unit diffusemap
+			{
+				texture consoleprotoss_diff.dds
+				filtering linear linear linear
+			}
+			texture_unit normalmap
+			{
+				texture consoleprotoss_nm.dds
+				filtering point point point
+			}
+			texture_unit specularmap
+			{
+				texture consoleprotoss_spec.dds
+				filtering linear linear linear
+			}
+			texture_unit emissivemap
+			{
+				texture consoleprotoss_emiss.dds
+				filtering linear linear linear
+			}
+		}
+	}
+}
+
+material ConsoleBlack : MT_Console
+{
+	receive_shadows false
+	technique
+	{
+		pass
+		{
+			emissive 0 0 0 0
+			ambient 0 0 0 0
+ 			diffuse 0 0 0 0
+ 			specular 0 0 0 0 0
+		}
+	}
+}
+
+///////////////////////////////////////////		Portrait
+
+vertex_program Portrait_VS cg
+{
+    source portrait.cg
+    entry_point VS
+    profiles vs_2_x arbvp1
+
+    default_params
+    {
+        param_named_auto worldViewProj worldviewproj_matrix
+		param_named_auto worldView worldview_matrix
+        param_named_auto ambient ambient_light_colour
+    }
+}
+
+fragment_program Portrait_PS cg
+{
+    source portrait.cg
+    entry_point PS
+    profiles ps_2_x arbfp1
+
+    default_params
+    {
+		param_named_auto LightDir light_position_object_space 0
+		param_named LightColor float4 0 0 0 0
+    }
+}
+
+material MarinePortrait
+{
+	technique
+	{
+		pass
+		{
+			vertex_program_ref Portrait_VS {}
+			fragment_program_ref Portrait_PS {}
+
+			texture_unit diffusemap
+			{
+				texture marineportrait_diff.dds
+				filtering linear linear linear
+			}
+			texture_unit normalmap
+			{
+				texture marineportrait_nm.dds
+				filtering point point point
+			}
+			texture_unit emissivemap
+			{
+				texture marineportrait_emiss.dds
+				filtering linear linear linear
+			}
+			texture_unit aomap
+			{
+				texture marineportrait_ao.dds
+				filtering linear linear linear
+			}
+		}
+	}
+}

@@ -1,0 +1,33 @@
+fragment_program fxaa_ps cg
+{
+	source FXAA.cg
+	profiles ps_3_0 arbfp1
+	entry_point main
+}
+
+material FXAA
+{
+	technique
+	{
+		pass
+		{
+			cull_hardware none
+			cull_software none
+			depth_check off
+
+			vertex_program_ref Ogre/Compositor/StdQuad_Cg_vp
+			{
+			}
+			fragment_program_ref fxaa_ps
+			{
+				param_named_auto invTexWidth inverse_viewport_width
+				param_named_auto invTexHeight inverse_viewport_height
+			}
+			texture_unit
+			{
+				tex_address_mode clamp
+				filtering bilinear
+			}
+		}
+	}
+}

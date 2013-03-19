@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<GUILayout version="4" >
+    <Window Type="DefaultWindow" Name="Root" >
+        <Property Name="UnifiedAreaRect" Value="{{0,0},{0,0},{1,0},{1,0}}" />
+        <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+        <Property Name="MousePassThroughEnabled"  Value="True" />
+        <Window Type="TaharezLook/ImageButton" Name="CommandSlot0Frame" >
+            <Property Name="UnifiedAreaRect" Value="{{0,960},{0,600},{0,1020},{0,660}}" />
+            <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+            <Property Name="ID" Value="0" />
+            <Property Name="NormalImage"     Value="set:Icon_TerranFrameNormal image:TerranFrameNormal" />
+            <Property Name="HoverImage"     Value="set:Icon_TerranFrameHighlight image:TerranFrameHighlight" />
+  					<Property Name="DisabledImage"     Value="set:Icon_CommandEmpty image:CommandEmpty" />
+            <Window Type="TaharezLook/StaticImage" Name="CommandSlot0Icon" >
+            		<Property Name="UnifiedAreaRect" Value="{{0,0},{0,0},{1,0},{1,0}}" />
+            		<Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+            		<Property Name="BackgroundEnabled" Value="false" />
+            		<Property Name="FrameEnabled" Value="false" />
+            		<Property Name="MousePassThroughEnabled"  Value="True" />
+            </Window>
+        </Window>
+        <Window Type="TaharezLook/ImageButton" Name="CommandSlot1Frame" >
+            <Property Name="UnifiedAreaRect" Value="{{0,1020},{0,600},{0,1080},{0,660}}" />
+            <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+            <Property Name="ID" Value="1" />
+            <Property Name="NormalImage"     Value="set:Icon_TerranFrameNormal image:TerranFrameNormal" />
+            <Property Name="HoverImage"     Value="set:Icon_TerranFrameHighlight image:TerranFrameHighlight" />
+  					<Property Name="DisabledImage"     Value="set:Icon_CommandEmpty image:CommandEmpty" />
+            <Window Type="TaharezLook/StaticImage" Name="CommandSlot1Icon" >
+            		<Property Name="UnifiedAreaRect" Value="{{0,0},{0,0},{1,0},{1,0}}" />
+            		<Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+            		<Property Name="BackgroundEnabled" Value="false" />
+            		<Property Name="FrameEnabled" Value="false" />
+            		<Property Name="MousePassThroughEnabled"  Value="True" />
+            </Window>
+        </Window>
+        <Window Type="TaharezLook/ImageButton" Name="CommandSlot2Frame" >
+            <Property Name="UnifiedAreaRect" Value="{{0,1080},{0,600},{0,1140},{0,660}}" />
+            <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+            <Property Name="ID" Value="2" />
+            <Property Name="NormalImage"     Value="set:Icon_TerranFrameNormal image:TerranFrameNormal" />
+            <Property Name="HoverImage"     Value="set:Icon_TerranFrameHighlight image:TerranFrameHighlight" />
+  					<Property Name="DisabledImage"     Value="set:Icon_CommandEmpty image:CommandEmpty" />
+            <Window Type="TaharezLook/StaticImage" Name="CommandSlot2Icon" >
+            		<Property Name="UnifiedAreaRect" Value="{{0,0},{0,0},{1,0},{1,0}}" />
+            		<Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+            		<Property Name="BackgroundEnabled" Value="false" />
+            		<Property Name="FrameEnabled" Value="false" />
+            		<Property Name="MousePassThroughEnabled"  Value="True" />
+            </Window>
+        </Window>
+        <Window Type="TaharezLook/ImageButton" Name="CommandSlot3Frame" >
+            <Property Name="UnifiedAreaRect" Value="{{0,1140},{0,600},{0,1200},{0,660}}" />
+            <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+            <Property Name="ID" Value="3" />
+            <Property Name="NormalImage"     Value="set:Icon_TerranFrameNormal image:TerranFrameNormal" />
+            <Property Name="HoverImage"     Value="set:Icon_TerranFrameHighlight image:TerranFrameHighlight" />
+  					<Property Name="DisabledImage"     Value="set:Icon_CommandEmpty image:CommandEmpty" />
+            <Window Type="TaharezLook/StaticImage" Name="CommandSlot3Icon" >
+            		<Property Name="UnifiedAreaRect" Value="{{0,0},{0,0},{1,0},{1,0}}" />
+            		<Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+            		<Property Name="BackgroundEnabled" Value="false" />
+            		<Property Name="FrameEnabled" Value="false" />
+            		<Property Name="MousePassThroughEnabled"  Value="True" />
+            </Window>
+        </Window>
+        <Window Type="TaharezLook/ImageButton" Name="CommandSlot4Frame" >
+            <Property Name="UnifiedAreaRect" Value="{{0,1200},{0,600},{0,1260},{0,660}}" />
+            <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+            <Property Name="ID" Value="4" />
+            <Property Name="NormalImage"     Value="set:Icon_TerranFrameNormal image:TerranFrameNormal" />
+            <Property Name="HoverImage"     Value="set:Icon_TerranFrameHighlight image:TerranFrameHighlight" />
+  					<Property Name="DisabledImage"     Value="set:Icon_CommandEmpty image:CommandEmpty" />
+            <Window Type="TaharezLook/StaticImage" Name="CommandSlot4Icon" >
+            		<Property Name="UnifiedAreaRect" Value="{{0,0},{0,0},{1,0},{1,0}}" />
+            		<Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+            		<Property Name="BackgroundEnabled" Value="false" />
+            		<Property Name="FrameEnabled" Value="false" />
+            		<Property Name="MousePassThroughEnabled"  Value="True" />
+            </Window>
+        </Window>
+        <Window Type="TaharezLook/ImageButton" Name="CommandSlot5Frame" >
+            <Property Name="UnifiedAreaRect" Value="{{0,960},{0,660},{0,1020},{0,720}}" />
+            <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+            <Property Name="ID" Value="5" />
+            <Property Name="NormalImage"     Value="set:Icon_TerranFrameNormal image:TerranFrameNormal" />
+            <Property Name="HoverImage"     Value="set:Icon_TerranFrameHighlight image:TerranFrameHighlight" />
+  					<Property Name="DisabledImage"     Value="set:Icon_CommandEmpty image:CommandEmpty" />
+            <Window Type="TaharezLook/StaticImage" Name="CommandSlot5Icon" >
+            		<Property Name="UnifiedAreaRect" Value="{{0,0},{0,0},{1,0},{1,0}}" />
+            		<Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+            		<Property Name="BackgroundEnabled" Value="false" />
+            		<Property Name="FrameEnabled" Value="false" />
+            		<Property Name="MousePassThroughEnabled"  Value="True" />
+            </Window>
+        </Window>
+        <Window Type="TaharezLook/ImageButton" Name="CommandSlot6Frame" >
+            <Property Name="UnifiedAreaRect" Value="{{0,1020},{0,660},{0,1080},{0,720}}" />
+            <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+            <Property Name="ID" Value="6" />
+            <Property Name="NormalImage"     Value="set:Icon_TerranFrameNormal image:TerranFrameNormal" />
+           	<Property Name="HoverImage"     Value="set:Icon_TerranFrameHighlight image:TerranFrameHighlight" />
+  					<Property Name="DisabledImage"     Value="set:Icon_CommandEmpty image:CommandEmpty" />
+            <Window Type="TaharezLook/StaticImage" Name="CommandSlot6Icon" >
+            		<Property Name="UnifiedAreaRect" Value="{{0,0},{0,0},{1,0},{1,0}}" />
+            		<Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+            		<Property Name="BackgroundEnabled" Value="false" />
+            		<Property Name="FrameEnabled" Value="false" />
+            		<Property Name="MousePassThroughEnabled"  Value="True" />
+            </Window>
+        </Window>
+        <Window Type="TaharezLook/ImageButton" Name="CommandSlot7Frame" >
+            <Property Name="UnifiedAreaRect" Value="{{0,1080},{0,660},{0,1140},{0,720}}" />
+            <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+            <Property Name="ID" Value="7" />
+            <Property Name="NormalImage"     Value="set:Icon_TerranFrameNormal image:TerranFrameNormal" />
+            <Property Name="HoverImage"     Value="set:Icon_TerranFrameHighlight image:TerranFrameHighlight" />
+  					<Property Name="DisabledImage"     Value="set:Icon_CommandEmpty image:CommandEmpty" />
+            <Window Type="TaharezLook/StaticImage" Name="CommandSlot7Icon" >
+            		<Property Name="UnifiedAreaRect" Value="{{0,0},{0,0},{1,0},{1,0}}" />
+            		<Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+            		<Property Name="BackgroundEnabled" Value="false" />
+            		<Property Name="FrameEnabled" Value="false" />
+            		<Property Name="MousePassThroughEnabled"  Value="True" />
+            </Window>
+        </Window>
+        <Window Type="TaharezLook/ImageButton" Name="CommandSlot8Frame" >
+            <Property Name="UnifiedAreaRect" Value="{{0,1140},{0,660},{0,1200},{0,720}}" />
+            <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+            <Property Name="ID" Value="8" />
+            <Property Name="NormalImage"     Value="set:Icon_TerranFrameNormal image:TerranFrameNormal" />
+            <Property Name="HoverImage"     Value="set:Icon_TerranFrameHighlight image:TerranFrameHighlight" />
+  					<Property Name="DisabledImage"     Value="set:Icon_CommandEmpty image:CommandEmpty" />
+            <Window Type="TaharezLook/StaticImage" Name="CommandSlot8Icon" >
+            		<Property Name="UnifiedAreaRect" Value="{{0,0},{0,0},{1,0},{1,0}}" />
+            		<Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+            		<Property Name="BackgroundEnabled" Value="false" />
+            		<Property Name="FrameEnabled" Value="false" />
+            		<Property Name="MousePassThroughEnabled"  Value="True" />
+            </Window>
+        </Window>
+        <Window Type="TaharezLook/ImageButton" Name="CommandSlot9Frame" >
+            <Property Name="UnifiedAreaRect" Value="{{0,1200},{0,660},{0,1260},{0,720}}" />
+            <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+            <Property Name="ID" Value="9" />
+            <Property Name="NormalImage"     Value="set:Icon_TerranFrameNormal image:TerranFrameNormal" />
+            <Property Name="HoverImage"     Value="set:Icon_TerranFrameHighlight image:TerranFrameHighlight" />
+  					<Property Name="DisabledImage"     Value="set:Icon_CommandEmpty image:CommandEmpty" />
+            <Window Type="TaharezLook/StaticImage" Name="CommandSlot9Icon" >
+            		<Property Name="UnifiedAreaRect" Value="{{0,0},{0,0},{1,0},{1,0}}" />
+            		<Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+            		<Property Name="BackgroundEnabled" Value="false" />
+            		<Property Name="FrameEnabled" Value="false" />
+            		<Property Name="MousePassThroughEnabled"  Value="True" />
+            </Window>
+        </Window>
+        <Window Type="TaharezLook/ImageButton" Name="CommandSlot10Frame" >
+            <Property Name="UnifiedAreaRect" Value="{{0,960},{0,720},{0,1020},{0,780}}" />
+            <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+            <Property Name="ID" Value="10" />
+            <Property Name="NormalImage"     Value="set:Icon_TerranFrameNormal image:TerranFrameNormal" />
+            <Property Name="HoverImage"     Value="set:Icon_TerranFrameHighlight image:TerranFrameHighlight" />
+  					<Property Name="DisabledImage"     Value="set:Icon_CommandEmpty image:CommandEmpty" />
+            <Window Type="TaharezLook/StaticImage" Name="CommandSlot10Icon" >
+            		<Property Name="UnifiedAreaRect" Value="{{0,0},{0,0},{1,0},{1,0}}" />
+            		<Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+            		<Property Name="BackgroundEnabled" Value="false" />
+            		<Property Name="FrameEnabled" Value="false" />
+            		<Property Name="MousePassThroughEnabled"  Value="True" />
+            </Window>
+        </Window>
+        <Window Type="TaharezLook/ImageButton" Name="CommandSlot11Frame" >
+            <Property Name="UnifiedAreaRect" Value="{{0,1020},{0,720},{0,1080},{0,780}}" />
+            <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+            <Property Name="ID" Value="11" />
+            <Property Name="NormalImage"     Value="set:Icon_TerranFrameNormal image:TerranFrameNormal" />
+            <Property Name="HoverImage"     Value="set:Icon_TerranFrameHighlight image:TerranFrameHighlight" />
+  					<Property Name="DisabledImage"     Value="set:Icon_CommandEmpty image:CommandEmpty" />
+            <Window Type="TaharezLook/StaticImage" Name="CommandSlot11Icon" >
+            		<Property Name="UnifiedAreaRect" Value="{{0,0},{0,0},{1,0},{1,0}}" />
+            		<Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+            		<Property Name="BackgroundEnabled" Value="false" />
+            		<Property Name="FrameEnabled" Value="false" />
+            		<Property Name="MousePassThroughEnabled"  Value="True" />
+            </Window>
+        </Window>
+        <Window Type="TaharezLook/ImageButton" Name="CommandSlot12Frame" >
+            <Property Name="UnifiedAreaRect" Value="{{0,1080},{0,720},{0,1140},{0,780}}" />
+            <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+            <Property Name="ID" Value="12" />
+            <Property Name="NormalImage"     Value="set:Icon_TerranFrameNormal image:TerranFrameNormal" />
+            <Property Name="HoverImage"     Value="set:Icon_TerranFrameHighlight image:TerranFrameHighlight" />
+  					<Property Name="DisabledImage"     Value="set:Icon_CommandEmpty image:CommandEmpty" />
+            <Window Type="TaharezLook/StaticImage" Name="CommandSlot12Icon" >
+            		<Property Name="UnifiedAreaRect" Value="{{0,0},{0,0},{1,0},{1,0}}" />
+            		<Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+            		<Property Name="BackgroundEnabled" Value="false" />
+            		<Property Name="FrameEnabled" Value="false" />
+            		<Property Name="MousePassThroughEnabled"  Value="True" />
+            </Window>
+        </Window>
+        <Window Type="TaharezLook/ImageButton" Name="CommandSlot13Frame" >
+            <Property Name="UnifiedAreaRect" Value="{{0,1140},{0,720},{0,1200},{0,780}}" />
+            <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+            <Property Name="ID" Value="13" />
+            <Property Name="NormalImage"     Value="set:Icon_TerranFrameNormal image:TerranFrameNormal" />
+            <Property Name="HoverImage"     Value="set:Icon_TerranFrameHighlight image:TerranFrameHighlight" />
+  					<Property Name="DisabledImage"     Value="set:Icon_CommandEmpty image:CommandEmpty" />
+            <Window Type="TaharezLook/StaticImage" Name="CommandSlot13Icon" >
+            		<Property Name="UnifiedAreaRect" Value="{{0,0},{0,0},{1,0},{1,0}}" />
+            		<Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+            		<Property Name="BackgroundEnabled" Value="false" />
+            		<Property Name="FrameEnabled" Value="false" />
+            		<Property Name="MousePassThroughEnabled"  Value="True" />
+            </Window>
+        </Window>
+        <Window Type="TaharezLook/ImageButton" Name="CommandSlot14Frame" >
+            <Property Name="UnifiedAreaRect" Value="{{0,1200},{0,720},{0,1260},{0,780}}" />
+            <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+            <Property Name="ID" Value="14" />
+            <Property Name="NormalImage"     Value="set:Icon_TerranFrameNormal image:TerranFrameNormal" />
+            <Property Name="HoverImage"     Value="set:Icon_TerranFrameHighlight image:TerranFrameHighlight" />
+  					<Property Name="DisabledImage"     Value="set:Icon_CommandEmpty image:CommandEmpty" />
+            <Window Type="TaharezLook/StaticImage" Name="CommandSlot14Icon" >
+            		<Property Name="UnifiedAreaRect" Value="{{0,0},{0,0},{1,0},{1,0}}" />
+            		<Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+            		<Property Name="BackgroundEnabled" Value="false" />
+            		<Property Name="FrameEnabled" Value="false" />
+            		<Property Name="MousePassThroughEnabled"  Value="True" />
+            </Window>
+        </Window>
+    </Window>
+</GUILayout>
