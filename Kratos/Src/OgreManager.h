@@ -12,15 +12,22 @@ class DeferredShadingSystem;
 
 namespace Kratos
 {
-
-	//效果设置
+	//后处理效果配置
 	struct SEffectConfig 
 	{
 		SEffectConfig() { Reset(); }
-		void	Reset() { bShadow = false; bSSAO = false; }
+		void	Reset() 
+		{ 
+			bShadow = false; 
+			bSSAO = false;
+			bFXAA = false;
+			bSharpen = false;
+		}
 
 		bool	bShadow;
 		bool	bSSAO;
+		bool	bFXAA;
+		bool	bSharpen;
 	};
 
 	/*------------------------------------------------
@@ -58,8 +65,9 @@ namespace Kratos
 
 		const SEffectConfig&	GetEffectConfig() const { return m_effectCfg; }
 		void			EnableShadow(bool bEnable);
-		//void			EnableDLAA(bool bEnable);
+		void			EnableFXAA(bool bEnable);
 		void			EnableSSAO(bool bEnable);
+		void			EnableSharpen(bool bEnable);
 		void			SetSSAOParam(const Ogre::String& name, float val, bool bRemoveAndAdd = true);
 
 		Ogre::Root*			mRoot;
@@ -75,8 +83,9 @@ namespace Kratos
 		bool				m_bHasInit;
 		SEffectConfig		m_effectCfg;
 
-		Ogre::CompositorInstance*	m_dlaa;
+		Ogre::CompositorInstance*	m_fxaa;
 		Ogre::CompositorInstance*	m_ssao;
+		Ogre::CompositorInstance*	m_sharpen;
 
 		void windowResized(Ogre::RenderWindow* rw);
 		void windowClosed(Ogre::RenderWindow* rw);

@@ -30,6 +30,10 @@ public:
 	bool	GetShadowEnable() const;
 	void	SetSSAOEnable(bool bEnable);
 	bool	GetSSAOEnable() const;
+	void	SetSharpenEnable(bool bEnable);
+	bool	GetSharpenEnable() const;
+	void	SetFXAAEnable(bool bEnable);
+	bool	GetFXAAEnable() const;
 
 	void	SetShadowFarDist(float dist);
 	void	SetShadowSplitPadding(float pad);

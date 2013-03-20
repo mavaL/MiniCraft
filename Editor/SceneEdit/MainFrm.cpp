@@ -67,10 +67,10 @@ BEGIN_MESSAGE_MAP(CMainFrame, CXTPFrameWnd)
 	ON_NOTIFY(CBN_SELCHANGE, IDC_Animation_Names, OnAnimSelectChange)
 	ON_COMMAND(IDC_GameData_Building, OnDataBuilding)
 	ON_UPDATE_COMMAND_UI(IDC_GameData_Building, OnUpdateUI_DataBuilding)
-	ON_COMMAND(IDC_Shadow_OnOff, OnShadowOnOff)
-	ON_UPDATE_COMMAND_UI(IDC_Shadow_OnOff, OnUpdateUI_ShadowOnOff)
-	ON_COMMAND(IDC_SSAO_OnOff, OnSSAOOnOff)
-	ON_UPDATE_COMMAND_UI(IDC_SSAO_OnOff, OnUpdateUI_SSAOOnOff)
+	ON_COMMAND(IDC_Effect_Shadow, OnShadowOnOff)
+	ON_UPDATE_COMMAND_UI(IDC_Effect_Shadow, OnUpdateUI_ShadowOnOff)
+	ON_COMMAND(IDC_Effect_SSAO, OnSSAOOnOff)
+	ON_UPDATE_COMMAND_UI(IDC_Effect_SSAO, OnUpdateUI_SSAOOnOff)
 	ON_COMMAND(IDC_Animation_Play, OnAnimPlay)
 	ON_COMMAND(IDC_Animation_Stop, OnAnimStop)
 	ON_UPDATE_COMMAND_UI(IDC_Animation_Play, OnUpdateUI_AnimPlay)
@@ -83,6 +83,10 @@ BEGIN_MESSAGE_MAP(CMainFrame, CXTPFrameWnd)
 	ON_NOTIFY(CBN_SELCHANGE, IDC_Animation_EffectList, OnAnimEffectSelectChange)
 	ON_UPDATE_COMMAND_UI(IDC_Object_Remove, OnUpdateUI_ObjectRemove)
 	ON_COMMAND(IDC_Object_Remove, OnObjectRemove)
+	ON_UPDATE_COMMAND_UI(IDC_Effect_Sharpen, OnUpdateUI_SharpenOnOff)
+	ON_UPDATE_COMMAND_UI(IDC_Effect_FXAA, OnUpdateUI_FXAAOnOff)
+	ON_COMMAND(IDC_Effect_Sharpen, OnSharpenOnOff)
+	ON_COMMAND(IDC_Effect_FXAA, OnFXAAOnOff)
 
 END_MESSAGE_MAP()
 
@@ -300,15 +304,16 @@ bool CMainFrame::_OnCreateRibbon()
 	///RibbonEffect
 	pTab = pRibbonBar->AddTab(L"Effect");
 
-	//RibbonEffect - GroupShadow
-	pGroup = pTab->AddGroup(L"Shadow");
-	//RibbonEffect - GroupShadow - OnOff
-	pGroup->Add(xtpControlButton, IDC_Shadow_OnOff);
-
-	//RibbonEffect - GroupSSAO
-	pGroup = pTab->AddGroup(L"SSAO");
-	//RibbonEffect - GroupSSAO - OnOff
-	pGroup->Add(xtpControlButton, IDC_SSAO_OnOff);
+	//RibbonEffect - GroupSwitch
+	pGroup = pTab->AddGroup(L"Switch");
+	//RibbonEffect - GroupSwitch - Shadow
+	pGroup->Add(xtpControlButton, IDC_Effect_Shadow);
+	//RibbonEffect - GroupSwitch - SSAO
+	pGroup->Add(xtpControlButton, IDC_Effect_SSAO);
+	//RibbonEffect - GroupSwitch - Sharpen
+	pGroup->Add(xtpControlButton, IDC_Effect_Sharpen);
+	//RibbonEffect - GroupSwitch - FXAA
+	pGroup->Add(xtpControlButton, IDC_Effect_FXAA);
 
 	///RibbonAnimation
 	m_animTab = pRibbonBar->InsertTab(-1, L"Animation");
@@ -367,8 +372,10 @@ void CMainFrame::_LoadIcon()
 	icon[0] = IDC_Object_Select;			pImageMgr->SetIcons(IDB_Button, icon, _countof(icon), CSize(32, 32));
 	icon[0] = IDC_Object_Remove;			pImageMgr->SetIcons(IDB_Button, icon, _countof(icon), CSize(32, 32));
 	icon[0] = IDC_GameData_Building;		pImageMgr->SetIcons(IDB_Button, icon, _countof(icon), CSize(32, 32));
-	icon[0] = IDC_Shadow_OnOff;				pImageMgr->SetIcons(IDB_Button, icon, _countof(icon), CSize(32, 32));
-	icon[0] = IDC_SSAO_OnOff;				pImageMgr->SetIcons(IDB_Button, icon, _countof(icon), CSize(32, 32));
+	icon[0] = IDC_Effect_Shadow;				pImageMgr->SetIcons(IDB_Button, icon, _countof(icon), CSize(32, 32));
+	icon[0] = IDC_Effect_SSAO;				pImageMgr->SetIcons(IDB_Button, icon, _countof(icon), CSize(32, 32));
+	icon[0] = IDC_Effect_Sharpen;			pImageMgr->SetIcons(IDB_Button, icon, _countof(icon), CSize(32, 32));
+	icon[0] = IDC_Effect_FXAA;				pImageMgr->SetIcons(IDB_Button, icon, _countof(icon), CSize(32, 32));
 	icon[0] = IDC_Animation_Play;			pImageMgr->SetIcons(IDB_Button, icon, _countof(icon), CSize(32, 32));
 	icon[0] = IDC_Animation_Stop;			pImageMgr->SetIcons(IDB_Button, icon, _countof(icon), CSize(32, 32));
 }
@@ -1114,4 +1121,40 @@ void CMainFrame::OnObjectRemove()
 {
 	ManipulatorObject& manObject = ManipulatorSystem.GetObject();
 	manObject.RemoveEntity(manObject.GetSelection());
+}
+
+void CMainFrame::OnUpdateUI_SharpenOnOff( CCmdUI* pCmdUI )
+{
+	if(!ManipulatorSystem.GetIsSceneReady())
+	{
+		pCmdUI->Enable(FALSE);
+		return;
+	}
+
+	pCmdUI->Enable(TRUE);
+	pCmdUI->SetCheck(ManipulatorSystem.GetEffect().GetSharpenEnable());
+}
+
+void CMainFrame::OnUpdateUI_FXAAOnOff( CCmdUI* pCmdUI )
+{
+	if(!ManipulatorSystem.GetIsSceneReady())
+	{
+		pCmdUI->Enable(FALSE);
+		return;
+	}
+
+	pCmdUI->Enable(TRUE);
+	pCmdUI->SetCheck(ManipulatorSystem.GetEffect().GetFXAAEnable());
+}
+
+void CMainFrame::OnSharpenOnOff()
+{
+	bool bEnable = !ManipulatorSystem.GetEffect().GetSharpenEnable();
+	ManipulatorSystem.GetEffect().SetSharpenEnable(bEnable);
+}
+
+void CMainFrame::OnFXAAOnOff()
+{
+	bool bEnable = !ManipulatorSystem.GetEffect().GetFXAAEnable();
+	ManipulatorSystem.GetEffect().SetFXAAEnable(bEnable);
 }

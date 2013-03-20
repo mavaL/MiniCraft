@@ -47,6 +47,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(SolutionDir)\..\MiniCraft\Build\Bin\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)\..\MiniCraft\Build\Intermediate\SceneEdit\$(Configuration)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -61,7 +63,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)\..\MiniCraft\Build\Bin\$(Configuration);..\Dependency\XTP\lib\vc100;..\..\Kratos\Dependency\OIS\lib\debug;..\..\Kratos\Dependency\Ogre\lib\debug\opt;..\..\Kratos\Dependency\Ogre\lib\debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)\..\MiniCraft\Build\Bin\$(Configuration);..\Dependency\XTP\lib\$(Configuration);..\..\Kratos\Dependency\OIS\lib\$(Configuration);..\..\Kratos\Dependency\Ogre\lib\$(Configuration)\opt;..\..\Kratos\Dependency\Ogre\lib\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>OgreMain_d.lib;OgreTerrain_d.lib;ParticleUniverse_d.lib;Kratos_d.lib</AdditionalDependencies>
     </Link>
     <Midl>
@@ -83,15 +85,16 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>../../MiniCraft/Dependency/OIS/include;../../MiniCraft/Dependency/Ogre/include/Terrain;../../MiniCraft/Dependency/Ogre/include;../Dependency/XTP/Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./;../../Kratos/Src;../../Kratos/Dependency/rapidxml;../../Kratos/Dependency/OIS/include;../../Kratos/Dependency/Ogre/include;../../Kratos/Dependency/Ogre/include/ParticleUniverse;../../Kratos/Dependency/Ogre/include/Terrain;../../Kratos/Dependency/OgreRecast/include;../Dependency/XTP/Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>/Zm300 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>OgreMain_d.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)\..\MiniCraft\Build\Bin\$(Configuration);..\Dependency\XTP\lib\$(Configuration);..\..\Kratos\Dependency\OIS\lib\$(Configuration);..\..\Kratos\Dependency\Ogre\lib\$(Configuration)\opt;..\..\Kratos\Dependency\Ogre\lib\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>OgreMain.lib;OgreTerrain.lib;ParticleUniverse.lib;Kratos.lib</AdditionalDependencies>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -196,6 +199,7 @@
   <ItemGroup>
     <ResourceCompile Include="SceneEdit.rc">
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\Dependency\XTP\Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\Dependency\XTP\Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

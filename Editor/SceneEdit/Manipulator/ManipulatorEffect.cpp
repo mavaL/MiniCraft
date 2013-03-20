@@ -212,6 +212,18 @@ void ManipulatorEffect::Serialize( rapidxml::xml_document<>* doc, rapidxml::xml_
 
 	XMLNode->append_node(ssaoNode);
 
+	//sharpen
+	rapidxml::xml_node<>* sharpenNode = doc->allocate_node(rapidxml::node_element, "sharpen");
+	const String strSharpenEnable = StringConverter::toString(GetSharpenEnable());
+	sharpenNode->append_attribute(doc->allocate_attribute("EnableSharpen", doc->allocate_string(strSharpenEnable.c_str())));
+	XMLNode->append_node(sharpenNode);
+
+	//fxaa
+	rapidxml::xml_node<>* fxaaNode = doc->allocate_node(rapidxml::node_element, "fxaa");
+	const String strFXAAEnable = StringConverter::toString(GetFXAAEnable());
+	fxaaNode->append_attribute(doc->allocate_attribute("EnableFXAA", doc->allocate_string(strFXAAEnable.c_str())));
+	XMLNode->append_node(fxaaNode);
+
 	///保存所有单位的挂接特效信息
 	for (auto itTmpl=m_effectTemplates.begin(); itTmpl!=m_effectTemplates.end(); ++itTmpl)
 	{
@@ -504,4 +516,24 @@ std::vector<std::wstring> ManipulatorEffect::GetAttachEffectNames()
 void ManipulatorEffect::OnAttachEffectSelChange( const std::string& effect )
 {
 	m_curEffect = effect;
+}
+
+void ManipulatorEffect::SetSharpenEnable( bool bEnable )
+{
+	RenderManager.EnableSharpen(bEnable);
+}
+
+bool ManipulatorEffect::GetSharpenEnable() const
+{
+	return RenderManager.GetEffectConfig().bSharpen;
+}
+
+void ManipulatorEffect::SetFXAAEnable( bool bEnable )
+{
+	RenderManager.EnableFXAA(bEnable);
+}
+
+bool ManipulatorEffect::GetFXAAEnable() const
+{
+	return RenderManager.GetEffectConfig().bFXAA;
 }

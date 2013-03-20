@@ -1,7 +1,7 @@
-fragment_program sharpen_ps cg
+fragment_program sharpen_ps hlsl
 {
-	source Sharpen.cg
-	profiles ps_3_0 arbfp1
+	source Sharpen.hlsl
+	target ps_3_0
 	entry_point main
 }
 

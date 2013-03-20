@@ -110,9 +110,13 @@ private:
 	void			OnDataBuilding();		
 	///Effect
 	void			OnUpdateUI_ShadowOnOff(CCmdUI* pCmdUI);
-	void			OnShadowOnOff();
 	void			OnUpdateUI_SSAOOnOff(CCmdUI* pCmdUI);
+	void			OnUpdateUI_SharpenOnOff(CCmdUI* pCmdUI);
+	void			OnUpdateUI_FXAAOnOff(CCmdUI* pCmdUI);
+	void			OnShadowOnOff();
 	void			OnSSAOOnOff();
+	void			OnSharpenOnOff();
+	void			OnFXAAOnOff();
 
 private:
 	CXTPDockingPaneManager	m_paneManager;

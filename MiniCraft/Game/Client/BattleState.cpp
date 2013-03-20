@@ -259,6 +259,10 @@ bool CBattleState::OnInputSys_KeyReleased( const OIS::KeyEvent& arg )
 		RenderManager.EnableSSAO(!RenderManager.GetEffectConfig().bSSAO);
 	else if (World::GetSingleton().IsFreeCameraEnabled())
 		World::GetSingleton().GetCameraMan()->injectKeyUp(arg);
+	else if(arg.key == OIS::KC_F4)
+		RenderManager.EnableFXAA(!RenderManager.GetEffectConfig().bFXAA);
+	else if(arg.key == OIS::KC_F5)
+		RenderManager.EnableSharpen(!RenderManager.GetEffectConfig().bSharpen);
 
 	return true;
 }

@@ -21,8 +21,9 @@ namespace Kratos
 		,m_pSceneMgr(NULL)
 		,m_pMainCamera(NULL)
 		,m_pDS(nullptr)
-		,m_dlaa(nullptr)
+		,m_fxaa(nullptr)
 		,m_ssao(nullptr)
+		,m_sharpen(nullptr)
 	{
 	}
 
@@ -109,12 +110,7 @@ namespace Kratos
 		m_pDS->initialize();
 		m_pDS->setActive(false);
 
-		m_ssao = CompositorManager::getSingleton().addCompositor(m_pViewport, "DeferredShading/SSAO");
-		//m_dlaa = CompositorManager::getSingleton().addCompositor(m_pViewport, "DLAA");
-		//assert(m_dlaa);
-		assert(m_ssao);
-		//m_dlaa->setEnabled(false);
-		m_ssao->setEnabled(false);
+		ResetEffect();
 
 		PSSMShadowCameraSetup* pssmSetup = new PSSMShadowCameraSetup;
 		mPSSMSetup.bind(pssmSetup);
@@ -190,15 +186,22 @@ namespace Kratos
 		mWindow->getCustomAttribute("WINDOW", &hwnd);
 	}
 
-	// void COgreManager::EnableDLAA( bool bEnable )
-	// {
-	// 	m_dlaa->setEnabled(bEnable);
-	// }
+	void COgreManager::EnableFXAA( bool bEnable )
+	{
+		m_fxaa->setEnabled(bEnable);
+		m_effectCfg.bFXAA = bEnable;
+	}
 
 	void COgreManager::EnableSSAO( bool bEnable )
 	{
 		m_ssao->setEnabled(bEnable);
 		m_effectCfg.bSSAO = bEnable;
+	}
+
+	void COgreManager::EnableSharpen( bool bEnable )
+	{
+		m_sharpen->setEnabled(bEnable);
+		m_effectCfg.bSharpen = bEnable;
 	}
 
 	void COgreManager::EnableShadow( bool bEnable )
@@ -214,28 +217,35 @@ namespace Kratos
 	void COgreManager::ResetEffect()
 	{
 		m_effectCfg.Reset();
+
+		CompositorManager& mgr = CompositorManager::getSingleton();
+		mgr.removeCompositor(m_pViewport, "DeferredShading/SSAO");
+		mgr.removeCompositor(m_pViewport, "Sharpen");
+		mgr.removeCompositor(m_pViewport, "FXAA");
+
+		m_ssao = CompositorManager::getSingleton().addCompositor(m_pViewport, "DeferredShading/SSAO");
+		m_sharpen = CompositorManager::getSingleton().addCompositor(m_pViewport, "Sharpen");
+		m_fxaa = CompositorManager::getSingleton().addCompositor(m_pViewport, "FXAA");
+		assert(m_fxaa);
+		assert(m_ssao);
+		assert(m_sharpen);
+
 		EnableShadow(m_effectCfg.bShadow);
 		EnableSSAO(m_effectCfg.bSSAO);
+		EnableSharpen(m_effectCfg.bSharpen);
+		EnableFXAA(m_effectCfg.bFXAA);
 	}
 
 	void COgreManager::SetSSAOParam( const Ogre::String& name, float val, bool bRemoveAndAdd )
 	{
 		assert(m_ssao);
 
-		// remove compositor first
-		if(bRemoveAndAdd)
-			CompositorManager::getSingleton().removeCompositor(m_pViewport, "DeferredShading/SSAO");
-
 		Material* mat = static_cast<Material*>(MaterialManager::getSingleton().getByName("SSAO/Crytek").get());
 		assert(mat);
 		mat->getTechnique(0)->getPass(0)->getFragmentProgramParameters()->setNamedConstant(name, val);
 
-		// adding again
 		if(bRemoveAndAdd)
-		{
-			m_ssao = CompositorManager::getSingleton().addCompositor(m_pViewport, "DeferredShading/SSAO");
-			m_ssao->setEnabled(m_effectCfg.bSSAO);
-		}
+			ResetEffect();
 	}
 
 	Ogre::TexturePtr COgreManager::CreateRT(const Ogre::String& name, int w, int h, Ogre::PixelFormat format)

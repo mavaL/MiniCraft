@@ -13,7 +13,7 @@ float fxaaQualityEdgeThresholdMin = 0.0833f;	// Lower the value for more smoothi
 
 float4 main
 (	float2 uv : TEXCOORD0,
-    uniform sampler2D sceneTex : s0,
+    uniform sampler2D sceneTex : TEXUNIT0,
 	uniform float invTexWidth,
 	uniform float invTexHeight
 ): COLOR0

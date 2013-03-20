@@ -78,7 +78,8 @@ void ManipulatorResource::RenderAllMeshIcons( CImageList& retImageList, Ogre::St
 
 			//图像数据加入列表
 			CBitmap bm;
-			assert(bm.CreateBitmap(MESH_ICON_SIZE, MESH_ICON_SIZE, 1, PixelUtil::getNumElemBits(imageFormat), dataptr2));
+			BOOL ret = bm.CreateBitmap(MESH_ICON_SIZE, MESH_ICON_SIZE, 1, PixelUtil::getNumElemBits(imageFormat), dataptr2);
+			assert(ret);
 			retImageList.Add(&bm, RGB(0,0,0));
 
 			delete []dataptr2;

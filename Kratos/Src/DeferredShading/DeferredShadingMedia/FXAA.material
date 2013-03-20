@@ -1,7 +1,7 @@
-fragment_program fxaa_ps cg
+fragment_program fxaa_ps hlsl
 {
-	source FXAA.cg
-	profiles ps_3_0 arbfp1
+	source FXAA.hlsl
+	target ps_3_0
 	entry_point main
 }
 
@@ -25,7 +25,7 @@ material FXAA
 			}
 			texture_unit
 			{
-				tex_address_mode clamp
+				tex_address_mode border
 				filtering bilinear
 			}
 		}

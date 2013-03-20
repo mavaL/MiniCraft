@@ -27,6 +27,13 @@ fragment_program ssaoBlurY_ps cg
     }
 }
 
+fragment_program ssaoFinal_ps cg
+{
+    source ssao.cg
+    entry_point ssaoFinal_ps
+    profiles ps_2_x arbfp1 
+}
+
 material SSAO/Crytek
 {
     technique
@@ -72,6 +79,7 @@ material ssaoBlurX
         {
 			depth_check off
 
+			vertex_program_ref Ogre/Compositor/StdQuad_Cg_vp {}
             fragment_program_ref ssaoBlurX_ps
             {
             }
@@ -98,6 +106,8 @@ material ssaoBlurY
         pass
         {
 			depth_check off
+
+			vertex_program_ref Ogre/Compositor/StdQuad_Cg_vp {}
             fragment_program_ref ssaoBlurY_ps
             {
             }
@@ -125,15 +135,18 @@ material modulate
         {
             lighting off
 
+			vertex_program_ref Ogre/Compositor/StdQuad_Cg_vp {}
+            fragment_program_ref ssaoFinal_ps
+            {
+            }
+
             texture_unit
             {
-                texture white.bmp
                 filtering bilinear
             }
 
             texture_unit
             {
-                texture white.bmp
                 filtering bilinear
             }
         }

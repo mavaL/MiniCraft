@@ -1,4 +1,0 @@
-<?xml version="1.0" ?>
-<Imageset Name="btn-unit-terran-scv.dds" Imagefile="btn-unit-terran-scv.dds" NativeHorzRes="1280" NativeVertRes="800" AutoScaled="false">
-    <Image Name="Scv" XPos="0" YPos="0" Width="76" Height="76" />
-</Imageset>

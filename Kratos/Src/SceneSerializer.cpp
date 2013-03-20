@@ -220,6 +220,14 @@ namespace Kratos
 			RenderManager.SetSSAOParam("cEdgeHighlight", param5, true);
 			RenderManager.EnableSSAO(param1);
 		}
+
+		//sharpen
+		bool bSharpen = StringConverter::parseBool(node->first_node("sharpen")->first_attribute("EnableSharpen")->value());
+		RenderManager.EnableSharpen(bSharpen);
+
+		//fxaa
+		bool bFXAA = StringConverter::parseBool(node->first_node("fxaa")->first_attribute("EnableFXAA")->value());
+		RenderManager.EnableFXAA(bFXAA);
 	}
 }
 

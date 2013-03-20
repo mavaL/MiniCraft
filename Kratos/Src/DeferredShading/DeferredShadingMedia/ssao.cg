@@ -134,4 +134,18 @@ float4 ssaoBlurY_ps(float2 uv : TEXCOORD0,
     return sum / denom;
 }
 
+float4 ssaoFinal_ps
+(	float2 uv : TEXCOORD0,
+    uniform sampler2D sceneTex : TEXUNIT0, 
+	uniform sampler2D aoTex : TEXUNIT1): COLOR0
+{
+	//modulate,同时a通道输出FXAA所需求的luma
+	float4 oColor;
+	oColor.rgb = tex2D(sceneTex, uv).rgb * tex2D(aoTex, uv).r;
+	//oColor.a = dot(oColor.rgb, float3(0.299f, 0.587f, 0.114f));
+	oColor.a = 1;
+
+	return oColor;
+}
+
 
