@@ -1,0 +1,33 @@
+fragment_program sharpen_ps hlsl
+{
+	source Sharpen.hlsl
+	target ps_3_0
+	entry_point main
+}
+
+material Sharpen
+{
+	technique
+	{
+		pass
+		{
+			cull_hardware none
+			cull_software none
+			depth_check off
+
+			vertex_program_ref Ogre/Compositor/StdQuad_Cg_vp
+			{
+			}
+			fragment_program_ref sharpen_ps
+			{
+				param_named_auto px inverse_viewport_width
+				param_named_auto py inverse_viewport_height
+			}
+			texture_unit
+			{
+				tex_address_mode border
+				filtering none
+			}
+		}
+	}
+}
