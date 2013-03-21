@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<GUILayout version="4" >
+    <Window Type="DefaultWindow" Name="InfoPanelFrame" >
+        <Property Name="UnifiedAreaRect" Value="{{0,355},{0,615},{0,940},{0,780}}" />
+        <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+        <Window Type="TaharezLook/StaticImage" Name="InfoIcon" >
+        		<Property Name="UnifiedAreaRect" Value="{{0,30},{0,50},{0,106},{0,126}}" />
+            <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+            <Property Name="BackgroundEnabled" Value="false" />
+            <Property Name="FrameEnabled" Value="false" />
+        </Window>
+        <Window Type="TaharezLook/ProgressBar" Name="InfoPanel/ProgressBar" >
+            <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+            <Property Name="UnifiedAreaRect" Value="{{0,145},{0,84},{0,345},{0,109}}" />
+        </Window>
+        <Window Type="TaharezLook/StaticImage" Name="InfoPanel/Portrait" >
+            <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+            <Property Name="UnifiedAreaRect" Value="{{0,490},{0,10},{0,585},{0,162}}" />
+            <Property Name="BackgroundEnabled" Value="false" />
+            <Property Name="FrameEnabled" Value="false" />
+        </Window>
+    </Window>
+</GUILayout>
