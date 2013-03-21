@@ -8,6 +8,7 @@
 #include "MainFrm.h"
 #include "Scene.h"
 #include "OgreManager.h"
+#include "Utility.h"
 
 
 Application::Application()
@@ -17,6 +18,8 @@ Application::Application()
 
 void Application::Init( int width, int height, HWND hwnd, HWND hParent )
 {
+	Utility::WorkingDirectory wd;
+
 	RenderManager.Init(true, hwnd, hParent, width, height);
 
 	ManipulatorScene& manScene = ManipulatorScene::GetSingleton();
@@ -44,6 +47,7 @@ void Application::Shutdown()
 
 void Application::SceneNew()
 {
+	Utility::WorkingDirectory wd;
 	DialogSceneNew dlg;
 	std::wstring newSceneName;
 	if (IDOK == dlg.DoModal(ManipulatorSystem.GetScenePath(), newSceneName))
@@ -58,19 +62,27 @@ void Application::SceneNew()
 
 void Application::SceneOpen()
 {
-	std::wstring strFilename;
-	CFileDialog dlgFile(TRUE);	
-	dlgFile.GetOFN().lpstrFilter = L"*.scene";
-	dlgFile.GetOFN().lpstrDefExt = L"scene";
-	//dlgFile.GetOFN().lpstrInitialDir = path; 
-	dlgFile.GetOFN().lpstrTitle = L"Open Scene"; 
+	Utility::WorkingDirectory wd;
+	OPENFILENAME ofn;
+	TCHAR szPath[MAX_PATH];
+	ZeroMemory(szPath, sizeof(szPath));
 
-	if(IDOK == dlgFile.DoModal())
+	memset(&ofn, 0, sizeof(ofn));
+	ofn.lStructSize = sizeof(OPENFILENAME);
+	ofn.lpstrFilter = TEXT("Scene\0*.scene\0");
+	ofn.nFilterIndex = 1;
+	ofn.lpstrDefExt = L"scene";
+	ofn.lpstrInitialDir = nullptr; 
+	ofn.lpstrTitle = L"Open Scene";
+	ofn.lpstrFile = szPath;
+	ofn.nMaxFile = MAX_PATH;
+	ofn.Flags = OFN_EXPLORER | OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST;
+
+	if(GetOpenFileName(&ofn) == TRUE)
 	{
 		if(SceneClose())
 		{
-			strFilename = dlgFile.GetOFN().lpstrFile;
-			ManipulatorSystem.SceneOpen(strFilename);
+			ManipulatorSystem.SceneOpen(ofn.lpstrFile);
 			m_appSnapshot = ManipulatorSystem.GetOperation().SnapshotMake();
 		}
 	}

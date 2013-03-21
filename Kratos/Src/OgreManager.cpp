@@ -216,8 +216,6 @@ namespace Kratos
 
 	void COgreManager::ResetEffect()
 	{
-		m_effectCfg.Reset();
-
 		CompositorManager& mgr = CompositorManager::getSingleton();
 		mgr.removeCompositor(m_pViewport, "DeferredShading/SSAO");
 		mgr.removeCompositor(m_pViewport, "Sharpen");

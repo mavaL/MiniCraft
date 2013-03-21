@@ -41,6 +41,26 @@ namespace Utility
 		return val > 0 ? 1 : -1;
 	}
 
+	class WorkingDirectory
+	{
+	public:
+		WorkingDirectory(const WCHAR* szNewDir)
+		{
+			::GetCurrentDirectoryW(MAX_PATH, m_oldDir);
+			::SetCurrentDirectoryW(szNewDir);
+
+		}
+		WorkingDirectory()
+		{
+			::GetCurrentDirectoryW(MAX_PATH, m_oldDir);
+		}
+		~WorkingDirectory()
+		{
+			::SetCurrentDirectoryW(m_oldDir);
+		}
+	private:
+		WCHAR	m_oldDir[MAX_PATH];
+	};
 }
 
 //±‡“Î∆⁄∂œ—‘
