@@ -26,6 +26,7 @@ public:
 	CString		GetStrX() const { return m_X->GetValue(); }
 	CString		GetStrY() const { return m_Y->GetValue(); }
 	CString		GetStrZ() const { return m_Z->GetValue(); }
+	void		UpdateFromChild();
 
 protected:
 	virtual void OnAddChildItem();
@@ -55,6 +56,7 @@ public:
 	CString		GetStrY() const { return m_Y->GetValue(); }
 	CString		GetStrZ() const { return m_Z->GetValue(); }
 	CString		GetStrW() const { return m_W->GetValue(); }
+	void		UpdateFromChild();
 
 protected:
 	virtual void OnAddChildItem();
@@ -69,7 +71,8 @@ private:
 };
 
 //helper
-Ogre::Vector3	UpdateVec3ItemProperty(CXTPPropertyGridItemVec3* pItem);
+Ogre::Vector3		GetVec3Value(CXTPPropertyGridItemVec3* pItem, bool bReflect);
+Ogre::Quaternion	GetVec4Value(CXTPPropertyGridItemVec4* pItem, bool bReflect);
 
 #endif // XTPCustomPropertyGridItem_h__
 

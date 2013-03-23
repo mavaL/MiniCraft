@@ -18,63 +18,67 @@ same license as the rest of the engine.
 
 #include "MaterialGenerator.h"
 
-/** Class for generating materials for objects to render themselves to the GBuffer
- *  @note This does not support all the possible rendering techniques out there.
- *  in order to support more, either expand this class or make sure that objects
- *  that will not get treated correctly will not have materials generated for them.
- */
-class GBufferMaterialGenerator : public MaterialGenerator
+namespace Kratos
 {
-public:
-	
-	//Constructor
-	GBufferMaterialGenerator();
-
-	//The relevant options for objects that are rendered to the GBuffer
-	enum GBufferPermutations 
+	/** Class for generating materials for objects to render themselves to the GBuffer
+	*  @note This does not support all the possible rendering techniques out there.
+	*  in order to support more, either expand this class or make sure that objects
+	*  that will not get treated correctly will not have materials generated for them.
+	*/
+	class GBufferMaterialGenerator : public MaterialGenerator
 	{
-		//(Regular) Textures
-		GBP_NO_TEXTURES =			0x00000000,
-		GBP_ONE_TEXTURE =			0x00000001,
-		GBP_TWO_TEXTURES =			0x00000002,
-		GBP_THREE_TEXTURES =		0x00000003,
-		GBP_TEXTURE_MASK =			0x0000000F,
-		
-        //Material properties
-        GBP_HAS_DIFFUSE_COLOUR =     0x00000010,
+	public:
 
-		//The number of texture coordinate sets
-		GBP_NO_TEXCOORDS =			0x00000000,
-		GBP_ONE_TEXCOORD =			0x00000100,
-		GBP_TWO_TEXCOORDS =			0x00000200,
-		GBP_TEXCOORD_MASK =			0x00000700,
+		//Constructor
+		GBufferMaterialGenerator();
 
-		//Do we have a normal map
-		GBP_NORMAL_MAP =			0x00000800,
+		//The relevant options for objects that are rendered to the GBuffer
+		enum GBufferPermutations 
+		{
+			//(Regular) Textures
+			GBP_NO_TEXTURES =			0x00000000,
+			GBP_ONE_TEXTURE =			0x00000001,
+			GBP_TWO_TEXTURES =			0x00000002,
+			GBP_THREE_TEXTURES =		0x00000003,
+			GBP_TEXTURE_MASK =			0x0000000F,
 
-		//高光Color+SpecularPower纹理
-		GBP_SPECULAR_MAP	=		0x00000020,
+			//Material properties
+			GBP_HAS_DIFFUSE_COLOUR =     0x00000010,
 
-		//自发光图
-		GBP_EMISSIVE_MAP	=		0x00000040,
+			//The number of texture coordinate sets
+			GBP_NO_TEXCOORDS =			0x00000000,
+			GBP_ONE_TEXCOORD =			0x00000100,
+			GBP_TWO_TEXCOORDS =			0x00000200,
+			GBP_TEXCOORD_MASK =			0x00000700,
 
-		//Are we skinned?
-		GBP_SKINNED =				0x00010000,
+			//Do we have a normal map
+			GBP_NORMAL_MAP =			0x00000800,
 
-		//队伍颜色
-		GBP_TEAM_COLOR_RED	=		0x00001000,
-		GBP_TEAM_COLOR_Blue	=		0x00002000,
-		GBP_TEAM_COLOR_Mask	=		0x00003000,
+			//高光Color+SpecularPower纹理
+			GBP_SPECULAR_MAP	=		0x00000020,
+
+			//自发光图
+			GBP_EMISSIVE_MAP	=		0x00000040,
+
+			//Are we skinned?
+			GBP_SKINNED =				0x00010000,
+
+			//队伍颜色
+			GBP_TEAM_COLOR_RED	=		0x00001000,
+			GBP_TEAM_COLOR_Blue	=		0x00002000,
+			GBP_TEAM_COLOR_Mask	=		0x00003000,
+		};
+
+		//The mask of the flags that matter for generating the fragment shader
+		static const Ogre::uint32 FS_MASK =		0x0000FFFF;
+
+		//The mask of the flags that matter for generating the vertex shader
+		static const Ogre::uint32 VS_MASK =		0x00FFFF00;
+
+		//The mask of the flags that matter for generating the material
+		static const Ogre::uint32 MAT_MASK =	0xFF00FFFF;
 	};
-	
-	//The mask of the flags that matter for generating the fragment shader
-	static const Ogre::uint32 FS_MASK =		0x0000FFFF;
-	
-	//The mask of the flags that matter for generating the vertex shader
-	static const Ogre::uint32 VS_MASK =		0x00FFFF00;
-	
-	//The mask of the flags that matter for generating the material
-	static const Ogre::uint32 MAT_MASK =	0xFF00FFFF;
-};
+}
+
 
 #endif

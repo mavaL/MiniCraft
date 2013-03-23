@@ -162,6 +162,12 @@
     <ClInclude Include="Operation\Operation.h">
       <Filter>Operation</Filter>
     </ClInclude>
+    <ClInclude Include="UI\DLightPropertyPane.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\ParticlePropertyPane.h">
+      <Filter>UI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SceneEdit.cpp">
@@ -262,6 +268,12 @@
     </ClCompile>
     <ClCompile Include="Operation\Operation.cpp">
       <Filter>Operation</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\DLightPropertyPane.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\ParticlePropertyPane.cpp">
+      <Filter>UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

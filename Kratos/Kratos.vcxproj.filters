@@ -202,16 +202,10 @@
     <ClInclude Include="Src\DeferredShading\LightMaterialGenerator.h">
       <Filter>源文件\DeferredShading</Filter>
     </ClInclude>
-    <ClInclude Include="Src\DeferredShading\ListenerFactoryLogic.h">
-      <Filter>源文件\DeferredShading</Filter>
-    </ClInclude>
     <ClInclude Include="Src\DeferredShading\MaterialGenerator.h">
       <Filter>源文件\DeferredShading</Filter>
     </ClInclude>
     <ClInclude Include="Src\DeferredShading\NullSchemeHandler.h">
-      <Filter>源文件\DeferredShading</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\DeferredShading\SSAOLogic.h">
       <Filter>源文件\DeferredShading</Filter>
     </ClInclude>
     <ClInclude Include="Src\DeferredShading\TerrainMaterialGeneratorD.h">
@@ -225,6 +219,12 @@
     </ClInclude>
     <ClInclude Include="Src\KratosPrerequisites.h">
       <Filter>源文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Effect\DeferredLightEffect.h">
+      <Filter>源文件\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Effect\EffectBase.h">
+      <Filter>源文件\Effect</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -369,9 +369,6 @@
     <ClCompile Include="Src\DeferredShading\MaterialGenerator.cpp">
       <Filter>源文件\DeferredShading</Filter>
     </ClCompile>
-    <ClCompile Include="Src\DeferredShading\SSAOLogic.cpp">
-      <Filter>源文件\DeferredShading</Filter>
-    </ClCompile>
     <ClCompile Include="Src\DeferredShading\TerrainMaterialGeneratorD.cpp">
       <Filter>源文件\DeferredShading</Filter>
     </ClCompile>
@@ -379,6 +376,12 @@
       <Filter>源文件\Effect</Filter>
     </ClCompile>
     <ClCompile Include="Src\Effect\EffectController.cpp">
+      <Filter>源文件\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Effect\DeferredLightEffect.cpp">
+      <Filter>源文件\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Effect\EffectBase.cpp">
       <Filter>源文件\Effect</Filter>
     </ClCompile>
   </ItemGroup>

@@ -1,8 +1,3 @@
-String
-
-// MainFrm.cpp : CMainFrame 类的实现
-//
-
 #include "stdafx.h"
 #include "SceneEdit.h"
 #include "MainFrm.h"
@@ -16,8 +11,8 @@ String
 #include "UI/ObjectPropertyPane.h"
 #include "UI/DialogGameDataBuilding.h"
 #include "UI/EffectPropertyPane.h"
-#include "UI/AttachmentPropertyPane.h"
-
+#include "UI/ParticlePropertyPane.h"
+#include "UI/DLightPropertyPane.h"
 
 // CMainFrame
 
@@ -75,9 +70,10 @@ BEGIN_MESSAGE_MAP(CMainFrame, CXTPFrameWnd)
 	ON_COMMAND(IDC_Animation_Stop, OnAnimStop)
 	ON_UPDATE_COMMAND_UI(IDC_Animation_Play, OnUpdateUI_AnimPlay)
 	ON_UPDATE_COMMAND_UI(IDC_Animation_Stop, OnUpdateUI_AnimStop)
-	ON_COMMAND(IDC_Animation_EffectAdd, OnAnimEffectAdd)
 	ON_COMMAND(IDC_Animation_EffectRemove, OnAnimEffectRemove)
-	ON_UPDATE_COMMAND_UI(IDC_Animation_EffectAdd, OnUpdateUI_AnimEffectAdd)
+	ON_UPDATE_COMMAND_UI(IDC_Effect_Add, OnUpdateUI_AnimEffectAdd)
+	ON_UPDATE_COMMAND_UI_RANGE(IDC_Effect_AddParticle, IDC_Effect_AddDLight, OnUpdateUI_AnimEffectAdd)
+	ON_COMMAND_RANGE(IDC_Effect_AddParticle, IDC_Effect_AddDLight, OnAnimEffectAdd)
 	ON_UPDATE_COMMAND_UI(IDC_Animation_EffectRemove, OnUpdateUI_AnimEffectRemove)
 	ON_UPDATE_COMMAND_UI(IDC_Animation_EffectList, OnUpdateUI_AnimEffectList)
 	ON_NOTIFY(CBN_SELCHANGE, IDC_Animation_EffectList, OnAnimEffectSelectChange)
@@ -99,7 +95,8 @@ CMainFrame::CMainFrame()
 ,m_paneTerrain(NULL)
 ,m_propertyObject(new PropertyPaneObject)
 ,m_propertyEffect(new PropertyPaneEffect)
-,m_propertyAttachment(new PropertyPaneAttachment)
+,m_propertyParticle(new PropertyPaneParticle)
+,m_propertyDLight(new PropertyPaneDLight)
 ,m_paneObject(NULL)
 ,m_paneEffect(NULL)
 ,m_paneAttachment(NULL)
@@ -107,6 +104,11 @@ CMainFrame::CMainFrame()
 ,m_animList(NULL)
 ,m_effectList(NULL)
 {
+	//ID序列校验
+	static_assert(IDC_Terrain_Splat_Layer1 == IDC_Terrain_Splat_Layer0 + 1 && IDC_Terrain_Splat_Layer2 == IDC_Terrain_Splat_Layer1 + 1
+		&& IDC_Terrain_Splat_Layer3 == IDC_Terrain_Splat_Layer2 + 1 && IDC_Terrain_Splat_Layer4 == IDC_Terrain_Splat_Layer3 + 1,
+		"Invalid ID sequence!");
+	static_assert(IDC_Effect_AddDLight == IDC_Effect_AddParticle + 1, "Invalid ID sequence!");
 }
 
 CMainFrame::~CMainFrame()
@@ -115,7 +117,8 @@ CMainFrame::~CMainFrame()
 	SAFE_DELETE(m_wndView);
 	SAFE_DELETE(m_propertyObject);
 	SAFE_DELETE(m_propertyEffect);
-	SAFE_DELETE(m_propertyAttachment);
+	SAFE_DELETE(m_propertyParticle);
+	SAFE_DELETE(m_propertyDLight);
 }
 
 int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
@@ -343,8 +346,10 @@ bool CMainFrame::_OnCreateRibbon()
 	m_effectList->SetDropDownListStyle();
 	m_effectList->SetWidth(150);
 
-	//RibbonAnimation - GroupEffect - EffectAdd
-	pGroup->Add(xtpControlButton, IDC_Animation_EffectAdd);
+	//RibbonAnimation - GroupEffect - AddEffect
+	CXTPControlPopup* pAddBtn = dynamic_cast<CXTPControlPopup*>(pGroup->Add(xtpControlSplitButtonPopup, IDC_Effect_Add));
+	pAddBtn->GetCommandBar()->GetControls()->Add(xtpControlButton, IDC_Effect_AddParticle);
+	pAddBtn->GetCommandBar()->GetControls()->Add(xtpControlButton, IDC_Effect_AddDLight);
 
 	//RibbonAnimation - GroupEffect - EffectRemove
 	pGroup->Add(xtpControlButton, IDC_Animation_EffectRemove);
@@ -425,7 +430,7 @@ void CMainFrame::_CreateDockPane()
 	m_paneTerrain		= m_paneManager.CreatePane(IDR_Pane_TerrainProperty, CRect(0, 0, 250, 120), xtpPaneDockRight);
 	m_paneObject		= m_paneManager.CreatePane(IDR_Pane_ObjectProperty, CRect(0, 0, 250, 120), xtpPaneDockRight);
 	m_paneEffect		= m_paneManager.CreatePane(IDR_Pane_EffectProperty, CRect(0, 0, 250, 120), xtpPaneDockRight);
-	m_paneAttachment	= m_paneManager.CreatePane(IDR_Pane_AttachmentProperty, CRect(0, 0, 250, 120), xtpPaneDockRight);
+	m_paneAttachment	= m_paneManager.CreatePane(IDR_Pane_Attachment, CRect(0, 0, 250, 120), xtpPaneDockRight);
 }
 
 LRESULT CMainFrame::_AttachDockPane( WPARAM wParam, LPARAM lParam )
@@ -454,8 +459,8 @@ LRESULT CMainFrame::_AttachDockPane( WPARAM wParam, LPARAM lParam )
 				pPane->Attach(m_propertyEffect);
 				break;
 
-			case IDR_Pane_AttachmentProperty:
-				pPane->Attach(m_propertyAttachment);
+			case IDR_Pane_Attachment:
+				pPane->Detach();
 				break;
 
 			default: assert(0);
@@ -537,12 +542,14 @@ bool CMainFrame::CreateEditorMainUI()
 	m_propertyTerrain->Create(L"STATIC", NULL, WS_CHILD|WS_VISIBLE|WS_CLIPCHILDREN|WS_CLIPSIBLINGS, CXTPEmptyRect(), this, IDR_Pane_TerrainProperty);
 	m_propertyObject->Create(L"STATIC", NULL, WS_CHILD|WS_VISIBLE|WS_CLIPCHILDREN|WS_CLIPSIBLINGS, CXTPEmptyRect(), this, IDR_Pane_ObjectProperty);
 	m_propertyEffect->Create(L"STATIC", NULL, WS_CHILD|WS_VISIBLE|WS_CLIPCHILDREN|WS_CLIPSIBLINGS, CXTPEmptyRect(), this, IDR_Pane_EffectProperty);
-	m_propertyAttachment->Create(L"STATIC", NULL, WS_CHILD|WS_VISIBLE|WS_CLIPCHILDREN|WS_CLIPSIBLINGS, CXTPEmptyRect(), this, IDR_Pane_AttachmentProperty);
+	m_propertyParticle->Create(L"STATIC", NULL, WS_CHILD|WS_VISIBLE|WS_CLIPCHILDREN|WS_CLIPSIBLINGS, CXTPEmptyRect(), this, IDR_Pane_Attachment);
+	m_propertyDLight->Create(L"STATIC", NULL, WS_CHILD|WS_VISIBLE|WS_CLIPCHILDREN|WS_CLIPSIBLINGS, CXTPEmptyRect(), this, IDR_Pane_Attachment);
 
 	m_propertyTerrain->m_wndPropertyGrid.SetTheme(xtpGridThemeVisualStudio2010);
 	m_propertyObject->m_wndPropertyGrid.SetTheme(xtpGridThemeVisualStudio2010);
 	m_propertyEffect->m_wndPropertyGrid.SetTheme(xtpGridThemeVisualStudio2010);
-	m_propertyAttachment->m_wndPropertyGrid.SetTheme(xtpGridThemeVisualStudio2010);
+	m_propertyParticle->m_wndPropertyGrid.SetTheme(xtpGridThemeVisualStudio2010);
+	m_propertyDLight->m_wndPropertyGrid.SetTheme(xtpGridThemeVisualStudio2010);
 
 	_CreateDockPane();
 
@@ -575,7 +582,8 @@ void CMainFrame::OnSceneClose()
 	m_propertyTerrain->EnableMutableProperty(FALSE);
 	m_propertyObject->EnableMutableProperty(FALSE);
 	m_propertyEffect->EnableMutableProperty(FALSE);
-	m_propertyAttachment->EnableMutableProperty(FALSE);
+	m_propertyParticle->EnableMutableProperty(FALSE);
+	m_propertyDLight->EnableMutableProperty(FALSE);
 }
 
 void CMainFrame::OnUpdateUI_TerrainBrushSize1( CCmdUI* pCmdUI )
@@ -915,12 +923,10 @@ void CMainFrame::OnObjectClearSelection( Ogre::Entity* pObject )
 		//隐藏动画Ribbon
 		m_animTab->SetVisible(FALSE);
 
-		//隐藏挂接物编辑面板
-		m_propertyAttachment->EnableMutableProperty(FALSE);
-
 		ManipulatorEffect& manEffect = ManipulatorSystem.GetEffect();
 		manEffect.PlayAnimation(pObject, m_animList->GetCurSel(), false);
 		manEffect.OnAnimSelectChange("");
+		_OnAttachmentPaneChange(FALSE);
 	}
 }
 
@@ -950,7 +956,7 @@ void CMainFrame::OnAnimSelectChange( NMHDR* pNMHDR, LRESULT* pResult )
 	m_effectList->SetCurSel(0);
 
 	manEffect.OnAttachEffectSelChange("");
-	m_propertyAttachment->EnableMutableProperty(FALSE);
+	_OnAttachmentPaneChange(FALSE);
 }
 
 void CMainFrame::OnUpdateUI_DataBuilding( CCmdUI* pCmdUI )
@@ -1057,15 +1063,14 @@ void CMainFrame::OnUpdateUI_AnimEffectRemove( CCmdUI* pCmdUI )
 		pCmdUI->Enable(FALSE);
 }
 
-void CMainFrame::OnAnimEffectAdd()
+void CMainFrame::OnAnimEffectAdd(UINT nID)
 {
-	const std::wstring name = ManipulatorSystem.GetEffect().AddEffect();
+	const std::wstring name = ManipulatorSystem.GetEffect().AddEffect(nID - IDC_Effect_AddParticle);
 	int index = m_effectList->AddString(name.c_str());
 	assert(index != LB_ERR);
 	m_effectList->SetCurSel(index);
 
-	m_propertyAttachment->UpdateAllFromEngine();
-	m_propertyAttachment->EnableMutableProperty(TRUE);
+	_OnAttachmentPaneChange(TRUE);
 	m_paneAttachment->Select();
 }
 
@@ -1075,9 +1080,9 @@ void CMainFrame::OnAnimEffectRemove()
 	int curSel = m_effectList->GetCurSel();
 	m_effectList->GetLBText(curSel, effectName);
 	m_effectList->SetCurSel(0);
-	m_propertyAttachment->EnableMutableProperty(FALSE);
 
 	ManipulatorSystem.GetEffect().RemoveEffect(Utility::UnicodeToEngine(effectName));
+	_OnAttachmentPaneChange(FALSE);
 }
 
 void CMainFrame::OnUpdateUI_AnimEffectList( CCmdUI* pCmdUI )
@@ -1087,23 +1092,14 @@ void CMainFrame::OnUpdateUI_AnimEffectList( CCmdUI* pCmdUI )
 
 void CMainFrame::OnAnimEffectSelectChange( NMHDR* pNMHDR, LRESULT* pResult )
 {
-	NMXTPCONTROL* tagNMCONTROL = (NMXTPCONTROL*)pNMHDR;
-	CXTPControlComboBox* pControl = DYNAMIC_DOWNCAST(CXTPControlComboBox, tagNMCONTROL->pControl);
-
 	CString effectName;
 	int curSel = m_effectList->GetCurSel();
 	m_effectList->GetLBText(curSel, effectName);
 
-	ManipulatorSystem.GetEffect().OnAttachEffectSelChange(Utility::UnicodeToEngine(effectName));
-	
-	//显示挂接物编辑面板
-	if (curSel != 0)
-	{
-		m_propertyAttachment->EnableMutableProperty(TRUE);
-		m_paneAttachment->Select();
-	}
-
-	m_propertyAttachment->UpdateAllFromEngine();
+	const std::string name = Utility::UnicodeToEngine(effectName);
+	ManipulatorSystem.GetEffect().OnAttachEffectSelChange(name);
+	_OnAttachmentPaneChange(TRUE);
+	m_paneAttachment->Select();
 }
 
 void CMainFrame::OnUpdateUI_ObjectRemove( CCmdUI* pCmdUI )
@@ -1157,4 +1153,37 @@ void CMainFrame::OnFXAAOnOff()
 {
 	bool bEnable = !ManipulatorSystem.GetEffect().GetFXAAEnable();
 	ManipulatorSystem.GetEffect().SetFXAAEnable(bEnable);
+}
+
+CPropertiesPane* CMainFrame::_GetCurAttachmentPane()
+{
+	if(!m_paneAttachment->GetChild())
+		return nullptr;
+	CPropertiesPane* pane = dynamic_cast<CPropertiesPane*>(m_paneAttachment->GetChild());
+	assert(pane);
+	return pane;
+}
+
+void CMainFrame::_OnAttachmentPaneChange(BOOL bEnable)
+{
+	CString effectName;
+	int curSel = m_effectList->GetCurSel();
+	m_effectList->GetLBText(curSel, effectName);
+
+	m_paneAttachment->Detach();
+	if(effectName == L"")
+		return;
+
+	const std::string name = Utility::UnicodeToEngine(effectName);
+	int type = ManipulatorSystem.GetEffect().GetAttachEffectType(name);
+	if(type == 0)
+		m_paneAttachment->Attach(m_propertyParticle);
+	else if(type == 1)
+		m_paneAttachment->Attach(m_propertyDLight);
+	else
+		assert(0);
+
+	CPropertiesPane* pane = _GetCurAttachmentPane();
+	pane->EnableMutableProperty(bEnable);
+	pane->UpdateAllFromEngine();
 }

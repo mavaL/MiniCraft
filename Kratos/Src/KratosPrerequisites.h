@@ -11,7 +11,9 @@ typedef Ogre::String		STRING;
 typedef Ogre::Vector3		FLOAT3;
 typedef Ogre::Vector2		FLOAT2;
 
-
+#ifndef SAFE_DELETE
+#define SAFE_DELETE(p) { if(p) { delete p; p=NULL; } }
+#endif
 
 namespace Kratos
 {

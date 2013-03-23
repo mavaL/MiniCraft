@@ -74,8 +74,9 @@ public:
 	std::vector<std::wstring>	GetLocatorNames() const;
 	void						BindEntityToEffectTemplate(Ogre::Entity* ent);
 	std::vector<std::wstring>	GetAttachEffectNames();
+	int							GetAttachEffectType(const std::string& name);
 	//增加/去除一个绑定特效
-	const std::wstring			AddEffect();
+	std::wstring				AddEffect(int type);
 	void						RemoveEffect(const std::string& name);
 	//获取PU所有粒子模板名字
 	std::vector<std::wstring>	GetParticleTmpNames() const;

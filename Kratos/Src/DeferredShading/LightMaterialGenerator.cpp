@@ -38,95 +38,97 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using namespace Ogre;
 
-//CG
-class LightMaterialGeneratorCG : public MaterialGenerator::Impl
+namespace Kratos
 {
-public:
-	typedef MaterialGenerator::Perm Perm;
-	LightMaterialGeneratorCG(const String &baseName):
-	    mBaseName(baseName) 
+	//CG
+	class LightMaterialGeneratorCG : public MaterialGenerator::Impl
 	{
-
-	}
-	virtual ~LightMaterialGeneratorCG()
-	{
-
-	}
-
-	virtual GpuProgramPtr generateVertexShader(Perm permutation)
-	{
-        String programName = "DeferredShading/post/";
-
-		if (permutation & LightMaterialGenerator::MI_DIRECTIONAL)
+	public:
+		typedef MaterialGenerator::Perm Perm;
+		LightMaterialGeneratorCG(const String &baseName):
+		mBaseName(baseName) 
 		{
-			programName += "vs";
+
 		}
-		else
+		virtual ~LightMaterialGeneratorCG()
 		{
-			programName += "LightMaterial_vs";
+
 		}
 
-		GpuProgramPtr ptr = HighLevelGpuProgramManager::getSingleton().getByName(programName);
-		assert(!ptr.isNull());
-		return ptr;
-	}
-
-	virtual GpuProgramPtr generateFragmentShader(Perm permutation)
-	{
-		/// Create shader
-		if (mMasterSource.empty())
+		virtual GpuProgramPtr generateVertexShader(Perm permutation)
 		{
-			DataStreamPtr ptrMasterSource = ResourceGroupManager::getSingleton().openResource(
-				 "DeferredShading/post/LightMaterial_ps.cg"
-				, ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
-			assert(ptrMasterSource.isNull()==false);
-			mMasterSource = ptrMasterSource->getAsString();
+			String programName = "DeferredShading/post/";
+
+			if (permutation & LightMaterialGenerator::MI_DIRECTIONAL)
+			{
+				programName += "vs";
+			}
+			else
+			{
+				programName += "LightMaterial_vs";
+			}
+
+			GpuProgramPtr ptr = HighLevelGpuProgramManager::getSingleton().getByName(programName);
+			assert(!ptr.isNull());
+			return ptr;
 		}
 
-		assert(mMasterSource.empty()==false);
-
-		// Create name
-		String name = mBaseName+StringConverter::toString(permutation)+"_ps";		
-
-		// Create shader object
-		HighLevelGpuProgramPtr ptrProgram = HighLevelGpuProgramManager::getSingleton().createProgram(
-			name, ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
-			"cg", GPT_FRAGMENT_PROGRAM);
-		ptrProgram->setSource(mMasterSource);
-		ptrProgram->setParameter("entry_point","main");
-	    ptrProgram->setParameter("profiles","ps_2_x arbfp1");
-		// set up the preprocessor defines
-		// Important to do this before any call to get parameters, i.e. before the program gets loaded
-		ptrProgram->setParameter("compile_arguments", getPPDefines(permutation));
-
-		setUpBaseParameters(ptrProgram->getDefaultParameters());
-
-		return GpuProgramPtr(ptrProgram);
-	}
-
-	virtual MaterialPtr generateTemplateMaterial(Perm permutation)
-	{
-		String materialName = mBaseName;
-	
-        if(permutation & LightMaterialGenerator::MI_DIRECTIONAL)
-		{   
-			materialName += "Quad";
-		}
-		else
+		virtual GpuProgramPtr generateFragmentShader(Perm permutation)
 		{
-			materialName += "Geometry";
+			/// Create shader
+			if (mMasterSource.empty())
+			{
+				DataStreamPtr ptrMasterSource = ResourceGroupManager::getSingleton().openResource(
+					"DeferredShading/post/LightMaterial_ps.cg"
+					, ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+				assert(ptrMasterSource.isNull()==false);
+				mMasterSource = ptrMasterSource->getAsString();
+			}
+
+			assert(mMasterSource.empty()==false);
+
+			// Create name
+			String name = mBaseName+StringConverter::toString(permutation)+"_ps";		
+
+			// Create shader object
+			HighLevelGpuProgramPtr ptrProgram = HighLevelGpuProgramManager::getSingleton().createProgram(
+				name, ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+				"cg", GPT_FRAGMENT_PROGRAM);
+			ptrProgram->setSource(mMasterSource);
+			ptrProgram->setParameter("entry_point","main");
+			ptrProgram->setParameter("profiles","ps_2_x arbfp1");
+			// set up the preprocessor defines
+			// Important to do this before any call to get parameters, i.e. before the program gets loaded
+			ptrProgram->setParameter("compile_arguments", getPPDefines(permutation));
+
+			setUpBaseParameters(ptrProgram->getDefaultParameters());
+
+			return GpuProgramPtr(ptrProgram);
 		}
 
-		if(permutation & LightMaterialGenerator::MI_SHADOW_CASTER)
+		virtual MaterialPtr generateTemplateMaterial(Perm permutation)
 		{
-			materialName += "Shadow";
+			String materialName = mBaseName;
+
+			if(permutation & LightMaterialGenerator::MI_DIRECTIONAL)
+			{   
+				materialName += "Quad";
+			}
+			else
+			{
+				materialName += "Geometry";
+			}
+
+			if(permutation & LightMaterialGenerator::MI_SHADOW_CASTER)
+			{
+				materialName += "Shadow";
+			}
+			return MaterialManager::getSingleton().getByName(materialName);
 		}
-		return MaterialManager::getSingleton().getByName(materialName);
-	}
 
 	protected:
 		String mBaseName;
-        String mMasterSource;
+		String mMasterSource;
 		// Utility method
 		String getPPDefines(Perm permutation)
 		{
@@ -153,7 +155,7 @@ public:
 			strPPD += "-DLIGHT_TYPE=LIGHT_" + lightType + " ";
 
 			//Optional parameters
-            if (permutation & LightMaterialGenerator::MI_SPECULAR)
+			if (permutation & LightMaterialGenerator::MI_SPECULAR)
 			{
 				strPPD += "-DIS_SPECULAR ";
 			}
@@ -212,9 +214,9 @@ public:
 			}
 			params->setNamedConstant("pssmSplitPoints", splitPoints);
 
-// 			params->setNamedAutoConstant("inverseShadowmapSize0", GpuProgramParameters::ACT_INVERSE_TEXTURE_SIZE, 4);
-// 			params->setNamedAutoConstant("inverseShadowmapSize1", GpuProgramParameters::ACT_INVERSE_TEXTURE_SIZE, 5);
-// 			params->setNamedAutoConstant("inverseShadowmapSize2", GpuProgramParameters::ACT_INVERSE_TEXTURE_SIZE, 6);
+			// 			params->setNamedAutoConstant("inverseShadowmapSize0", GpuProgramParameters::ACT_INVERSE_TEXTURE_SIZE, 4);
+			// 			params->setNamedAutoConstant("inverseShadowmapSize1", GpuProgramParameters::ACT_INVERSE_TEXTURE_SIZE, 5);
+			// 			params->setNamedAutoConstant("inverseShadowmapSize2", GpuProgramParameters::ACT_INVERSE_TEXTURE_SIZE, 6);
 
 			//shadow map pssm各视锥的纹理矩阵和深度范围(自动参数)
 			params->setNamedAutoConstant("depthRange0", GpuProgramParameters::ACT_SHADOW_SCENE_DEPTH_RANGE, 0);
@@ -225,20 +227,23 @@ public:
 			params->setNamedAutoConstant("texWorldViewProjMatrix1", GpuProgramParameters::ACT_TEXTURE_WORLDVIEWPROJ_MATRIX, 1);
 			params->setNamedAutoConstant("texWorldViewProjMatrix2", GpuProgramParameters::ACT_TEXTURE_WORLDVIEWPROJ_MATRIX, 2);
 		}
-};
+	};
 
-LightMaterialGenerator::LightMaterialGenerator()
-{
-	vsMask = 0x00000004;
-	fsMask = 0x0000003F;
-	matMask =	LightMaterialGenerator::MI_DIRECTIONAL | 
-				LightMaterialGenerator::MI_SHADOW_CASTER;
-	
-	materialBaseName = "DeferredShading/LightMaterial/";
-    mImpl = new LightMaterialGeneratorCG("DeferredShading/LightMaterial/");
+	LightMaterialGenerator::LightMaterialGenerator()
+	{
+		vsMask = 0x00000004;
+		fsMask = 0x0000003F;
+		matMask =	LightMaterialGenerator::MI_DIRECTIONAL | 
+			LightMaterialGenerator::MI_SHADOW_CASTER;
+
+		materialBaseName = "DeferredShading/LightMaterial/";
+		mImpl = new LightMaterialGeneratorCG("DeferredShading/LightMaterial/");
+	}
+
+	LightMaterialGenerator::~LightMaterialGenerator()
+	{
+
+	}
 }
 
-LightMaterialGenerator::~LightMaterialGenerator()
-{
 
-}

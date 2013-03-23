@@ -1,11 +1,13 @@
 #include "OgreManager.h"
-#include <Ogre.h>
 #include <Terrain/OgreTerrain.h>
 #include <Terrain/OgreTerrainGroup.h>
 #include <Terrain/OgreTerrainQuadTreeNode.h>
 #include <Terrain/OgreTerrainMaterialGeneratorA.h>
 #include "DeferredShading/DeferredShading.h"
 #include "DeferredShading/TerrainMaterialGeneratorD.h"
+#include "DeferredShading/DLight.h"
+#include "DeferredShading/LightMaterialGenerator.h"
+#include "Effect/DeferredLightEffect.h"
 
 using namespace Ogre;
 
@@ -13,17 +15,19 @@ namespace Kratos
 {
 
 	COgreManager::COgreManager(void)
-		: mRoot(0)
-		,mWindow(0)
-		,m_Timer(NULL)
-		,m_bHasInit(false)
-		,m_pViewport(NULL)
-		,m_pSceneMgr(NULL)
-		,m_pMainCamera(NULL)
-		,m_pDS(nullptr)
-		,m_fxaa(nullptr)
-		,m_ssao(nullptr)
-		,m_sharpen(nullptr)
+	: mRoot(0)
+	,mWindow(0)
+	,m_Timer(NULL)
+	,m_bHasInit(false)
+	,m_pViewport(NULL)
+	,m_pSceneMgr(NULL)
+	,m_pMainCamera(NULL)
+	,m_pDS(nullptr)
+	,m_fxaa(nullptr)
+	,m_ssao(nullptr)
+	,m_sharpen(nullptr)
+	,mLightMaterialGenerator(nullptr)
+	,m_pSunLight(nullptr)
 	{
 	}
 
@@ -109,6 +113,7 @@ namespace Kratos
 		m_pDS = new DeferredShadingSystem(m_pViewport, m_pSceneMgr, m_pMainCamera);
 		m_pDS->initialize();
 		m_pDS->setActive(false);
+		mLightMaterialGenerator = new LightMaterialGenerator;
 
 		ResetEffect();
 
@@ -145,11 +150,8 @@ namespace Kratos
 
 	void COgreManager::Shutdown()
 	{
-		if (m_pDS)
-		{
-			delete m_pDS;
-			m_pDS = nullptr;
-		}
+		SAFE_DELETE(mLightMaterialGenerator);
+		SAFE_DELETE(m_pDS);
 
 		mPSSMSetup.setNull();
 
@@ -291,6 +293,48 @@ namespace Kratos
 			mesh->buildTangentVectors(VES_TANGENT, src, dest);
 
 		return sm->createEntity(mesh);
+	}
+
+	DLight* COgreManager::CreateDLight( int dlType )
+	{
+		Ogre::Light* lightSrc = RenderManager.m_pSceneMgr->createLight();
+		Light::LightTypes type = (eDLightType)dlType == eDLightType_Point ? Light::LT_POINT : Light::LT_SPOTLIGHT;
+		lightSrc->setType(type);
+		lightSrc->setDiffuseColour(COLOR::White);
+
+		DLight* dl = new DLight(mLightMaterialGenerator, lightSrc);
+		m_dLightList.insert(std::make_pair(lightSrc, dl));
+
+		return dl;
+	}
+
+	void COgreManager::DestroyDLight( DLight* light )
+	{
+		auto iter = m_dLightList.find(light->getParentLight());
+		assert(iter != m_dLightList.end());
+
+		delete iter->second;
+		m_dLightList.erase(iter);
+	}
+
+	void COgreManager::CreateSunLight( const Ogre::Vector3& direction, const Ogre::ColourValue& diffuse )
+	{
+		Ogre::Light* pSunLight = RenderManager.m_pSceneMgr->createLight("SunLight");
+		pSunLight->setType(Ogre::Light::LT_DIRECTIONAL);
+		pSunLight->setDirection(direction);
+		pSunLight->setDiffuseColour(diffuse);
+
+		m_pSunLight = new DLight(mLightMaterialGenerator, pSunLight);
+		m_dLightList.insert(std::make_pair(pSunLight, m_pSunLight));
+	}
+
+	void COgreManager::DestroySunLight()
+	{
+		if(m_pSunLight)
+		{
+			m_dLightList.erase(m_pSunLight->getParentLight());
+			SAFE_DELETE(m_pSunLight);
+		}
 	}
 
 }

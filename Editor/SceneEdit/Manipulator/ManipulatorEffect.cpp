@@ -4,7 +4,7 @@
 #include "ManipulatorScene.h"
 #include "Utility.h"
 #include "Effect/EffectController.h"
-#include "Effect/ParticleEffect.h"
+#include "Effect/EffectBase.h"
 
 ManipulatorEffect::ManipulatorEffect()
 :m_pssmLambda(0.75f)
@@ -238,7 +238,7 @@ void ManipulatorEffect::Serialize( rapidxml::xml_document<>* doc, rapidxml::xml_
 			const auto& slots = itAnim->second;
 			for (auto itEffect=slots.begin(); itEffect!=slots.end(); ++itEffect)
 			{
-				Kratos::ParticleEffect* effect = *itEffect;
+				Kratos::AttachEffectBase* effect = *itEffect;
 				const Ogre::ParameterList& attributes = effect->getParameters();
 				SEffectData data;
 
@@ -389,7 +389,7 @@ void ManipulatorEffect::SetEffectParam( const std::string& param, const std::str
 	if(m_curEffect.empty())
 		return;
 
-	Kratos::ParticleEffect* pEffect = _GetEffectController(ManipulatorSystem.GetObject().GetSelection())->GetEffect(m_curEffect);
+	Kratos::AttachEffectBase* pEffect = _GetEffectController(ManipulatorSystem.GetObject().GetSelection())->GetEffect(m_curEffect);
 	bool ret = pEffect->setParameter(param, value);
 	assert(ret);
 }
@@ -399,7 +399,7 @@ const std::string ManipulatorEffect::GetEffectParam( const std::string& param )
 	if(m_curEffect.empty())
 		return Ogre::StringUtil::BLANK;
 
-	Kratos::ParticleEffect* pEffect = _GetEffectController(ManipulatorSystem.GetObject().GetSelection())->GetEffect(m_curEffect);
+	Kratos::AttachEffectBase* pEffect = _GetEffectController(ManipulatorSystem.GetObject().GetSelection())->GetEffect(m_curEffect);
 	return pEffect->getParameter(param);
 }
 
@@ -432,12 +432,13 @@ void ManipulatorEffect::LoadEffect( rapidxml::xml_node<>* node )
 		//per animation
 		for (auto itAnim=unitData.m_effects.begin(); itAnim!=unitData.m_effects.end(); ++itAnim)
 		{
-			const auto& slots = itAnim->second;
+			auto& slots = itAnim->second;
 			//per effect
 			for (size_t iEffect=0; iEffect<slots.size(); ++iEffect)
 			{
-				const Ogre::NameValuePairList& info = slots[iEffect].params;
-				Kratos::ParticleEffect* effect = effectTmpl->AddEffect(itAnim->first);
+				Ogre::NameValuePairList& info = slots[iEffect].params;
+				Kratos::eAttachEffect type = Kratos::AttachEffectBase::GetTypeFromString(info["type"]);
+				Kratos::AttachEffectBase* effect = effectTmpl->AddEffect(itAnim->first, type);
 				effect->setParameterList(info);
 
 				//查找最大名字ID,以后命名新的特效以此为据
@@ -464,7 +465,7 @@ void ManipulatorEffect::BindEntityToEffectTemplate( Ogre::Entity* ent )
 	pCtrl->_SetParent(ent);
 }
 
-const std::wstring ManipulatorEffect::AddEffect()
+std::wstring ManipulatorEffect::AddEffect(int type)
 {
 	assert(!m_curAnim.empty());
 
@@ -472,7 +473,7 @@ const std::wstring ManipulatorEffect::AddEffect()
 	newName += Ogre::StringConverter::toString(m_effectNameID++);
 
 	Kratos::EffectController* pCtrl = _GetEffectController(ManipulatorSystem.GetObject().GetSelection());
-	pCtrl->AddEffect(m_curAnim)->SetName(newName);
+	pCtrl->AddEffect(m_curAnim, (Kratos::eAttachEffect)type)->SetName(newName);
 	m_curEffect = newName;
 
 	return Utility::EngineToUnicode(newName);
@@ -481,7 +482,7 @@ const std::wstring ManipulatorEffect::AddEffect()
 void ManipulatorEffect::RemoveEffect( const std::string& name )
 {
 	Kratos::EffectController* pCtrl = _GetEffectController(ManipulatorSystem.GetObject().GetSelection());
-	Kratos::ParticleEffect* effect = pCtrl->GetEffect(name);
+	Kratos::AttachEffectBase* effect = pCtrl->GetEffect(name);
 	assert(effect);
 	m_curEffect = "";
 
@@ -536,4 +537,11 @@ void ManipulatorEffect::SetFXAAEnable( bool bEnable )
 bool ManipulatorEffect::GetFXAAEnable() const
 {
 	return RenderManager.GetEffectConfig().bFXAA;
+}
+
+int ManipulatorEffect::GetAttachEffectType( const std::string& name )
+{
+	Kratos::EffectController* pCtrl = _GetEffectController(ManipulatorSystem.GetObject().GetSelection());
+	Kratos::AttachEffectBase* effect = pCtrl->GetEffect(name);
+	return effect->GetType();
 }

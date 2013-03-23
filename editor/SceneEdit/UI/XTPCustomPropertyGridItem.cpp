@@ -53,6 +53,12 @@ void CXTPPropertyGridItemVec3::SetChildItemID( int idX, int idY, int idZ )
 	m_Z->SetID(idZ);
 }
 
+void CXTPPropertyGridItemVec3::UpdateFromChild()
+{
+	CString strValue = std::move(m_X->GetValue()) + L" " + std::move(m_Y->GetValue()) + L" " + std::move(m_Z->GetValue());
+	SetValue(strValue);
+}
+
 //////////////////////////////////////////////////////////////////////////
 CXTPPropertyGridItemVec4::CXTPPropertyGridItemVec4( CString strCaption, const Ogre::Vector4& value )
 :CXTPPropertyGridItem(strCaption)
@@ -105,10 +111,20 @@ void CXTPPropertyGridItemVec4::SetChildItemID( int idX, int idY, int idZ, int id
 	m_W->SetID(idW);
 }
 
-
-
-Ogre::Vector3 UpdateVec3ItemProperty( CXTPPropertyGridItemVec3* pItem )
+void CXTPPropertyGridItemVec4::UpdateFromChild()
 {
+	CString strValue = std::move(m_X->GetValue()) + L" " + std::move(m_Y->GetValue()) + 
+		L" " + std::move(m_Z->GetValue()) + L" " + std::move(m_W->GetValue());
+	SetValue(strValue);
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+Ogre::Vector3 GetVec3Value( CXTPPropertyGridItemVec3* pItem, bool bReflect )
+{
+	if(bReflect)
+		pItem->UpdateFromChild();
+
 	std::wstring strX = Utility::StringCutPrecision(pItem->GetStrX());
 	std::wstring strY = Utility::StringCutPrecision(pItem->GetStrY());
 	std::wstring strZ = Utility::StringCutPrecision(pItem->GetStrZ());
@@ -117,5 +133,23 @@ Ogre::Vector3 UpdateVec3ItemProperty( CXTPPropertyGridItemVec3* pItem )
 	float fY = Ogre::StringConverter::parseReal(Utility::UnicodeToEngine(strY));
 	float fZ = Ogre::StringConverter::parseReal(Utility::UnicodeToEngine(strZ));
 
-	return Ogre::Vector3(fX, fY, fZ);
+	return std::move(Ogre::Vector3(fX, fY, fZ));
+}
+
+Ogre::Quaternion GetVec4Value( CXTPPropertyGridItemVec4* pItem, bool bReflect )
+{
+	if(bReflect)
+		pItem->UpdateFromChild();
+
+	std::wstring strX = Utility::StringCutPrecision(pItem->GetStrX());
+	std::wstring strY = Utility::StringCutPrecision(pItem->GetStrY());
+	std::wstring strZ = Utility::StringCutPrecision(pItem->GetStrZ());
+	std::wstring strW = Utility::StringCutPrecision(pItem->GetStrW());
+
+	float fX = Ogre::StringConverter::parseReal(Utility::UnicodeToEngine(strX));
+	float fY = Ogre::StringConverter::parseReal(Utility::UnicodeToEngine(strY));
+	float fZ = Ogre::StringConverter::parseReal(Utility::UnicodeToEngine(strZ));
+	float fW = Ogre::StringConverter::parseReal(Utility::UnicodeToEngine(strW));
+
+	return std::move(Ogre::Quaternion(fX, fY, fZ, fW));
 }

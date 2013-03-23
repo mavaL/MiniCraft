@@ -47,7 +47,9 @@ namespace Kratos
 
 	void Scene::Reset()
 	{
-		RenderManager.ResetEffect();
+		COgreManager& mgr = RenderManager;
+		mgr.ResetEffect();
+		mgr.DestroySunLight();
 
 		if(m_pTerrain)
 		{
@@ -65,7 +67,7 @@ namespace Kratos
 			m_terrainOption = nullptr;
 		}
 
-		RenderManager.m_pSceneMgr->clearScene();
+		mgr.m_pSceneMgr->clearScene();
 	}
 
 	void Scene::New()
@@ -74,10 +76,7 @@ namespace Kratos
 		RenderManager.m_pSceneMgr->setAmbientLight(Ogre::ColourValue::White);
 
 		//È«¾Ö¹â
-		Ogre::Light* pSunLight = RenderManager.m_pSceneMgr->createLight("SunLight");
-		pSunLight->setType(Ogre::Light::LT_DIRECTIONAL);
-		pSunLight->setDirection(m_sunLightDir);
-		pSunLight->setDiffuseColour(m_sunLightDiffuse);
+		RenderManager.CreateSunLight(m_sunLightDir, m_sunLightDiffuse);
 
 		float WORLD_SIZE = 128;
 		Ogre::uint16 MAP_SIZE = 129;

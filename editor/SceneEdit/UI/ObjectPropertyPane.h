@@ -12,7 +12,6 @@
 
 #include "PropertiesPane.h"
 
-class CXTPPropertyGridItemVec3;
 
 class PropertyPaneObject : public CPropertiesPane
 {
@@ -35,30 +34,26 @@ public:
 		propMutableItemEnd,
 		propEnd = propMutableItemEnd,
 
-		//Auto managed property
+		//SubItem
 		propPosX, propPosY, propPosZ,
 		propOrientX, propOrientY, propOrientZ, propOrientW,
-		propScaleX, propScaleY, propScaleZ
+		propScaleX, propScaleY, propScaleZ,
 	};
 
 public:
 	PropertyPaneObject():CPropertiesPane() {}
 	~PropertyPaneObject() {}
 
-	//更新所有控件数据
-	void	UpdateAllFromEngine();
-	//更新控件数据
-	void	UpdateProperty(int id);
-	//允许/禁止编辑Mutable数据(ReadOnly数据不需要管,本来就不能编辑)
-	void	EnableMutableProperty(BOOL bEnable);
-
 protected:
-	DECLARE_MESSAGE_MAP()
-	afx_msg int		OnCreate(LPCREATESTRUCT lpCreateStruct);
-	afx_msg LRESULT OnGridNotify(WPARAM, LPARAM);
+	virtual	bool	_OnCreate();
+	virtual	void	_SetProperty(int nID);
+	virtual	void	_UpdateProperty(int nID);
+	virtual void	_EnableMutableProperty(BOOL bEnable);
 
-private:
-	std::unordered_map<int, CXTPPropertyGridItem*>	m_mapItem;
+	virtual int		_GetIDStart()			{ return propStart;				}
+	virtual int		_GetIDEnd()				{ return propEnd;				}
+	virtual int		_GetIDMutableStart()	{ return propMutableItemStart;	}
+	virtual int		_GetIDMutableEnd()		{ return propMutableItemEnd;	}
 };
 
 

@@ -114,11 +114,11 @@
     <ClInclude Include="Src\DeferredShading\GBufferSchemeHandler.h" />
     <ClInclude Include="Src\DeferredShading\GeomUtils.h" />
     <ClInclude Include="Src\DeferredShading\LightMaterialGenerator.h" />
-    <ClInclude Include="Src\DeferredShading\ListenerFactoryLogic.h" />
     <ClInclude Include="Src\DeferredShading\MaterialGenerator.h" />
     <ClInclude Include="Src\DeferredShading\NullSchemeHandler.h" />
-    <ClInclude Include="Src\DeferredShading\SSAOLogic.h" />
     <ClInclude Include="Src\DeferredShading\TerrainMaterialGeneratorD.h" />
+    <ClInclude Include="Src\Effect\DeferredLightEffect.h" />
+    <ClInclude Include="Src\Effect\EffectBase.h" />
     <ClInclude Include="Src\Effect\EffectController.h" />
     <ClInclude Include="Src\Effect\ParticleEffect.h" />
     <ClInclude Include="Src\GUIManager.h" />
@@ -173,8 +173,9 @@
     <ClCompile Include="Src\DeferredShading\GeomUtils.cpp" />
     <ClCompile Include="Src\DeferredShading\LightMaterialGenerator.cpp" />
     <ClCompile Include="Src\DeferredShading\MaterialGenerator.cpp" />
-    <ClCompile Include="Src\DeferredShading\SSAOLogic.cpp" />
     <ClCompile Include="Src\DeferredShading\TerrainMaterialGeneratorD.cpp" />
+    <ClCompile Include="Src\Effect\DeferredLightEffect.cpp" />
+    <ClCompile Include="Src\Effect\EffectBase.cpp" />
     <ClCompile Include="Src\Effect\EffectController.cpp" />
     <ClCompile Include="Src\Effect\ParticleEffect.cpp" />
     <ClCompile Include="Src\GUIManager.cpp" />

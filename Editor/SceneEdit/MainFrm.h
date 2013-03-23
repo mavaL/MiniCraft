@@ -3,10 +3,12 @@
 #include "Manipulator/ManipulatorEventCallback.h"
 
 class CEditorView;
+class CPropertiesPane;
 class PropertyPaneTerrain;
 class PropertyPaneObject;
 class PropertyPaneEffect;
-class PropertyPaneAttachment;
+class PropertyPaneParticle;
+class PropertyPaneDLight;
 
 class CMainFrame : public CXTPFrameWnd, public ManipulatorSceneEventCallback, public ManipulatorObjectEventCallback
 {
@@ -56,6 +58,8 @@ private:
 	void			_CreateLayerTexIcon();
 	void			_CreateDockPane();
 	LRESULT			_AttachDockPane(WPARAM wParam, LPARAM lParam);
+	CPropertiesPane*	_GetCurAttachmentPane();
+	void			_OnAttachmentPaneChange(BOOL bEnable);
 	//创建mesh资源选择面板
 	bool			_CreateMeshPanel(CImageList& imageList, Ogre::StringVectorPtr& meshNames);
 
@@ -100,7 +104,7 @@ private:
 	void			OnAnimStop();
 	void			OnUpdateUI_AnimEffectAdd(CCmdUI* pCmdUI);
 	void			OnUpdateUI_AnimEffectRemove(CCmdUI* pCmdUI);
-	void			OnAnimEffectAdd();
+	void			OnAnimEffectAdd(UINT nID);
 	void			OnAnimEffectRemove();
 	void			OnUpdateUI_AnimEffectList(CCmdUI* pCmdUI);
 	void			OnAnimEffectSelectChange(NMHDR* pNMHDR, LRESULT* pResult);
@@ -122,11 +126,12 @@ private:
 	CXTPDockingPaneManager	m_paneManager;
 	CEditorView*			m_wndView;
 	CXTPTaskPanel			m_resourceSelector;		//mesh选择控件
-	PropertyPaneTerrain*	m_propertyTerrain;		//地形属性面板
-	CXTPControlGalleryItems* m_terrainTexGallery;	//地形纹理控件
-	PropertyPaneObject*		m_propertyObject;		//物体属性面板
-	PropertyPaneEffect*		m_propertyEffect;		//特效属性面板
-	PropertyPaneAttachment*	m_propertyAttachment;	//挂接物属性面板
+	PropertyPaneTerrain*	m_propertyTerrain;		//地形属性
+	CXTPControlGalleryItems* m_terrainTexGallery;	//地形纹理集控件
+	PropertyPaneObject*		m_propertyObject;		//物体属性
+	PropertyPaneEffect*		m_propertyEffect;		//特效属性
+	PropertyPaneParticle*	m_propertyParticle;		//挂接粒子属性
+	PropertyPaneDLight*		m_propertyDLight;		//挂接延迟光属性
 
 	CXTPRibbonTab*			m_animTab;
 	CXTPControlComboBox*	m_animList;

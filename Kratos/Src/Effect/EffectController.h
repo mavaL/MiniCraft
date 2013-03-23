@@ -9,27 +9,26 @@
 #define EffectController_h__
 
 #include "KratosPrerequisites.h"
+#include "EffectBase.h"
 
 namespace Kratos
 {
-	class ParticleEffect;
-
 	class EffectController
 	{
 	public:
 		EffectController(Ogre::Entity* parent);
 		~EffectController();
 
-		typedef std::vector<ParticleEffect*> EffectSlots;					//一个动画对应的所有特效
+		typedef std::vector<AttachEffectBase*> EffectSlots;					//一个动画实例拥有的所有挂接特效
 		typedef std::unordered_map<STRING, EffectSlots>	EffectContainer;	//所有动画对应的特效
 
 	public:
 		//增加一个挂接特效
-		ParticleEffect*	AddEffect(const STRING& animName);
+		AttachEffectBase*	AddEffect(const STRING& animName, eAttachEffect type);
 		//删除挂接特效
 		void			RemoveEffect(const STRING& name);
 		//获取模型对应特效
-		ParticleEffect*	GetEffect(const STRING& name);
+		AttachEffectBase*	GetEffect(const STRING& name);
 		//播放动画,自动管理特效的播放
 		void			PlayAnimation(const STRING& animName, bool bLoop);
 		void			StopAnimation();

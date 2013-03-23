@@ -5,19 +5,8 @@
 #include "EditorDefine.h"
 #include "Scene.h"
 
-
-BEGIN_MESSAGE_MAP(PropertyPaneTerrain, CPropertiesPane)
-	//{{AFX_MSG_MAP(PropertyPaneTerrain)
-	ON_WM_CREATE()
-	ON_MESSAGE(XTPWM_PROPERTYGRID_NOTIFY, OnGridNotify)
-END_MESSAGE_MAP()
-
-
-int PropertyPaneTerrain::OnCreate( LPCREATESTRUCT lpCreateStruct )
+bool PropertyPaneTerrain::_OnCreate()
 {
-	if (CPropertiesPane::OnCreate(lpCreateStruct) == -1)
-		return -1;
-
 	CXTPPropertyGridItem* pCategory = m_wndPropertyGrid.AddCategory(L"Terrain Info");
 	PROPERTY_REG(pCategory, Double, L"World Size"			, 0, propWorldSize		);
 	PROPERTY_REG(pCategory, Number, L"Map Size"				, 0, propMapSize		);
@@ -48,77 +37,56 @@ int PropertyPaneTerrain::OnCreate( LPCREATESTRUCT lpCreateStruct )
 		_CreateLayerTexList(propLayerNormalMap0 + iLayer);
 	}
 
-	return 0;
+	return true;
 }
 
-void PropertyPaneTerrain::UpdateAllFromEngine()
-{
-	for (int i=propStart; i<propEnd; ++i)
-		UpdateProperty(i);
-}
-
-LRESULT PropertyPaneTerrain::OnGridNotify( WPARAM wParam, LPARAM lParam )
+void PropertyPaneTerrain::_SetProperty( int id )
 {
 	ManipulatorTerrain& manTerrain = ManipulatorSystem.GetTerrain();
+	CXTPPropertyGridItem* pItem = m_mapItem[id];
 
-	if (wParam == XTP_PGN_ITEMVALUE_CHANGED)
+	switch (id)
 	{
-		CXTPPropertyGridItem* pItem = (CXTPPropertyGridItem*)lParam;
-		const UINT id = pItem->GetID();
-
-		switch (id)
-		{
-		case propMaxPixelError: 
+	case propMaxPixelError: 
 		{
 			CXTPPropertyGridItemNumber* pNumItem = dynamic_cast<CXTPPropertyGridItemNumber*>(pItem);
 			manTerrain.SetMaxPixelError((float)pNumItem->GetNumber());
 		}
 		break;
 
-		case propCompMapDist:
+	case propCompMapDist:
 		{
 			CXTPPropertyGridItemDouble* pDoubleItem = dynamic_cast<CXTPPropertyGridItemDouble*>(pItem);
 			manTerrain.SetCompositeMapDist((float)pDoubleItem->GetDouble());
 		}
 		break;
 
-		case propLayerWorldSize0:
-		case propLayerWorldSize1:
-		case propLayerWorldSize2:
-		case propLayerWorldSize3:
-		case propLayerWorldSize4:
-			{
-				CXTPPropertyGridItemDouble* pDoubleItem = dynamic_cast<CXTPPropertyGridItemDouble*>(pItem);
-				manTerrain.SetLayerTexWorldSize(id - propLayerWorldSize0, (float)pDoubleItem->GetDouble());
-			}
-			break;
-
-		case propLayerDiffuseMap0:
-		case propLayerDiffuseMap1:
-		case propLayerDiffuseMap2:
-		case propLayerDiffuseMap3:
-		case propLayerDiffuseMap4:
-			{
-				//设置diffusemap和normalmap
-				manTerrain.SetLayerTexture(id - propLayerDiffuseMap0, Utility::UnicodeToEngine(pItem->GetValue()));
-				//需要更新normalmap控件数据
-				UpdateProperty(id - propLayerDiffuseMap0 + propLayerNormalMap0);
-			}
-			break;
-
-		default: assert(0);
+	case propLayerWorldSize0:
+	case propLayerWorldSize1:
+	case propLayerWorldSize2:
+	case propLayerWorldSize3:
+	case propLayerWorldSize4:
+		{
+			CXTPPropertyGridItemDouble* pDoubleItem = dynamic_cast<CXTPPropertyGridItemDouble*>(pItem);
+			manTerrain.SetLayerTexWorldSize(id - propLayerWorldSize0, (float)pDoubleItem->GetDouble());
 		}
+		break;
 
-		//让控件失去焦点
-		((CFrameWnd*)AfxGetMainWnd())->GetActiveView()->SetFocus();
-	}
-	else if (wParam == XTP_PGN_AFTEREDIT)
-	{
-		//让控件失去焦点
-		((CFrameWnd*)AfxGetMainWnd())->GetActiveView()->SetFocus();
-	}
+	case propLayerDiffuseMap0:
+	case propLayerDiffuseMap1:
+	case propLayerDiffuseMap2:
+	case propLayerDiffuseMap3:
+	case propLayerDiffuseMap4:
+		{
+			//设置diffusemap和normalmap
+			manTerrain.SetLayerTexture(id - propLayerDiffuseMap0, Utility::UnicodeToEngine(pItem->GetValue()));
+			//需要更新normalmap控件数据
+			UpdateProperty(id - propLayerDiffuseMap0 + propLayerNormalMap0);
+		}
+		break;
 
-	return 0;
+	default: assert(0);
+	}
 }
 
 void PropertyPaneTerrain::_CreateLayerTexList( int itemID )
@@ -136,7 +104,7 @@ void PropertyPaneTerrain::_CreateLayerTexList( int itemID )
 	m_mapItem[itemID]->SetFlags(xtpGridItemHasComboButton);
 }
 
-void PropertyPaneTerrain::UpdateProperty( int id )
+void PropertyPaneTerrain::_UpdateProperty( int id )
 {
 	ManipulatorTerrain& manTerrain = ManipulatorSystem.GetTerrain();
 	std::string strNewValue;
@@ -170,10 +138,4 @@ void PropertyPaneTerrain::UpdateProperty( int id )
 	
 	std::wstring wcsNewValue = Utility::EngineToUnicode(strNewValue);
 	m_mapItem[id]->SetValue(wcsNewValue.c_str());
-}
-
-void PropertyPaneTerrain::EnableMutableProperty( BOOL bEnable )
-{
-	for(int i=propMutableItemStart; i<propMutableItemEnd; ++i)
-		m_mapItem[i]->SetReadOnly(!bEnable);
 }

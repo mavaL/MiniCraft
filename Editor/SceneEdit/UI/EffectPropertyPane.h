@@ -38,29 +38,24 @@ public:
 		propMutableItemEnd,
 		propEnd = propMutableItemEnd,
 
-		//Auto managed property
+		//Sub Item
 		propOptimalAdjustFactor0, propOptimalAdjustFactor1, propOptimalAdjustFactor2,
-		propShadowMapSize0, propShadowMapSize1, propShadowMapSize2
+		propShadowMapSize0, propShadowMapSize1, propShadowMapSize2,
 	};
 
 public:
 	PropertyPaneEffect():CPropertiesPane() {}
 	~PropertyPaneEffect() {}
 
-	//更新所有控件数据
-	void	UpdateAllFromEngine();
-	//更新控件数据
-	void	UpdateProperty(int id);
-	//允许/禁止编辑Mutable数据(ReadOnly数据不需要管,本来就不能编辑)
-	void	EnableMutableProperty(BOOL bEnable);
-
 protected:
-	DECLARE_MESSAGE_MAP()
-	afx_msg int		OnCreate(LPCREATESTRUCT lpCreateStruct);
-	afx_msg LRESULT OnGridNotify(WPARAM, LPARAM);
+	virtual	bool	_OnCreate();
+	virtual	void	_SetProperty(int nID);
+	virtual	void	_UpdateProperty(int nID);
 
-private:
-	std::unordered_map<int, CXTPPropertyGridItem*>	m_mapItem;
+	virtual int		_GetIDStart()			{ return propStart;				}
+	virtual int		_GetIDEnd()				{ return propEnd;				}
+	virtual int		_GetIDMutableStart()	{ return propMutableItemStart;	}
+	virtual int		_GetIDMutableEnd()		{ return propMutableItemEnd;	}
 };
 
 

@@ -34,7 +34,7 @@ bool Application::Update()
 	ManipulatorAction::GetSingleton().GetActiveActoin()->OnFrameMove(TIME_PER_FRAME);
 	ManipulatorSystem.OnFrameMove(TIME_PER_FRAME);
 
-	RenderManager.mRoot->renderOneFrame();
+	RenderManager.Update(TIME_PER_FRAME);
 
 	return true;
 }

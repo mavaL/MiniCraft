@@ -1,6 +1,7 @@
 #include "EffectController.h"
 #include "OgreManager.h"
 #include "ParticleEffect.h"
+#include "DeferredLightEffect.h"
 
 namespace Kratos
 {
@@ -18,17 +19,20 @@ namespace Kratos
 		{
 			EffectSlots& slots = iter->second;
 			for(size_t i=0; i<slots.size(); ++i)
-			{
-				slots[i]->Stop();
 				delete slots[i];
-			}
 		}
 		m_effects.clear();
 	}
 
-	ParticleEffect* EffectController::AddEffect( const STRING& animName)
+	AttachEffectBase* EffectController::AddEffect( const STRING& animName, eAttachEffect type )
 	{
-		ParticleEffect* newEffect = new ParticleEffect(m_parent);
+		AttachEffectBase* newEffect = nullptr;
+		switch (type)
+		{
+		case eAttachEffect_Particle: newEffect = new ParticleEffect(m_parent); break;
+		case eAttachEffect_DLight: newEffect = new DLightEffect(m_parent); break;
+		}
+
 		m_effects[animName].push_back(newEffect);
 		return newEffect;
 	}
@@ -40,7 +44,7 @@ namespace Kratos
 			EffectSlots& slots = iter->second;
 			for (auto itEffect=slots.begin(); itEffect!=slots.end(); ++itEffect)
 			{
-				ParticleEffect* effect = *itEffect;
+				AttachEffectBase* effect = *itEffect;
 				if (effect->GetName() == name)
 				{
 					effect->Destroy();
@@ -74,7 +78,7 @@ namespace Kratos
 			EffectSlots& slots = iter->second;
 			for (auto itEffect=slots.begin(); itEffect!=slots.end(); ++itEffect)
 			{
-				ParticleEffect* effect = *itEffect;
+				AttachEffectBase* effect = *itEffect;
 				effect->Start();
 			}
 		}
@@ -128,7 +132,7 @@ namespace Kratos
 				EffectSlots& slots = iter->second;
 				for (auto itEffect=slots.begin(); itEffect!=slots.end(); ++itEffect)
 				{
-					ParticleEffect* effect = *itEffect;
+					AttachEffectBase* effect = *itEffect;
 					if(bLooped)
 						effect->Start();
 					else
@@ -138,14 +142,14 @@ namespace Kratos
 		}
 	}
 
-	ParticleEffect* EffectController::GetEffect( const STRING& name )
+	AttachEffectBase* EffectController::GetEffect( const STRING& name )
 	{
 		for (auto iter=m_effects.begin(); iter!=m_effects.end(); ++iter)
 		{
 			EffectSlots& slots = iter->second;
 			for (auto itEffect=slots.begin(); itEffect!=slots.end(); ++itEffect)
 			{
-				ParticleEffect* effect = *itEffect;
+				AttachEffectBase* effect = *itEffect;
 				if (effect->GetName() == name)
 					return effect;
 			}

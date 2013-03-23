@@ -148,8 +148,10 @@
     <ClInclude Include="UI\AttachmentPropertyPane.h" />
     <ClInclude Include="UI\DialogGameDataBuilding.h" />
     <ClInclude Include="UI\DialogSceneNew.h" />
+    <ClInclude Include="UI\DLightPropertyPane.h" />
     <ClInclude Include="UI\EffectPropertyPane.h" />
     <ClInclude Include="UI\ObjectPropertyPane.h" />
+    <ClInclude Include="UI\ParticlePropertyPane.h" />
     <ClInclude Include="UI\PropertiesPane.h" />
     <ClInclude Include="UI\TerrainPropertyPane.h" />
     <ClInclude Include="UI\XTPCustomPropertyGridItem.h" />
@@ -186,8 +188,10 @@
     <ClCompile Include="UI\AttachmentPropertyPane.cpp" />
     <ClCompile Include="UI\DialogGameDataBuilding.cpp" />
     <ClCompile Include="UI\DialogSceneNew.cpp" />
+    <ClCompile Include="UI\DLightPropertyPane.cpp" />
     <ClCompile Include="UI\EffectPropertyPane.cpp" />
     <ClCompile Include="UI\ObjectPropertyPane.cpp" />
+    <ClCompile Include="UI\ParticlePropertyPane.cpp" />
     <ClCompile Include="UI\PropertiesPane.cpp" />
     <ClCompile Include="UI\TerrainPropertyPane.cpp" />
     <ClCompile Include="UI\XTPCustomPropertyGridItem.cpp" />

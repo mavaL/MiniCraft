@@ -4,19 +4,8 @@
 #include "Utility.h"
 #include "XTPCustomPropertyGridItem.h"
 
-
-BEGIN_MESSAGE_MAP(PropertyPaneEffect, CPropertiesPane)
-	//{{AFX_MSG_MAP(PropertyPaneEffect)
-	ON_WM_CREATE()
-	ON_MESSAGE(XTPWM_PROPERTYGRID_NOTIFY, OnGridNotify)
-END_MESSAGE_MAP()
-
-
-int PropertyPaneEffect::OnCreate( LPCREATESTRUCT lpCreateStruct )
+bool PropertyPaneEffect::_OnCreate()
 {
-	if (CPropertiesPane::OnCreate(lpCreateStruct) == -1)
-		return -1;
-
 	CXTPPropertyGridItem* pCategory = m_wndPropertyGrid.AddCategory(L"Shadow");
 	PROPERTY_REG(pCategory,	Double	, L"Far Distance"				, 300						, propShadowFarDist);
 	PROPERTY_REG(pCategory,	Double	, L"Split Padding"				, 1							, propShadowSplitPadding);
@@ -40,167 +29,131 @@ int PropertyPaneEffect::OnCreate( LPCREATESTRUCT lpCreateStruct )
 	(dynamic_cast<CXTPPropertyGridItemVec3*>(m_mapItem[propShadowOptimalAdjustFactor]))->SetChildItemID(propOptimalAdjustFactor0, propOptimalAdjustFactor1, propOptimalAdjustFactor2);
 	(dynamic_cast<CXTPPropertyGridItemVec3*>(m_mapItem[propShadowMapSize]))->SetChildItemID(propShadowMapSize0, propShadowMapSize1, propShadowMapSize2);
 
-	return 0;
+	return true;
 }
 
-void PropertyPaneEffect::UpdateAllFromEngine()
+void PropertyPaneEffect::_SetProperty( int id)
 {
-	for (int i=propStart; i<propEnd; ++i)
-		UpdateProperty(i);
-}
+	ManipulatorEffect& manEffect = ManipulatorSystem.GetEffect();
+	CXTPPropertyGridItem* pItem = m_mapItem[id];
 
-LRESULT PropertyPaneEffect::OnGridNotify( WPARAM wParam, LPARAM lParam )
-{
-	if (wParam == XTP_PGN_ITEMVALUE_CHANGED)
+	switch (id)
 	{
-		ManipulatorEffect& manEffect = ManipulatorSystem.GetEffect();
-		CXTPPropertyGridItem* pItem = (CXTPPropertyGridItem*)lParam;
-		const UINT id = pItem->GetID();
-
-		switch (id)
+	case propShadowFarDist: 
 		{
-		case propShadowFarDist: 
-			{
-				CXTPPropertyGridItemDouble* pItemVal = dynamic_cast<CXTPPropertyGridItemDouble*>(pItem);
-				manEffect.SetShadowFarDist((float)pItemVal->GetDouble());
-			}
-			break;
-
-		case propShadowSplitPadding:
-			{
-				CXTPPropertyGridItemDouble* pItemVal = dynamic_cast<CXTPPropertyGridItemDouble*>(pItem);
-				manEffect.SetShadowSplitPadding((float)pItemVal->GetDouble());
-			}
-			break;
-
-		case propShadowOptimalAdjustFactor: 
-			{
-				CXTPPropertyGridItemVec3* pItemVal = dynamic_cast<CXTPPropertyGridItemVec3*>(pItem);
-				const Ogre::Vector3 factor = UpdateVec3ItemProperty(pItemVal);
-				manEffect.SetShadowOptimalAdjustFactor(0, factor.x);
-				manEffect.SetShadowOptimalAdjustFactor(1, factor.y);
-				manEffect.SetShadowOptimalAdjustFactor(2, factor.z);
-			}
-			break;
-
-		case propOptimalAdjustFactor0:
-		case propOptimalAdjustFactor1:
-		case propOptimalAdjustFactor2:
-			{
-				CXTPPropertyGridItemDouble* pItemVal = dynamic_cast<CXTPPropertyGridItemDouble*>(pItem);
-				manEffect.SetShadowOptimalAdjustFactor(id-propOptimalAdjustFactor0, (float)pItemVal->GetDouble());
-			}
-			break;
-
-		case propShadowUseSimpleOptimalAdjust:
-			{
-				CXTPPropertyGridItemBool* pItemVal = dynamic_cast<CXTPPropertyGridItemBool*>(pItem);
-				manEffect.SetShadowUseSimpleOptimalAdjust(pItemVal->GetBool());
-			}
-			break;
-
-		case propShadowCameraLightDirectionThreshold:
-			{
-				CXTPPropertyGridItemNumber* pItemVal = dynamic_cast<CXTPPropertyGridItemNumber*>(pItem);
-				manEffect.SetShadowCameraLightDirectionThreshold(pItemVal->GetNumber());
-			}
-			break;
-
-		case propShadowMapSize: 
-			{
-				CXTPPropertyGridItemVec3* pItemVal = dynamic_cast<CXTPPropertyGridItemVec3*>(pItem);
-				const Ogre::Vector3 size = UpdateVec3ItemProperty(pItemVal);
-				manEffect.SetShadowMapSize(0, (int)size.x);
-				manEffect.SetShadowMapSize(1, (int)size.y);
-				manEffect.SetShadowMapSize(2, (int)size.z);
-			}
-			break;
-
-		case propShadowMapSize0:
-		case propShadowMapSize1:
-		case propShadowMapSize2:
-			{
-				CXTPPropertyGridItemDouble* pItemVal = dynamic_cast<CXTPPropertyGridItemDouble*>(pItem);
-				int size = (int)pItemVal->GetDouble();
-				manEffect.SetShadowMapSize(id-propShadowMapSize0, size);
-			}
-			break;
-
-		case propShadowSelfShadow:
-			{
-				CXTPPropertyGridItemBool* pItemVal = dynamic_cast<CXTPPropertyGridItemBool*>(pItem);
-				manEffect.SetShadowSelfShadow(pItemVal->GetBool());
-			}
-			break;
-			
-		case propShadowCasterRenderBackFaces:
-			{
-				CXTPPropertyGridItemBool* pItemVal = dynamic_cast<CXTPPropertyGridItemBool*>(pItem);
-				manEffect.SetShadowCasterRenderBackFaces(pItemVal->GetBool());
-			}
-			break;
-
-		case propShadowLambda:
-			{
-				CXTPPropertyGridItemDouble* pItemVal = dynamic_cast<CXTPPropertyGridItemDouble*>(pItem);
-				manEffect.SetShadowPssmLambda((float)pItemVal->GetDouble());
-			}
-			break;
-
-		case propShadowDirectionalLightExtrusionDistance:
-			{
-				CXTPPropertyGridItemDouble* pItemVal = dynamic_cast<CXTPPropertyGridItemDouble*>(pItem);
-				manEffect.SetShadowDirectionalLightExtrusionDistance((float)pItemVal->GetDouble());
-			}
-			break;
-
-		case propSSAOSampleLength:
-			{
-				CXTPPropertyGridItemDouble* pItemVal = dynamic_cast<CXTPPropertyGridItemDouble*>(pItem);
-				manEffect.SetSSAOSampleLength((float)pItemVal->GetDouble());
-			}
-			break;
-
-		case propSSAOOffsetScale:
-			{
-				CXTPPropertyGridItemDouble* pItemVal = dynamic_cast<CXTPPropertyGridItemDouble*>(pItem);
-				manEffect.SetSSAOOffsetScale((float)pItemVal->GetDouble());
-			}
-			break;
-
-		case propSSAODefaultAccessibility:
-			{
-				CXTPPropertyGridItemDouble* pItemVal = dynamic_cast<CXTPPropertyGridItemDouble*>(pItem);
-				manEffect.SetSSAODefaultAccessibility((float)pItemVal->GetDouble());
-			}
-			break;
-
-		case propSSAOEdgeHighlight:
-			{
-				CXTPPropertyGridItemDouble* pItemVal = dynamic_cast<CXTPPropertyGridItemDouble*>(pItem);
-				manEffect.SetSSAOEdgeHighlight((float)pItemVal->GetDouble());
-			}
-			break;
-
-		default: assert(0);
+			CXTPPropertyGridItemDouble* pItemVal = dynamic_cast<CXTPPropertyGridItemDouble*>(pItem);
+			manEffect.SetShadowFarDist((float)pItemVal->GetDouble());
 		}
+		break;
 
-		//进行了精度截断,需要反向更新到控件
-		UpdateProperty(id);
+	case propShadowSplitPadding:
+		{
+			CXTPPropertyGridItemDouble* pItemVal = dynamic_cast<CXTPPropertyGridItemDouble*>(pItem);
+			manEffect.SetShadowSplitPadding((float)pItemVal->GetDouble());
+		}
+		break;
 
-		//让控件失去焦点
-		((CFrameWnd*)AfxGetMainWnd())->GetActiveView()->SetFocus();
+	case propOptimalAdjustFactor0:
+	case propOptimalAdjustFactor1:
+	case propOptimalAdjustFactor2: pItem = m_mapItem[propShadowOptimalAdjustFactor];
+	case propShadowOptimalAdjustFactor: 
+		{
+			CXTPPropertyGridItemVec3* pItemVal = dynamic_cast<CXTPPropertyGridItemVec3*>(pItem);
+			const Ogre::Vector3 factor = GetVec3Value(pItemVal, id != propShadowOptimalAdjustFactor);
+			manEffect.SetShadowOptimalAdjustFactor(0, factor.x);
+			manEffect.SetShadowOptimalAdjustFactor(1, factor.y);
+			manEffect.SetShadowOptimalAdjustFactor(2, factor.z);
+		}
+		break;
+
+	case propShadowUseSimpleOptimalAdjust:
+		{
+			CXTPPropertyGridItemBool* pItemVal = dynamic_cast<CXTPPropertyGridItemBool*>(pItem);
+			manEffect.SetShadowUseSimpleOptimalAdjust(pItemVal->GetBool());
+		}
+		break;
+
+	case propShadowCameraLightDirectionThreshold:
+		{
+			CXTPPropertyGridItemNumber* pItemVal = dynamic_cast<CXTPPropertyGridItemNumber*>(pItem);
+			manEffect.SetShadowCameraLightDirectionThreshold(pItemVal->GetNumber());
+		}
+		break;
+
+	case propShadowMapSize0:
+	case propShadowMapSize1:
+	case propShadowMapSize2: pItem = m_mapItem[propShadowMapSize];
+	case propShadowMapSize: 
+		{
+			CXTPPropertyGridItemVec3* pItemVal = dynamic_cast<CXTPPropertyGridItemVec3*>(pItem);
+			const Ogre::Vector3 size = GetVec3Value(pItemVal, id != propShadowMapSize);
+			manEffect.SetShadowMapSize(0, (int)size.x);
+			manEffect.SetShadowMapSize(1, (int)size.y);
+			manEffect.SetShadowMapSize(2, (int)size.z);
+		}
+		break;
+
+	case propShadowSelfShadow:
+		{
+			CXTPPropertyGridItemBool* pItemVal = dynamic_cast<CXTPPropertyGridItemBool*>(pItem);
+			manEffect.SetShadowSelfShadow(pItemVal->GetBool());
+		}
+		break;
+
+	case propShadowCasterRenderBackFaces:
+		{
+			CXTPPropertyGridItemBool* pItemVal = dynamic_cast<CXTPPropertyGridItemBool*>(pItem);
+			manEffect.SetShadowCasterRenderBackFaces(pItemVal->GetBool());
+		}
+		break;
+
+	case propShadowLambda:
+		{
+			CXTPPropertyGridItemDouble* pItemVal = dynamic_cast<CXTPPropertyGridItemDouble*>(pItem);
+			manEffect.SetShadowPssmLambda((float)pItemVal->GetDouble());
+		}
+		break;
+
+	case propShadowDirectionalLightExtrusionDistance:
+		{
+			CXTPPropertyGridItemDouble* pItemVal = dynamic_cast<CXTPPropertyGridItemDouble*>(pItem);
+			manEffect.SetShadowDirectionalLightExtrusionDistance((float)pItemVal->GetDouble());
+		}
+		break;
+
+	case propSSAOSampleLength:
+		{
+			CXTPPropertyGridItemDouble* pItemVal = dynamic_cast<CXTPPropertyGridItemDouble*>(pItem);
+			manEffect.SetSSAOSampleLength((float)pItemVal->GetDouble());
+		}
+		break;
+
+	case propSSAOOffsetScale:
+		{
+			CXTPPropertyGridItemDouble* pItemVal = dynamic_cast<CXTPPropertyGridItemDouble*>(pItem);
+			manEffect.SetSSAOOffsetScale((float)pItemVal->GetDouble());
+		}
+		break;
+
+	case propSSAODefaultAccessibility:
+		{
+			CXTPPropertyGridItemDouble* pItemVal = dynamic_cast<CXTPPropertyGridItemDouble*>(pItem);
+			manEffect.SetSSAODefaultAccessibility((float)pItemVal->GetDouble());
+		}
+		break;
+
+	case propSSAOEdgeHighlight:
+		{
+			CXTPPropertyGridItemDouble* pItemVal = dynamic_cast<CXTPPropertyGridItemDouble*>(pItem);
+			manEffect.SetSSAOEdgeHighlight((float)pItemVal->GetDouble());
+		}
+		break;
+
+	default: assert(0);
 	}
-	else if (wParam == XTP_PGN_AFTEREDIT)
-	{
-		//让控件失去焦点
-		((CFrameWnd*)AfxGetMainWnd())->GetActiveView()->SetFocus();
-	}
-
-	return 0;
 }
 
-void PropertyPaneEffect::UpdateProperty( int id )
+void PropertyPaneEffect::_UpdateProperty( int id )
 {
 	ManipulatorEffect& manEffect = ManipulatorSystem.GetEffect();
 	std::string strNewValue;
@@ -232,10 +185,4 @@ void PropertyPaneEffect::UpdateProperty( int id )
 	
 	std::wstring wcsNewValue = Utility::EngineToUnicode(strNewValue);
 	m_mapItem[id]->SetValue(wcsNewValue.c_str());
-}
-
-void PropertyPaneEffect::EnableMutableProperty( BOOL bEnable )
-{
-	for(int i=propMutableItemStart; i<propMutableItemEnd; ++i)
-		m_mapItem[i]->SetReadOnly(!bEnable);
 }

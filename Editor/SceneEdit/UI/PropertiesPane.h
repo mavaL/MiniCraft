@@ -41,19 +41,43 @@ public:
 	CXTPPropertyGrid m_wndPropertyGrid;
 	CXTPToolBar m_wndToolBar;
 
+public:
+	//更新所有控件数据
+	void			UpdateAllFromEngine();
+	//更新控件数据
+	void			UpdateProperty(int id);
+	//允许/禁止编辑Mutable数据(ReadOnly数据不需要管,本来就不能编辑)
+	void			EnableMutableProperty(BOOL bEnable);
+
 	// Generated message map functions
 protected:
 	//{{AFX_MSG(CPropertiesPane)
-	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
-	afx_msg void OnSize(UINT nType, int cx, int cy);
+	afx_msg int		OnCreate(LPCREATESTRUCT lpCreateStruct);
+	afx_msg LRESULT OnGridNotify(WPARAM, LPARAM);
+	afx_msg void	OnSize(UINT nType, int cx, int cy);
 	//}}AFX_MSG
-	afx_msg void OnPanePropertiesCategorized();
-	afx_msg void OnUpdatePanePropertiesCategorized(CCmdUI* pCmdUI);
-	afx_msg void OnPanePropertiesAlphabetic();
-	afx_msg void OnUpdatePanePropertiesAlphabetic(CCmdUI* pCmdUI);
-	afx_msg void OnSetFocus(CWnd* pOldWnd);
+	afx_msg void	OnPanePropertiesCategorized();
+	afx_msg void	OnUpdatePanePropertiesCategorized(CCmdUI* pCmdUI);
+	afx_msg void	OnPanePropertiesAlphabetic();
+	afx_msg void	OnUpdatePanePropertiesAlphabetic(CCmdUI* pCmdUI);
+	afx_msg void	OnSetFocus(CWnd* pOldWnd);
 
 	DECLARE_MESSAGE_MAP()
+
+protected:
+	////////////////////////////////////////////////
+	/// 子类选择性重写的实现接口
+	virtual	bool	_OnCreate() = 0;
+	virtual	void	_SetProperty(int nID) {}
+	virtual	void	_UpdateProperty(int nID) {}
+	virtual void	_EnableMutableProperty(BOOL bEnable) {}
+
+	virtual int		_GetIDStart() = 0;
+	virtual int		_GetIDEnd() = 0;
+	virtual int		_GetIDMutableStart() = 0;
+	virtual int		_GetIDMutableEnd() = 0;
+
+	std::unordered_map<int, CXTPPropertyGridItem*>	m_mapItem;
 };
 
 /////////////////////////////////////////////////////////////////////////////

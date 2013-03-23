@@ -18,44 +18,47 @@ same license as the rest of the engine.
 #include "OgreString.h"
 #include "OgreVertexIndexData.h"
 
-class GeomUtils
+namespace Kratos
 {
-public:
-	// Create a sphere Mesh with a given name, radius, number of rings and number of segments
-	static void createSphere(const Ogre::String& strName
-		, float radius
-		, int nRings, int nSegments
-		, bool bNormals
-		, bool bTexCoords
-		);
+	class GeomUtils
+	{
+	public:
+		// Create a sphere Mesh with a given name, radius, number of rings and number of segments
+		static void createSphere(const Ogre::String& strName
+			, float radius
+			, int nRings, int nSegments
+			, bool bNormals
+			, bool bTexCoords
+			);
 
 
-	// Fill up a fresh copy of VertexData and IndexData with a sphere's coords given the number of rings and the number of segments
-	static void createSphere(Ogre::VertexData*& vertexData, Ogre::IndexData*& indexData
-		, float radius
-		, int nRings, int nSegments
-		, bool bNormals
-		, bool bTexCoords);
+		// Fill up a fresh copy of VertexData and IndexData with a sphere's coords given the number of rings and the number of segments
+		static void createSphere(Ogre::VertexData*& vertexData, Ogre::IndexData*& indexData
+			, float radius
+			, int nRings, int nSegments
+			, bool bNormals
+			, bool bTexCoords);
 
-	// Create a cone Mesh with a given name, radius and number of vertices in base
-	// Created cone will have its head at 0,0,0, and will 'expand to' positive y
-	static void createCone(const Ogre::String& strName
-		, float radius
-		, float height
-		, int nVerticesInBase);
+		// Create a cone Mesh with a given name, radius and number of vertices in base
+		// Created cone will have its head at 0,0,0, and will 'expand to' positive y
+		static void createCone(const Ogre::String& strName
+			, float radius
+			, float height
+			, int nVerticesInBase);
 
-	// Fill up a fresh copy of VertexData and IndexData with a cone's coords given the radius and number of vertices in base
-	static void createCone(Ogre::VertexData*& vertexData, Ogre::IndexData*& indexData
-		, float radius
-		, float height
-		, int nVerticesInBase);
-
-
-	// Fill up a fresh copy of VertexData with a normalized quad
-	static void createQuad(Ogre::VertexData*& vertexData);
+		// Fill up a fresh copy of VertexData and IndexData with a cone's coords given the radius and number of vertices in base
+		static void createCone(Ogre::VertexData*& vertexData, Ogre::IndexData*& indexData
+			, float radius
+			, float height
+			, int nVerticesInBase);
 
 
-};
+		// Fill up a fresh copy of VertexData with a normalized quad
+		static void createQuad(Ogre::VertexData*& vertexData);
+	};
+}
+
+
 
 
 #endif

@@ -8,10 +8,13 @@ namespace Ogre
 {
 	class PSSMShadowCameraSetup;
 }
-class DeferredShadingSystem;
 
 namespace Kratos
 {
+	class DeferredShadingSystem;
+	class DLight;
+	class MaterialGenerator;
+
 	//后处理效果配置
 	struct SEffectConfig 
 	{
@@ -29,6 +32,8 @@ namespace Kratos
 		bool	bFXAA;
 		bool	bSharpen;
 	};
+
+	typedef std::unordered_map<Ogre::Light*, DLight*>	DeferredLightList;
 
 	/*------------------------------------------------
 					OGRE图形模块封装类
@@ -61,7 +66,15 @@ namespace Kratos
 		//创建RT
 		Ogre::TexturePtr	CreateRT(const Ogre::String& name, int w, int h, Ogre::PixelFormat format);
 		//创建Entity,带tangent vector
-		Ogre::Entity*	CreateEntityWithTangent(const Ogre::String& meshname, Ogre::SceneManager* sm);
+		Ogre::Entity*		CreateEntityWithTangent(const Ogre::String& meshname, Ogre::SceneManager* sm);
+
+		//创建太阳光主光
+		void				CreateSunLight(const Ogre::Vector3& direction, const Ogre::ColourValue& diffuse);
+		void				DestroySunLight();
+		//0=点光,1=聚光
+		DLight*				CreateDLight(int type);
+		void				DestroyDLight(DLight* light);
+		DeferredLightList&	GetDLightList() { return m_dLightList; }	
 
 		const SEffectConfig&	GetEffectConfig() const { return m_effectCfg; }
 		void			EnableShadow(bool bEnable);
@@ -80,6 +93,10 @@ namespace Kratos
 		Ogre::ShadowCameraSetupPtr mPSSMSetup;
 
 	private:
+		void windowResized(Ogre::RenderWindow* rw);
+		void windowClosed(Ogre::RenderWindow* rw);
+
+	private:
 		bool				m_bHasInit;
 		SEffectConfig		m_effectCfg;
 
@@ -87,8 +104,9 @@ namespace Kratos
 		Ogre::CompositorInstance*	m_ssao;
 		Ogre::CompositorInstance*	m_sharpen;
 
-		void windowResized(Ogre::RenderWindow* rw);
-		void windowClosed(Ogre::RenderWindow* rw);
+		DLight*				m_pSunLight;
+		DeferredLightList	m_dLightList;
+		MaterialGenerator* mLightMaterialGenerator;		//The material generator for the light geometry
 	};
 
 }

@@ -141,12 +141,7 @@ namespace Kratos
 		SceneManager* sm = RenderManager.m_pSceneMgr;
 
 		//È«¾Ö¹â
-		Light* pSunLight = sm->createLight("SunLight");
-		pSunLight->setType(Light::LT_DIRECTIONAL);
-		pSunLight->setDirection(m_pOwner->GetSunLightDirection());
-		pSunLight->setDiffuseColour(m_pOwner->GetSunLightDiffuse());
-		// 	pSunLight->setShadowFarClipDistance(250);
-		// 	pSunLight->setShadowFarDistance(1000);
+		RenderManager.CreateSunLight(m_pOwner->GetSunLightDirection(), m_pOwner->GetSunLightDiffuse());
 
 		//shadow
 		{

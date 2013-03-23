@@ -3,7 +3,8 @@
 	filename: 	F:\MiniCraft\Editor\SceneEdit\UI\AttachmentPropertyPane.h
 	author:		maval
 	
-	purpose:	模型挂接物配置面板,attachment即对应M3模型在max中的attachment节点
+	purpose:	模型attachment属性基类
+				attachment即对应M3模型在max中的attachment节点
 *********************************************************************/
 
 #ifndef AttachmentPropertyPane_h__
@@ -21,7 +22,6 @@ public:
 		////////These are Mutable items					
 		propMutableItemStart = propStart,
 		propLocator = propMutableItemStart,				//挂接点				
-		propParticle,									//挂接粒子特效
 		propStartTime,									//特效相对动画开始的时间
 		propLifeTime,									//特效时长
 		propMutableItemEnd,
@@ -30,22 +30,17 @@ public:
 
 public:
 	PropertyPaneAttachment():CPropertiesPane() {}
-	~PropertyPaneAttachment() {}
-
-	//更新所有控件数据
-	void	UpdateAllFromEngine();
-	//更新控件数据
-	void	UpdateProperty(int id);
-	//允许/禁止编辑Mutable数据(ReadOnly数据不需要管,本来就不能编辑)
-	void	EnableMutableProperty(BOOL bEnable);
+	~PropertyPaneAttachment() = 0;
 
 protected:
-	DECLARE_MESSAGE_MAP()
-	afx_msg int		OnCreate(LPCREATESTRUCT lpCreateStruct);
-	afx_msg LRESULT OnGridNotify(WPARAM, LPARAM);
+	virtual	bool	_OnCreate();
+	virtual	void	_SetProperty(int nID);
+	virtual	void	_UpdateProperty(int nID);
 
-private:
-	std::unordered_map<int, CXTPPropertyGridItem*>	m_mapItem;
+	virtual int		_GetIDStart()			{ return propStart;				}
+	virtual int		_GetIDEnd()				{ return propEnd;				}
+	virtual int		_GetIDMutableStart()	{ return propMutableItemStart;	}
+	virtual int		_GetIDMutableEnd()		{ return propMutableItemEnd;	}
 };
 
 

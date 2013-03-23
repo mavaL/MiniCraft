@@ -1,16 +1,15 @@
 system Scv_Jet
 {
     keep_local                                  true
-    scale_velocity                              0.05
     tight_bounding_box                          true
     category                                    Fire
     technique 
     {
-        visual_particle_quota                   100
+        visual_particle_quota                   30
         material                                PUMediaPack/Streak_04
-        default_particle_width                  10
-        default_particle_height                 10
-        default_particle_depth                  10
+        default_particle_width                  5
+        default_particle_height                 5
+        default_particle_depth                  5
         spatial_hashing_cell_dimension          3
         spatial_hashtable_size                  10
         renderer                                Billboard
@@ -20,14 +19,14 @@ system Scv_Jet
         }
         emitter                                 Circle 
         {
-            emission_rate                       100
+            emission_rate                       10
             angle                               0
             time_to_live                        dyn_random
             {
                 min                             0.2
                 max                             0.4
             }
-            velocity                            0.03
+            velocity                            0.003
             particle_width                      dyn_random
             {
                 min                             1.2
@@ -38,21 +37,21 @@ system Scv_Jet
                 min                             1.2
                 max                             2.4
             }
-            direction                           0 -1 0
+            direction                           0 0 -1
             colour                              0.8 0.8 1 1
             radius                              0.75
             normal                              0 1 0
         }
         emitter                                 Circle 
         {
-            emission_rate                       100
+            emission_rate                       10
             angle                               0
             time_to_live                        dyn_random
             {
                 min                             0.2
                 max                             0.4
             }
-            velocity                            0.03
+            velocity                            0.003
             particle_width                      dyn_random
             {
                 min                             0.9
@@ -63,21 +62,21 @@ system Scv_Jet
                 min                             2.4
                 max                             6
             }
-            direction                           0 -1 0
+            direction                           0 0 -1
             colour                              0.5 0.5 1 1
             radius                              0.6
             normal                              0 1 0
         }
         emitter                                 Circle 
         {
-            emission_rate                       100
+            emission_rate                       10
             angle                               0
             time_to_live                        dyn_random
             {
                 min                             0.2
                 max                             0.4
             }
-            velocity                            0.03
+            velocity                            0.003
             particle_width                      dyn_random
             {
                 min                             0.3
@@ -88,7 +87,7 @@ system Scv_Jet
                 min                             4.8
                 max                             9
             }
-            direction                           0 -1 0
+            direction                           0 0 -1
             colour                              0.3 0.3 1 1
             radius                              0.3
             normal                              0 1 0

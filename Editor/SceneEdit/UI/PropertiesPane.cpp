@@ -45,6 +45,7 @@ BEGIN_MESSAGE_MAP(CPropertiesPane, CWnd)
 	ON_COMMAND(ID_PANEPROPERTIES_ALPHABETIC, OnPanePropertiesAlphabetic)
 	ON_UPDATE_COMMAND_UI(ID_PANEPROPERTIES_ALPHABETIC, OnUpdatePanePropertiesAlphabetic)
 	ON_WM_SETFOCUS()
+	ON_MESSAGE(XTPWM_PROPERTYGRID_NOTIFY, OnGridNotify)
 END_MESSAGE_MAP()
 
 
@@ -65,6 +66,9 @@ int CPropertiesPane::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		m_wndPropertyGrid.SetOwner(this);
 		m_wndPropertyGrid.HighlightChangedItems(TRUE);
 	}
+
+	if(!_OnCreate())
+		return -1;
 
 	return 0;
 }
@@ -121,4 +125,48 @@ void CPropertiesPane::OnUpdatePanePropertiesAlphabetic(CCmdUI* pCmdUI)
 void CPropertiesPane::OnSetFocus(CWnd* /*pOldWnd*/)
 {
 	m_wndPropertyGrid.SetFocus();
+}
+
+void CPropertiesPane::UpdateAllFromEngine()
+{
+	int IDStart = _GetIDStart();
+	int IDEnd = _GetIDEnd();
+	for (int i=IDStart; i<IDEnd; ++i)
+		UpdateProperty(i);
+}
+
+void CPropertiesPane::UpdateProperty( int id )
+{
+	_UpdateProperty(id);
+}
+
+void CPropertiesPane::EnableMutableProperty( BOOL bEnable )
+{
+	int IDStart = _GetIDMutableStart();
+	int IDEnd = _GetIDMutableEnd();
+	for(int i=IDStart; i<IDEnd; ++i)
+		m_mapItem[i]->SetReadOnly(!bEnable);
+
+	_EnableMutableProperty(bEnable);
+}
+
+LRESULT CPropertiesPane::OnGridNotify( WPARAM wParam, LPARAM lParam )
+{
+	if (wParam == XTP_PGN_ITEMVALUE_CHANGED)
+	{
+		CXTPPropertyGridItem* pItem = (CXTPPropertyGridItem*)lParam;
+		const int id = (int)pItem->GetID();
+	
+		_SetProperty(id);
+
+		//让控件失去焦点
+		((CFrameWnd*)AfxGetMainWnd())->GetActiveView()->SetFocus();
+	}
+	else if (wParam == XTP_PGN_AFTEREDIT)
+	{
+		//让控件失去焦点
+		((CFrameWnd*)AfxGetMainWnd())->GetActiveView()->SetFocus();
+	}
+
+	return 0;
 }

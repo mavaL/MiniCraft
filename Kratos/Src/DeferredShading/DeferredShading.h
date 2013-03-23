@@ -50,77 +50,71 @@ The wiki article explaining this demo can be found here :
 using namespace Ogre;
 using namespace OgreBites;
 
-/** System to manage Deferred Shading for a camera/render target.
- *  @note With the changes to the compositor framework, this class just
- *		selects which compositors to enable.
- */
-class DeferredShadingSystem : public Ogre::RenderTargetListener
+namespace Kratos
 {
-public:
-	DeferredShadingSystem(Ogre::Viewport *vp, Ogre::SceneManager *sm, Ogre::Camera *cam);
-	~DeferredShadingSystem();
-
-	enum DSMode
+	/** System to manage Deferred Shading for a camera/render target.
+	*  @note With the changes to the compositor framework, this class just
+	*		selects which compositors to enable.
+	*/
+	class DeferredShadingSystem : public Ogre::RenderTargetListener
 	{
-		DSM_SHOWLIT = 0,     // The deferred shading mode
-		DSM_SHOWCOLOUR = 1,  // Show diffuse (for debugging)
-		DSM_SHOWNORMALS = 2, // Show normals (for debugging)
-		DSM_SHOWDSP = 3,	 // Show depth and specular channel (for debugging)
-		DSM_COUNT = 4
+	public:
+		DeferredShadingSystem(Ogre::Viewport *vp, Ogre::SceneManager *sm, Ogre::Camera *cam);
+		~DeferredShadingSystem();
+
+		enum DSMode
+		{
+			DSM_SHOWLIT = 0,     // The deferred shading mode
+			DSM_SHOWCOLOUR = 1,  // Show diffuse (for debugging)
+			DSM_SHOWNORMALS = 2, // Show normals (for debugging)
+			DSM_SHOWDSP = 3,	 // Show depth and specular channel (for debugging)
+			DSM_COUNT = 4
+		};
+
+		//The first render queue that does get rendered into the GBuffer
+		//place objects (like skies) that should be before gbuffer before this one.
+		static const Ogre::uint8 PRE_GBUFFER_RENDER_QUEUE;
+
+		//The first render queue that does not get rendered into the GBuffer
+		//place transparent (or other non gbuffer) objects after this one
+		static const Ogre::uint8 POST_GBUFFER_RENDER_QUEUE;
+
+		void initialize();
+
+		/** Set rendering mode (one of DSMode)
+		*/
+		void setMode(DSMode mode);
+
+		DSMode getMode(void) const;
+
+
+		/** Activate or deactivate system
+		*/
+		void setActive(bool active);
+
+	protected:
+		Ogre::Viewport *mViewport;
+		Ogre::SceneManager *mSceneMgr;
+		Ogre::Camera *mCamera;
+
+		Ogre::CompositorInstance *mGBufferInstance;
+		// Filters
+		Ogre::CompositorInstance *mInstance[DSM_COUNT];
+		// Active/inactive
+		bool mActive;
+		DSMode mCurrentMode;
+
+		void createResources();
+
+		void logCurrentMode(void);
 	};
 
-	//The first render queue that does get rendered into the GBuffer
-	//place objects (like skies) that should be before gbuffer before this one.
-	static const Ogre::uint8 PRE_GBUFFER_RENDER_QUEUE;
-	
-	//The first render queue that does not get rendered into the GBuffer
-	//place transparent (or other non gbuffer) objects after this one
-	static const Ogre::uint8 POST_GBUFFER_RENDER_QUEUE;
+	const ColourValue SAMPLE_COLORS[] = 
+	{   ColourValue::Red, ColourValue::Green, ColourValue::Blue, 
+	ColourValue::White, ColourValue(1,1,0,1), ColourValue(1,0,1,1)
+	};
+}
 
-	void initialize();
 
-	/** Set rendering mode (one of DSMode)
-	 */
-	void setMode(DSMode mode);
-
-	DSMode getMode(void) const;
-
-	/** Set screen space ambient occlusion mode
-	 */
-	void setSSAO(bool ssao);
-	
-	bool getSSAO() const;
-
-	/** Activate or deactivate system
-	 */
-	void setActive(bool active);
-	
-protected:
-	Ogre::Viewport *mViewport;
-	Ogre::SceneManager *mSceneMgr;
-	Ogre::Camera *mCamera;
-	
-	Ogre::CompositorInstance *mGBufferInstance;
-	// Filters
-	Ogre::CompositorInstance *mInstance[DSM_COUNT];
-	Ogre::CompositorInstance* mSSAOInstance;
-	// Active/inactive
-	bool mActive;
-	DSMode mCurrentMode;
-	bool mSSAO;
-
-	//Used to unregister compositor logics and free memory
-	typedef map<String, CompositorLogic*>::type CompositorLogicMap;
-	CompositorLogicMap mCompositorLogics;
-
-	void createResources();
-	
-	void logCurrentMode(void);
-};
-
-const ColourValue SAMPLE_COLORS[] = 
-{   ColourValue::Red, ColourValue::Green, ColourValue::Blue, 
-    ColourValue::White, ColourValue(1,1,0,1), ColourValue(1,0,1,1)
-};
 
 #endif

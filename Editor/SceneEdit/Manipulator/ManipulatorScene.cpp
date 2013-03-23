@@ -37,15 +37,15 @@ void ManipulatorScene::Init()
 
 void ManipulatorScene::Shutdown()
 {
-	SAFE_DELETE(m_pCurScene);
+	SAFE_DELETE(m_manipulatorEffect);
 	SAFE_DELETE(m_manipulatorTerrain);
 	SAFE_DELETE(m_manipulatorObject);
 	SAFE_DELETE(m_manipulatorNavMesh);
 	SAFE_DELETE(m_manipulatorCamera);
 	SAFE_DELETE(m_manipulatorResource);
 	SAFE_DELETE(m_manipulatorGameData);
-	SAFE_DELETE(m_manipulatorEffect);
 	SAFE_DELETE(m_manipualtorOp);
+	SAFE_DELETE(m_pCurScene);
 }
 
 void ManipulatorScene::SceneNew(const std::wstring& sceneName)

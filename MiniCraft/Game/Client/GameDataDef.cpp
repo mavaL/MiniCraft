@@ -170,7 +170,7 @@ void GameDataDefManager::LoadAllData()
 			const char* szAnim = pAnimNode->first_attribute("name")->value();
 
 			//per effect
-			rapidxml::xml_node<>* pEffectNode = pAnimNode->first_node("ParticleEffect");
+			rapidxml::xml_node<>* pEffectNode = pAnimNode->first_node("AttachEffect");
 			while(pEffectNode)
 			{
 				SEffectData effect;
@@ -285,7 +285,7 @@ void GameDataDefManager::SaveAllData()
 				{
 					const SEffectData& effect = *itEffect;
 					const Ogre::NameValuePairList& params = effect.params;
-					xml_node<>* effectNode =   doc.allocate_node(node_element, "ParticleEffect");
+					xml_node<>* effectNode =   doc.allocate_node(node_element, "AttachEffect");
 
 					for(auto iter=params.begin(); iter!=params.end(); ++iter)
 						effectNode->append_attribute(doc.allocate_attribute(iter->first.c_str(), iter->second.c_str()));
