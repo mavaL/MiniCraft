@@ -21,8 +21,8 @@ AnimatedComponent::AnimatedComponent( SelectableObject* pOwner )
 		for (size_t iEffect=0; iEffect<slots.size(); ++iEffect)
 		{
 			Ogre::NameValuePairList& info = slots[iEffect].params;
-			eAttachEffect type == AttachEffectBase::GetTypeFromString(info["type"]);
-			Kratos::AttachEffectBase* effect = m_pController->AddEffect(itAnim->first, type);
+			int type = Ogre::StringConverter::parseInt(info["type"]);
+			Kratos::AttachEffectBase* effect = m_pController->AddEffect(itAnim->first, (Kratos::eAttachEffect)type);
 			effect->setParameterList(info);
 		}
 	}

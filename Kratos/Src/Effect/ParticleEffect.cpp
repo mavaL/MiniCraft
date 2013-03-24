@@ -13,23 +13,22 @@ namespace Kratos
 	,m_particle(nullptr)
 	,m_template(Ogre::StringUtil::BLANK)
 	{
-		Ogre::ParamDictionary* dict = getParamDictionary();
-		dict->addParameter(Ogre::ParameterDef("template", "template name of this particle", Ogre::PT_STRING), &m_sCmdParticleTemplate);
 		m_type = eAttachEffect_Particle;
+		if (InitParamDict("Particle"))
+		{
+			Ogre::ParamDictionary* dict = getParamDictionary();
+			dict->addParameter(Ogre::ParameterDef("template", "template name of this particle", Ogre::PT_STRING), &m_sCmdParticleTemplate);
+		}
 	}
 
 	ParticleEffect::~ParticleEffect()
 	{
+		Destroy();
 	}
 
 	void ParticleEffect::SetParticleTemplate( const STRING& name )
 	{
-		if(m_particle)
-		{
-			ParticleSystemManager::getSingleton().destroyParticleSystem(m_particle, RenderManager.m_pSceneMgr);
-			m_particle = nullptr;
-		}
-		m_state = eEffectState_Uninit;
+		Destroy();
 		m_template = name;
 	}
 
@@ -41,7 +40,7 @@ namespace Kratos
 			m_particle = ParticleSystemManager::getSingleton().createParticleSystem(m_name, m_template, RenderManager.m_pSceneMgr);
 			assert(m_particle);
 		}
-		else if (m_state == eEffectState_Uninit)
+		if (m_state == eEffectState_Uninit)
 		{
 			m_parent->attachObjectToBone(m_locator, m_particle);
 		}

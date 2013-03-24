@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "GameDataDef.h"
-#include "Effect/ParticleEffect.h"
+#include "Effect/EffectController.h"
 
 void GameDataDefManager::LoadAllData()
 {
@@ -173,12 +173,15 @@ void GameDataDefManager::LoadAllData()
 			rapidxml::xml_node<>* pEffectNode = pAnimNode->first_node("AttachEffect");
 			while(pEffectNode)
 			{
+				//hack a little..
 				SEffectData effect;
-				Kratos::ParticleEffect hack(nullptr);
-				Kratos::ParticleEffect* pHack = &hack;
+				int type = Ogre::StringConverter::parseInt(pEffectNode->first_attribute("type")->value());
+				Kratos::EffectController ctrl(nullptr);
+				Kratos::AttachEffectBase* pBase = ctrl.AddEffect(szAnim, (Kratos::eAttachEffect)type);
 
-				PARAMS_LOAD(pHack, effect.params, pEffectNode);
+				PARAMS_LOAD(pBase, effect.params, pEffectNode);		
 
+				ctrl.RemoveEffect(pBase->GetName());
 				unitData.m_effects[szAnim].push_back(effect);
 				pEffectNode = pEffectNode->next_sibling();
 			}

@@ -9,17 +9,22 @@
 #ifndef ManipulatorEffect_h__
 #define ManipulatorEffect_h__
 
+#include "ManipulatorEventCallback.h"
+
 namespace Kratos
 {
 	class EffectController;
 	class ParticleEffect;
 }
 
-class ManipulatorEffect
+class ManipulatorEffect : public ManipulatorSceneEventCallback
 {
 public:
 	ManipulatorEffect();
 	~ManipulatorEffect();
+
+	//////////////事件回调
+	virtual void	OnSceneClose();
 
 public:
 	void	OnFrameMove(float dt);	

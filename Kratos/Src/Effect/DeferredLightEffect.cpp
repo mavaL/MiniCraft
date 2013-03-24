@@ -6,18 +6,23 @@ namespace Kratos
 {
 	IMPL_PARAM_COMMAND(DLightEffect, LightType, Int)
 	IMPL_PARAM_COMMAND(DLightEffect, LightRadius, Real)
+	IMPL_PARAM_COMMAND(DLightEffect, PointAttenParam, Vector3)
 
 	DLightEffect::DLightEffect(Ogre::Entity* parent)
 	:AttachEffectBase(parent)
 	,m_light(nullptr)
 	,m_dlType(eDLightType_None)
 	,m_fRadius(0)
+	,m_dlPointParam(1,0,0)
 	{
-		Ogre::ParamDictionary* dict = getParamDictionary();
-		dict->addParameter(Ogre::ParameterDef("lighttype", "Deferred light type", Ogre::PT_INT), &m_sCmdLightType);
-		dict->addParameter(Ogre::ParameterDef("radius", "Radius of point light", Ogre::PT_REAL), &m_sCmdLightRadius);
 		m_type = eAttachEffect_DLight;
-		SetLightType(eDLightType_Point);
+		if (InitParamDict("DLight"))
+		{
+			Ogre::ParamDictionary* dict = getParamDictionary();
+			dict->addParameter(Ogre::ParameterDef("lighttype", "Deferred light type", Ogre::PT_INT), &m_sCmdLightType);
+			dict->addParameter(Ogre::ParameterDef("radius", "Radius of point light", Ogre::PT_REAL), &m_sCmdLightRadius);
+			dict->addParameter(Ogre::ParameterDef("PointAtteParam", "Attenuation info of point light", Ogre::PT_VECTOR3), &m_sCmdPointAttenParam);
+		}
 	}
 
 	DLightEffect::~DLightEffect()
@@ -27,7 +32,19 @@ namespace Kratos
 
 	void DLightEffect::Start()
 	{
-		assert(m_light);
+		if (!m_light && m_dlType != eDLightType_None)
+		{
+			assert(m_state == eEffectState_Uninit);
+			//创建光源
+			m_light = RenderManager.CreateDLight(m_dlType);
+			assert(m_light);
+
+			//设置参数
+			Ogre::Light* lightSrc = m_light->getParentLight();
+			lightSrc->setVisible(false);
+			lightSrc->setAttenuation(m_fRadius, m_dlPointParam.x, m_dlPointParam.y, m_dlPointParam.z);
+			m_light->setAttenuation(lightSrc->getAttenuationConstant(), lightSrc->getAttenuationLinear(), lightSrc->getAttenuationQuadric());	
+		}
 		if(m_state == eEffectState_Uninit)
 			m_parent->attachObjectToBone(m_locator, m_light->getParentLight());
 
@@ -74,32 +91,32 @@ namespace Kratos
 
 	void DLightEffect::Destroy()
 	{
-		Stop();
-		RenderManager.DestroyDLight(m_light);
-		m_light = nullptr;
-		m_dlType = eDLightType_None;
-
+		if (m_light)
+		{
+			Stop();
+			RenderManager.DestroyDLight(m_light);
+			m_light = nullptr;
+		}
+		
 		__super::Destroy();
 	}
 
 	void DLightEffect::SetLightType( int type )
 	{
-		if(m_dlType == type)
-			return;
 		Destroy();
-
-		m_light = RenderManager.CreateDLight(type);
-		assert(m_light);
-		SetLightRadius(m_fRadius);
-		m_light->getParentLight()->setVisible(false);
+		m_dlType = (eDLightType)type;
 	}
 
 	void DLightEffect::SetLightRadius( float fRadius )
 	{
+		Destroy();
 		m_fRadius = fRadius;
-		Ogre::Light* lightSrc = m_light->getParentLight();
-		lightSrc->setAttenuation(m_fRadius, 1, 0, 0);
-		m_light->setAttenuation(lightSrc->getAttenuationConstant(), lightSrc->getAttenuationLinear(), lightSrc->getAttenuationQuadric());	
+	}
+
+	void DLightEffect::SetPointAttenParam( const FLOAT3& param )
+	{
+		Destroy();
+		m_dlPointParam = param;
 	}
 
 }

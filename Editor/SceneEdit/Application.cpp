@@ -43,6 +43,7 @@ void Application::Shutdown()
 {
 	SceneClose();
 	ManipulatorSystem.Shutdown();
+	RenderManager.Shutdown();
 }
 
 void Application::SceneNew()

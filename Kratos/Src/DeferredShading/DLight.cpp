@@ -41,6 +41,8 @@ namespace Kratos
 		mRenderOp.vertexData = 0;
 		mRenderOp.useIndexes = true;
 
+		setAttenuation(mParentLight->getAttenuationConstant(), mParentLight->getAttenuationLinear(), mParentLight->getAttenuationQuadric());
+
 		updateFromParent();
 	}
 	//-----------------------------------------------------------------------

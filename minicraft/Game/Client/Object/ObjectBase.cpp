@@ -49,15 +49,6 @@ RenderableObject::RenderableObject()
 ,m_meshname("")
 ,m_teamColor(Ogre::ColourValue::Blue)
 {
-	if (createParamDictionary("RenderableObject"))
-	{
-		Ogre::ParamDictionary* dict = getParamDictionary();
-		dict->addParameter(Ogre::ParameterDef("position", "position of the object", Ogre::PT_VECTOR3), &m_sCmdPosition);
-		dict->addParameter(Ogre::ParameterDef("orientation", "orientation of the object", Ogre::PT_QUATERNION), &m_sCmdOrientation);
-		dict->addParameter(Ogre::ParameterDef("scale", "scale of the object", Ogre::PT_VECTOR3), &m_sCmdScale);
-		dict->addParameter(Ogre::ParameterDef("meshname", "mesh file name of the object", Ogre::PT_STRING), &m_sCmdMeshName);
-		dict->addParameter(Ogre::ParameterDef("teamcolor", "team color of the object", Ogre::PT_COLOURVALUE), &m_sCmdTeamColor);
-	}
 }
 
 void RenderableObject::SetPosition( const POS& pos )
@@ -124,6 +115,24 @@ void RenderableObject::SetMeshName( const STRING& meshname )
 {
 	m_meshname = meshname;
 	CreateRenderInstance();
+}
+
+bool RenderableObject::InitParamDict(const STRING& name)
+{
+	STRING dictName("ObjectDict_");
+	dictName += name;
+
+	if (createParamDictionary(dictName))
+	{
+		Ogre::ParamDictionary* dict = getParamDictionary();
+		dict->addParameter(Ogre::ParameterDef("position", "position of the object", Ogre::PT_VECTOR3), &m_sCmdPosition);
+		dict->addParameter(Ogre::ParameterDef("orientation", "orientation of the object", Ogre::PT_QUATERNION), &m_sCmdOrientation);
+		dict->addParameter(Ogre::ParameterDef("scale", "scale of the object", Ogre::PT_VECTOR3), &m_sCmdScale);
+		dict->addParameter(Ogre::ParameterDef("meshname", "mesh file name of the object", Ogre::PT_STRING), &m_sCmdMeshName);
+		dict->addParameter(Ogre::ParameterDef("teamcolor", "team color of the object", Ogre::PT_COLOURVALUE), &m_sCmdTeamColor);
+		return true;
+	}
+	return false;
 }
 
 

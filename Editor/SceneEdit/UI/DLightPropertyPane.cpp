@@ -2,6 +2,7 @@
 #include "DLightPropertyPane.h"
 #include "Manipulator/ManipulatorScene.h"
 #include "Utility.h"
+#include "XTPCustomPropertyGridItem.h"
 
 bool PropertyPaneDLight::_OnCreate()
 {
@@ -15,30 +16,56 @@ bool PropertyPaneDLight::_OnCreate()
 	//µã¹â
 	pCategory = m_wndPropertyGrid.AddCategory(L"Point Light");
 	PROPERTY_REG(pCategory, Double, L"Radius"			, 0, propPointLightRadius	);
+	PROPERTY_REG(pCategory,	Vec3	, L"Attenuation"	, Ogre::Vector3(1,0,0)	, propPointLightAttenparam		);
 	pCategory->Expand();
+
+	(dynamic_cast<CXTPPropertyGridItemVec3*>(m_mapItem[propPointLightAttenparam]))->
+		SetChildItemID(propAttenConstant, propAttenLinear, propAttenQuadric);
 
 	return ret;
 }
 
-void PropertyPaneDLight::_SetProperty( int nID) 
+void PropertyPaneDLight::_SetProperty( int nID ) 
 {
 	if(nID < propDerivedStart)
+	{
 		__super::_SetProperty(nID);
+		return;
+	}
 
-// 	switch (nID)
-// 	{
-// 	case propPointLightRadius:	manEffect.SetEffectParam("locator", paramValue); break;
-// 	default: assert(0);
-// 	}
+	ManipulatorEffect& manEffect = ManipulatorSystem.GetEffect();
+	CXTPPropertyGridItem* pItem = m_mapItem[nID];
+
+	switch (nID)
+	{
+	case propLightType:	manEffect.SetEffectParam("lighttype", Utility::UnicodeToEngine(pItem->GetValue())); break;
+
+	case propPointLightRadius:	manEffect.SetEffectParam("radius", Utility::UnicodeToEngine(pItem->GetValue())); break;
+
+	case propAttenConstant:
+	case propAttenLinear:
+	case propAttenQuadric: pItem = m_mapItem[propPointLightAttenparam];
+	case propPointLightAttenparam:
+		{
+			CXTPPropertyGridItemVec3* pItemVal = dynamic_cast<CXTPPropertyGridItemVec3*>(pItem);
+			Ogre::Vector3 val = GetVec3Value(pItemVal, nID != propPointLightAttenparam);
+			manEffect.SetEffectParam("PointAtteParam", Ogre::StringConverter::toString(val));
+		}
+		break;
+
+	default: assert(0);
+	}
 }
 
 void PropertyPaneDLight::_UpdateProperty( int id )
 {
 	if(id < propDerivedStart)
+	{
 		__super::_UpdateProperty(id);
+		return;
+	}
 
 	ManipulatorEffect& manEffect = ManipulatorSystem.GetEffect();
-	CXTPPropertyGridItem* pItem = m_mapItem[id];
 	std::string strNewValue;
 
 	switch (id)
@@ -51,11 +78,23 @@ void PropertyPaneDLight::_UpdateProperty( int id )
 			pList->AddConstraint(L"Spot");
 
 			int type = Ogre::StringConverter::parseInt(manEffect.GetEffectParam("lighttype"));
-			strNewValue = type == 0 ? "Point" : "Spot";
+			if(type == 0)
+				strNewValue = "Point";
+			else if(type == 1)
+				strNewValue = "Spot";
+			else if(type == 2)
+				strNewValue = "";
+			else
+				assert(0);
 		}
 		break;
 
-	case propPointLightRadius: manEffect.SetEffectParam("radius", Utility::UnicodeToEngine(pItem->GetValue())); break;
+	case propPointLightRadius: strNewValue = manEffect.GetEffectParam("radius"); break;
+
+	case propAttenConstant:
+	case propAttenLinear:
+	case propAttenQuadric:			id = propPointLightAttenparam;
+	case propPointLightAttenparam:	strNewValue = manEffect.GetEffectParam("PointAtteParam"); break;
 
 	default: assert(0);
 	}

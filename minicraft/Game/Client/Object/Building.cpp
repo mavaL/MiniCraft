@@ -13,8 +13,11 @@ Building::Building()
 ,m_rallyPoint(POS::ZERO)
 ,m_buildingName(Ogre::StringUtil::BLANK)
 {
-	Ogre::ParamDictionary* dict = getParamDictionary();
-	dict->addParameter(Ogre::ParameterDef("rallypoint", "default rally point", Ogre::PT_VECTOR3), &m_sCmdRallyPoint);
+	if (InitParamDict("Building"))
+	{
+		Ogre::ParamDictionary* dict = getParamDictionary();
+		dict->addParameter(Ogre::ParameterDef("rallypoint", "default rally point", Ogre::PT_VECTOR3), &m_sCmdRallyPoint);
+	}
 }
 
 void Building::Update( float dt )

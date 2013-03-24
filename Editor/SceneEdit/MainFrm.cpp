@@ -70,13 +70,13 @@ BEGIN_MESSAGE_MAP(CMainFrame, CXTPFrameWnd)
 	ON_COMMAND(IDC_Animation_Stop, OnAnimStop)
 	ON_UPDATE_COMMAND_UI(IDC_Animation_Play, OnUpdateUI_AnimPlay)
 	ON_UPDATE_COMMAND_UI(IDC_Animation_Stop, OnUpdateUI_AnimStop)
-	ON_COMMAND(IDC_Animation_EffectRemove, OnAnimEffectRemove)
-	ON_UPDATE_COMMAND_UI(IDC_Effect_Add, OnUpdateUI_AnimEffectAdd)
-	ON_UPDATE_COMMAND_UI_RANGE(IDC_Effect_AddParticle, IDC_Effect_AddDLight, OnUpdateUI_AnimEffectAdd)
-	ON_COMMAND_RANGE(IDC_Effect_AddParticle, IDC_Effect_AddDLight, OnAnimEffectAdd)
-	ON_UPDATE_COMMAND_UI(IDC_Animation_EffectRemove, OnUpdateUI_AnimEffectRemove)
-	ON_UPDATE_COMMAND_UI(IDC_Animation_EffectList, OnUpdateUI_AnimEffectList)
-	ON_NOTIFY(CBN_SELCHANGE, IDC_Animation_EffectList, OnAnimEffectSelectChange)
+	ON_COMMAND(IDC_Animation_EffectRemove, OnAttachEffectRemove)
+	ON_UPDATE_COMMAND_UI(IDC_Effect_Add, OnUpdateUI_AttachEffectAdd)
+	ON_UPDATE_COMMAND_UI_RANGE(IDC_Effect_AddParticle, IDC_Effect_AddDLight, OnUpdateUI_AttachEffectAdd)
+	ON_COMMAND_RANGE(IDC_Effect_AddParticle, IDC_Effect_AddDLight, OnAttachEffectAdd)
+	ON_UPDATE_COMMAND_UI(IDC_Animation_EffectRemove, OnUpdateUI_AttachEffectRemove)
+	ON_UPDATE_COMMAND_UI(IDC_Animation_EffectList, OnUpdateUI_AttachEffectList)
+	ON_NOTIFY(CBN_SELCHANGE, IDC_Animation_EffectList, OnAttachEffectSelectChange)
 	ON_UPDATE_COMMAND_UI(IDC_Object_Remove, OnUpdateUI_ObjectRemove)
 	ON_COMMAND(IDC_Object_Remove, OnObjectRemove)
 	ON_UPDATE_COMMAND_UI(IDC_Effect_Sharpen, OnUpdateUI_SharpenOnOff)
@@ -926,7 +926,7 @@ void CMainFrame::OnObjectClearSelection( Ogre::Entity* pObject )
 		ManipulatorEffect& manEffect = ManipulatorSystem.GetEffect();
 		manEffect.PlayAnimation(pObject, m_animList->GetCurSel(), false);
 		manEffect.OnAnimSelectChange("");
-		_OnAttachmentPaneChange(FALSE);
+		_OnAttachmentPaneChange(FALSE, TRUE);
 	}
 }
 
@@ -945,18 +945,10 @@ void CMainFrame::OnAnimSelectChange( NMHDR* pNMHDR, LRESULT* pResult )
 	int curSel = m_animList->GetCurSel();
 	m_animList->GetLBText(curSel, animName);
 	const std::string anim = Utility::UnicodeToEngine(animName);
+
 	manEffect.OnAnimSelectChange(anim);
-
-	//挂接特效列表
-	const auto effectNames = manEffect.GetAttachEffectNames();
-	m_effectList->ResetContent();
-	m_effectList->AddString(L"");
-	for(size_t i=0; i<effectNames.size(); ++i)
-		m_effectList->AddString(effectNames[i].c_str());
-	m_effectList->SetCurSel(0);
-
 	manEffect.OnAttachEffectSelChange("");
-	_OnAttachmentPaneChange(FALSE);
+	_OnAttachmentPaneChange(FALSE, TRUE);
 }
 
 void CMainFrame::OnUpdateUI_DataBuilding( CCmdUI* pCmdUI )
@@ -1046,7 +1038,7 @@ void CMainFrame::OnAnimStop()
 	ManipulatorSystem.GetEffect().PlayAnimation(ent, m_animList->GetCurSel(), false);
 }
 
-void CMainFrame::OnUpdateUI_AnimEffectAdd( CCmdUI* pCmdUI )
+void CMainFrame::OnUpdateUI_AttachEffectAdd( CCmdUI* pCmdUI )
 {
 	Ogre::Entity* curSel = ManipulatorSystem.GetObject().GetSelection();
 	if (curSel && curSel->hasSkeleton())
@@ -1055,7 +1047,7 @@ void CMainFrame::OnUpdateUI_AnimEffectAdd( CCmdUI* pCmdUI )
 		pCmdUI->Enable(FALSE);
 }
 
-void CMainFrame::OnUpdateUI_AnimEffectRemove( CCmdUI* pCmdUI )
+void CMainFrame::OnUpdateUI_AttachEffectRemove( CCmdUI* pCmdUI )
 {
 	if(m_effectList->GetCurSel() > 0)
 		pCmdUI->Enable(TRUE);
@@ -1063,18 +1055,18 @@ void CMainFrame::OnUpdateUI_AnimEffectRemove( CCmdUI* pCmdUI )
 		pCmdUI->Enable(FALSE);
 }
 
-void CMainFrame::OnAnimEffectAdd(UINT nID)
+void CMainFrame::OnAttachEffectAdd(UINT nID)
 {
 	const std::wstring name = ManipulatorSystem.GetEffect().AddEffect(nID - IDC_Effect_AddParticle);
 	int index = m_effectList->AddString(name.c_str());
 	assert(index != LB_ERR);
 	m_effectList->SetCurSel(index);
 
-	_OnAttachmentPaneChange(TRUE);
+	_OnAttachmentPaneChange(TRUE, FALSE);
 	m_paneAttachment->Select();
 }
 
-void CMainFrame::OnAnimEffectRemove()
+void CMainFrame::OnAttachEffectRemove()
 {
 	CString effectName;
 	int curSel = m_effectList->GetCurSel();
@@ -1082,15 +1074,15 @@ void CMainFrame::OnAnimEffectRemove()
 	m_effectList->SetCurSel(0);
 
 	ManipulatorSystem.GetEffect().RemoveEffect(Utility::UnicodeToEngine(effectName));
-	_OnAttachmentPaneChange(FALSE);
+	_OnAttachmentPaneChange(FALSE, TRUE);
 }
 
-void CMainFrame::OnUpdateUI_AnimEffectList( CCmdUI* pCmdUI )
+void CMainFrame::OnUpdateUI_AttachEffectList( CCmdUI* pCmdUI )
 {
 	pCmdUI->Enable(TRUE);
 }
 
-void CMainFrame::OnAnimEffectSelectChange( NMHDR* pNMHDR, LRESULT* pResult )
+void CMainFrame::OnAttachEffectSelectChange( NMHDR* pNMHDR, LRESULT* pResult )
 {
 	CString effectName;
 	int curSel = m_effectList->GetCurSel();
@@ -1098,7 +1090,7 @@ void CMainFrame::OnAnimEffectSelectChange( NMHDR* pNMHDR, LRESULT* pResult )
 
 	const std::string name = Utility::UnicodeToEngine(effectName);
 	ManipulatorSystem.GetEffect().OnAttachEffectSelChange(name);
-	_OnAttachmentPaneChange(TRUE);
+	_OnAttachmentPaneChange(TRUE, FALSE);
 	m_paneAttachment->Select();
 }
 
@@ -1164,8 +1156,20 @@ CPropertiesPane* CMainFrame::_GetCurAttachmentPane()
 	return pane;
 }
 
-void CMainFrame::_OnAttachmentPaneChange(BOOL bEnable)
+void CMainFrame::_OnAttachmentPaneChange(BOOL bEnable, BOOL bRefresh)
 {
+	ManipulatorEffect& manEffect = ManipulatorSystem.GetEffect();
+	//刷新挂接特效列表
+	if (bRefresh)
+	{
+		const auto effectNames = manEffect.GetAttachEffectNames();
+		m_effectList->ResetContent();
+		m_effectList->AddString(L"");
+		for(size_t i=0; i<effectNames.size(); ++i)
+			m_effectList->AddString(effectNames[i].c_str());
+		m_effectList->SetCurSel(0);
+	}
+
 	CString effectName;
 	int curSel = m_effectList->GetCurSel();
 	m_effectList->GetLBText(curSel, effectName);
@@ -1175,7 +1179,7 @@ void CMainFrame::_OnAttachmentPaneChange(BOOL bEnable)
 		return;
 
 	const std::string name = Utility::UnicodeToEngine(effectName);
-	int type = ManipulatorSystem.GetEffect().GetAttachEffectType(name);
+	int type = manEffect.GetAttachEffectType(name);
 	if(type == 0)
 		m_paneAttachment->Attach(m_propertyParticle);
 	else if(type == 1)

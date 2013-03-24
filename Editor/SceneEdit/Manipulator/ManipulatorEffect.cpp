@@ -17,14 +17,12 @@ ManipulatorEffect::ManipulatorEffect()
 ,m_curEffect(Ogre::StringUtil::BLANK)
 ,m_effectNameID(0)
 {
-
+	ManipulatorScene::GetSingleton().AddCallback(this);
 }
 
 ManipulatorEffect::~ManipulatorEffect()
 {
-	for(auto iter=m_effectTemplates.begin(); iter!=m_effectTemplates.end(); ++iter)
-		delete iter->second;
-	m_effectTemplates.clear();
+	ManipulatorScene::GetSingleton().RemoveCallback(this);
 }
 
 void ManipulatorEffect::SetShadowEnable( bool bEnable )
@@ -437,8 +435,8 @@ void ManipulatorEffect::LoadEffect( rapidxml::xml_node<>* node )
 			for (size_t iEffect=0; iEffect<slots.size(); ++iEffect)
 			{
 				Ogre::NameValuePairList& info = slots[iEffect].params;
-				Kratos::eAttachEffect type = Kratos::AttachEffectBase::GetTypeFromString(info["type"]);
-				Kratos::AttachEffectBase* effect = effectTmpl->AddEffect(itAnim->first, type);
+				int type = Ogre::StringConverter::parseInt(info["type"]);
+				Kratos::AttachEffectBase* effect = effectTmpl->AddEffect(itAnim->first, (Kratos::eAttachEffect)type);
 				effect->setParameterList(info);
 
 				//查找最大名字ID,以后命名新的特效以此为据
@@ -544,4 +542,11 @@ int ManipulatorEffect::GetAttachEffectType( const std::string& name )
 	Kratos::EffectController* pCtrl = _GetEffectController(ManipulatorSystem.GetObject().GetSelection());
 	Kratos::AttachEffectBase* effect = pCtrl->GetEffect(name);
 	return effect->GetType();
+}
+
+void ManipulatorEffect::OnSceneClose()
+{
+	for(auto iter=m_effectTemplates.begin(); iter!=m_effectTemplates.end(); ++iter)
+		delete iter->second;
+	m_effectTemplates.clear();
 }

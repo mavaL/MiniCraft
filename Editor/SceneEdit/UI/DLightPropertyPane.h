@@ -18,8 +18,12 @@ public:
 	{
 		propDerivedStart = PropertyPaneAttachment::propMutableItemEnd,
 		propLightType = propDerivedStart,			//光源类型
-		propPointLightRadius,							//点光范围,超过开始衰减?
+		propPointLightRadius,						//点光外径
+		propPointLightAttenparam,					//点光衰减参数
 		propDerivedEnd,
+
+		//sub item
+		propAttenConstant, propAttenLinear, propAttenQuadric
 	};
 
 public:

@@ -55,6 +55,8 @@ public:
 
 public:
 	virtual void	CreateRenderInstance();	
+	///NO VIRTUAL!!
+	bool			InitParamDict(const STRING& name);
 
 public:
 	void			SetMeshName(const STRING& meshname);

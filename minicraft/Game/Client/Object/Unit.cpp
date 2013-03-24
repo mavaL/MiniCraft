@@ -41,9 +41,12 @@ Unit::Unit()
 ,m_unitName(Ogre::StringUtil::BLANK)
 ,m_fStopTime(0)
 {
-	Ogre::ParamDictionary* dict = getParamDictionary();
-	dict->addParameter(Ogre::ParameterDef("clamppos", "clamp position of the object", Ogre::PT_VECTOR3), &m_sCmdClampPos);
-	dict->addParameter(Ogre::ParameterDef("unitname", "logic representation of the unit", Ogre::PT_STRING), &m_sCmdUnitName);
+	if(InitParamDict("Unit"))
+	{
+		Ogre::ParamDictionary* dict = getParamDictionary();
+		dict->addParameter(Ogre::ParameterDef("clamppos", "clamp position of the object", Ogre::PT_VECTOR3), &m_sCmdClampPos);
+		dict->addParameter(Ogre::ParameterDef("unitname", "logic representation of the unit", Ogre::PT_STRING), &m_sCmdUnitName);
+	}
 
 	//将对象绑定到lua
 	//ScriptSystem::GetSingleton().BindObjectToLua<Unit>(UNIT_TABLE_NAME, GetID(), this);

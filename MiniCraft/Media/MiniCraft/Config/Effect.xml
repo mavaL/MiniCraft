@@ -2,12 +2,15 @@
 <Root>
 	<Unit name="Marine">
 		<Animation name="Attack">
-			<AttachEffect type="Particle" lifetime="0.3" locator="Ref_Weapon" name="Effect_0" starttime="0" template="mp_torch"/>
+			<AttachEffect lifetime="0.3" locator="Ref_Weapon" name="Effect_0" starttime="0" template="mp_torch" type="0"/>
 		</Animation>
 	</Unit>
 	<Unit name="Scv">
-		<Animation name="Walk">
-      <AttachEffect type="Particle" lifetime="0" locator="Ref_Jet1" name="Effect_1" starttime="0" template="Scv_Jet"/>
+		<Animation name="Idle">
+			<AttachEffect PointAtteParam="0 1 1" lifetime="0" lighttype="0" locator="Ref_Head" name="Effect_5" radius="3" starttime="0" type="1"/>
+		</Animation>
+		<Animation name="Attack">
+			<AttachEffect PointAtteParam="0 1 0" lifetime="0.5" lighttype="0" locator="Ref_Weapon" name="Effect_4" radius="5" starttime="0" type="1"/>
 		</Animation>
 	</Unit>
 </Root>

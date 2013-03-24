@@ -313,28 +313,29 @@ namespace Kratos
 		auto iter = m_dLightList.find(light->getParentLight());
 		assert(iter != m_dLightList.end());
 
+		m_pSceneMgr->destroyLight(iter->first);
 		delete iter->second;
 		m_dLightList.erase(iter);
 	}
 
 	void COgreManager::CreateSunLight( const Ogre::Vector3& direction, const Ogre::ColourValue& diffuse )
 	{
-		Ogre::Light* pSunLight = RenderManager.m_pSceneMgr->createLight("SunLight");
-		pSunLight->setType(Ogre::Light::LT_DIRECTIONAL);
-		pSunLight->setDirection(direction);
-		pSunLight->setDiffuseColour(diffuse);
-
-		m_pSunLight = new DLight(mLightMaterialGenerator, pSunLight);
-		m_dLightList.insert(std::make_pair(pSunLight, m_pSunLight));
+// 		Ogre::Light* pSunLight = RenderManager.m_pSceneMgr->createLight("SunLight");
+// 		pSunLight->setType(Ogre::Light::LT_DIRECTIONAL);
+// 		pSunLight->setDirection(direction);
+// 		pSunLight->setDiffuseColour(diffuse);
+// 
+// 		m_pSunLight = new DLight(mLightMaterialGenerator, pSunLight);
+// 		m_dLightList.insert(std::make_pair(pSunLight, m_pSunLight));
 	}
 
 	void COgreManager::DestroySunLight()
 	{
-		if(m_pSunLight)
-		{
-			m_dLightList.erase(m_pSunLight->getParentLight());
-			SAFE_DELETE(m_pSunLight);
-		}
+// 		if(m_pSunLight)
+// 		{
+// 			m_dLightList.erase(m_pSunLight->getParentLight());
+// 			SAFE_DELETE(m_pSunLight);
+// 		}
 	}
 
 }

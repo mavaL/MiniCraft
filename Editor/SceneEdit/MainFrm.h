@@ -59,7 +59,7 @@ private:
 	void			_CreateDockPane();
 	LRESULT			_AttachDockPane(WPARAM wParam, LPARAM lParam);
 	CPropertiesPane*	_GetCurAttachmentPane();
-	void			_OnAttachmentPaneChange(BOOL bEnable);
+	void			_OnAttachmentPaneChange(BOOL bEnable, BOOL bRefresh);
 	//创建mesh资源选择面板
 	bool			_CreateMeshPanel(CImageList& imageList, Ogre::StringVectorPtr& meshNames);
 
@@ -102,12 +102,12 @@ private:
 	void			OnUpdateUI_AnimStop(CCmdUI* pCmdUI);
 	void			OnAnimPlay();
 	void			OnAnimStop();
-	void			OnUpdateUI_AnimEffectAdd(CCmdUI* pCmdUI);
-	void			OnUpdateUI_AnimEffectRemove(CCmdUI* pCmdUI);
-	void			OnAnimEffectAdd(UINT nID);
-	void			OnAnimEffectRemove();
-	void			OnUpdateUI_AnimEffectList(CCmdUI* pCmdUI);
-	void			OnAnimEffectSelectChange(NMHDR* pNMHDR, LRESULT* pResult);
+	void			OnUpdateUI_AttachEffectAdd(CCmdUI* pCmdUI);
+	void			OnUpdateUI_AttachEffectRemove(CCmdUI* pCmdUI);
+	void			OnAttachEffectAdd(UINT nID);
+	void			OnAttachEffectRemove();
+	void			OnUpdateUI_AttachEffectList(CCmdUI* pCmdUI);
+	void			OnAttachEffectSelectChange(NMHDR* pNMHDR, LRESULT* pResult);
 
 	///GameData
 	void			OnUpdateUI_DataBuilding(CCmdUI* pCmdUI);

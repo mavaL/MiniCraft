@@ -18,15 +18,6 @@ namespace Kratos
 	,m_state(eEffectState_Uninit)
 	,m_locator(Ogre::StringUtil::BLANK)
 	{
-		if (createParamDictionary("AttachEffectBase"))
-		{
-			Ogre::ParamDictionary* dict = getParamDictionary();
-			dict->addParameter(Ogre::ParameterDef("type", "type of this effect", Ogre::PT_INT), &m_sCmdType);
-			dict->addParameter(Ogre::ParameterDef("name", "name of this effect", Ogre::PT_STRING), &m_sCmdName);
-			dict->addParameter(Ogre::ParameterDef("locator", "bone name to which this particle attach", Ogre::PT_STRING), &m_sCmdLocator);
-			dict->addParameter(Ogre::ParameterDef("starttime", "effect start time relative to animation", Ogre::PT_REAL), &m_sCmdStartTime);
-			dict->addParameter(Ogre::ParameterDef("lifetime", "effect's life time", Ogre::PT_REAL), &m_sCmdLifeTime);
-		}
 	}
 
 	AttachEffectBase::~AttachEffectBase()
@@ -54,16 +45,6 @@ namespace Kratos
 		Destroy();
 	}
 
-	Kratos::eAttachEffect AttachEffectBase::GetTypeFromString( const STRING& type )
-	{
-		if(type == "Particle")
-			return eAttachEffect_Particle;
-		else if(type == "DLight")
-			return eAttachEffect_DLight;
-		else
-			assert(0 && "Invalid effect type!");
-	}
-
 	void AttachEffectBase::Destroy()
 	{
 		m_state = eEffectState_Uninit;
@@ -75,5 +56,21 @@ namespace Kratos
 		m_state = eEffectState_Prepared;
 	}
 
+	bool AttachEffectBase::InitParamDict(const STRING& name)
+	{
+		STRING dictName("AttachEffectDict_");
+		dictName += name;
 
+		if (createParamDictionary(dictName))
+		{
+			Ogre::ParamDictionary* dict = getParamDictionary();
+			dict->addParameter(Ogre::ParameterDef("type", "type of this effect", Ogre::PT_INT), &m_sCmdType);
+			dict->addParameter(Ogre::ParameterDef("name", "name of this effect", Ogre::PT_STRING), &m_sCmdName);
+			dict->addParameter(Ogre::ParameterDef("locator", "bone name to which this particle attach", Ogre::PT_STRING), &m_sCmdLocator);
+			dict->addParameter(Ogre::ParameterDef("starttime", "effect start time relative to animation", Ogre::PT_REAL), &m_sCmdStartTime);
+			dict->addParameter(Ogre::ParameterDef("lifetime", "effect's life time", Ogre::PT_REAL), &m_sCmdLifeTime);
+			return true;
+		}
+		return false;
+	}
 }

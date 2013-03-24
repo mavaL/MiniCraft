@@ -1,6 +1,6 @@
 1. Study on rendering techniques, like SSAO, HDR, deferred light(point, spot).		
 
-deferred lights comming soon.
+Done.Can attach DLight to model now, of course still needs optimization.
 
 2. For some added graphic effect, I must provide convienient parameters tuning support in SceneEdit, like PSSM, SSAO.		
 
@@ -9,8 +9,13 @@ Done.
 3. Simple Material parameter editor in which can set differcent material's specular intensity, specular multiplier, 
 emissive multiplier, blend type and so on. This also means deferred shading pipeline must update to deferred lighting.
 
-0%
+0%	Delay
 
 4. Study on particle effect and foliage rendering.(To understand how semi-transparent object works)
 
 Attachment of particle effect done.
+
+
+5.Start to design of battle module, both logic and graphic. Say, a marine fights a zergling, interesting ha?
+
+0%

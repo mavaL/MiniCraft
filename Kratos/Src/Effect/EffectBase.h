@@ -23,6 +23,7 @@ namespace Kratos
 	enum eEffectState
 	{
 		eEffectState_Uninit,
+		eEffectState_Init,
 		eEffectState_Prepared,
 		eEffectState_Started,
 		eEffectState_Stoped,
@@ -41,7 +42,8 @@ namespace Kratos
 		AttachEffectBase(Ogre::Entity* parent);
 		virtual ~AttachEffectBase();
 
-		static eAttachEffect	GetTypeFromString(const STRING& type);
+		///NO VIRTUAL!!
+		bool			InitParamDict(const STRING& name);
 
 	public:
 		virtual void	Start();
