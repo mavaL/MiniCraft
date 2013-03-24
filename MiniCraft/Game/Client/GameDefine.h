@@ -24,7 +24,8 @@ enum eObjectType
 //场景查询类型
 enum eQueryType
 {
-	eQueryType_Default	=	1<<0,
+	eQueryType_All				=	0xffffffff,
+	eQueryType_Default			=	1<<0,
 	eQueryType_WorldGeometry	=	1<<1,
 	eQueryType_SelectableObject	=	1<<2
 };
@@ -32,9 +33,10 @@ enum eQueryType
 //命令
 enum eCommandType
 {
-	eCommandType_Produce,		//生产命令
-	eCommandType_Move,			//移动命令
-	eCommandType_Stop,			//停止命令
-	eCommandType_Gather			//采集命令
+	eCommandType_Produce,		//生产
+	eCommandType_Move,			//移动
+	eCommandType_Stop,			//停止
+	eCommandType_Gather,		//采集
+	eCommandType_Attack			//攻击
 };
 

@@ -227,12 +227,12 @@ void World::EnableFreeCamera( bool bEnable )
 }
 
 void World::GetAABBSceneQueryResult(const Ogre::AxisAlignedBox& box, 
-	std::vector<Ogre::MovableObject*>& result, int queryMask)
+	std::vector<Ogre::MovableObject*>& result, eQueryType mask)
 {
 	assert(m_pSceneQuery);
 
 	m_pSceneQuery->setBox(box);
-	m_pSceneQuery->setQueryMask(queryMask);
+	m_pSceneQuery->setQueryMask(mask);
 	Ogre::SceneQueryResult& queryResults = m_pSceneQuery->execute();
 
 	auto movableList = queryResults.movables;
@@ -240,12 +240,19 @@ void World::GetAABBSceneQueryResult(const Ogre::AxisAlignedBox& box,
 		result.push_back(*iter);
 }
 
-Ogre::MovableObject* World::GetRaySceneQueryResult( const Ogre::Ray& ray, int queryMask /*= 0xffffffff*/ )
+Ogre::MovableObject* World::GetRaySceneQueryResult( const OIS::MouseEvent& arg, eQueryType mask, POS* retIntersect )
 {
-	assert(m_pRaySceneQuery);
+	float screenX = arg.state.X.abs / (float)arg.state.width;
+	float screenY = arg.state.Y.abs / (float)arg.state.height;
+
+	if(retIntersect && !GetTerrainIntersectPos(FLOAT2(screenX, screenY), *retIntersect))
+		return nullptr;
+
+	Ogre::Ray ray;
+	RenderManager.m_pMainCamera->getCameraToViewportRay(screenX, screenY, &ray);
 
 	m_pRaySceneQuery->setRay(ray);
-	m_pRaySceneQuery->setQueryMask(queryMask);
+	m_pRaySceneQuery->setQueryMask(mask);
 	const Ogre::RaySceneQueryResult& result = m_pRaySceneQuery->execute();
 
 	if(result.empty())

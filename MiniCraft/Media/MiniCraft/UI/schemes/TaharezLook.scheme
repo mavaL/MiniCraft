@@ -13,6 +13,12 @@
 	<Imageset Filename="CommandMove.imageset" />
 	<Imageset Filename="CommandStop.imageset" />
 	<Imageset Filename="CommandGather.imageset" />
+	<Imageset Filename="CommandAttack.imageset" />
+	<Imageset Filename="TerranCursor.imageset" />
+	<Imageset Filename="CursorTargetNone.imageset" />
+	<Imageset Filename="CursorTargetAllied.imageset" />
+	<Imageset Filename="CursorTargetEnemy.imageset" />
+	<Imageset Filename="CursorTargetInvalid.imageset" />
 	<Font Filename="DejaVuSans-10.font" />
 	<LookNFeel Filename="TaharezLook.looknfeel" />
 	<WindowRendererSet Filename="CEGUIFalagardWRBase" />

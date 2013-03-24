@@ -1084,14 +1084,19 @@ void CMainFrame::OnUpdateUI_AttachEffectList( CCmdUI* pCmdUI )
 
 void CMainFrame::OnAttachEffectSelectChange( NMHDR* pNMHDR, LRESULT* pResult )
 {
-	CString effectName;
+	CString effectName(L"");
 	int curSel = m_effectList->GetCurSel();
-	m_effectList->GetLBText(curSel, effectName);
-
-	const std::string name = Utility::UnicodeToEngine(effectName);
-	ManipulatorSystem.GetEffect().OnAttachEffectSelChange(name);
-	_OnAttachmentPaneChange(TRUE, FALSE);
-	m_paneAttachment->Select();
+	if(curSel >= 0)
+	{
+		m_effectList->GetLBText(curSel, effectName);
+		const std::string name = Utility::UnicodeToEngine(effectName);
+		_OnAttachmentPaneChange(TRUE, FALSE);
+		m_paneAttachment->Select();
+	}
+	else
+	{
+		ManipulatorSystem.GetEffect().OnAttachEffectSelChange("");
+	}
 }
 
 void CMainFrame::OnUpdateUI_ObjectRemove( CCmdUI* pCmdUI )

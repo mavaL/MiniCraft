@@ -13,6 +13,15 @@ namespace CEGUI
 
 namespace Kratos
 {
+	enum eCursorMode
+	{
+		eCursorMode_Normal,
+		eCursorMode_TargetNone,
+		eCursorMode_TargetAllied,
+		eCursorMode_TargetEnemy,
+		eCursorMode_TargetInvalid
+	};
+
 	/*------------------------------------------------
 					CEGUI模块封装类
 	-------------------------------------------------*/
@@ -31,6 +40,8 @@ namespace Kratos
 		CEGUI::Window*	LoadWindowLayout(const Ogre::String& name);
 		void	UnloadWindowLayout(CEGUI::Window* pWnd);
 		void	SetGUISheet(CEGUI::Window* pWnd);
+		//改变鼠标样式
+		void	SetCursorMode(eCursorMode mode);
 
 	private:
 		CEGUI::OgreRenderer*	m_pRenderer;
@@ -38,8 +49,6 @@ namespace Kratos
 
 		//Hook进渲染事件,绘制自定义数据
 		bool overlayHandler(const CEGUI::EventArgs& args);
-		//	CEGUI::GeometryBuffer* m_pGeometryBuffer; //绘制赛车速度文字的Buffer
-
 
 		//挂接输入系统鼠标事件
 		bool OnInputSys_MousePressed(const OIS::MouseEvent &arg, OIS::MouseButtonID id);

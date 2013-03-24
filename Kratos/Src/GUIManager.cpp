@@ -33,11 +33,10 @@ namespace Kratos
 		CEGUI::Scheme::setDefaultResourceGroup("Schemes");
 		CEGUI::WidgetLookManager::setDefaultResourceGroup("LookNFeel");
 		CEGUI::WindowManager::setDefaultResourceGroup("Layouts");
+		CEGUI::SchemeManager::getSingleton().create("TaharezLook.scheme");
 
 		//创建默认鼠标图标
-		CEGUI::SchemeManager::getSingleton().create("TaharezLook.scheme");
-		m_pSystem->setDefaultMouseCursor("TaharezLook", "MouseArrow");
-		CEGUI::MouseCursor::getSingleton().setImage("TaharezLook", "MouseArrow");
+		SetCursorMode(eCursorMode_Normal);
 
 		//日志输入细节设置高点
 		//DefaultLogger::getSingleton().setLoggingLevel(Informative);
@@ -155,6 +154,24 @@ namespace Kratos
 		assert(pWnd);
 		WindowManager::getSingleton().destroyWindow(pWnd);
 	}
+
+	void CGUIManager::SetCursorMode( eCursorMode mode )
+	{
+		CEGUI::String imgsetName, imgName;
+		switch (mode)
+		{
+		case eCursorMode_Normal:	{ imgsetName = "cursor.dds"; imgName = "TerranCursor"; } break;
+		case eCursorMode_TargetNone: { imgsetName = "cursor-target-none.dds"; imgName = "cursor-target-none"; } break;
+		case eCursorMode_TargetAllied: { imgsetName = "cursor-target-allied.dds"; imgName = "cursor-target-allied"; } break;
+		case eCursorMode_TargetEnemy: { imgsetName = "cursor-target-enemy.dds"; imgName = "cursor-target-enemy"; } break;
+		case eCursorMode_TargetInvalid: { imgsetName = "cursor-target-invalid.dds"; imgName = "cursor-target-invalid"; } break;
+		default: assert(0);
+		}
+
+		m_pSystem->setDefaultMouseCursor(imgsetName, imgName);
+		MouseCursor::getSingleton().setImage(imgsetName, imgName);
+	}
+
 }
 
 

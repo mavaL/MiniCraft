@@ -7,5 +7,6 @@
   <Ability name="Move" iconname="btn-command-move.dds" type="move" extraparam="TargetingAndForceExecute"/>
   <Ability name="Stop" iconname="btn-command-stop.dds" type="stop" extraparam="ForceExecute"/>
   <Ability name="Gather" iconname="btn-ability-terran-gather.dds" type="gather" extraparam="TargetingAndForceExecute"/>
+  <Ability name="Attack" iconname="btn-command-attack.dds" type="attack" extraparam="TargetingAndForceExecute"/>
 </Root>
 

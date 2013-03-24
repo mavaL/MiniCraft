@@ -25,7 +25,6 @@ public:
 	~SelectableObject();
 
 public:
-	virtual	void	Update(float dt);
 	virtual void	CreateRenderInstance();
 	//当前命令完成,接到通知
 	virtual void	_OnCommandFinished(eCommandType cmd);

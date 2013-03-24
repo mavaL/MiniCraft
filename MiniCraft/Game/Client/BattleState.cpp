@@ -154,23 +154,25 @@ bool CBattleState::OnInputSys_MouseReleased( const OIS::MouseEvent& arg, OIS::Mo
 
 		float screenX = arg.state.X.abs / (float)arg.state.width;
 		float screenY = arg.state.Y.abs / (float)arg.state.height;
-		Ogre::Ray ray;
-		RenderManager.m_pMainCamera->getCameraToViewportRay(screenX, screenY, &ray);
-
-		POS intersectPos;
-		if(!world.GetTerrainIntersectPos(FLOAT2(screenX, screenY), intersectPos))
-			return true;
 		
 		std::vector<Ogre::MovableObject*> vecResult;
 		//鼠标拖动小于阕值时,进行射线查询,使得结果更准确
-		if(intersectPos.positionEquals(m_LBDownPos, 0.1f))
+		float dist = m_LBDownScreenPos.squaredDistance(FLOAT2(screenX, screenY));
+		if(dist <= 0.001f)
 		{
-			Ogre::MovableObject* pObject = world.GetRaySceneQueryResult(ray, eQueryType_SelectableObject);
+			Ogre::MovableObject* pObject = world.GetRaySceneQueryResult(arg, eQueryType_SelectableObject);
 			if (pObject)
 				vecResult.push_back(pObject);
 		}
 		else
 		{
+			Ogre::Ray ray;
+			RenderManager.m_pMainCamera->getCameraToViewportRay(screenX, screenY, &ray);
+
+			POS intersectPos;
+			if(!world.GetTerrainIntersectPos(FLOAT2(screenX, screenY), intersectPos))
+				return true;
+
 			//建立查询包围盒
 			Ogre::AxisAlignedBox aabb;
 			aabb.setMinimum(std::min(m_LBDownPos.x, intersectPos.x), std::min(m_LBDownPos.y, intersectPos.y), 

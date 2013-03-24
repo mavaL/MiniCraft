@@ -5,6 +5,7 @@
       <Animation type="Idle" name="Idle"/>
       <Animation type="Move" name="Walk"/>
       <Animation type="Gather" name="Work"/>
+      <Animation type="Attack" name="Attack"/>
     </AnimationSet>
     <Ability name="Move" slotindex="0"/>
     <Ability name="Stop" slotindex="1"/>
@@ -18,6 +19,7 @@
     </AnimationSet>
     <Ability name="Move" slotindex="0"/>
     <Ability name="Stop" slotindex="1"/>
+    <Ability name="Attack" slotindex="4"/>
   </Unit>
   <Unit name="Drone" timecost="5" meshname="Drone_0.mesh" race="Zerg" portrait="MarinePortrait_1.mesh">
     <AnimationSet>
@@ -33,9 +35,11 @@
     <AnimationSet>
       <Animation type="Idle" name="Stand"/>
       <Animation type="Move" name="Run"/>
+      <Animation type="Attack" name="Attack"/>
     </AnimationSet>
     <Ability name="Move" slotindex="0"/>
     <Ability name="Stop" slotindex="1"/>
+    <Ability name="Attack" slotindex="4"/>
   </Unit>
 </Root>
 

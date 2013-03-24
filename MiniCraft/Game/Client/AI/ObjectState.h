@@ -63,6 +63,7 @@ public:
 
 private:
 	bool		OnInputSys_MouseReleased(const OIS::MouseEvent& arg, OIS::MouseButtonID id);
+	bool		OnInputSys_MouseMove(const OIS::MouseEvent &arg);
 };
 
 ///ÒÆ¶¯×´Ì¬

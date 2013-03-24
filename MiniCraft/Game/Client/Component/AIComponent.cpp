@@ -80,17 +80,9 @@ void AiComponent::GiveCommand( const OIS::MouseEvent& arg, OIS::MouseButtonID id
 {
 	World& world = World::GetSingleton();
 
-	float screenX = arg.state.X.abs / (float)arg.state.width;
-	float screenY = arg.state.Y.abs / (float)arg.state.height;
-	
-	POS intersectPos;
-	if(!world.GetTerrainIntersectPos(FLOAT2(screenX, screenY), intersectPos))
-		return;
-
 	//是否选中了其他物体
-	Ogre::Ray ray;
-	RenderManager.m_pMainCamera->getCameraToViewportRay(screenX, screenY, &ray);
-	Ogre::MovableObject* pMovable = world.GetRaySceneQueryResult(ray, eQueryType_SelectableObject);
+	POS intersectPos;
+	Ogre::MovableObject* pMovable = world.GetRaySceneQueryResult(arg, eQueryType_SelectableObject, &intersectPos);
 	SelectableObject* pHitObj = nullptr;
 	if(pMovable)
 	{

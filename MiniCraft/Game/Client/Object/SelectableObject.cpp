@@ -468,10 +468,6 @@ void SelectableObject::ReleaseMeshCache()
 	m_selCircleCache.clear();
 }
 
-void SelectableObject::Update( float dt )
-{
-}
-
 void SelectableObject::_OnSelected( bool bSelected )
 {
 	UiCommandPanel* pCmdPanel = World::GetSingleton().GetCommandPanel();

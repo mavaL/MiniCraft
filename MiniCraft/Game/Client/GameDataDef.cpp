@@ -74,6 +74,7 @@ void GameDataDefManager::LoadAllData()
 		mapName["move"]		= eCommandType_Move;
 		mapName["stop"]		= eCommandType_Stop;
 		mapName["gather"]	= eCommandType_Gather;
+		mapName["attack"]	= eCommandType_Attack; 
 
 		eCommandType type = mapName[szType];
 		STRING param("");

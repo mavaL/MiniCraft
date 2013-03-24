@@ -29,7 +29,7 @@ public:
 	Component*			GetComponent(eComponentType type);
 	void				UpdateAllComponent(float dt);
 	virtual eObjectType GetType() const = 0;
-	virtual	void		Update(float dt) = 0;
+	virtual	void		Update(float dt) {}
 
 private:
 	int					m_ID;			//对象唯一标示ID

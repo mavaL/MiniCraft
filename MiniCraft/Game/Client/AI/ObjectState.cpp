@@ -108,27 +108,91 @@ void StateTargeting::Enter( SelectableObject* pOwner )
 {
 	Kratos::CInputManager& inputMgr = INPUTMANAGER;
 	inputMgr.BindMouseRelease(boost::bind(&StateTargeting::OnInputSys_MouseReleased, this, _1, _2), Kratos::eInputEventPriority_Targeting);
+	inputMgr.BindMouseMove(boost::bind(&StateTargeting::OnInputSys_MouseMove, this, _1), Kratos::eInputEventPriority_Targeting);
 	inputMgr.BlockMousePressed(Kratos::eInputEventPriority_default, true);
+	
+	GUIMANAGER.SetCursorMode(Kratos::eCursorMode_TargetNone);
 }
 
 void StateTargeting::Exit( SelectableObject* pOwner )
 {
 	Kratos::CInputManager& inputMgr = INPUTMANAGER;
 	inputMgr.UnbindMouseRelease(Kratos::eInputEventPriority_Targeting);
+	inputMgr.UnbindMouseMove(Kratos::eInputEventPriority_Targeting);
 	inputMgr.BlockMousePressed(Kratos::eInputEventPriority_default, false);
+
+	GUIMANAGER.SetCursorMode(Kratos::eCursorMode_Normal);
 }
 
 bool StateTargeting::OnInputSys_MouseReleased( const OIS::MouseEvent& arg, OIS::MouseButtonID id )
 {
+	SelectableObject* pObj = World::GetSingleton().GetSelectedObjects().at(0);
+
 	if (id == OIS::MB_Left)
 	{
-		SelectableObject* pObj = World::GetSingleton().GetSelectedObjects().at(0);
 		pObj->GetAi()->GiveCommand(arg, id);
+		//退出并行状态
+		pObj->GetAi()->ClearParallelState();
+	}
+	else if (id == OIS::MB_Right)
+	{
 		//退出并行状态
 		pObj->GetAi()->ClearParallelState();
 	}
 
 	return true;
+}
+
+bool StateTargeting::OnInputSys_MouseMove( const OIS::MouseEvent &arg )
+{
+	SelectableObject* pObj = World::GetSingleton().GetSelectedObjects().at(0);
+	eCommandType cmd = pObj->GetActiveAbility()->m_type;
+
+	//获取当前鼠标hover下的物体
+	Ogre::MovableObject* pMovable = World::GetSingleton().GetRaySceneQueryResult(arg, eQueryType_SelectableObject);
+	SelectableObject* pHoverObj = nullptr;
+	if(pMovable)
+	{
+		pHoverObj = Ogre::any_cast<SelectableObject*>(pMovable->getUserAny());
+		assert(pHoverObj);
+	}
+
+	//根据当前命令类型确定鼠标样式
+	Kratos::eCursorMode mode;
+	switch (cmd)
+	{
+	case eCommandType_Move:
+		{
+			//无法移动..
+			if(pHoverObj)
+				mode = Kratos::eCursorMode_TargetInvalid;
+			else
+				mode = Kratos::eCursorMode_TargetNone;
+		}
+		break;
+
+	case eCommandType_Gather:
+		{
+			if(pHoverObj && pHoverObj->GetType() == eObjectType_Resource)
+				mode = Kratos::eCursorMode_TargetAllied;
+			else
+				mode = Kratos::eCursorMode_TargetInvalid;
+		}
+		break;
+
+	case eCommandType_Attack:
+		{
+			//TODO
+		}
+		break;
+
+	default: assert(0);
+	}
+
+	GUIMANAGER.SetCursorMode(mode);
+
+	//让其他handler继续响应
+	return false;
 }
 
 ///////////////////////////////////////////////////////////////

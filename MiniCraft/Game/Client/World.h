@@ -62,9 +62,9 @@ public:
 
 	//返回AABB场景查询到的物体
 	void			GetAABBSceneQueryResult(const Ogre::AxisAlignedBox& box, 
-		std::vector<Ogre::MovableObject*>& result, int queryMask = 0xffffffff);
+		std::vector<Ogre::MovableObject*>& result, eQueryType mask = eQueryType_All);
 	//返回射线场景查询到的第1个物体
-	Ogre::MovableObject*	GetRaySceneQueryResult(const Ogre::Ray& ray, int queryMask = 0xffffffff);
+	Ogre::MovableObject*	GetRaySceneQueryResult(const OIS::MouseEvent& arg, eQueryType mask = eQueryType_All, POS* retIntersect = nullptr);
 
 	//尝试调整世界坐标在有效的NavMesh上
 	bool			ClampPosToNavMesh(POS& wPos);

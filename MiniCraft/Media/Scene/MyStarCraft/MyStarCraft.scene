@@ -7,13 +7,12 @@
 		<fxaa EnableFXAA="false"/>
 	</effect>
 	<terrain worldSize="128" mapSize="65" tuningMaxPixelError="8"/>
-	<objects count="17">
+	<objects count="16">
 		<entity meshname="Crystals_0.mesh" isnavmesh="true" isbuilding="false" isresource="true" position="49.6609 0 -17.2586" orientation="0.785887 0 -0.61837 0" scale="2 2 2"/>
 		<entity meshname="Crystals_0.mesh" isnavmesh="true" isbuilding="false" isresource="true" position="49.5452 0 -12.8158" orientation="0.57226 0 -0.820072 0" scale="2 2 2"/>
 		<entity meshname="SpawningPool_0.mesh" isnavmesh="true" isbuilding="true" buildingname="SpawningPool" isresource="false" position="-44.3819 0 -21.5826" orientation="1 0 0 0" scale="1 1 1"/>
 		<entity meshname="Barracks_0.mesh" isnavmesh="true" isbuilding="true" buildingname="Barracks" isresource="false" position="21.2572 0 -25.1684" orientation="0.35158 0 0.936158 0" scale="1 1 1"/>
 		<entity meshname="SpawningPool_0.mesh" isnavmesh="true" isbuilding="true" buildingname="SpawningPool" isresource="false" position="-24.86 0 -21.712" orientation="1 0 0 0" scale="1 1 1"/>
-		<entity meshname="SCV_0.mesh" isnavmesh="false" isbuilding="false" isresource="false" position="-5.77962 0 10.2899" orientation="-4.37114e-008 0 1 0" scale="1 1 1"/>
 		<entity meshname="Hatchery_0.mesh" isnavmesh="true" isbuilding="true" buildingname="Hatchery" isresource="false" position="-33.8381 0 -13.6236" orientation="0.381399 0 0.924411 0" scale="1 1 1"/>
 		<entity meshname="Crystals_0.mesh" isnavmesh="true" isbuilding="false" isresource="true" position="-54.5667 0 -13.0591" orientation="0.922056 0 0.387056 0" scale="2 2 2"/>
 		<entity meshname="Crystals_0.mesh" isnavmesh="true" isbuilding="false" isresource="true" position="-53.8367 0 -17.3048" orientation="0.507546 0 -0.861625 0" scale="2 2 2"/>
