@@ -15,11 +15,14 @@
 
 
 struct lua_State;
+struct SUnitData;
 
 class Unit : public SelectableObject
 {
-	DECL_PARAM_COMMAND(ClampPos)
-	DECL_PARAM_COMMAND(UnitName)
+	DECL_PARAM_COMMAND(Name)
+	DECL_PARAM_COMMAND(Race)
+	DECL_PARAM_COMMAND(PortraitName)
+	DECL_PARAM_COMMAND(ProduceTime)
 public:
 	Unit();
 	Unit(lua_State* L) {}
@@ -36,16 +39,21 @@ public:
 	virtual void	_OnCommandFinished(eCommandType cmd);
 
 public:
-	void			SetUnitName(const STRING& name);
-	const STRING&	GetUnitName() const {return m_unitName; } 
-	//设置单位坐标,内部会自动夹持到地形上
-	void			SetClampPos(const POS& pos);
-	const POS&		GetClampPos() const { return GetPosition(); }
-	//停止行动
+	void			Init();
+	void			SetName(const STRING& name);
+	const STRING&	GetName() const		{ return m_unitName; }
+	void			SetRace(int race)	{ assert(0); /*shouldn't be called!*/ }
+	int				GetRace() const;
+	void			SetPortraitName(const STRING& name)	{ assert(0); /*shouldn't be called!*/ }
+	const STRING&	GetPortraitName() const;
+	void			SetProduceTime(float time)	{ assert(0); /*shouldn't be called!*/ }
+	float			GetProduceTime() const;
+
+	SUnitData*		GetUnitData() { return m_data; }
+	Ogre::Entity*	GetPortrait(Ogre::SceneManager* sm, Ogre::Light* light);
 	void			StopAction();
 	void			SetStopTime(float fTime) { m_fStopTime = fTime; }
 	float			GetStopTime() const	{ return m_fStopTime; }
-	Ogre::Entity*	GetPortrait(Ogre::SceneManager* sm, Ogre::Light* light);
 
 public:
 	///lua导出函数
@@ -64,6 +72,7 @@ protected:
 	virtual void	_OnSelected(bool bSelected);
 
 private:
+	SUnitData*				m_data;
 	STRING					m_unitName;		//单位名称,如:scv,marine...
 	float					m_fStopTime;	//已经进入停止状态多久
 	static std::unordered_map<STRING, Ogre::Entity*>			m_portraitCache;		//cache每种单位的3D肖像模型

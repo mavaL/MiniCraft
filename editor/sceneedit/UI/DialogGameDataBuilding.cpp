@@ -89,8 +89,8 @@ void DialogGameDataBuilding::OnPaint()
 		wnd->UpdateWindow();
 
 		Gdiplus::Graphics g(wnd->GetDC()->GetSafeHdc());
-		const SBuildingData* pData = manGameData.GetBuildingData(buildingName.c_str());
-		Gdiplus::Bitmap* bm = ManipulatorSystem.GetResource().GetIcon(Utility::EngineToUnicode(pData->m_iconName));
+		SBuildingData* pData = manGameData.GetBuildingData(buildingName.c_str());
+		Gdiplus::Bitmap* bm = ManipulatorSystem.GetResource().GetIcon(Utility::EngineToUnicode(pData->params["icon"]));
 		g.DrawImage(bm, 0, 0, 0, 0, bm->GetWidth(), bm->GetHeight(), Gdiplus::UnitPixel);
 	}
 

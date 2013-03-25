@@ -17,6 +17,7 @@ enum eObjectState
 	eObjectState_Targeting,		//选择目标
 	eObjectState_Stop,			//停止
 	eObjectState_Gather,		//采集资源
+	eObjectState_Attack			//攻击
 };
 
 class SelectableObject;
@@ -111,6 +112,18 @@ public:
 	virtual	void Enter(SelectableObject* pOwner);
 	virtual void Update(float dt, SelectableObject* pOwner);
 	virtual void Exit(SelectableObject* pOwner);
+};
+
+///攻击状态
+class StateAttack : public ObjectState
+{
+public:
+	StateAttack():ObjectState(eObjectState_Attack) {}
+
+public:
+	virtual	void Enter(SelectableObject* pOwner) {}
+	virtual void Update(float dt, SelectableObject* pOwner) {}
+	virtual void Exit(SelectableObject* pOwner) {}
 };
 
 

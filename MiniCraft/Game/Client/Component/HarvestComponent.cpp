@@ -8,6 +8,8 @@
 #include "Faction.h"
 #include "Building.h"
 #include "OgreManager.h"
+#include "AnimatedComponent.h"
+#include "ObjectState.h"
 
 HarvestComponent::HarvestComponent( SelectableObject* pOwner )
 :Component(pOwner)
@@ -74,9 +76,8 @@ void HarvestComponent::Update( float dt )
 	}
 	else/* if(m_curStage == eHarvestStage_Return)*/
 	{
-		const STRING& unitName = m_pOwner->getParameter("unitname");
-		SUnitData* unitData = &GameDataDefManager::GetSingleton().m_unitData[unitName];
-		Faction* player = World::GetSingleton().GetFaction(unitData->m_race);
+		int race = Ogre::StringConverter::parseInt(m_pOwner->getParameter("race"));
+		Faction* player = World::GetSingleton().GetFaction((eGameRace)race);
 
 		if(!path->IsMoving())
 		{

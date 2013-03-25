@@ -66,24 +66,6 @@ void classname::Cmd##cmdname::doSet(void* target, const STRING& val)					\
 	obj->Set##cmdname(val);																\
 }
 
-///属性自动持久化
-#define PARAMS_LOAD(stringinterface, namevaluelist, node)								\
-{																						\
-	const Ogre::ParameterList& dict = stringinterface->getParameters();					\
-	std::for_each(dict.begin(), dict.end(), [&](const Ogre::ParameterDef& def)			\
-	{																					\
-		namevaluelist.insert(std::make_pair(def.name, node->first_attribute(def.name.c_str())->value()));	\
-	});																						\
-}
-
-#define PARAMS_SAVE(stringinterface, namevaluelist)										\
-{																						\
-	const Ogre::ParameterList& dict = stringinterface->getParameters();					\
-	std::for_each(dict.begin(), dict.end(), [&](const Ogre::ParameterDef& def)			\
-	{																					\
-		namevaluelist.insert(std::make_pair(def.name, stringinterface->getParameter(def.name)));		\
-	});																					\
-}
 
 #define GUIMANAGER		Kratos::CGUIManager::GetSingleton()
 #define INPUTMANAGER	Kratos::CInputManager::GetSingleton()

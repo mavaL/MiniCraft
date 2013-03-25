@@ -27,7 +27,7 @@ public:
 	//获取种族的建筑名称列表
 	std::vector<std::wstring>	GetRaceBuildingNames(eGameRace race) const;
 	//获取building数据
-	const SBuildingData*		GetBuildingData(const std::wstring& name);
+	SBuildingData*				GetBuildingData(const std::wstring& name);
 	//获取所有ability名称列表
 	std::vector<std::wstring>	GetAbilityNames() const;
 	//获取ability数据

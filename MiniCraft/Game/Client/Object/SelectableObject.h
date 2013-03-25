@@ -11,11 +11,13 @@
 
 #include "ObjectBase.h"
 #include "GameDefine.h"
-#include "GameDataDef.h"
 #include "Command.h"
-#include "AIComponent.h"
-#include "PathComponent.h"
-#include "AnimatedComponent.h"
+
+class AiComponent;
+class PathComponent;
+class AnimatedComponent;
+class HarvestComponent;
+struct SAbilityData;
 
 ///该类实现来自OgreProcedural库
 class SelectableObject : public RenderableObject
@@ -33,6 +35,8 @@ public:
 	//!!在Ogre Root销毁前必须调用
 	static void		ReleaseMeshCache();
 
+
+	void			InitTeamColor(const COLOR& color);
 	void			SetSelected(bool bSelected);
 	bool			GetSelected() const { return m_bSelected; }
 	void			SetAbility(int slotIndex, const SAbilityData* pData);
@@ -40,9 +44,10 @@ public:
 	const SAbilityData*	GetActiveAbility() const { return m_pActiveAbility; }
 	bool			HasAbility(eCommandType type);
 
-	inline AiComponent*			GetAi() { return QueryComponent(this, eComponentType_AI, AiComponent); }
-	inline PathComponent*		GetPath() { return QueryComponent(this, eComponentType_Path, PathComponent); }
-	inline AnimatedComponent*	GetAnim() { return QueryComponent(this, eComponentType_Animated, AnimatedComponent); }
+	 AiComponent*			GetAi();
+	PathComponent*			GetPath();
+	AnimatedComponent*		GetAnim();
+	HarvestComponent*		GetGather();
 
 protected:
 	virtual void	_OnSelected(bool bSelected);

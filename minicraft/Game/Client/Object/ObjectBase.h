@@ -11,9 +11,8 @@
 
 #include "GameDefine.h"
 #include <OgreStringInterface.h>
-#include "Component.h"
 #include "KratosPrerequisites.h"
-
+#include "Component.h"
 
 ////////////////////////////////////////////////////
 ///顶层基类
@@ -43,11 +42,7 @@ private:
 ///可渲染对象基类
 class RenderableObject : public Object
 {
-	DECL_PARAM_COMMAND(Position)
-	DECL_PARAM_COMMAND(Orientation)
 	DECL_PARAM_COMMAND(MeshName)
-	DECL_PARAM_COMMAND(Scale)
-	DECL_PARAM_COMMAND(TeamColor)
 
 public:
 	RenderableObject();
@@ -71,15 +66,12 @@ public:
 	const SCALE&	GetScale() const;
 	Ogre::Entity*	GetEntity() { return m_pEntity; }
 	Ogre::SceneNode* GetSceneNode() { return m_pSceneNode; }
-	void			SetTeamColor(const COLOR& c) { m_teamColor = c; }
-	const COLOR&	GetTeamColor() const { return m_teamColor; }
 
 protected:
 	Ogre::Entity*		m_pEntity;
 	Ogre::SceneNode*	m_pSceneNode;
 	bool				m_bRenderableReady;	//渲染实例是否已创建
 	STRING				m_meshname;
-	COLOR				m_teamColor;
 };
 
 

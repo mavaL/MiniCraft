@@ -15,6 +15,7 @@
 #include "Component.h"
 
 class SelectableObject;
+class Faction;
 
 ///AI组件基类
 class AiComponent : public Component
@@ -38,6 +39,11 @@ public:
 	eObjectState	GetCurState() const { return m_curState; }
 	void			SetParallelState(eObjectState state);
 	void			ClearParallelState();
+	void			SetFaction(Faction* player);
+	Faction*		GetFaction()	{ return m_player; }
+	bool			IsAlly(SelectableObject* obj);
+	void			SetAttackTarget(SelectableObject* target) { m_attkTarget = target; }
+	SelectableObject* GetAttackTarget()	{ return m_attkTarget; }
 
 	//当前命令完成,接到通知
 	void			_OnCommandFinished();
@@ -51,7 +57,9 @@ private:
 
 	bool				m_bExecuting;	//当前是否在执行命令
 	eObjectState		m_curState;		//对象当前所处状态
-	ObjectState*		m_parallelState;//并行状态.比如StateTargeting就需要与其他状态同时进行		
+	ObjectState*		m_parallelState;//并行状态.比如StateTargeting就需要与其他状态同时进行	
+	Faction*			m_player;		//该对象所属玩家
+	SelectableObject*	m_attkTarget;	//当前攻击目标
 };
 
 #endif // AIComponent_h__

@@ -6,10 +6,14 @@
 #include "AIComponent.h"
 #include "PathComponent.h"
 #include "HarvestComponent.h"
+#include "AnimatedComponent.h"
 #include "OgreManager.h"
+#include "GameDataDef.h"
 
-IMPL_PARAM_COMMAND(Unit, ClampPos, Vector3)
-IMPL_PARAM_COMMAND_STR(Unit, UnitName)
+IMPL_PARAM_COMMAND_STR(Unit, Name)
+IMPL_PARAM_COMMAND(Unit, Race, Int)
+IMPL_PARAM_COMMAND(Unit, ProduceTime, Real)
+IMPL_PARAM_COMMAND_STR(Unit, PortraitName)
 
 //**** Define stuff for the Lua Class ****//
 // Define the Lua ClassName
@@ -40,12 +44,15 @@ Unit::Unit()
 :SelectableObject()
 ,m_unitName(Ogre::StringUtil::BLANK)
 ,m_fStopTime(0)
+,m_data(nullptr)
 {
 	if(InitParamDict("Unit"))
 	{
 		Ogre::ParamDictionary* dict = getParamDictionary();
-		dict->addParameter(Ogre::ParameterDef("clamppos", "clamp position of the object", Ogre::PT_VECTOR3), &m_sCmdClampPos);
-		dict->addParameter(Ogre::ParameterDef("unitname", "logic representation of the unit", Ogre::PT_STRING), &m_sCmdUnitName);
+		dict->addParameter(Ogre::ParameterDef("name", "Unit name", Ogre::PT_STRING), &m_sCmdName);
+		dict->addParameter(Ogre::ParameterDef("race", "Race", Ogre::PT_INT), &m_sCmdRace);
+		dict->addParameter(Ogre::ParameterDef("portrait", "Portrait mesh name", Ogre::PT_STRING), &m_sCmdPortraitName);
+		dict->addParameter(Ogre::ParameterDef("timecost", "Time cost to produce this unit", Ogre::PT_REAL), &m_sCmdProduceTime);
 	}
 
 	//将对象绑定到lua
@@ -184,16 +191,6 @@ int Unit::SetDestPosition( lua_State* L )
 	return 0;
 }
 
-void Unit::SetClampPos( const POS& pos )
-{
-	Ogre::Vector3 adjustPos = pos;
-	bool bSucceed = World::GetSingleton().ClampPosToNavMesh(adjustPos);
-	assert(bSucceed);
-	World::GetSingleton().ClampToTerrain(adjustPos);
-
-	__super::SetPosition(adjustPos);
-}
-
 void Unit::_OnCommandFinished( eCommandType cmd )
 {
 	if(cmd == eCommandType_Move)
@@ -202,25 +199,20 @@ void Unit::_OnCommandFinished( eCommandType cmd )
 	__super::_OnCommandFinished(cmd);
 }
 
-void Unit::SetUnitName( const STRING& name )
+void Unit::Init()
 {
-	m_unitName = name;
+	assert(m_data);
 
-	GameDataDefManager& dataMgr = GameDataDefManager::GetSingleton();
-	auto iter = dataMgr.m_unitData.find(m_unitName);
-	assert(iter != dataMgr.m_unitData.end());
-	const SUnitData& data = iter->second;
-	
 	//创建渲染实例
-	setParameter("meshname", data.m_meshname);
+	setParameter("meshname", m_data->params["meshname"]);
 
 	//初始化技能
 	for (int iAbil=0; iAbil<MAX_ABILITY_SLOT; ++iAbil)
 	{
-		const std::string& strAbil = data.m_vecAbilities[iAbil];
+		const std::string& strAbil = m_data->m_vecAbilities[iAbil];
 		if (strAbil != "")
 		{
-			const SAbilityData& pAbil = dataMgr.m_abilityData.find(strAbil)->second;
+			const SAbilityData& pAbil = GameDataDefManager::GetSingleton().m_abilityData.find(strAbil)->second;
 			SetAbility(iAbil, &pAbil);
 
 			//采集组件
@@ -231,6 +223,10 @@ void Unit::SetUnitName( const STRING& name )
 
 	if(GetEntity()->hasSkeleton())
 		AddComponent(eComponentType_Animated, new AnimatedComponent(this));
+
+	AddComponent(eComponentType_AI, new AiComponent(this));
+	eGameRace race = (eGameRace)GetRace();
+	GetAi()->SetFaction(World::GetSingleton().GetFaction(race));
 }
 
 void Unit::StopAction()
@@ -245,9 +241,7 @@ Ogre::Entity* Unit::GetPortrait(Ogre::SceneManager* sm, Ogre::Light* light)
 	auto iter = m_portraitCache.find(m_unitName);
 	if(iter == m_portraitCache.end())
 	{
-		SUnitData* pUnitData = &GameDataDefManager::GetSingleton().m_unitData[m_unitName];
-		assert(pUnitData);
-		Ogre::Entity* ent = RenderManager.CreateEntityWithTangent(pUnitData->m_portrait, sm);
+		Ogre::Entity* ent = RenderManager.CreateEntityWithTangent(m_data->params["portrait"], sm);
 		Ogre::AnimationState* anim = ent->getAnimationState("Portrait");
 		assert(anim);
 		anim->setEnabled(false);
@@ -277,4 +271,29 @@ void Unit::_OnSelected( bool bSelected )
 	{
 		anim->setEnabled(false);
 	}
+}
+
+const STRING& Unit::GetPortraitName() const
+{
+	return m_data->params["portrait"];
+}
+
+void Unit::SetName( const STRING& name )
+{
+	GameDataDefManager& dataMgr = GameDataDefManager::GetSingleton();
+	auto iter = dataMgr.m_unitData.find(name);
+	assert(iter != dataMgr.m_unitData.end());
+	m_data = &iter->second;
+
+	m_unitName = name;
+}
+
+int Unit::GetRace() const
+{
+	return Ogre::StringConverter::parseInt(m_data->params["race"]);
+}
+
+float Unit::GetProduceTime() const
+{
+	return Ogre::StringConverter::parseReal(m_data->params["timecost"]);
 }

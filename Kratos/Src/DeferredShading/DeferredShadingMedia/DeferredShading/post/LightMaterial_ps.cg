@@ -28,8 +28,9 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define LIGHT_SPOT			2
 #define LIGHT_DIRECTIONAL	3
 #define SHADOW_INTENSITY	0.5f		//[0,1]
-#define SPECULAR_MULTIPLIER 2.0f
-#define EMISSIVE_MULTIPLIER	3.0F
+#define DIFFUSE_MULTIPLIER	0.8f
+#define SPECULAR_MULTIPLIER 1.0f
+#define EMISSIVE_MULTIPLIER	5.0F
 
 //////////////////////////////////////////////////////////////////////////////
 // Helper function section
@@ -169,7 +170,7 @@ float4 main(
 	
 	// Calculate diffuse colour
 	float3 total_light_contrib;
-	total_light_contrib = max(0.0,dot(objToLightDir, normal)) * lightDiffuseColor.rgb;
+	total_light_contrib = max(0.0,dot(objToLightDir, normal)) * lightDiffuseColor.rgb * DIFFUSE_MULTIPLIER;
 
 	// Calculate specular component
 	if(materiaiID%2 == 1)

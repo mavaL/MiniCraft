@@ -7,13 +7,16 @@
 #include "HarvestComponent.h"
 #include "Resource.h"
 #include "OgreManager.h"
-
+#include "Faction.h"
+#include "GameDataDef.h"
 
 AiComponent::AiComponent(SelectableObject* pOwner)
 :Component(pOwner)
 ,m_bExecuting(false)
 ,m_curState(eObjectState_Idle)
 ,m_parallelState(nullptr)
+,m_player(nullptr)
+,m_attkTarget(nullptr)
 {
 	m_states.push_back(new StateIdle);
 	m_states.push_back(new StateProduce);
@@ -21,12 +24,12 @@ AiComponent::AiComponent(SelectableObject* pOwner)
 	m_states.push_back(new StateTargeting);
 	m_states.push_back(new StateStop);
 	m_states.push_back(new StateGather);
+	m_states.push_back(new StateAttack);
 }
 
 AiComponent::~AiComponent()
 {
-	for(size_t i=0; i<m_states.size(); ++i)
-		delete m_states[i];
+	std::for_each(m_states.begin(), m_states.end(), std::default_delete<ObjectState>());
 	m_states.clear();
 }
 
@@ -105,9 +108,19 @@ void AiComponent::GiveCommand( const OIS::MouseEvent& arg, OIS::MouseButtonID id
 				return;
 	
 			//设置采集目标
-			QueryComponent(m_pOwner, eComponentType_Harvest, HarvestComponent)->SetTarget(static_cast<Resource*>(pHitObj));
+			m_pOwner->GetGather()->SetTarget(static_cast<Resource*>(pHitObj));
 			//执行采集命令
 			m_pOwner->GetAi()->GiveCommand(Command(eCommandType_Gather, m_pOwner), true);
+		}
+		else	
+		{
+			if(id == OIS::MB_Left && pData->m_type == eCommandType_Attack)
+			{
+				assert(m_pOwner->HasAbility(eCommandType_Attack));
+				m_pOwner->GetAi()->SetAttackTarget(pHitObj);
+				//执行攻击命令
+				m_pOwner->GetAi()->GiveCommand(Command(eCommandType_Attack, m_pOwner), true);
+			}
 		}
 	}
 	else	//点击地面
@@ -155,4 +168,15 @@ void AiComponent::ClearParallelState()
 		m_parallelState->Exit(m_pOwner);
 		m_parallelState = nullptr;
 	}
+}
+
+bool AiComponent::IsAlly( SelectableObject* obj )
+{
+	return m_player == obj->GetAi()->GetFaction();
+}
+
+void AiComponent::SetFaction( Faction* player )
+{
+	m_pOwner->InitTeamColor(player->GetTeamColor());
+	m_player = player;
 }

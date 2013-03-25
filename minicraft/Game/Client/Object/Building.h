@@ -12,9 +12,15 @@
 #include "SelectableObject.h"
 #include "Command.h"
 
+struct SBuildingData;
+
 class Building : public SelectableObject
 {
+	DECL_PARAM_COMMAND(Name)
 	DECL_PARAM_COMMAND(RallyPoint)
+	DECL_PARAM_COMMAND(Race)
+	DECL_PARAM_COMMAND(Icon)
+	DECL_PARAM_COMMAND(Flags)
 public:
 	Building();
 	~Building() {}
@@ -25,17 +31,24 @@ public:
 	virtual void	_OnCommandFinished(eCommandType cmd);
 
 public:
-	void			Init(const STRING& name, const POS& pos, const ORIENT& orient, const SCALE& scale);
-	const STRING&	GetBuildingName() const {return m_buildingName; } 
-	float			GetCurProgress() const { return m_fCurProgress; }
-	void			SetRallyPoint(const POS& pos) { m_rallyPoint = pos; }
-	const POS&		GetRallyPoint() const	{ return m_rallyPoint; }
-
+	void			Init(const POS& pos, const ORIENT& orient, const SCALE& scale);
+	void			SetName(const STRING& name);
+	const STRING&	GetName() const				{return m_buildingName; } 
+	float			GetCurProgress() const		{ return m_fCurProgress; }
+	void			SetRallyPoint(const POS& pos) { assert(0); /*shouldn't be called!*/ }
+	const POS&		GetRallyPoint() const;
+	void			SetRace(int race)			{ assert(0); /*shouldn't be called!*/ }
+	int				GetRace() const;
+	void			SetIcon(const STRING& icon)	{ assert(0); /*shouldn't be called!*/ }
+	const STRING&	GetIcon() const;
+	void			SetFlags(int flags)			{ assert(0); /*shouldn't be called!*/ }
+	int				GetFlags() const;
 
 private:
 	STRING			m_buildingName;		//单位名称,如:barrack...
 	float			m_fCurProgress;		//若当前正在生产状态,已生产的时间
 	POS				m_rallyPoint;		//集结点
+	SBuildingData*	m_param;
 };
 
 

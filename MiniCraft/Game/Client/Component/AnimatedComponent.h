@@ -15,6 +15,7 @@
 #include "KratosPrerequisites.h"
 
 class SelectableObject;
+class Unit;
 
 class AnimatedComponent : public Component
 {
@@ -30,6 +31,7 @@ public:
 	void StopAnimation();
 
 private:
+	Unit*						m_parent;
 	Kratos::EffectController*	m_pController;
 };
 

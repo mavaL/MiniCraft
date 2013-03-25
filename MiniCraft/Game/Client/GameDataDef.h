@@ -3,7 +3,8 @@
 	filename: 	F:\MiniCraft\MiniCraft\Game\Client\GameDataDef.h
 	author:		maval
 	
-	purpose:	游戏逻辑数据结构定义和管理器
+	purpose:	游戏数据中心.
+				对象属性是数据驱动的,查看各对象的stringInterface数据字典
 *********************************************************************/
 #ifndef GameDataDef_h__
 #define GameDataDef_h__
@@ -19,15 +20,6 @@ enum eBuildingFlag
 	eBuildingFlag_ResDropOff = 1		//可以接受资源(主基地)
 };
 
-//单位的可用动画类型
-enum eAnimation
-{
-	eAnimation_Idle,					//休闲
-	eAnimation_Move	,					//移动
-	eAnimation_Gather,					//采集
-	eAnimation_Attack					//攻击
-};
-
 //命令附加参数
 const	STRING		FORCE_EXECUTE					=	"ForceExecute";
 const	STRING		TARGETING_AND_FORCE_EXECUTE		=	"TargetingAndForceExecute";
@@ -36,12 +28,8 @@ const	STRING		TARGETING_AND_FORCE_EXECUTE		=	"TargetingAndForceExecute";
 ////	Building相关数据,见RaceBuildingData.xml
 struct SBuildingData
 {
-	eGameRace		m_race;				//所属种族
-	STRING			m_iconName;			//编辑器用到的图标文件名
-	STRING			m_meshname;			//模型文件名
-	POS				m_rallyPoint;		//产兵默认集结点
+	Ogre::NameValuePairList params;
 	std::vector<STRING>	m_vecAbilities;	//技能
-	int				m_flags;			//属性集
 };
 
 /////////////////////////////////////////////////////////////////////////
@@ -61,18 +49,24 @@ struct SEffectData
 };
 
 /////////////////////////////////////////////////////////////////////////
+////	单位战斗数据配表,见BattleData.xml
+struct SBattleData
+{
+	Ogre::NameValuePairList params;															
+};
+
+/////////////////////////////////////////////////////////////////////////
 ////	Unit配表,见UnitTable.xml
 struct SUnitData
 {
-	float			m_fTimeCost;			//生产所需时间
-	STRING			m_meshname;				//模型文件名
+	Ogre::NameValuePairList params;
+	std::vector<STRING>		m_vecAbilities;			//技能
 	typedef HashMap<eAnimation, STRING>	AnimTable;
-	AnimTable		m_anims;				//该单位所有动画的真实名字.因为各模型的导出动画名字不一定一致
-	std::vector<STRING>	m_vecAbilities;		//技能
-	eGameRace		m_race;					//种族
-	STRING			m_portrait;				//3D肖像模型名
+	AnimTable				m_anims;				//该单位所有动画的真实名字.因为各模型的导出动画名字不一定一致
 	typedef HashMap<STRING, std::vector<SEffectData>> EffectDataMap;
-	EffectDataMap	m_effects;				//挂接特效
+	EffectDataMap			m_effects;				//挂接特效
+	typedef HashMap<STRING, std::vector<SBattleData>> BattleDataMap;
+	BattleDataMap			m_battleInfo;			//战斗数据
 };
 
 //设计基于值对象而不是指针,是因为一旦初始化完毕,在程序退出前,就不会去改变了,
@@ -97,5 +91,9 @@ public:
 	AbilityNameIdxTable		m_abilityData;
 	UnitTable				m_unitData;
 };
+
+///属性持久化
+void	LoadStringInterface(Ogre::NameValuePairList& params, rapidxml::xml_node<>* node);
+void	SaveStringInterface(Ogre::StringInterface* si, Ogre::NameValuePairList& params);
 
 #endif // GameDataDef_h__

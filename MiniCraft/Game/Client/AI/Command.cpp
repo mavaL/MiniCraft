@@ -19,6 +19,7 @@ void Command::Excute()
 	case eCommandType_Move: 	m_pOwner->GetAi()->SetCurState(eObjectState_Move); break;
 	case eCommandType_Stop:		m_pOwner->GetAi()->SetCurState(eObjectState_Stop); break;
 	case eCommandType_Gather:	m_pOwner->GetAi()->SetCurState(eObjectState_Gather); break;
+	case eCommandType_Attack:	m_pOwner->GetAi()->SetCurState(eObjectState_Attack); break;
 	default: assert(0);
 	}
 }

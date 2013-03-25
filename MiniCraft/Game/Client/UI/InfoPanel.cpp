@@ -4,6 +4,7 @@
 #include "ObjectState.h"
 #include "Building.h"
 #include "AIComponent.h"
+#include "GameDataDef.h"
 
 using namespace CEGUI;
 
@@ -69,7 +70,8 @@ void UiInfoPanel::Update()
 		SUnitData* unitData = &GameDataDefManager::GetSingleton().m_unitData[m_pActiveObject->GetActiveAbility()->m_param];
 
 		ShowInfoIcon(true, m_pActiveObject->GetActiveAbility()->m_iconName, "full_image");
-		SetProgress(fProgress / unitData->m_fTimeCost);
+		float fCurProgress = fProgress / Ogre::StringConverter::parseReal(unitData->params["timecost"]);
+		SetProgress(fCurProgress);
 		ShowProgressQueue(true);
 	}
 }

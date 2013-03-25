@@ -240,7 +240,7 @@ void ManipulatorEffect::Serialize( rapidxml::xml_document<>* doc, rapidxml::xml_
 				const Ogre::ParameterList& attributes = effect->getParameters();
 				SEffectData data;
 
-				PARAMS_SAVE(effect, data.params);
+				SaveStringInterface(effect, data.params);
 	
 				unitData->m_effects[itAnim->first].push_back(data);
 			}
@@ -425,7 +425,7 @@ void ManipulatorEffect::LoadEffect( rapidxml::xml_node<>* node )
 	{
 		SUnitData& unitData = itUnit->second;
 		Kratos::EffectController* effectTmpl = new Kratos::EffectController(NULL);
-		m_effectTemplates.insert(std::make_pair(unitData.m_meshname, effectTmpl));
+		m_effectTemplates.insert(std::make_pair(unitData.params["meshname"], effectTmpl));
 
 		//per animation
 		for (auto itAnim=unitData.m_effects.begin(); itAnim!=unitData.m_effects.end(); ++itAnim)

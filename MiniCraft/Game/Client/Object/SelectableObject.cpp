@@ -6,6 +6,12 @@
 #include "InfoPanel.h"
 #include "OgreManager.h"
 #include "PortraitPanel.h"
+#include "GameDataDef.h"
+#include "AIComponent.h"
+#include "PathComponent.h"
+#include "AnimatedComponent.h"
+#include "HarvestComponent.h"
+#include "Faction.h"
 
 /** This is ogre-procedural's temporary mesh buffer.
  * It stores all the info needed to build an Ogre Mesh, yet is intented to be more flexible, since
@@ -526,15 +532,6 @@ void SelectableObject::CreateRenderInstance()
 	m_pEntity->setQueryFlags(eQueryType_SelectableObject);
 	//Movable对象与逻辑对象绑定,方便取出通信
 	m_pEntity->setUserAny(Ogre::Any(this));
-
-	//队伍颜色与Renderable绑定
-	Ogre::ColourValue teamColor = Ogre::StringConverter::parseColourValue(getParameter("teamcolor"));
-	size_t num = m_pEntity->getNumSubEntities();
-	for (size_t i=0; i<num; ++i)
-	{
-
-		m_pEntity->getSubEntity(i)->setUserAny(Ogre::Any(teamColor));
-	}
 }
 
 bool SelectableObject::HasAbility( eCommandType type )
@@ -546,5 +543,33 @@ bool SelectableObject::HasAbility( eCommandType type )
 	}
 
 	return false;
+}
+
+AiComponent* SelectableObject::GetAi()
+{
+	return QueryComponent(this, eComponentType_AI, AiComponent);
+}
+
+PathComponent* SelectableObject::GetPath()
+{
+	return QueryComponent(this, eComponentType_Path, PathComponent);
+}
+
+AnimatedComponent* SelectableObject::GetAnim()
+{
+	return QueryComponent(this, eComponentType_Animated, AnimatedComponent);
+}
+
+HarvestComponent* SelectableObject::GetGather()
+{
+	return QueryComponent(this, eComponentType_Harvest, HarvestComponent);
+}
+
+void SelectableObject::InitTeamColor(const COLOR& color)
+{
+	//队伍颜色与Renderable绑定
+	size_t num = m_pEntity->getNumSubEntities();
+	for (size_t i=0; i<num; ++i)
+		m_pEntity->getSubEntity(i)->setUserAny(Ogre::Any(color));
 }
 

@@ -9,6 +9,7 @@
 #include "Unit.h"
 #include "World.h"
 #include "HarvestComponent.h"
+#include "AnimatedComponent.h"
 #include "InfoPanel.h"
 
 void StateIdle::Enter( SelectableObject* pOwner )
@@ -78,20 +79,21 @@ void StateProduce::Update( float dt, SelectableObject* pOwner )
 	float fProgress = pObj->GetCurProgress();
 	const STRING& unitName = pOwner->GetActiveAbility()->m_param;
 	SUnitData* unitData = &GameDataDefManager::GetSingleton().m_unitData[unitName];
+	float timeCost = Ogre::StringConverter::parseReal(unitData->params["timecost"]);
 
-	if (fProgress > unitData->m_fTimeCost)
+	if (fProgress > timeCost)
 	{
 		//生产完毕
 		pOwner->GetAi()->SetCurState(eObjectState_Idle);
 
 		//鲜活的单位出炉了
 		SelectableObject* pNewObj = static_cast<SelectableObject*>(ObjectManager::GetSingleton().CreateObject(eObjectType_Unit));
-		pNewObj->setParameter("unitname", unitName);
-		pNewObj->setParameter("position", pOwner->getParameter("rallypoint"));
+		pNewObj->setParameter("name", unitName);
+		static_cast<Unit*>(pNewObj)->Init();
+		pNewObj->SetPosition(pObj->GetRallyPoint());
+		pNewObj->AddComponent(eComponentType_Path, new PathComponent(pNewObj));
 
 		//新单位进入空闲状态
-		pNewObj->AddComponent(eComponentType_AI, new AiComponent(pNewObj));
-		pNewObj->AddComponent(eComponentType_Path, new PathComponent(pNewObj));
 		pNewObj->GetAi()->SetCurState(eObjectState_Idle);
 	}
 }
@@ -182,7 +184,19 @@ bool StateTargeting::OnInputSys_MouseMove( const OIS::MouseEvent &arg )
 
 	case eCommandType_Attack:
 		{
-			//TODO
+			if (pHoverObj)
+			{
+				if(pHoverObj->GetType() == eObjectType_Resource)
+					mode = Kratos::eCursorMode_TargetInvalid;
+				else if(pObj->GetAi()->IsAlly(pHoverObj))
+					mode = Kratos::eCursorMode_TargetAllied;
+				else
+					mode = Kratos::eCursorMode_TargetEnemy;
+			}
+			else
+			{
+				mode = Kratos::eCursorMode_TargetNone;
+			}
 		}
 		break;
 
@@ -223,22 +237,19 @@ void StateStop::Update( float dt, SelectableObject* pOwner )
 ///////////////////////////////////////////////////////////////
 void StateGather::Enter( SelectableObject* pOwner )
 {
-	HarvestComponent* pCo = QueryComponent(pOwner, eComponentType_Harvest, HarvestComponent);
-	pCo->SetCurStage(eHarvestStage_ToRes);
+	pOwner->GetGather()->SetCurStage(eHarvestStage_ToRes);
 	//禁止单位间阻挡
 	pOwner->GetPath()->EnableObstcleAvoidance(false);
 }
 
 void StateGather::Update( float dt, SelectableObject* pOwner )
 {
-	HarvestComponent* pCo = QueryComponent(pOwner, eComponentType_Harvest, HarvestComponent);
-	pCo->Update(dt);
+	pOwner->GetGather()->Update(dt);
 }
 
 void StateGather::Exit( SelectableObject* pOwner )
 {
-	HarvestComponent* pCo = QueryComponent(pOwner, eComponentType_Harvest, HarvestComponent);
-	pCo->SetCurStage(eHarvestStage_None);
+	pOwner->GetGather()->SetCurStage(eHarvestStage_None);
 	//恢复单位间阻挡
 	pOwner->GetPath()->EnableObstcleAvoidance(true);
 }

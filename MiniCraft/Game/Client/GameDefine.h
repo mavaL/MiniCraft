@@ -40,3 +40,13 @@ enum eCommandType
 	eCommandType_Attack			//攻击
 };
 
+//单位的可用动画类型
+enum eAnimation
+{
+	eAnimation_Idle,					//休闲
+	eAnimation_Move	,					//移动
+	eAnimation_Gather,					//采集
+	eAnimation_Attack					//攻击
+};
+
+

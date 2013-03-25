@@ -13,7 +13,7 @@
 #include "Scene.h"
 #include "Building.h"
 #include "PortraitPanel.h"
-
+#include "Resource.h"
 
 SGlobalEnvironment	g_Environment;
 
@@ -65,6 +65,8 @@ void World::Init()
 	//测试两个CPU玩家
 	m_player[eGameRace_Terran] = new Faction(eGameRace_Terran);
 	m_player[eGameRace_Zerg] = new Faction(eGameRace_Zerg);
+	m_player[eGameRace_Terran]->SetTeamColor(COLOR::Blue);
+	m_player[eGameRace_Zerg]->SetTeamColor(COLOR::Red);
 
 	GameDataDefManager::GetSingleton().LoadAllData();
 
@@ -372,6 +374,10 @@ void World::_LoadObjects( rapidxml::xml_node<>* node )
 		const bool bIsBuilding = Ogre::StringConverter::parseBool(curObjNode->first_attribute("isbuilding")->value());
 		const bool bIsResource = Ogre::StringConverter::parseBool(curObjNode->first_attribute("isresource")->value());
 
+		const POS& pos = Ogre::StringConverter::parseVector3(strPos);
+		const ORIENT& orient = Ogre::StringConverter::parseQuaternion(strOrient);
+		const SCALE& scale = Ogre::StringConverter::parseVector3(strScale);
+
 		if (bIsBuilding || bIsResource)
 		{
 			Object* pObject = ObjectManager::GetSingleton().CreateObject(bIsBuilding ? eObjectType_Building : eObjectType_Resource);
@@ -380,27 +386,20 @@ void World::_LoadObjects( rapidxml::xml_node<>* node )
 			{
 				const STRING strBuildingName = curObjNode->first_attribute("buildingname")->value();
 				Building* pBuilding = static_cast<Building*>(pObject);
-
-				const POS& pos = Ogre::StringConverter::parseVector3(strPos);
-				const ORIENT& orient = Ogre::StringConverter::parseQuaternion(strOrient);
-				const SCALE& scale = Ogre::StringConverter::parseVector3(strScale);
-
-				pBuilding->Init(strBuildingName, pos, orient, scale);
+				pBuilding->SetName(strBuildingName);
+				pBuilding->Init(pos, orient, scale);
 			}
 			else
 			{
-				pObject->setParameter("meshname", strMesh);
-				pObject->setParameter("position", strPos);
-				pObject->setParameter("orientation", strOrient);
-				pObject->setParameter("scale", strScale);
+				Resource* pRes = static_cast<Resource*>(pObject);
+				pRes->SetMeshName(strMesh);
+				pRes->SetPosition(pos);
+				pRes->SetOrientation(orient);
+				pRes->SetScale(scale);
 			}
 		}
 		else
 		{
-			const Ogre::Vector3 pos = Ogre::StringConverter::parseVector3(strPos);
-			const Ogre::Quaternion orient = Ogre::StringConverter::parseQuaternion(strOrient);
-			const Ogre::Vector3 scale = Ogre::StringConverter::parseVector3(strScale);
-
 			//非游戏对象,不纳入逻辑管理,只渲染
 			Ogre::Entity* entity = RenderManager.m_pSceneMgr->createEntity(strMesh);
 			assert(entity);

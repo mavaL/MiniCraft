@@ -23,15 +23,16 @@ std::vector<std::wstring> ManipulatorGameData::GetRaceBuildingNames( eGameRace r
 	std::vector<std::wstring> retNames;
 	for (auto iter=m_dataMgr->m_buildingData.begin(); iter!=m_dataMgr->m_buildingData.end(); ++iter)
 	{
-		const SBuildingData& data = iter->second;
-		if(data.m_race == race)
+		SBuildingData& data = iter->second;
+		int iRace = (eGameRace)Ogre::StringConverter::parseInt(data.params["race"]);
+		if((eGameRace)iRace == race)
 			retNames.push_back(Utility::EngineToUnicode(iter->first));
 	}
 
 	return std::move(retNames);
 }
 
-const SBuildingData* ManipulatorGameData::GetBuildingData( const std::wstring& name )
+SBuildingData* ManipulatorGameData::GetBuildingData( const std::wstring& name )
 {
 	auto iter = m_dataMgr->m_buildingData.find(Utility::UnicodeToEngine(name));
 	assert(iter != m_dataMgr->m_buildingData.end());
@@ -72,7 +73,7 @@ SUnitData* ManipulatorGameData::GetUnitData( const std::string& meshname )
 	for(auto iter=units.begin(); iter!=units.end(); ++iter)
 	{
 		SUnitData& unitData = iter->second;
-		if(unitData.m_meshname == meshname)
+		if(unitData.params["meshname"] == meshname)
 			return &unitData;
 	}
 	

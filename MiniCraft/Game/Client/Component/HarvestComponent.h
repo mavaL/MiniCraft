@@ -21,6 +21,7 @@ enum eHarvestStage
 
 class SelectableObject;
 class Resource;
+class Unit;
 
 class HarvestComponent : public Component
 {
