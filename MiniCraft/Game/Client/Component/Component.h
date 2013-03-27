@@ -14,7 +14,8 @@ enum eComponentType
 	eComponentType_AI,
 	eComponentType_Path,
 	eComponentType_Harvest,
-	eComponentType_Animated
+	eComponentType_Animated,
+	eComponentType_Behevior
 };
 
 #define QueryComponent(object, type, classname)	(static_cast<classname*>(object->GetComponent(type)))

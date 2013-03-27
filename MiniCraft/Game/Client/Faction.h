@@ -21,17 +21,21 @@ public:
 	~Faction() {}
 
 public:
+	virtual void	Update(float dt) {}
 	void			SetBase(Building* pBase) { m_base = pBase; }
 	Building*		GetBase()	{ return m_base; }
 	void			AddMineral(int num) { m_mineral +=num; }
 	void			SetTeamColor(const COLOR& color) { m_teamColor = color; }
 	const COLOR&	GetTeamColor() const { return m_teamColor; }
+	void			SetEnemy(Faction* enemy) { m_pEnemy = enemy; }
+	Faction*		GetEnemy() { return m_pEnemy; }
 
-private:
+protected:
 	eGameRace	m_race;
 	int			m_mineral;		//金钱数
 	Building*	m_base;			//测试基地
 	COLOR		m_teamColor;	//队伍颜色
+	Faction*	m_pEnemy;		//敌对阵营
 };
 
 #endif // Faction_h__

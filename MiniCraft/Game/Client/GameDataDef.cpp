@@ -159,64 +159,6 @@ void GameDataDefManager::LoadAllData()
 	XMLDoc.clear();
 
 	///加载战斗数据配表
-// 	stream = Ogre::ResourceGroupManager::getSingleton().openResource("BattleData.xml", "Config");
-// 	szData = strdup(stream->getAsString().c_str());
-// 	XMLDoc.parse<0>(szData);
-// 	pUnitNode = XMLDoc.first_node("Root")->first_node("Unit");
-// 
-// 	while(pUnitNode)
-// 	{
-// 		const char* szName		= pNode->first_attribute("name")->value();
-// 		const char* szHP		= pNode->first_attribute("hp")->value();
-// 
-// 		SUnitData data = { Ogre::StringConverter::parseReal(szTimeCost), szMeshName };
-// 
-// 		//种族
-// 		std::unordered_map<STRING, eGameRace> mapRace;
-// 		mapRace["Terran"]	= eGameRace_Terran;
-// 		mapRace["Zerg"]		= eGameRace_Zerg;
-// 
-// 		data.m_race = mapRace[szRace];
-// 
-// 		//3D肖像
-// 		data.m_portrait = szPortrait;
-// 
-// 		//动画数据
-// 		std::unordered_map<STRING, eAnimation> mapName;
-// 		mapName["Idle"] = eAnimation_Idle;
-// 		mapName["Move"] = eAnimation_Move;
-// 		mapName["Gather"] = eAnimation_Gather;
-// 		mapName["Attack"] = eAnimation_Attack;
-// 
-// 		rapidxml::xml_node<>* pAnimNode = pNode->first_node("AnimationSet")->first_node("Animation");
-// 		while(pAnimNode)
-// 		{
-// 			const char* szAnimType = pAnimNode->first_attribute("type")->value();
-// 			const char* szAnimName = pAnimNode->first_attribute("name")->value();
-// 			data.m_anims.insert(std::make_pair(mapName[szAnimType], szAnimName));
-// 			pAnimNode = pAnimNode->next_sibling();
-// 		}
-// 
-// 		//技能
-// 		data.m_vecAbilities.resize(MAX_ABILITY_SLOT);
-// 		for (int i=0; i<MAX_ABILITY_SLOT; ++i)
-// 			data.m_vecAbilities[i] = "";
-// 		rapidxml::xml_node<>* pAbilNode = pNode->first_node("Ability");
-// 		while(pAbilNode)
-// 		{
-// 			const char* szAbilName = pAbilNode->first_attribute("name")->value();
-// 			const char* szSlotIdx = pAbilNode->first_attribute("slotindex")->value();
-// 
-// 			data.m_vecAbilities[Ogre::StringConverter::parseInt(szSlotIdx)] = szAbilName;
-// 
-// 			pAbilNode = pAbilNode->next_sibling();
-// 		}
-// 
-// 		m_unitData.insert(std::make_pair(szName, data));
-// 		pUnitNode = pUnitNode->next_sibling();
-// 	}
-// 	free(szData);
-// 	XMLDoc.clear();
 }
 
 void GameDataDefManager::SaveAllData()

@@ -49,9 +49,6 @@
     <ClInclude Include="Game\Client\Object\Unit.h">
       <Filter>Client\Object</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Client\AI\Command.h">
-      <Filter>Client\AI</Filter>
-    </ClInclude>
     <ClInclude Include="Game\Client\Object\SelectableObject.h">
       <Filter>Client\Object</Filter>
     </ClInclude>
@@ -66,9 +63,6 @@
     </ClInclude>
     <ClInclude Include="Game\Client\UI\InfoPanel.h">
       <Filter>Client\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Client\AI\ObjectState.h">
-      <Filter>Client\AI</Filter>
     </ClInclude>
     <ClInclude Include="Game\Client\Component\AIComponent.h">
       <Filter>Client\Component</Filter>
@@ -93,6 +87,18 @@
     </ClInclude>
     <ClInclude Include="Game\Client\Component\AnimatedComponent.h">
       <Filter>Client\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Client\Object\ObjectState.h">
+      <Filter>Client\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Client\Command.h">
+      <Filter>Client</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Client\Component\BehaviorComponent.h">
+      <Filter>Client\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Client\AI\AIFaction.h">
+      <Filter>Client\AI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -120,9 +126,6 @@
     <ClCompile Include="Game\Client\Object\Unit.cpp">
       <Filter>Client\Object</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Client\AI\Command.cpp">
-      <Filter>Client\AI</Filter>
-    </ClCompile>
     <ClCompile Include="Game\Client\Object\SelectableObject.cpp">
       <Filter>Client\Object</Filter>
     </ClCompile>
@@ -137,9 +140,6 @@
     </ClCompile>
     <ClCompile Include="Game\Client\UI\InfoPanel.cpp">
       <Filter>Client\UI</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Client\AI\ObjectState.cpp">
-      <Filter>Client\AI</Filter>
     </ClCompile>
     <ClCompile Include="Game\Client\Component\AIComponent.cpp">
       <Filter>Client\Component</Filter>
@@ -164,6 +164,18 @@
     </ClCompile>
     <ClCompile Include="Game\Client\Component\AnimatedComponent.cpp">
       <Filter>Client\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Client\Object\ObjectState.cpp">
+      <Filter>Client\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Client\Command.cpp">
+      <Filter>Client</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Client\Component\BehaviorComponent.cpp">
+      <Filter>Client\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Client\AI\AIFaction.cpp">
+      <Filter>Client\AI</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

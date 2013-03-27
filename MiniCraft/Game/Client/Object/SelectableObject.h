@@ -17,6 +17,7 @@ class AiComponent;
 class PathComponent;
 class AnimatedComponent;
 class HarvestComponent;
+class BehaviorComponent;
 struct SAbilityData;
 
 ///该类实现来自OgreProcedural库
@@ -44,10 +45,11 @@ public:
 	const SAbilityData*	GetActiveAbility() const { return m_pActiveAbility; }
 	bool			HasAbility(eCommandType type);
 
-	 AiComponent*			GetAi();
+	AiComponent*			GetAi();
 	PathComponent*			GetPath();
 	AnimatedComponent*		GetAnim();
 	HarvestComponent*		GetGather();
+	BehaviorComponent*		GetBehavior();
 
 protected:
 	virtual void	_OnSelected(bool bSelected);

@@ -38,6 +38,9 @@ public:
 	eObjectState	GetType() const { return m_type; }
 
 private:
+	ObjectState(const ObjectState&);
+	ObjectState& operator= (const ObjectState&);
+
 	eObjectState	m_type;
 };
 

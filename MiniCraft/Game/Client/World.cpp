@@ -7,13 +7,14 @@
 #include <SdkCameraMan.h>
 #include "ObjectManager.h"
 #include "GameDataDef.h"
-#include "Faction.h"
+#include "AIFaction.h"
 #include "CommandPanel.h"
 #include "InfoPanel.h"
 #include "Scene.h"
 #include "Building.h"
 #include "PortraitPanel.h"
 #include "Resource.h"
+#include "BehaviorTreeTemplateManager.h"
 
 SGlobalEnvironment	g_Environment;
 
@@ -62,9 +63,12 @@ void World::Init()
 	cam->lookAt(0, 0, 8);
 	//cam->setFOVy(Degree(30));
 
-	//测试两个CPU玩家
-	m_player[eGameRace_Terran] = new Faction(eGameRace_Terran);
-	m_player[eGameRace_Zerg] = new Faction(eGameRace_Zerg);
+	//加载所有行为树模板
+	aiBehaviorTreeTemplateManager::GetSingleton().LoadAll();
+
+	//测试两个AI
+	m_player[eGameRace_Terran] = new FactionAI(eGameRace_Terran);
+	m_player[eGameRace_Zerg] = new FactionAI(eGameRace_Zerg);
 	m_player[eGameRace_Terran]->SetTeamColor(COLOR::Blue);
 	m_player[eGameRace_Zerg]->SetTeamColor(COLOR::Red);
 
@@ -182,6 +186,9 @@ void World::Shutdown()
 
 void World::Update(float dt)
 {
+	m_player[eGameRace_Terran]->Update(dt);
+	m_player[eGameRace_Zerg]->Update(dt);
+
 	m_pDetourCrowd->updateTick(dt);
 
 	ObjectManager::GetSingleton().UpdateAll(dt);

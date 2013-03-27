@@ -50,7 +50,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\Kratos\Src;..\Kratos\Dependency\rapidxml;..\Kratos\Dependency\Lua5_1_4\src;..\Kratos\Dependency\CEGUI\include;..\Kratos\Dependency\boost;..\Kratos\Dependency\OgreRecast\Include;..\Kratos\Dependency\OIS\include;..\Kratos\Dependency\Ogre\include;..\Kratos\Dependency\Ogre\include\ParticleUniverse;.\Game;.\Game\Client\UI;.\Game\Client;.\Game\Core;.\Game\Client\Object;.\Game\Client\AI;.\Game\Client\Component;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Kratos\Src\AI\BehaviorTree;..\Kratos\Src;..\Kratos\Dependency\rapidxml;..\Kratos\Dependency\Lua5_1_4\src;..\Kratos\Dependency\CEGUI\include;..\Kratos\Dependency\boost;..\Kratos\Dependency\OgreRecast\Include;..\Kratos\Dependency\OIS\include;..\Kratos\Dependency\Ogre\include;..\Kratos\Dependency\Ogre\include\ParticleUniverse;.\Game;.\Game\Client\UI;.\Game\Client;.\Game\Core;.\Game\Client\Object;.\Game\Client\AI;.\Game\Client\Component;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <AdditionalOptions>/Zm163 %(AdditionalOptions)</AdditionalOptions>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -79,12 +79,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Game\Client\AI\Command.h" />
-    <ClInclude Include="Game\Client\AI\ObjectState.h" />
+    <ClInclude Include="Game\Client\AI\AIFaction.h" />
     <ClInclude Include="Game\Client\Application.h" />
     <ClInclude Include="Game\Client\BattleState.h" />
+    <ClInclude Include="Game\Client\Command.h" />
     <ClInclude Include="Game\Client\Component\AIComponent.h" />
     <ClInclude Include="Game\Client\Component\AnimatedComponent.h" />
+    <ClInclude Include="Game\Client\Component\BehaviorComponent.h" />
     <ClInclude Include="Game\Client\Component\Component.h" />
     <ClInclude Include="Game\Client\Component\HarvestComponent.h" />
     <ClInclude Include="Game\Client\Component\PathComponent.h" />
@@ -95,6 +96,7 @@
     <ClInclude Include="Game\Client\Object\ObjectBase.h" />
     <ClInclude Include="Game\Client\Object\ObjectFactory.h" />
     <ClInclude Include="Game\Client\Object\ObjectManager.h" />
+    <ClInclude Include="Game\Client\Object\ObjectState.h" />
     <ClInclude Include="Game\Client\Object\Resource.h" />
     <ClInclude Include="Game\Client\Object\SelectableObject.h" />
     <ClInclude Include="Game\Client\Object\Unit.h" />
@@ -105,12 +107,13 @@
     <ClInclude Include="Game\Client\World.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Game\Client\AI\Command.cpp" />
-    <ClCompile Include="Game\Client\AI\ObjectState.cpp" />
+    <ClCompile Include="Game\Client\AI\AIFaction.cpp" />
     <ClCompile Include="Game\Client\Application.cpp" />
     <ClCompile Include="Game\Client\BattleState.cpp" />
+    <ClCompile Include="Game\Client\Command.cpp" />
     <ClCompile Include="Game\Client\Component\AIComponent.cpp" />
     <ClCompile Include="Game\Client\Component\AnimatedComponent.cpp" />
+    <ClCompile Include="Game\Client\Component\BehaviorComponent.cpp" />
     <ClCompile Include="Game\Client\Component\HarvestComponent.cpp" />
     <ClCompile Include="Game\Client\Component\PathComponent.cpp" />
     <ClCompile Include="Game\Client\Faction.cpp" />
@@ -120,6 +123,7 @@
     <ClCompile Include="Game\Client\Object\ObjectBase.cpp" />
     <ClCompile Include="Game\Client\Object\ObjectFactory.cpp" />
     <ClCompile Include="Game\Client\Object\ObjectManager.cpp" />
+    <ClCompile Include="Game\Client\Object\ObjectState.cpp" />
     <ClCompile Include="Game\Client\Object\Resource.cpp" />
     <ClCompile Include="Game\Client\Object\SelectableObject.cpp" />
     <ClCompile Include="Game\Client\Object\Unit.cpp" />

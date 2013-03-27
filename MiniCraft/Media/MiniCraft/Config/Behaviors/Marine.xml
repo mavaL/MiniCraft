@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<Root>
+  <BehaviorTemplate name="Marine">
+    <BehaviorTree>
+      <ConditionNode>
+        <SequenceNode >
+          <ConditionNode expression="UnitNumber >= 3"/>
+          <ActionNode behavior="MoveToEnemyBase"/>
+          <ActionNode behavior="Idle"/>
+        </SequenceNode>
+      </ConditionNode>
+    </BehaviorTree>
+
+    <BlackBoard>
+      <Variable name="UnitNumber" value="0"/>
+    </BlackBoard>
+  </BehaviorTemplate>
+</Root>
+

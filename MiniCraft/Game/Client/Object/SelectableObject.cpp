@@ -12,6 +12,7 @@
 #include "AnimatedComponent.h"
 #include "HarvestComponent.h"
 #include "Faction.h"
+#include "BehaviorComponent.h"
 
 /** This is ogre-procedural's temporary mesh buffer.
  * It stores all the info needed to build an Ogre Mesh, yet is intented to be more flexible, since
@@ -571,5 +572,10 @@ void SelectableObject::InitTeamColor(const COLOR& color)
 	size_t num = m_pEntity->getNumSubEntities();
 	for (size_t i=0; i<num; ++i)
 		m_pEntity->getSubEntity(i)->setUserAny(Ogre::Any(color));
+}
+
+BehaviorComponent* SelectableObject::GetBehavior()
+{
+	return QueryComponent(this, eComponentType_Behevior, BehaviorComponent);
 }
 

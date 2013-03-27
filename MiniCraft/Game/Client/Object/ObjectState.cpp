@@ -14,27 +14,19 @@
 
 void StateIdle::Enter( SelectableObject* pOwner )
 {
-	if(pOwner->GetType() == eObjectType_Unit)
-	{
-		//²¥·ÅÐÝÏÐ¶¯»­
-		pOwner->GetAnim()->PlayAnimation(eAnimation_Idle, true);
-	}
+	//²¥·ÅÐÝÏÐ¶¯»­
+	pOwner->GetAnim()->PlayAnimation(eAnimation_Idle, true);
 }
 
 void StateIdle::Exit( SelectableObject* pOwner )
 {
-	if(pOwner->GetType() == eObjectType_Unit)
-	{
-		//Í£Ö¹²¥·ÅÐÝÏÐ¶¯»­
-		pOwner->GetAnim()->StopAnimation();
-	}
+	//Í£Ö¹²¥·ÅÐÝÏÐ¶¯»­
+	pOwner->GetAnim()->StopAnimation();
 }
 
 ///////////////////////////////////////////////////////////////
 void StateMove::Enter( SelectableObject* pOwner )
 {
-	assert(pOwner->GetType() == eObjectType_Unit);
-
 	PathComponent* path = pOwner->GetPath();
 	bool bSucceed = path->FindPath(path->GetDestPos(), false);
 	assert(bSucceed);
@@ -45,8 +37,6 @@ void StateMove::Enter( SelectableObject* pOwner )
 
 void StateMove::Update( float dt, SelectableObject* pOwner )
 {
-	assert(pOwner->GetType() == eObjectType_Unit);
-
 	if(pOwner->GetPath()->_UpdatePathFinding(dt))
 	{
 		//ÒÑµ½´ïÄ¿µÄµØ,½øÈë¿ÕÏÐ×´Ì¬
@@ -56,8 +46,6 @@ void StateMove::Update( float dt, SelectableObject* pOwner )
 
 void StateMove::Exit( SelectableObject* pOwner )
 {
-	assert(pOwner->GetType() == eObjectType_Unit);
-
 	//Í£Ö¹²¥·ÅÒÆ¶¯¶¯»­
 	pOwner->GetAnim()->StopAnimation();
 	pOwner->_OnCommandFinished(eCommandType_Move);

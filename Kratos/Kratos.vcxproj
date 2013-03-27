@@ -104,6 +104,12 @@
     <ClInclude Include="Dependency\rapidxml\rapidxml_iterators.hpp" />
     <ClInclude Include="Dependency\rapidxml\rapidxml_print.hpp" />
     <ClInclude Include="Dependency\rapidxml\rapidxml_utils.hpp" />
+    <ClInclude Include="Src\AI\BehaviorTree\Behavior.h" />
+    <ClInclude Include="Src\AI\BehaviorTree\BehaviorTree.h" />
+    <ClInclude Include="Src\AI\BehaviorTree\BehaviorTreeTemplate.h" />
+    <ClInclude Include="Src\AI\BehaviorTree\BehaviorTreeTemplateManager.h" />
+    <ClInclude Include="Src\AI\BehaviorTree\BehaviorTreeNode.h" />
+    <ClInclude Include="Src\AI\BehaviorTree\BlackBoard.h" />
     <ClInclude Include="Src\AppState.h" />
     <ClInclude Include="Src\AppStateManager.h" />
     <ClInclude Include="Src\DeferredShading\AmbientLight.h" />
@@ -163,6 +169,12 @@
     <ClCompile Include="Dependency\OgreRecast\Src\Recast\RecastMeshDetail.cpp" />
     <ClCompile Include="Dependency\OgreRecast\Src\Recast\RecastRasterization.cpp" />
     <ClCompile Include="Dependency\OgreRecast\Src\Recast\RecastRegion.cpp" />
+    <ClCompile Include="Src\AI\BehaviorTree\Behavior.cpp" />
+    <ClCompile Include="Src\AI\BehaviorTree\BehaviorTree.cpp" />
+    <ClCompile Include="Src\AI\BehaviorTree\BehaviorTreeTemplate.cpp" />
+    <ClCompile Include="Src\AI\BehaviorTree\BehaviorTreeTemplateManager.cpp" />
+    <ClCompile Include="Src\AI\BehaviorTree\BehaviorTreeNode.cpp" />
+    <ClCompile Include="Src\AI\BehaviorTree\BlackBoard.cpp" />
     <ClCompile Include="Src\AppStateManager.cpp" />
     <ClCompile Include="Src\DeferredShading\AmbientLight.cpp" />
     <ClCompile Include="Src\DeferredShading\DeferredLightCP.cpp" />
