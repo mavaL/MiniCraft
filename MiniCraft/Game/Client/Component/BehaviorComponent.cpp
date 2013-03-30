@@ -7,11 +7,13 @@
 #include "Behavior.h"
 #include "SelectableObject.h"
 #include "Unit.h"
+#include "AIComponent.h"
+#include "Faction.h"
 
 BehaviorComponent::BehaviorComponent( SelectableObject* pOwner )
 :Component(pOwner)
 ,m_pTemplate(nullptr)
-,m_pOwnParams(new aiBlackBoard)
+,m_pOwnBB(new aiBlackBoard)
 ,m_curBehavior(Ogre::StringUtil::BLANK)
 {
 	assert(m_pOwner->GetType() == eObjectType_Unit);
@@ -19,24 +21,30 @@ BehaviorComponent::BehaviorComponent( SelectableObject* pOwner )
 
 BehaviorComponent::~BehaviorComponent()
 {
-	SAFE_DELETE(m_pOwnParams);
+	SAFE_DELETE(m_pOwnBB);
 }
 
 void BehaviorComponent::SetTempalte( const STRING& name )
 {
 	m_pTemplate = aiBehaviorTreeTemplateManager::GetSingleton().GetTemplate(name);
-	m_pTemplate->CloneBlackBoard(*m_pOwnParams);
+	m_pTemplate->CloneBlackBoard(*m_pOwnBB);
 }
 
 void BehaviorComponent::Update( float dt )
 {
+	///测试更新黑板,后面要放入脚本中
+	int unitNum = m_pOwner->GetAi()->GetFaction()->GetUnitNum();
+	m_pOwnBB->SetParam("UnitNumber", Ogre::StringConverter::toString(unitNum));
+
 	//更新该单位的行为
 	STRING newBehavior("");
-	m_pTemplate->GetBT()->Evaluate(m_pOwnParams, newBehavior);
+	eEvalState state = m_pTemplate->GetBT()->Evaluate(m_pOwnBB, newBehavior);
+	assert(state == eEvalState_Success);
 
 	if (m_curBehavior != newBehavior)
 	{
-		aiBehaviorTreeTemplateManager::GetSingleton().GetBehavior(newBehavior)->Execute(static_cast<Unit*>(m_pOwner));
+		Ogre::Any any(static_cast<Unit*>(m_pOwner));
+		aiBehaviorTreeTemplateManager::GetSingleton().GetBehavior(newBehavior)->Execute(any);
 		m_curBehavior = newBehavior;
 	}
 }

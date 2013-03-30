@@ -5,9 +5,6 @@
 
 aiBehaviorTreeTemplateManager::aiBehaviorTreeTemplateManager()
 {
-	//初始化行为库
-	m_behaviorLib.insert(std::make_pair("Idle", new aiBehaviorIdle));
-	m_behaviorLib.insert(std::make_pair("MoveToEnemyBase", new aiBehaviorMoveToEnemyBase));
 }
 
 aiBehaviorTreeTemplateManager::~aiBehaviorTreeTemplateManager()
@@ -27,13 +24,14 @@ void aiBehaviorTreeTemplateManager::LoadAll()
 	for (auto iter=files->begin(); iter!=files->end(); ++iter)
 	{
 		aiBehaviorTreeTemplate* pTmpl = new aiBehaviorTreeTemplate;
-		pTmpl->Load(*iter);
+		const STRING name = pTmpl->Load(*iter);
+		m_bts.insert(std::make_pair(name, pTmpl));
 	}
 }
 
 void aiBehaviorTreeTemplateManager::SaveAll()
 {
-
+	//TODO
 }
 
 aiBehaviorTreeTemplate* aiBehaviorTreeTemplateManager::GetTemplate( const STRING& name )
@@ -48,4 +46,10 @@ aiBehavior* aiBehaviorTreeTemplateManager::GetBehavior( const STRING& name )
 	auto iter = m_behaviorLib.find(name);
 	assert(iter != m_behaviorLib.end() && "No behavior with this name!");
 	return iter->second;
+}
+
+void aiBehaviorTreeTemplateManager::AddBehavior( const STRING& name, aiBehavior* behav )
+{
+	assert(behav);
+	m_behaviorLib.insert(std::make_pair(name, behav));
 }

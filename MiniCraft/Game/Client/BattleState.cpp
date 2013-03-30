@@ -265,6 +265,10 @@ bool CBattleState::OnInputSys_KeyReleased( const OIS::KeyEvent& arg )
 		RenderManager.EnableFXAA(!RenderManager.GetEffectConfig().bFXAA);
 	else if(arg.key == OIS::KC_F5)
 		RenderManager.EnableSharpen(!RenderManager.GetEffectConfig().bSharpen);
+	else if(arg.key == OIS::KC_F6)
+		Ogre::Profiler::getSingleton().setEnabled(!Ogre::Profiler::getSingleton().getEnabled());
+	else if(arg.key == OIS::KC_F7)
+		Ogre::Profiler::getSingleton().setDisplayMode((Ogre::Profiler::DisplayMode)(int)!Ogre::Profiler::getSingleton().getDisplayMode());
 
 	return true;
 }

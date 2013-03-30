@@ -1,28 +1,17 @@
 #include "BehaviorTreeNode.h"
 #include <OgreException.h>
+#include "BehaviorTreeCondition.h"
 
-
-bool aiBehaviorTreeNode::Evaluate(aiBlackBoard* pInfo, STRING& retBehavior)
-{
-	if(m_childs.size() != 1)
-	{
-		OGRE_EXCEPT(Ogre::Exception::ERR_INVALID_STATE, "Root node should has exactly ONE child!", "Evaluate");
-		return false;
-	}
-
-	return m_childs.front()->Evaluate(pInfo, retBehavior);
-}
-
-/////////////////////////////////////////////////////////////////////
-bool aiBTSequenceNode::Evaluate(aiBlackBoard* pInfo, STRING& retBehavior)
+eEvalState aiBTSequenceNode::Evaluate(aiBlackBoard* pInfo, STRING& retBehavior)
 {
 	for (auto iter=m_childs.begin(); iter!=m_childs.end(); ++iter)
 	{
-		if((*iter)->Evaluate(pInfo, retBehavior))
-			return true;
+		eEvalState state = (*iter)->Evaluate(pInfo, retBehavior);
+		if(state != eEvalState_Running)
+			return state;
 	}
 
-	return false;
+	return eEvalState_Running;
 }
 
 /////////////////////////////////////////////////////////////////////
@@ -32,40 +21,57 @@ aiBTActionNode::aiBTActionNode()
 
 }
 
-bool aiBTActionNode::Evaluate(aiBlackBoard* pInfo, STRING& retBehavior)
+eEvalState aiBTActionNode::Evaluate(aiBlackBoard* pInfo, STRING& retBehavior)
+{
+	//返回行为..
+	retBehavior = m_behaviorName;
+
+	return eEvalState_Success;
+}
+
+bool aiBTActionNode::Validate()
 {
 	if(!m_childs.empty())
 	{
 		OGRE_EXCEPT(Ogre::Exception::ERR_INVALID_STATE, "Action node should be leaf node!", "Evaluate");
 		return false;
 	}
-
-	//返回行为..
-	retBehavior = m_behaviorName;
-
 	return true;
 }
 
 /////////////////////////////////////////////////////////////////////
 aiBTConditionNode::aiBTConditionNode()
 :m_conditions(Ogre::StringUtil::BLANK)
+,m_pHandler(nullptr)
 {
 
 }
 
-bool aiBTConditionNode::Evaluate(aiBlackBoard* pInfo, STRING& retBehavior)
+eEvalState aiBTConditionNode::Evaluate(aiBlackBoard* pInfo, STRING& retBehavior)
+{
+	//执行条件判定
+	if (m_conditions.empty() || m_pHandler->Evaluate(*pInfo))
+	{
+		return m_childs.front()->Evaluate(pInfo, retBehavior);
+	}
+
+	return eEvalState_Running;
+}
+
+bool aiBTConditionNode::Validate()
 {
 	if(m_childs.size() != 1)
 	{
 		OGRE_EXCEPT(Ogre::Exception::ERR_INVALID_STATE, "Condition node should has exactly ONE child!", "Evaluate");
 		return false;
 	}
+	return true;
+}
 
-	//TODO:
-	if (false)
-	{
-		return m_childs.front()->Evaluate(pInfo, retBehavior);
-	}
-
-	return false;
+void aiBTConditionNode::SetConditions( const STRING& con, aiBlackBoard* pTmplBB )
+{
+	SAFE_DELETE(m_pHandler);
+	m_pHandler = new aiBehaviorConditon(con, *pTmplBB);
+	assert(m_pHandler->Valid());
+	m_conditions = con;
 }

@@ -80,6 +80,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Game\Client\AI\AIFaction.h" />
+    <ClInclude Include="Game\Client\AI\ConcreteBehavior.h" />
     <ClInclude Include="Game\Client\Application.h" />
     <ClInclude Include="Game\Client\BattleState.h" />
     <ClInclude Include="Game\Client\Command.h" />
@@ -108,6 +109,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game\Client\AI\AIFaction.cpp" />
+    <ClCompile Include="Game\Client\AI\ConcreteBehavior.cpp" />
     <ClCompile Include="Game\Client\Application.cpp" />
     <ClCompile Include="Game\Client\BattleState.cpp" />
     <ClCompile Include="Game\Client\Command.cpp" />

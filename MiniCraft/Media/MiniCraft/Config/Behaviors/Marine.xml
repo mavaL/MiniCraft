@@ -2,17 +2,16 @@
 <Root>
   <BehaviorTemplate name="Marine">
     <BehaviorTree>
-      <ConditionNode>
         <SequenceNode >
-          <ConditionNode expression="UnitNumber >= 3"/>
-          <ActionNode behavior="MoveToEnemyBase"/>
+          <ConditionNode expression="UnitNumber >= 3">
+            <ActionNode behavior="MoveToEnemyBase"/>
+          </ConditionNode>
           <ActionNode behavior="Idle"/>
         </SequenceNode>
-      </ConditionNode>
     </BehaviorTree>
 
     <BlackBoard>
-      <Variable name="UnitNumber" value="0"/>
+      <Variable name="UnitNumber" value="0" type="int"/>
     </BlackBoard>
   </BehaviorTemplate>
 </Root>

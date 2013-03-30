@@ -12,6 +12,14 @@
 #include "KratosPrerequisites.h"
 
 class aiBlackBoard;
+class aiBehaviorConditon;
+
+enum eEvalState
+{
+	eEvalState_Success,
+	eEvalState_Failure,
+	eEvalState_Running
+};
 
 ///基类节点
 class aiBehaviorTreeNode
@@ -21,8 +29,9 @@ public:
 	virtual ~aiBehaviorTreeNode() {}
 
 public:
-	virtual	bool	Evaluate(aiBlackBoard* pInfo, STRING& retBehavior);
-	void			AddChild(aiBehaviorTreeNode* node) { m_childs.push_back(node); }
+	virtual	eEvalState	Evaluate(aiBlackBoard* pInfo, STRING& retBehavior) = 0;
+	virtual bool		Validate() { return true; }
+	void				AddChild(aiBehaviorTreeNode* node) { m_childs.push_back(node); }
 
 protected:
 	std::list<aiBehaviorTreeNode*>	m_childs;
@@ -36,7 +45,7 @@ public:
 	~aiBTSequenceNode() {}
 
 public:
-	virtual	bool	Evaluate(aiBlackBoard* pInfo, STRING& retBehavior);
+	virtual	eEvalState	Evaluate(aiBlackBoard* pInfo, STRING& retBehavior);
 };
 
 ///行为节点,定为叶节点,代表一个具体执行的行为
@@ -47,8 +56,9 @@ public:
 	~aiBTActionNode() {}
 
 public:
-	virtual	bool	Evaluate(aiBlackBoard* pInfo, STRING& retBehavior);
-	void			SetBehaviorName(const STRING& name) { m_behaviorName = name; }
+	virtual	eEvalState	Evaluate(aiBlackBoard* pInfo, STRING& retBehavior);
+	virtual bool		Validate();
+	void				SetBehaviorName(const STRING& name) { m_behaviorName = name; }
 
 private:
 	STRING		m_behaviorName;
@@ -62,12 +72,14 @@ public:
 	~aiBTConditionNode() {}
 
 public:
-	virtual	bool	Evaluate(aiBlackBoard* pInfo, STRING& retBehavior);
-	void			SetConditions(const STRING& con) { m_conditions = con; }
-	const STRING&	GetConditions() const { return m_conditions; } 
+	virtual	eEvalState	Evaluate(aiBlackBoard* pInfo, STRING& retBehavior);
+	virtual bool		Validate();
+	void				SetConditions(const STRING& con, aiBlackBoard* pTmplBB);
+	const STRING&		GetConditions() const { return m_conditions; } 
 
 private:
-	STRING		m_conditions;	//判定条件字符串
+	STRING				m_conditions;	//判定条件字符串
+	aiBehaviorConditon* m_pHandler;
 };
 
 #endif // BehaviorTreeNode_h__

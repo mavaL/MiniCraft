@@ -250,6 +250,9 @@
     <ClInclude Include="Src\AI\BehaviorTree\Behavior.h">
       <Filter>源文件\AI\BehaviorTree</Filter>
     </ClInclude>
+    <ClInclude Include="Src\AI\BehaviorTree\BehaviorTreeCondition.h">
+      <Filter>源文件\AI\BehaviorTree</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\AppStateManager.cpp">
@@ -423,7 +426,10 @@
     <ClCompile Include="Src\AI\BehaviorTree\BehaviorTreeTemplate.cpp">
       <Filter>源文件\AI\BehaviorTree</Filter>
     </ClCompile>
-    <ClCompile Include="Src\AI\BehaviorTree\Behavior.cpp">
+    <ClCompile Include="Src\AI\BehaviorTree\BehaviorTreeCondition.cpp">
+      <Filter>源文件\AI\BehaviorTree</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\AI\BehaviorTree\ConditionUnitTest.cpp">
       <Filter>源文件\AI\BehaviorTree</Filter>
     </ClCompile>
   </ItemGroup>

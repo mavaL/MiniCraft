@@ -131,8 +131,6 @@ void AiComponent::GiveCommand( const OIS::MouseEvent& arg, OIS::MouseButtonID id
 			return;
 
 		//½øÐÐÑ°Â·³¢ÊÔ
-		world.ClampPosToNavMesh(intersectPos);
-
 		if(m_pOwner->GetPath()->FindPath(intersectPos, true))
 		{
 			m_pOwner->GetPath()->SetDestPos(intersectPos);

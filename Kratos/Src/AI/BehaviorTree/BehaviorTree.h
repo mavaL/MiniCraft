@@ -17,17 +17,21 @@
 class aiBehaviorTree : public aiBehaviorTreeNode
 {
 public:
-	aiBehaviorTree(const STRING& name);
+	aiBehaviorTree();
 	~aiBehaviorTree();
 
 public:
-	const STRING&	GetName() const { return m_name; }
+	aiBehaviorTreeNode*		GetRootNode() const { return m_root; }
+	void					AddNode(aiBehaviorTreeNode* node, aiBehaviorTreeNode* parent);
 	//遍历评估整个树,得到要进行的行为
-	virtual	bool	Evaluate(aiBlackBoard* pInfo, STRING& retBehavior);
+	virtual	eEvalState		Evaluate(aiBlackBoard* pInfo, STRING& retBehavior);
+	//校验有效性
+	void					ValidateTree();		
 
 private:
-	STRING					m_name;		//该行为树的名字
 	aiBehaviorTreeNode*		m_root;
+	typedef HashMap<int, aiBehaviorTreeNode*> NodeMap;
+	NodeMap					m_nodeMap;	//根据节点地址快速获取
 };
 
 #endif // BehaviorTree_h__

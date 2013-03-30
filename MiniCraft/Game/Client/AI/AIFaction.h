@@ -19,11 +19,9 @@ public:
 
 public:
 	virtual void	Update(float dt);
-	void			OnUnitDeath() { --m_unitNum; assert(m_unitNum >= 0); }
 
 private:
 	float	m_fPastTime;
-	int		m_unitNum;
 };
 
 #endif // AIFaction_h__

@@ -30,18 +30,17 @@ PathComponent::~PathComponent()
 	}
 }
 
-bool PathComponent::FindPath( const POS& destPos, bool bJustTry )
+bool PathComponent::FindPath( POS& destPos, bool bJustTry )
 {
 	POS beginPos(m_pOwner->GetPosition());
 	World::GetSingleton().ClampPosToNavMesh(beginPos);
 
-	POS adjustDestPos(destPos);
-	World::GetSingleton().ClampPosToNavMesh(adjustDestPos);
+	World::GetSingleton().ClampPosToNavMesh(destPos);
 
-	int ret = m_pRecast->FindPath(beginPos, adjustDestPos, 1, 1);
+	int ret = m_pRecast->FindPath(beginPos, destPos, 1, 1);
 	if(ret >= 0 && !bJustTry)
 	{
-		m_pDetour->setMoveTarget(m_agentID, adjustDestPos, false);
+		m_pDetour->setMoveTarget(m_agentID, destPos, false);
 		//»æÖÆÂ·¾¶Ïß
 		//m_pRecast->CreateRecastPathLine(1);
 		m_bIsMoving = true;

@@ -15,6 +15,7 @@
 #include "PortraitPanel.h"
 #include "Resource.h"
 #include "BehaviorTreeTemplateManager.h"
+#include "ConcreteBehavior.h"
 
 SGlobalEnvironment	g_Environment;
 
@@ -63,12 +64,18 @@ void World::Init()
 	cam->lookAt(0, 0, 8);
 	//cam->setFOVy(Degree(30));
 
+	//初始化行为库
+	aiBehaviorTreeTemplateManager& btMgr = aiBehaviorTreeTemplateManager::GetSingleton();
+	btMgr.AddBehavior("Idle", new aiBehaviorIdle);
+	btMgr.AddBehavior("MoveToEnemyBase", new aiBehaviorMoveToEnemyBase);
 	//加载所有行为树模板
-	aiBehaviorTreeTemplateManager::GetSingleton().LoadAll();
+	btMgr.LoadAll();
 
 	//测试两个AI
 	m_player[eGameRace_Terran] = new FactionAI(eGameRace_Terran);
 	m_player[eGameRace_Zerg] = new FactionAI(eGameRace_Zerg);
+	m_player[eGameRace_Terran]->SetEnemy(m_player[eGameRace_Zerg]);
+	m_player[eGameRace_Zerg]->SetEnemy(m_player[eGameRace_Terran]);
 	m_player[eGameRace_Terran]->SetTeamColor(COLOR::Blue);
 	m_player[eGameRace_Zerg]->SetTeamColor(COLOR::Red);
 

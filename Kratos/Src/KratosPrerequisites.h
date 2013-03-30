@@ -27,7 +27,6 @@ namespace Kratos
 	class CGUIManager;
 }
 
-
 ///×¢²áOgreStringInterface
 #define DECL_PARAM_COMMAND(name)						\
 class Cmd##name : public Ogre::ParamCommand				\

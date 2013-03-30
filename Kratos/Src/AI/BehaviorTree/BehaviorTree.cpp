@@ -1,8 +1,7 @@
 #include "BehaviorTree.h"
 #include <OgreException.h>
 
-aiBehaviorTree::aiBehaviorTree( const STRING& name )
-:m_name(name)
+aiBehaviorTree::aiBehaviorTree()
 {
 	m_root = new aiBTConditionNode;
 }
@@ -12,15 +11,29 @@ aiBehaviorTree::~aiBehaviorTree()
 	SAFE_DELETE(m_root);
 }
 
-bool aiBehaviorTree::Evaluate(aiBlackBoard* pInfo, STRING& retBehavior)
+eEvalState aiBehaviorTree::Evaluate(aiBlackBoard* pInfo, STRING& retBehavior)
+{
+	return m_root->Evaluate(pInfo, retBehavior);	
+}
+
+void aiBehaviorTree::ValidateTree()
 {
 	try
 	{
-		return m_root->Evaluate(pInfo, retBehavior);	
+		m_root->Validate();	
 	}
-	catch(const Ogre::Exception&)
+	catch(const Ogre::Exception& e)
 	{
 		OGRE_EXCEPT(Ogre::Exception::ERR_INVALID_STATE, 
-			"Error occurs when executing the BTree: " + m_name, "Execute");
+			e.getDescription(), "aiBehaviorTree::Validate()");
 	}
+}
+
+void aiBehaviorTree::AddNode( aiBehaviorTreeNode* node, aiBehaviorTreeNode* parent )
+{
+	assert(node && parent);
+	int addrHash = (int)parent;
+	auto iter = m_nodeMap.find(addrHash);
+	assert(iter != m_nodeMap.end());
+	iter->second->AddChild(node);
 }

@@ -14,6 +14,7 @@
 
 class aiBehaviorTreeTemplate;
 class aiBlackBoard;
+class FactionAI;
 
 class BehaviorComponent : public Component
 {
@@ -28,7 +29,7 @@ public:
 
 private:
 	aiBehaviorTreeTemplate*	m_pTemplate;
-	aiBlackBoard*			m_pOwnParams;	//该单位独立的行为树黑板
+	aiBlackBoard*			m_pOwnBB;		//该单位独立的行为树黑板
 	STRING					m_curBehavior;	//当前所处行为
 };
 

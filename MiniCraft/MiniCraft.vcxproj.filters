@@ -100,6 +100,9 @@
     <ClInclude Include="Game\Client\AI\AIFaction.h">
       <Filter>Client\AI</Filter>
     </ClInclude>
+    <ClInclude Include="Game\Client\AI\ConcreteBehavior.h">
+      <Filter>Client\AI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game\Client\BattleState.cpp">
@@ -175,6 +178,9 @@
       <Filter>Client\Component</Filter>
     </ClCompile>
     <ClCompile Include="Game\Client\AI\AIFaction.cpp">
+      <Filter>Client\AI</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Client\AI\ConcreteBehavior.cpp">
       <Filter>Client\AI</Filter>
     </ClCompile>
   </ItemGroup>

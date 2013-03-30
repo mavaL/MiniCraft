@@ -12,7 +12,10 @@
 
 #include "KratosPrerequisites.h"
 
-class Unit;
+namespace Ogre
+{
+	class Any;
+}
 
 ///行为基类
 class aiBehavior
@@ -22,25 +25,11 @@ public:
 	virtual ~aiBehavior() {}
 
 public:
-	virtual	void	Execute(Unit* pUnit) = 0;
+	virtual	void	Execute(Ogre::Any& owner) = 0;
 
 private:
 	aiBehavior(const aiBehavior&);
 	aiBehavior& operator= (const aiBehavior&);
-};
-
-///空闲行为
-class aiBehaviorIdle : public aiBehavior
-{
-public:
-	virtual	void	Execute(Unit* pUnit);
-};
-
-///向敌人基地移动行为
-class aiBehaviorMoveToEnemyBase : public aiBehavior
-{
-public:
-	virtual	void	Execute(Unit* pUnit);
 };
 
 #endif // Behavior_h__

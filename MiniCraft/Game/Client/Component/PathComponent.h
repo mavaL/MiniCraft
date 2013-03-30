@@ -29,12 +29,12 @@ public:
 	virtual void	Update(float dt) {}
 	bool			_UpdatePathFinding(float dt);
 	//进行寻路.bJustTry为true则只是尝试目标点是否可寻路
-	bool			FindPath(const POS& destPos, bool bJustTry);
+	bool			FindPath(POS& destPos, bool bJustTry);
 	//停止寻路
 	bool			StopMove();
 	const POS		GetAgentPos() const;
 	void			SetDestPos(const POS& destPos);
-	const POS&		GetDestPos() const	{ return m_destPos; }
+	POS&			GetDestPos()	{ return m_destPos; }
 	bool			IsMoving() const	{ return m_bIsMoving; }
 	//开启/关闭阻碍规避
 	void			EnableObstcleAvoidance(bool bEnable);

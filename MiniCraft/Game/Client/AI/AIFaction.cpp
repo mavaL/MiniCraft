@@ -10,7 +10,6 @@
 FactionAI::FactionAI( eGameRace race )
 :Faction(race)
 ,m_fPastTime(0)
-,m_unitNum(0)
 {
 
 }

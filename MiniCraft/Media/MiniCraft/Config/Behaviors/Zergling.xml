@@ -2,17 +2,16 @@
 <Root>
   <BehaviorTemplate name="Zergling">
     <BehaviorTree>
-      <ConditionNode>
         <SequenceNode >
-          <ConditionNode expression="UnitNumber >= 3"/>
+          <ConditionNode expression="UnitNumber >= 100">
             <ActionNode behavior="MoveToEnemyBase"/>
+          </ConditionNode>
           <ActionNode behavior="Idle"/>
         </SequenceNode>
-      </ConditionNode>
     </BehaviorTree>
 
     <BlackBoard>
-      <Variable name="UnitNumber" value="0"/>
+      <Variable name="UnitNumber" value="0" type="int"/>
     </BlackBoard>
   </BehaviorTemplate>
 </Root>

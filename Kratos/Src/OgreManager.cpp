@@ -301,6 +301,7 @@ namespace Kratos
 		Light::LightTypes type = (eDLightType)dlType == eDLightType_Point ? Light::LT_POINT : Light::LT_SPOTLIGHT;
 		lightSrc->setType(type);
 		lightSrc->setDiffuseColour(COLOR::White);
+		lightSrc->setCastShadows(false);
 
 		DLight* dl = new DLight(mLightMaterialGenerator, lightSrc);
 		m_dLightList.insert(std::make_pair(lightSrc, dl));

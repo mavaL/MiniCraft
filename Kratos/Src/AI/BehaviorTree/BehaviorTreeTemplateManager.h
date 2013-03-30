@@ -24,6 +24,7 @@ class aiBehaviorTreeTemplateManager : public CSingleton<aiBehaviorTreeTemplateMa
 public:
 	void					LoadAll();
 	void					SaveAll();
+	void					AddBehavior(const STRING& name, aiBehavior* behav);
 	aiBehaviorTreeTemplate*	GetTemplate(const STRING& name);
 	aiBehavior*				GetBehavior(const STRING& name);
 
