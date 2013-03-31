@@ -1,0 +1,15 @@
+﻿<?xml version='1.0' encoding='utf-8' ?>
+<!--每个种族都有个全局信息黑板,使得各单位能共享全局信息-->
+<Root>
+  <BlackBoard race="Terran">
+    <Variable name="UnitNumber" value="0" type="int"/>
+  </BlackBoard>
+
+  <BlackBoard race="Zerg">
+    <Variable name="UnitNumber" value="0" type="int"/>
+  </BlackBoard>
+
+  <!--全局黑板的更新脚本-->
+  <Script filename="GlobalBlackboard.lua"/>
+</Root>
+

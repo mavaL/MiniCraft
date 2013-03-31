@@ -27,6 +27,7 @@ public:
 	void			Save() {}
 	aiBehaviorTree*	GetBT() { return m_pBT; }
 	void			CloneBlackBoard(aiBlackBoard& toClone);
+	const STRING&	GetBBScriptEntry() const { return m_BBScript; }
 
 private:
 	aiBehaviorTreeTemplate(const aiBehaviorTreeTemplate&);
@@ -36,6 +37,7 @@ private:
 
 	aiBehaviorTree*		m_pBT;
 	aiBlackBoard*		m_pBB;
+	STRING				m_BBScript;
 };
 
 #endif // BehaviorTreeTemplate_h__

@@ -11,6 +11,7 @@ Object::Object()
 Object::~Object()
 {
 	//销毁所有组件
+	//TODO: 回收机制,降低内存碎片
 	for(auto iter=m_components.begin(); iter!=m_components.end(); ++iter)
 		delete iter->second;
 	m_components.clear();

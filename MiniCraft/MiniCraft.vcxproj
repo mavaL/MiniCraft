@@ -92,7 +92,6 @@
     <ClInclude Include="Game\Client\Component\PathComponent.h" />
     <ClInclude Include="Game\Client\Faction.h" />
     <ClInclude Include="Game\Client\GameDataDef.h" />
-    <ClInclude Include="Game\Client\GameDefine.h" />
     <ClInclude Include="Game\Client\Object\Building.h" />
     <ClInclude Include="Game\Client\Object\ObjectBase.h" />
     <ClInclude Include="Game\Client\Object\ObjectFactory.h" />

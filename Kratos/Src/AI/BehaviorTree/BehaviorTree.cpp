@@ -1,9 +1,11 @@
 #include "BehaviorTree.h"
 #include <OgreException.h>
 
-aiBehaviorTree::aiBehaviorTree()
+aiBehaviorTree::aiBehaviorTree(eGameRace race)
+:m_root(new aiBTConditionNode)
+,m_race(race)
 {
-	m_root = new aiBTConditionNode;
+	
 }
 
 aiBehaviorTree::~aiBehaviorTree()

@@ -33,7 +33,7 @@ bool aiBTActionNode::Validate()
 {
 	if(!m_childs.empty())
 	{
-		OGRE_EXCEPT(Ogre::Exception::ERR_INVALID_STATE, "Action node should be leaf node!", "Evaluate");
+		OGRE_EXCEPT(Ogre::Exception::ERR_INVALID_STATE, "Action node should be leaf node!", "aiBTActionNode::Validate()");
 		return false;
 	}
 	return true;
@@ -62,7 +62,12 @@ bool aiBTConditionNode::Validate()
 {
 	if(m_childs.size() != 1)
 	{
-		OGRE_EXCEPT(Ogre::Exception::ERR_INVALID_STATE, "Condition node should has exactly ONE child!", "Evaluate");
+		OGRE_EXCEPT(Ogre::Exception::ERR_INVALID_STATE, "Condition node should has exactly ONE child!", "aiBTConditionNode::Validate()");
+		return false;
+	}
+	else if (m_pHandler && !m_pHandler->Valid())
+	{
+		OGRE_EXCEPT(Ogre::Exception::ERR_INVALID_STATE, "The condition expression is invalid!", "aiBTConditionNode::Validate()");
 		return false;
 	}
 	return true;
@@ -72,6 +77,5 @@ void aiBTConditionNode::SetConditions( const STRING& con, aiBlackBoard* pTmplBB 
 {
 	SAFE_DELETE(m_pHandler);
 	m_pHandler = new aiBehaviorConditon(con, *pTmplBB);
-	assert(m_pHandler->Valid());
 	m_conditions = con;
 }

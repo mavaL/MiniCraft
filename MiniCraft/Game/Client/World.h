@@ -5,6 +5,7 @@
 #include "GameDefine.h"
 #include "SceneSerializer.h"
 #include "KratosPrerequisites.h"
+#include "ScriptSystem.h"
 
 class SelectableObject;
 class OgreRecast;
@@ -49,9 +50,21 @@ protected:
 	virtual void	_LoadObjects(rapidxml::xml_node<>* node);
 
 public:
+	World(lua_State* L) {}
+	///////////////////////////////////////////
+	/////////////lua导出函数
+	int		GetPlayerUnitNum(lua_State* L);
+	int		SetGlobalBBParam_Int(lua_State* L);
+	int		SetGlobalBBParam_Float(lua_State* L);
+	int		SetGlobalBBParam_Bool(lua_State* L);
+
+public:
 	void	Init();
 	void	Update(float dt);
 	void	Shutdown();
+
+	static const char className[];
+	static Luna<World>::RegType methods[];
 
 	const Ogre::AxisAlignedBox&	GetResAABB() const { return m_pGold->getWorldBoundingBox(); }
 	POS				GetRandomPositionOnNavmesh();
@@ -89,6 +102,9 @@ public:
 	UiPortraitPanel* GetPortraitPanel() { return m_portraitPanel; }
 
 private:
+	Kratos::ScriptSystem*		m_pScriptSystem;
+	Kratos::COgreManager*		m_pRenderSystem;
+
 	SelectedContainer			m_vecSelectUnis;	//所有选中单位
 	Ogre::Entity*				m_pGold;
 	Ogre::AxisAlignedBoxSceneQuery*		m_pSceneQuery;

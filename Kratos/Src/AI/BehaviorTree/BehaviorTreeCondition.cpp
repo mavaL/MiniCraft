@@ -1,6 +1,9 @@
 #include "BehaviorTreeCondition.h"
 #include <OgreMath.h>
 #include <OgreStringConverter.h>
+#include "BehaviorTree.h"
+#include "BlackBoard.h"
+#include "BehaviorTreeTemplateManager.h"
 
 class SimpleLexer
 {
@@ -121,13 +124,16 @@ private:
 
 
 aiBehaviorConditon::aiBehaviorConditon()
-	: m_rootID(-1)
+: m_rootID(-1)
+,m_pRaceGlobalBB(nullptr)
 {
 }
 
 aiBehaviorConditon::aiBehaviorConditon(const STRING& condition, aiBlackBoard& bb)
-	: m_rootID(Parse(condition, bb))
 {
+	m_pRaceGlobalBB = aiBehaviorTreeTemplateManager::GetSingleton().GetGlobalBB(bb.GetParent()->GetRace());
+	m_rootID = Parse(condition, bb);
+
 	if (m_rootID >= 0)
 		Optimise();
 }
@@ -239,13 +245,23 @@ int aiBehaviorConditon::ParseValue(SimpleLexer& lex, int tok, aiBlackBoard& bb, 
 		return opID;
 	}
 	else if (tok == 'true')
-		return AddOp(ConditionOp(ConditionOp::Variable, "true", aiBlackBoard::eVarType_Bool));
+		return AddOp(ConditionOp(ConditionOp::Variable, "true", aiBlackBoard::eVarType_Bool, false));
 	else if (tok == 'fals')
-		return AddOp(ConditionOp(ConditionOp::Variable, "false", aiBlackBoard::eVarType_Bool));
+		return AddOp(ConditionOp(ConditionOp::Variable, "false", aiBlackBoard::eVarType_Bool, false));
 	else if (tok == 'var')
 	{
-		const aiBlackBoard::SValue& val = bb.GetParam(lex.ident());
-		return AddOp(ConditionOp(ConditionOp::Variable, std::string(lex.ident()), val.m_type));
+		//是否是全局黑板参数
+		const STRING varName = lex.ident();
+		if(bb.IsGlobalParam(varName))
+		{
+			const aiBlackBoard::SValue& val = m_pRaceGlobalBB->GetParam(varName);
+			return AddOp(ConditionOp(ConditionOp::Variable, varName, val.m_type, true));
+		}
+		else
+		{
+			const aiBlackBoard::SValue& val = bb.GetParam(varName);
+			return AddOp(ConditionOp(ConditionOp::Variable, varName, val.m_type, false));
+		}
 	}
 	else if (tok == 'num')
 	{
@@ -257,7 +273,7 @@ int aiBehaviorConditon::ParseValue(SimpleLexer& lex, int tok, aiBlackBoard& bb, 
 			float f = Ogre::StringConverter::parseReal(str, 10000);
 			assert(f != 10000 && "Invalid number!");
 			bb.DefineParam(str, str, aiBlackBoard::eVarType_Float);
-			return AddOp(ConditionOp(ConditionOp::Variable, str, aiBlackBoard::eVarType_Float));
+			return AddOp(ConditionOp(ConditionOp::Variable, str, aiBlackBoard::eVarType_Float, false));
 		}
 		else
 		{
@@ -265,7 +281,7 @@ int aiBehaviorConditon::ParseValue(SimpleLexer& lex, int tok, aiBlackBoard& bb, 
 			int i = Ogre::StringConverter::parseInt(str, 10000);
 			assert(i != 10000 && "Invalid number!");
 			bb.DefineParam(str, str, aiBlackBoard::eVarType_Int);
-			return AddOp(ConditionOp(ConditionOp::Variable, str, aiBlackBoard::eVarType_Int));
+			return AddOp(ConditionOp(ConditionOp::Variable, str, aiBlackBoard::eVarType_Int, false));
 		}
 	}
 
@@ -320,7 +336,7 @@ bool aiBehaviorConditon::EvaluateOp(aiBlackBoard& bb, const ConditionOp& op) con
 		return !CompGreater(bb, op);
 	case ConditionOp::Variable:
 		{
-			assert(op.varType == aiBlackBoard::eVarType_Bool);
+			assert(op.varType == aiBlackBoard::eVarType_Bool && !op.varGlobal);
 			auto& val = bb.GetParam(op.varName);
 			return Ogre::StringConverter::parseBool(val.m_value);
 		}
@@ -340,16 +356,33 @@ bool aiBehaviorConditon::Valid() const
 	return m_rootID >= 0;
 }
 
+void aiBehaviorConditon::GetCompParam( const ConditionOp& op, const aiBlackBoard::SValue*& lhs, 
+	const aiBlackBoard::SValue*& rhs, aiBlackBoard& bb ) const
+{
+	//lhs
+	if(m_conditionOps[op.operandLeft].varGlobal)
+		lhs = &m_pRaceGlobalBB->GetParam(m_conditionOps[op.operandLeft].varName);
+	else
+		lhs = &bb.GetParam(m_conditionOps[op.operandLeft].varName);
+	//rhs
+	if(m_conditionOps[op.operandRight].varGlobal)
+		rhs = &m_pRaceGlobalBB->GetParam(m_conditionOps[op.operandRight].varName);
+	else
+		rhs = &bb.GetParam(m_conditionOps[op.operandRight].varName);
+}
+
 bool aiBehaviorConditon::CompEqual( aiBlackBoard& bb, const ConditionOp& op ) const
 {
-	auto& lhs = bb.GetParam(m_conditionOps[op.operandLeft].varName);
-	auto& rhs = bb.GetParam(m_conditionOps[op.operandRight].varName);
+	const aiBlackBoard::SValue* lhs = nullptr;
+	const aiBlackBoard::SValue* rhs = nullptr;
+	GetCompParam(op, lhs, rhs, bb);
+
 	//以左操作数类型为准,假定应该是一样的
 	switch (m_conditionOps[op.operandLeft].varType)
 	{
-	case aiBlackBoard::eVarType_Int: return Ogre::StringConverter::parseInt(lhs.m_value) == Ogre::StringConverter::parseInt(rhs.m_value);
-	case aiBlackBoard::eVarType_Float: return Ogre::Math::RealEqual(Ogre::StringConverter::parseReal(lhs.m_value), Ogre::StringConverter::parseReal(rhs.m_value));
-	case aiBlackBoard::eVarType_Bool: return Ogre::StringConverter::parseBool(lhs.m_value) == Ogre::StringConverter::parseBool(rhs.m_value);
+	case aiBlackBoard::eVarType_Int: return Ogre::StringConverter::parseInt(lhs->m_value) == Ogre::StringConverter::parseInt(rhs->m_value);
+	case aiBlackBoard::eVarType_Float: return Ogre::Math::RealEqual(Ogre::StringConverter::parseReal(lhs->m_value), Ogre::StringConverter::parseReal(rhs->m_value));
+	case aiBlackBoard::eVarType_Bool: return Ogre::StringConverter::parseBool(lhs->m_value) == Ogre::StringConverter::parseBool(rhs->m_value);
 	default: assert(0);
 	}
 	return false;
@@ -357,13 +390,15 @@ bool aiBehaviorConditon::CompEqual( aiBlackBoard& bb, const ConditionOp& op ) co
 
 bool aiBehaviorConditon::CompGreater( aiBlackBoard& bb, const ConditionOp& op ) const
 {
-	auto& lhs = bb.GetParam(m_conditionOps[op.operandLeft].varName);
-	auto& rhs = bb.GetParam(m_conditionOps[op.operandRight].varName);
+	const aiBlackBoard::SValue* lhs = nullptr;
+	const aiBlackBoard::SValue* rhs = nullptr;
+	GetCompParam(op, lhs, rhs, bb);
+
 	//以左操作数类型为准,假定应该是一样的
 	switch (m_conditionOps[op.operandLeft].varType)
 	{
-	case aiBlackBoard::eVarType_Int: return Ogre::StringConverter::parseInt(lhs.m_value) > Ogre::StringConverter::parseInt(rhs.m_value);
-	case aiBlackBoard::eVarType_Float: return Ogre::StringConverter::parseReal(lhs.m_value) > Ogre::StringConverter::parseReal(rhs.m_value);
+	case aiBlackBoard::eVarType_Int: return Ogre::StringConverter::parseInt(lhs->m_value) > Ogre::StringConverter::parseInt(rhs->m_value);
+	case aiBlackBoard::eVarType_Float: return Ogre::StringConverter::parseReal(lhs->m_value) > Ogre::StringConverter::parseReal(rhs->m_value);
 	default: assert(0);
 	}
 	return false;
@@ -371,13 +406,15 @@ bool aiBehaviorConditon::CompGreater( aiBlackBoard& bb, const ConditionOp& op ) 
 
 bool aiBehaviorConditon::CompGreaterEqual( aiBlackBoard& bb, const ConditionOp& op ) const
 {
-	auto& lhs = bb.GetParam(m_conditionOps[op.operandLeft].varName);
-	auto& rhs = bb.GetParam(m_conditionOps[op.operandRight].varName);
+	const aiBlackBoard::SValue* lhs = nullptr;
+	const aiBlackBoard::SValue* rhs = nullptr;
+	GetCompParam(op, lhs, rhs, bb);
+
 	//以左操作数类型为准,假定应该是一样的
 	switch (m_conditionOps[op.operandLeft].varType)
 	{
-	case aiBlackBoard::eVarType_Int: return Ogre::StringConverter::parseInt(lhs.m_value) >= Ogre::StringConverter::parseInt(rhs.m_value);
-	case aiBlackBoard::eVarType_Float: return Ogre::StringConverter::parseReal(lhs.m_value) >= Ogre::StringConverter::parseReal(rhs.m_value);
+	case aiBlackBoard::eVarType_Int: return Ogre::StringConverter::parseInt(lhs->m_value) >= Ogre::StringConverter::parseInt(rhs->m_value);
+	case aiBlackBoard::eVarType_Float: return Ogre::StringConverter::parseReal(lhs->m_value) >= Ogre::StringConverter::parseReal(rhs->m_value);
 	default: assert(0);
 	}
 	return false;

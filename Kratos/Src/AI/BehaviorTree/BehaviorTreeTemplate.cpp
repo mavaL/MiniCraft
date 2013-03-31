@@ -4,10 +4,12 @@
 #include <rapidxml_utils.hpp>
 #include <rapidxml_print.hpp>
 #include <OgreResourceGroupManager.h>
+#include "ScriptSystem.h"
 
 aiBehaviorTreeTemplate::aiBehaviorTreeTemplate()
-:m_pBT(new aiBehaviorTree)
-,m_pBB(new aiBlackBoard)
+:m_pBT(nullptr)
+,m_pBB(nullptr)
+,m_BBScript(Ogre::StringUtil::BLANK)
 {
 
 }
@@ -27,35 +29,44 @@ const STRING aiBehaviorTreeTemplate::Load( const STRING& filename )
 	XMLDoc.parse<0>(szData);
 	rapidxml::xml_node<>* pNode = XMLDoc.first_node("Root")->first_node("BehaviorTemplate");
 
+	SAFE_DELETE(m_pBT);
+	SAFE_DELETE(m_pBB);
+
+	//加载行为树
+	const STRING tmplName = pNode->first_attribute("name")->value();
+	const STRING raceName = pNode->first_attribute("race")->value();
+
+	eGameRace race;
+	if(raceName == "Terran") race = eGameRace_Terran;
+	else if(raceName == "Zerg") race = eGameRace_Zerg;
+	else assert(0);
+
+	m_pBT = new aiBehaviorTree(race);
+	m_pBB = new aiBlackBoard(m_pBT);
+
 	//加载黑板
 	rapidxml::xml_node<>* pBBNode = pNode->first_node("BlackBoard");
 	assert(pBBNode && "The Behavior tree blackboard xml is broken!");
 	rapidxml::xml_node<>* pVarNode = pBBNode->first_node("Variable");
 
-	while(pVarNode)
-	{
-		const char* name = pVarNode->first_attribute("name")->value();
-		const char* value = pVarNode->first_attribute("value")->value();
-		const char* type = pVarNode->first_attribute("type")->value();
+	m_pBB->LoadParams(pVarNode);
 
-		aiBlackBoard::eVarType varType;
-		if(strcmp(type, "int") == 0) varType = aiBlackBoard::eVarType_Int;
-		else if(strcmp(type, "float") == 0) varType = aiBlackBoard::eVarType_Float;
-		else if(strcmp(type, "bool") == 0) varType = aiBlackBoard::eVarType_Bool;
-		else assert(0);
-
-		m_pBB->DefineParam(name, value, varType);
-
-		pVarNode = pVarNode->next_sibling();
-	}
-
-	//记载行为树
-	const STRING tmplName = pNode->first_attribute("name")->value();
+	//加载行为树节点
 	rapidxml::xml_node<>* pTreeNode = pNode->first_node("BehaviorTree")->first_node();
 	assert(pTreeNode && "The Behavior tree xml is broken!");
 
 	_LoadTreeNode(pTreeNode, m_pBT->GetRootNode());
 	m_pBT->ValidateTree();
+
+	//脚本
+	Ogre::StringVectorPtr loc = Ogre::ResourceGroupManager::getSingleton().findResourceLocation("BehaviorTemplate", "*Behaviors");
+	const STRING path = loc->at(0) + "\\Script\\";
+
+	rapidxml::xml_node<>* pScriptNode = pNode->first_node("Script");
+	const char* szFilename = pScriptNode->first_attribute("filename")->value();
+	const STRING filepath = path + szFilename;
+	SCRIPTNAMAGER.DoFile(filepath);
+	m_BBScript = pScriptNode->first_attribute("entry")->value();
 
 	free(szData);
 	XMLDoc.clear();

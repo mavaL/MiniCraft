@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8' ?>
 <Root>
-  <BehaviorTemplate name="Zergling">
+  <BehaviorTemplate name="Zergling" race="Zerg">
     <BehaviorTree>
         <SequenceNode >
           <ConditionNode expression="UnitNumber >= 100">
@@ -11,8 +11,9 @@
     </BehaviorTree>
 
     <BlackBoard>
-      <Variable name="UnitNumber" value="0" type="int"/>
     </BlackBoard>
+
+    <Script filename="ZerglingBlackboard.lua" entry="BBUpdate_Zergling"/>
   </BehaviorTemplate>
 </Root>
 

@@ -6,6 +6,8 @@
 #include "Building.h"
 #include "PathComponent.h"
 #include "BehaviorComponent.h"
+#include "BehaviorTreeTemplateManager.h"
+#include "BlackBoard.h"
 
 FactionAI::FactionAI( eGameRace race )
 :Faction(race)
@@ -24,6 +26,8 @@ void FactionAI::Update( float dt )
 		//限制10个
 		if (m_unitNum <= 10)
 		{
+			++m_unitNum;
+
 			STRING unitName;
 			if(m_race == eGameRace_Terran)
 				unitName = "Marine";
@@ -39,8 +43,6 @@ void FactionAI::Update( float dt )
 			//设置行为树
 			pNewObj->AddComponent(eComponentType_Behevior, new BehaviorComponent(pNewObj));
 			pNewObj->GetBehavior()->SetTempalte(unitName);
-
-			++m_unitNum;
 		}
 		m_fPastTime = 0;
 	}

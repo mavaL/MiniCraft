@@ -14,12 +14,6 @@ namespace Kratos
 		m_pLuaState = luaL_newstate();
 		assert(m_pLuaState);
 		luaL_openlibs(m_pLuaState);
-
-		//注册导出类
-		//Luna<Unit>::Register(m_pLuaState);
-
-		//加载脚本
-		//DoFile("../../../UnitState.lua");
 	}
 
 	void ScriptSystem::Shutdown()
@@ -80,7 +74,7 @@ namespace Kratos
 		}
 	}
 
-	void ScriptSystem::DoFile( const std::string& filename )
+	void ScriptSystem::DoFile( const STRING& filename )
 	{
 		lua_pushcclosure(m_pLuaState, OnError, 0);
 		int errfunc = lua_gettop(m_pLuaState);

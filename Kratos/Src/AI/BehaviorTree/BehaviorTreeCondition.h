@@ -33,6 +33,7 @@ private:
 	int Parse(const STRING& condition, aiBlackBoard& bb);
 	void Optimise();
 
+	void GetCompParam(const ConditionOp& op, const aiBlackBoard::SValue*& lhs, const aiBlackBoard::SValue*& rhs, aiBlackBoard& bb) const;
 	bool CompEqual(aiBlackBoard& bb, const ConditionOp& op) const;
 	bool CompGreater(aiBlackBoard& bb, const ConditionOp& op) const;
 	bool CompGreaterEqual(aiBlackBoard& bb, const ConditionOp& op) const;
@@ -69,23 +70,27 @@ private:
 		{
 		}
 
-		ConditionOp(int type, const STRING& var, aiBlackBoard::eVarType vartype)
+		ConditionOp(int type, const STRING& var, aiBlackBoard::eVarType vartype, bool bGlobal)
 			: opType((Type)type)
 			, varName(var)
 			, varType(vartype)
+			, varGlobal(bGlobal)
 		{
 		}
 
 		STRING		varName;
 		aiBlackBoard::eVarType	varType;
+		bool		varGlobal;
+
 		Ogre::uint8 opType;
 		Ogre::uint8 operandLeft;
 		Ogre::uint8 operandRight;
 	};
 
 	typedef std::vector<ConditionOp> ConditionOps;
-	ConditionOps m_conditionOps;
-	int m_rootID;
+	ConditionOps	m_conditionOps;
+	int				m_rootID;
+	aiBlackBoard*	m_pRaceGlobalBB;
 };
 
 #endif // BehaviorTreeCondition_h__

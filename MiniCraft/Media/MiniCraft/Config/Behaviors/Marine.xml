@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8' ?>
 <Root>
-  <BehaviorTemplate name="Marine">
+  <BehaviorTemplate name="Marine" race="Terran">
     <BehaviorTree>
         <SequenceNode >
           <ConditionNode expression="UnitNumber >= 3">
@@ -11,8 +11,9 @@
     </BehaviorTree>
 
     <BlackBoard>
-      <Variable name="UnitNumber" value="0" type="int"/>
     </BlackBoard>
+
+    <Script filename="MarineBlackboard.lua" entry="BBUpdate_Marine"/>
   </BehaviorTemplate>
 </Root>
 

@@ -16,8 +16,24 @@
 #include "Resource.h"
 #include "BehaviorTreeTemplateManager.h"
 #include "ConcreteBehavior.h"
+#include "BlackBoard.h"
 
 SGlobalEnvironment	g_Environment;
+
+//**** Define stuff for the Lua Class ****//
+// Define the Lua ClassName
+const char World::className[] = "World";
+
+// Define the methods we will expose to Lua
+#define method(class, name) {#name, &class::name}
+Luna<World>::RegType World::methods[] = 
+{
+	method(World, GetPlayerUnitNum),
+	method(World, SetGlobalBBParam_Int),
+	method(World, SetGlobalBBParam_Float),
+	method(World, SetGlobalBBParam_Bool),
+	{0,0}
+};
 
 ////////////////////////////////////////////////////////////////
 World::World()
@@ -32,8 +48,11 @@ World::World()
 ,m_cmdPanel(new UiCommandPanel)
 ,m_infoPanel(new UiInfoPanel)
 ,m_portraitPanel(new UiPortraitPanel)
+,m_pScriptSystem(Kratos::ScriptSystem::GetSingletonPtr())
+,m_pRenderSystem(Kratos::COgreManager::GetSingletonPtr())
 {
-	
+	Luna<World>::Register(m_pScriptSystem->GetLuaState());
+	m_pScriptSystem->BindObjectToLua<World>("world", this);
 }
 
 World::~World()
@@ -47,8 +66,8 @@ void World::Init()
 {
 	using namespace Ogre;
 
-	SceneManager* sm = RenderManager.m_pSceneMgr;
-	Camera* cam = RenderManager.m_pMainCamera;
+	SceneManager* sm = m_pRenderSystem->m_pSceneMgr;
+	Camera* cam = m_pRenderSystem->m_pMainCamera;
 
 	m_pSceneQuery = sm->createAABBQuery(AxisAlignedBox());
 	m_pRaySceneQuery = sm->createRayQuery(Ray());
@@ -118,7 +137,7 @@ void World::Init()
 	m_pTestScene->Load("MyStarCraft.Scene", "General", this);
 
 	//UI for test
-	Ogre::Entity* pEntConsole = RenderManager.CreateEntityWithTangent("ConsoleTerran_0.mesh", sm);
+	Ogre::Entity* pEntConsole = m_pRenderSystem->CreateEntityWithTangent("ConsoleTerran_0.mesh", sm);
 	pEntConsole->setRenderQueueGroup(Ogre::RENDER_QUEUE_WORLD_GEOMETRY_2);
 	pEntConsole->setCastShadows(false);
 	m_pUISceneNode1 = sm->getRootSceneNode()->createChildSceneNode("UIConsoleNode");
@@ -127,7 +146,7 @@ void World::Init()
 	assert(m_pConsoleAnim1);
 	(const_cast<Ogre::AxisAlignedBox&>(pEntConsole->getMesh()->getBounds())).setInfinite();
 
-	pEntConsole = RenderManager.CreateEntityWithTangent("ConsoleTerran_1.mesh", sm);
+	pEntConsole = m_pRenderSystem->CreateEntityWithTangent("ConsoleTerran_1.mesh", sm);
 	pEntConsole->setRenderQueueGroup(Ogre::RENDER_QUEUE_WORLD_GEOMETRY_2);
 	pEntConsole->setCastShadows(false);
 	m_pUISceneNode2 = m_pUISceneNode1->createChildSceneNode("InfoPanelNode");
@@ -136,14 +155,14 @@ void World::Init()
 	assert(m_pConsoleAnim2);
 	(const_cast<Ogre::AxisAlignedBox&>(pEntConsole->getMesh()->getBounds())).setInfinite();
 
-	pEntConsole = RenderManager.CreateEntityWithTangent("ConsoleTerran_2.mesh", sm);
+	pEntConsole = m_pRenderSystem->CreateEntityWithTangent("ConsoleTerran_2.mesh", sm);
 	pEntConsole->setRenderQueueGroup(Ogre::RENDER_QUEUE_WORLD_GEOMETRY_2);
 	pEntConsole->setCastShadows(false);
 	m_pUISceneNode3 = m_pUISceneNode1->createChildSceneNode("CmdPanelNode");
 	m_pUISceneNode3->attachObject(pEntConsole);
 	(const_cast<Ogre::AxisAlignedBox&>(pEntConsole->getMesh()->getBounds())).setInfinite();
 
-	pEntConsole = RenderManager.CreateEntityWithTangent("ConsoleProtoss_6.mesh", sm);
+	pEntConsole = m_pRenderSystem->CreateEntityWithTangent("ConsoleProtoss_6.mesh", sm);
 	pEntConsole->setRenderQueueGroup(Ogre::RENDER_QUEUE_WORLD_GEOMETRY_2);
 	pEntConsole->setCastShadows(false);
 	m_pUISceneNode4 = m_pUISceneNode1->createChildSceneNode("PortraitPanelNode");
@@ -175,8 +194,8 @@ void World::Shutdown()
 	SAFE_DELETE(m_pRecast);
 	SAFE_DELETE(m_cameraMan);
 
-	RenderManager.m_pSceneMgr->destroyQuery(m_pSceneQuery);
-	RenderManager.m_pSceneMgr->destroyQuery(m_pRaySceneQuery);
+	m_pRenderSystem->m_pSceneMgr->destroyQuery(m_pSceneQuery);
+	m_pRenderSystem->m_pSceneMgr->destroyQuery(m_pRaySceneQuery);
 	m_pSceneQuery = nullptr;
 	m_pRaySceneQuery = nullptr;
 
@@ -193,6 +212,10 @@ void World::Shutdown()
 
 void World::Update(float dt)
 {
+	//更新行为树全局黑板
+	m_pScriptSystem->Call("GlobalBBUpdate_Terran");
+	m_pScriptSystem->Call("GlobalBBUpdate_Zerg");
+
 	m_player[eGameRace_Terran]->Update(dt);
 	m_player[eGameRace_Zerg]->Update(dt);
 
@@ -229,11 +252,11 @@ Ogre::Vector3 World::GetRandomPositionOnNavmesh()
 
 void World::EnableFreeCamera( bool bEnable )
 {
-	assert(RenderManager.m_pMainCamera && m_cameraMan);
+	assert(m_pRenderSystem->m_pMainCamera && m_cameraMan);
 
 	if(!bEnable)
 	{
-		Ogre::Camera* cam = RenderManager.m_pMainCamera;
+		Ogre::Camera* cam = m_pRenderSystem->m_pMainCamera;
 		const Ogre::Vector3 pos = cam->getPosition();
 		cam->setPosition(0, 24, 0);
 		cam->lookAt(0, 0, 8);
@@ -265,7 +288,7 @@ Ogre::MovableObject* World::GetRaySceneQueryResult( const OIS::MouseEvent& arg, 
 		return nullptr;
 
 	Ogre::Ray ray;
-	RenderManager.m_pMainCamera->getCameraToViewportRay(screenX, screenY, &ray);
+	m_pRenderSystem->m_pMainCamera->getCameraToViewportRay(screenX, screenY, &ray);
 
 	m_pRaySceneQuery->setRay(ray);
 	m_pRaySceneQuery->setQueryMask(mask);
@@ -342,7 +365,7 @@ void World::UpdateConsoleUITransform(float dt)
 	m_pConsoleAnim1->addTime(dt);
 	m_pConsoleAnim2->addTime(dt);
 
-	Ogre::Camera* cam = RenderManager.m_pMainCamera;
+	Ogre::Camera* cam = m_pRenderSystem->m_pMainCamera;
 
 	const FLOAT3& camRight = cam->getRealRight();
 	const FLOAT3& camUp = cam->getRealUp();
@@ -361,7 +384,7 @@ void World::UpdateConsoleUITransform(float dt)
 bool World::GetTerrainIntersectPos( const FLOAT2& screenPos, POS& retPt )
 {
 	Ogre::Ray ray;
-	RenderManager.m_pMainCamera->getCameraToViewportRay(screenPos.x, screenPos.y, &ray);
+	m_pRenderSystem->m_pMainCamera->getCameraToViewportRay(screenPos.x, screenPos.y, &ray);
 
 	auto result = m_pTestScene->GetTerrainGroup()->rayIntersects(ray);
 
@@ -415,14 +438,59 @@ void World::_LoadObjects( rapidxml::xml_node<>* node )
 		else
 		{
 			//非游戏对象,不纳入逻辑管理,只渲染
-			Ogre::Entity* entity = RenderManager.m_pSceneMgr->createEntity(strMesh);
+			Ogre::Entity* entity = m_pRenderSystem->m_pSceneMgr->createEntity(strMesh);
 			assert(entity);
 
-			Ogre::SceneNode* pNode = RenderManager.m_pSceneMgr->getRootSceneNode()->createChildSceneNode(pos, orient);
+			Ogre::SceneNode* pNode = m_pRenderSystem->m_pSceneMgr->getRootSceneNode()->createChildSceneNode(pos, orient);
 			pNode->setScale(scale);
 			pNode->attachObject(entity);
 		}	
 
 		curObjNode = curObjNode->next_sibling();
 	}
+}
+
+int World::GetPlayerUnitNum( lua_State* L )
+{
+	const eGameRace race = (eGameRace)m_pScriptSystem->Get_Int(-1);
+	int numUnit = m_player[race]->GetUnitNum();
+	m_pScriptSystem->Push_Int(numUnit);
+
+	return 1;
+}
+
+int World::SetGlobalBBParam_Int( lua_State* L )
+{
+	const eGameRace race = (eGameRace)m_pScriptSystem->Get_Int(-3);
+	const STRING paramName = m_pScriptSystem->Get_String(-2);
+	const int iValue = m_pScriptSystem->Get_Int(-1);
+	const STRING value = Ogre::StringConverter::toString(iValue);
+
+	aiBehaviorTreeTemplateManager::GetSingleton().GetGlobalBB(race)->SetParam(paramName, value);
+
+	return 0;
+}
+
+int World::SetGlobalBBParam_Float( lua_State* L )
+{
+	const eGameRace race = (eGameRace)m_pScriptSystem->Get_Int(-3);
+	const STRING paramName = m_pScriptSystem->Get_String(-2);
+	const float fValue = m_pScriptSystem->Get_Float(-1);
+	const STRING value = Ogre::StringConverter::toString(fValue);
+
+	aiBehaviorTreeTemplateManager::GetSingleton().GetGlobalBB(race)->SetParam(paramName, value);
+
+	return 0;
+}
+
+int World::SetGlobalBBParam_Bool( lua_State* L )
+{
+	const eGameRace race = (eGameRace)m_pScriptSystem->Get_Int(-3);
+	const STRING paramName = m_pScriptSystem->Get_String(-2);
+	const bool bValue = m_pScriptSystem->Get_Bool(-1);
+	const STRING value = Ogre::StringConverter::toString(bValue);
+
+	aiBehaviorTreeTemplateManager::GetSingleton().GetGlobalBB(race)->SetParam(paramName, value);
+
+	return 0;
 }

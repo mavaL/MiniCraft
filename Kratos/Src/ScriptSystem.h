@@ -3,7 +3,7 @@
 
 #include "Singleton.h"
 #include "luna.h"
-#include <OgrePrerequisites.h>
+#include "KratosPrerequisites.h"
 
 namespace Kratos
 {
@@ -22,10 +22,11 @@ namespace Kratos
 		void	Init();
 		void	Shutdown();
 		void	Reset() { Shutdown(); Init(); }
+		lua_State*	GetLuaState() { return m_pLuaState; }
 
 	public:
 		///栈通信
-		const std::string	Get_String(int index);
+		const STRING		Get_String(int index);
 		int					Get_Int(int index);
 		float				Get_Float(int index);
 		bool				Get_Bool(int index);
@@ -35,11 +36,30 @@ namespace Kratos
 		void				Push_Int(int i);
 
 		///执行脚本
-		void				DoFile(const std::string& filename);
+		void				DoFile(const STRING& filename);
+
+		///注册C函数供lua调用
+		void				RegisterFunction(const STRING& name);
+
+		//绑定对象到lua全局表(userdata)
+		template<class T>
+		void	BindObjectToLua(const STRING& nameInLua, T* pObject)
+		{
+			Luna<T>::userdataType *ud = static_cast<Luna<T>::userdataType*>(lua_newuserdata(m_pLuaState, sizeof(Luna<T>::userdataType)));
+			assert(ud);
+
+			ud->pT = pObject;  // store pointer to object in userdata
+			luaL_getmetatable(m_pLuaState, T::className);  // lookup metatable in Lua registry
+			lua_setmetatable(m_pLuaState, -2);
+
+			//拷贝栈顶userdata
+			lua_pushvalue(m_pLuaState, -1);
+			lua_setglobal(m_pLuaState, nameInLua.c_str());
+		}
 
 		//绑定C++对象到lua的对象数组(table)中,如table Unit[0] = userdata0, Unit[1] = ...
 		template<class T>
-		void	BindObjectToLua(const std::string& tableName, int index, T* pObject)
+		void	BindObjectToLua(const STRING& tableName, int index, T* pObject)
 		{
 			Luna<T>::userdataType *ud = static_cast<Luna<T>::userdataType*>(lua_newuserdata(m_pLuaState, sizeof(Luna<T>::userdataType)));
 			assert(ud);

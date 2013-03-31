@@ -7,8 +7,7 @@
 #include "Behavior.h"
 #include "SelectableObject.h"
 #include "Unit.h"
-#include "AIComponent.h"
-#include "Faction.h"
+#include "ScriptSystem.h"
 
 BehaviorComponent::BehaviorComponent( SelectableObject* pOwner )
 :Component(pOwner)
@@ -32,9 +31,8 @@ void BehaviorComponent::SetTempalte( const STRING& name )
 
 void BehaviorComponent::Update( float dt )
 {
-	///测试更新黑板,后面要放入脚本中
-	int unitNum = m_pOwner->GetAi()->GetFaction()->GetUnitNum();
-	m_pOwnBB->SetParam("UnitNumber", Ogre::StringConverter::toString(unitNum));
+	//更新黑板
+	SCRIPTNAMAGER.Call(m_pTemplate->GetBBScriptEntry().c_str());
 
 	//更新该单位的行为
 	STRING newBehavior("");

@@ -12,15 +12,16 @@
 
 #include "KratosPrerequisites.h"
 #include "BehaviorTreeNode.h"
-
+#include "GameDefine.h"
 
 class aiBehaviorTree : public aiBehaviorTreeNode
 {
 public:
-	aiBehaviorTree();
+	aiBehaviorTree(eGameRace race);
 	~aiBehaviorTree();
 
 public:
+	eGameRace				GetRace() const { return m_race; }
 	aiBehaviorTreeNode*		GetRootNode() const { return m_root; }
 	void					AddNode(aiBehaviorTreeNode* node, aiBehaviorTreeNode* parent);
 	//遍历评估整个树,得到要进行的行为
@@ -29,9 +30,13 @@ public:
 	void					ValidateTree();		
 
 private:
+	aiBehaviorTree(const aiBehaviorTree&);
+	aiBehaviorTree& operator= (const aiBehaviorTree&);
+
 	aiBehaviorTreeNode*		m_root;
 	typedef HashMap<int, aiBehaviorTreeNode*> NodeMap;
 	NodeMap					m_nodeMap;	//根据节点地址快速获取
+	eGameRace				m_race;
 };
 
 #endif // BehaviorTree_h__
