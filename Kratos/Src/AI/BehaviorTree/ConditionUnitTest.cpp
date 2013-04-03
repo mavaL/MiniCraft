@@ -22,10 +22,8 @@ using namespace std;
 
 void Print(const std::string& condition, bool result)
 {
-	char* strResult = result ? "true" : "false";
-
 	cout << "The condition is: " << condition.c_str() << endl;
-	cout << "The result is: " << strResult << endl;
+	cout << "The result is: " << boolalpha << result << endl;
 	cout << endl;
 }
 

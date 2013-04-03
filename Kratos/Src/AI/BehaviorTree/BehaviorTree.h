@@ -14,29 +14,33 @@
 #include "BehaviorTreeNode.h"
 #include "GameDefine.h"
 
-class aiBehaviorTree : public aiBehaviorTreeNode
+namespace Kratos
 {
-public:
-	aiBehaviorTree(eGameRace race);
-	~aiBehaviorTree();
+	class aiBehaviorTree : public aiBehaviorTreeNode
+	{
+	public:
+		aiBehaviorTree(eGameRace race);
+		~aiBehaviorTree();
 
-public:
-	eGameRace				GetRace() const { return m_race; }
-	aiBehaviorTreeNode*		GetRootNode() const { return m_root; }
-	void					AddNode(aiBehaviorTreeNode* node, aiBehaviorTreeNode* parent);
-	//遍历评估整个树,得到要进行的行为
-	virtual	eEvalState		Evaluate(aiBlackBoard* pInfo, STRING& retBehavior);
-	//校验有效性
-	void					ValidateTree();		
+	public:
+		eGameRace				GetRace() const { return m_race; }
+		aiBehaviorTreeNode*		GetRootNode() const { return m_root; }
+		void					AddNode(aiBehaviorTreeNode* node, aiBehaviorTreeNode* parent);
+		//遍历评估整个树,得到要进行的行为
+		virtual	eEvalState		Evaluate(aiBlackBoard* pInfo, STRING& retBehavior);
+		//校验有效性
+		void					ValidateTree();		
 
-private:
-	aiBehaviorTree(const aiBehaviorTree&);
-	aiBehaviorTree& operator= (const aiBehaviorTree&);
+	private:
+		aiBehaviorTree(const aiBehaviorTree&);
+		aiBehaviorTree& operator= (const aiBehaviorTree&);
 
-	aiBehaviorTreeNode*		m_root;
-	typedef HashMap<int, aiBehaviorTreeNode*> NodeMap;
-	NodeMap					m_nodeMap;	//根据节点地址快速获取
-	eGameRace				m_race;
-};
+		aiBehaviorTreeNode*		m_root;
+		typedef HashMap<int, aiBehaviorTreeNode*> NodeMap;
+		NodeMap					m_nodeMap;	//根据节点地址快速获取
+		eGameRace				m_race;
+	};
+}
+
 
 #endif // BehaviorTree_h__

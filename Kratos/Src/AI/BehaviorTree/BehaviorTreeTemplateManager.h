@@ -12,35 +12,41 @@
 #include "Singleton.h"
 #include "KratosPrerequisites.h"
 #include "GameDefine.h"
+#include <OgreStringVector.h>
 
-class aiBehaviorTreeTemplate;
-class aiBehavior;
-class aiBlackBoard;
-
-class aiBehaviorTreeTemplateManager : public CSingleton<aiBehaviorTreeTemplateManager>
+namespace Kratos
 {
-	DECLEAR_SINGLETON(aiBehaviorTreeTemplateManager);
-	aiBehaviorTreeTemplateManager();
-	~aiBehaviorTreeTemplateManager();
+	class aiBehaviorTreeTemplate;
+	class aiBehavior;
+	class aiBlackBoard;
 
-public:
-	void					LoadAll();
-	void					SaveAll();
-	void					AddBehavior(const STRING& name, aiBehavior* behav);
-	aiBehaviorTreeTemplate*	GetTemplate(const STRING& name);
-	aiBehavior*				GetBehavior(const STRING& name);
-	//获取种族全局黑板
-	aiBlackBoard*			GetGlobalBB(eGameRace race) { return m_globalBBs[race]; }
+	class aiBehaviorTreeTemplateManager : public CSingleton<aiBehaviorTreeTemplateManager>
+	{
+		DECLEAR_SINGLETON(aiBehaviorTreeTemplateManager);
+		aiBehaviorTreeTemplateManager();
+		~aiBehaviorTreeTemplateManager();
 
-private:
-	typedef HashMap<STRING, aiBehaviorTreeTemplate*>	BTLib;
-	BTLib				m_bts;
+	public:
+		void					LoadAll();
+		void					SaveAll();
+		void					AddBehavior(const STRING& name, aiBehavior* behav);
+		aiBehaviorTreeTemplate*	GetTemplate(const STRING& name);
+		Ogre::StringVector		GetAllTemplateNames() const;
+		aiBehavior*				GetBehavior(const STRING& name);
+		//获取种族全局黑板
+		aiBlackBoard*			GetGlobalBB(eGameRace race) { return m_globalBBs[race]; }
 
-	typedef HashMap<STRING, aiBehavior*>	BehaviorLib;
-	BehaviorLib			m_behaviorLib;
+	private:
+		typedef HashMap<STRING, aiBehaviorTreeTemplate*>	BTLib;
+		BTLib				m_bts;
 
-	typedef HashMap<eGameRace, aiBlackBoard*>	GlobalBlackboards;
-	GlobalBlackboards	m_globalBBs;
-};
+		typedef HashMap<STRING, aiBehavior*>	BehaviorLib;
+		BehaviorLib			m_behaviorLib;
+
+		typedef HashMap<eGameRace, aiBlackBoard*>	GlobalBlackboards;
+		GlobalBlackboards	m_globalBBs;
+	};
+}
+
 
 #endif // BehaviorTreeTemplateManager_h__

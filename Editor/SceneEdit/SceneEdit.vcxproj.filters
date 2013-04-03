@@ -25,6 +25,9 @@
     <Filter Include="Operation">
       <UniqueIdentifier>{8ee60ae6-302d-4ee1-a0e3-b71047ae5e22}</UniqueIdentifier>
     </Filter>
+    <Filter Include="UI\BehaviorTreeEditor">
+      <UniqueIdentifier>{1ee5ef73-0a8f-40be-83c2-b63e6584a246}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
@@ -168,6 +171,18 @@
     <ClInclude Include="UI\ParticlePropertyPane.h">
       <Filter>UI</Filter>
     </ClInclude>
+    <ClInclude Include="UI\BehaviorTreeEditor\BehaviorTreeEditorView.h">
+      <Filter>UI\BehaviorTreeEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\BehaviorTreeEditor\BehaviorTreeEditorDlg.h">
+      <Filter>UI\BehaviorTreeEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\BehaviorTreeEditor\BehaviorTreeEditorExplorer.h">
+      <Filter>UI\BehaviorTreeEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\BehaviorTreeEditor\BehaviorTreeEditorProperty.h">
+      <Filter>UI\BehaviorTreeEditor</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SceneEdit.cpp">
@@ -274,6 +289,18 @@
     </ClCompile>
     <ClCompile Include="UI\ParticlePropertyPane.cpp">
       <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\BehaviorTreeEditor\BehaviorTreeEditorView.cpp">
+      <Filter>UI\BehaviorTreeEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\BehaviorTreeEditor\BehaviorTreeEditorDlg.cpp">
+      <Filter>UI\BehaviorTreeEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\BehaviorTreeEditor\BehaviorTreeEditorExplorer.cpp">
+      <Filter>UI\BehaviorTreeEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\BehaviorTreeEditor\BehaviorTreeEditorProperty.cpp">
+      <Filter>UI\BehaviorTreeEditor</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

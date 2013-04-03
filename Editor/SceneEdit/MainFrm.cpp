@@ -13,6 +13,7 @@
 #include "UI/EffectPropertyPane.h"
 #include "UI/ParticlePropertyPane.h"
 #include "UI/DLightPropertyPane.h"
+#include "UI/BehaviorTreeEditor/BehaviorTreeEditorDlg.h"
 
 // CMainFrame
 
@@ -62,6 +63,8 @@ BEGIN_MESSAGE_MAP(CMainFrame, CXTPFrameWnd)
 	ON_NOTIFY(CBN_SELCHANGE, IDC_Animation_Names, OnAnimSelectChange)
 	ON_COMMAND(IDC_GameData_Building, OnDataBuilding)
 	ON_UPDATE_COMMAND_UI(IDC_GameData_Building, OnUpdateUI_DataBuilding)
+	ON_COMMAND(IDC_GameData_BehaviorTreeEditor, OnToggleBehaviorTreeEditor)
+	ON_UPDATE_COMMAND_UI(IDC_GameData_BehaviorTreeEditor, OnUpdateUI_BehaviorTreeEditor)
 	ON_COMMAND(IDC_Effect_Shadow, OnShadowOnOff)
 	ON_UPDATE_COMMAND_UI(IDC_Effect_Shadow, OnUpdateUI_ShadowOnOff)
 	ON_COMMAND(IDC_Effect_SSAO, OnSSAOOnOff)
@@ -103,6 +106,8 @@ CMainFrame::CMainFrame()
 ,m_animTab(NULL)
 ,m_animList(NULL)
 ,m_effectList(NULL)
+,m_dlgBTEditor(NULL)
+,m_paneBTEditor(NULL)
 {
 	//ID序列校验
 	static_assert(IDC_Terrain_Splat_Layer1 == IDC_Terrain_Splat_Layer0 + 1 && IDC_Terrain_Splat_Layer2 == IDC_Terrain_Splat_Layer1 + 1
@@ -119,6 +124,8 @@ CMainFrame::~CMainFrame()
 	SAFE_DELETE(m_propertyEffect);
 	SAFE_DELETE(m_propertyParticle);
 	SAFE_DELETE(m_propertyDLight);
+	SAFE_DELETE(m_dlgBTEditor);
+	SAFE_DELETE(m_dlgBuildingData);
 }
 
 int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
@@ -133,8 +140,6 @@ BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)
 {
 	if( !CFrameWnd::PreCreateWindow(cs) )
 		return FALSE;
-	// TODO: 在此处通过修改
-	//  CREATESTRUCT cs 来修改窗口类或样式
 
 	cs.dwExStyle &= ~WS_EX_CLIENTEDGE;
 	cs.lpszClass = AfxRegisterWndClass(0);
@@ -298,11 +303,12 @@ bool CMainFrame::_OnCreateRibbon()
 
 	///RibbonGameData
 	pTab = pRibbonBar->AddTab(L"Game Data");
-
 	//RibbonGameData - GroupData
 	pGroup = pTab->AddGroup(L"Data");
 	//RibbonGameData - GroupData - Building
 	pGroup->Add(xtpControlButton, IDC_GameData_Building);
+	//RibbonGameData - GroupData - BehaviorTree
+	pGroup->Add(xtpControlButton, IDC_GameData_BehaviorTreeEditor);
 
 	///RibbonEffect
 	pTab = pRibbonBar->AddTab(L"Effect");
@@ -383,6 +389,7 @@ void CMainFrame::_LoadIcon()
 	icon[0] = IDC_Effect_FXAA;				pImageMgr->SetIcons(IDB_Button, icon, _countof(icon), CSize(32, 32));
 	icon[0] = IDC_Animation_Play;			pImageMgr->SetIcons(IDB_Button, icon, _countof(icon), CSize(32, 32));
 	icon[0] = IDC_Animation_Stop;			pImageMgr->SetIcons(IDB_Button, icon, _countof(icon), CSize(32, 32));
+	icon[0] = IDC_GameData_BehaviorTreeEditor;	pImageMgr->SetIcons(IDB_Button, icon, _countof(icon), CSize(32, 32));
 }
 
 BOOL CMainFrame::OnCreateClient( LPCREATESTRUCT lpcs, CCreateContext* pContext )
@@ -431,6 +438,9 @@ void CMainFrame::_CreateDockPane()
 	m_paneObject		= m_paneManager.CreatePane(IDR_Pane_ObjectProperty, CRect(0, 0, 250, 120), xtpPaneDockRight);
 	m_paneEffect		= m_paneManager.CreatePane(IDR_Pane_EffectProperty, CRect(0, 0, 250, 120), xtpPaneDockRight);
 	m_paneAttachment	= m_paneManager.CreatePane(IDR_Pane_Attachment, CRect(0, 0, 250, 120), xtpPaneDockRight);
+
+	m_paneBTEditor		= m_paneManager.CreatePane(IDR_Pane_BTEditor, CRect(0, 0, 1024, 560), xtpPaneDockRight);
+	m_paneManager.ToggleDocking(m_paneBTEditor);
 }
 
 LRESULT CMainFrame::_AttachDockPane( WPARAM wParam, LPARAM lParam )
@@ -461,6 +471,10 @@ LRESULT CMainFrame::_AttachDockPane( WPARAM wParam, LPARAM lParam )
 
 			case IDR_Pane_Attachment:
 				pPane->Detach();
+				break;
+
+			case IDR_Pane_BTEditor:
+				pPane->Attach(m_dlgBTEditor);
 				break;
 
 			default: assert(0);
@@ -551,9 +565,15 @@ bool CMainFrame::CreateEditorMainUI()
 	m_propertyParticle->m_wndPropertyGrid.SetTheme(xtpGridThemeVisualStudio2010);
 	m_propertyDLight->m_wndPropertyGrid.SetTheme(xtpGridThemeVisualStudio2010);
 
+	m_dlgBTEditor = new DialogBehaviorTreeEditor(this);
+
 	_CreateDockPane();
 
 	ManipulatorSystem.GetResource().PrepareAllIcons();
+
+	m_dlgBuildingData = new DialogGameDataBuilding;
+	m_dlgBuildingData->Create(IDD_DlgGameDataBuilding);
+	m_dlgVisibleFlags.insert(std::make_pair(IDD_DlgGameDataBuilding, false));
 
 	ManipulatorScene::GetSingleton().AddCallback(this);
 	ManipulatorSystem.GetObject().AddCallback(this);
@@ -910,6 +930,8 @@ void CMainFrame::OnObjectSetSelection( Ogre::Entity* pObject )
 			m_animList->AddString(vecNames[i].c_str());
 		m_animList->SetCurSel(0);
 	}
+
+	RefreshRibbonBar();
 }
 
 void CMainFrame::OnObjectClearSelection( Ogre::Entity* pObject )
@@ -928,6 +950,8 @@ void CMainFrame::OnObjectClearSelection( Ogre::Entity* pObject )
 		manEffect.OnAnimSelectChange("");
 		_OnAttachmentPaneChange(FALSE, TRUE);
 	}
+
+	RefreshRibbonBar();
 }
 
 void CMainFrame::OnUpdateUI_AnimNames( CCmdUI* pCmdUI )
@@ -959,22 +983,9 @@ void CMainFrame::OnUpdateUI_DataBuilding( CCmdUI* pCmdUI )
 
 void CMainFrame::OnDataBuilding()
 {
-	static bool bInit = false;
-	static DialogGameDataBuilding s_Dlg;
-	if (!bInit)
-	{
-		s_Dlg.Create(IDD_DlgGameDataBuilding);
-		s_Dlg.ShowWindow(SW_HIDE);
-
-		//对话框可见标志存入容器
-		m_dlgVisibleFlags.insert(std::make_pair(IDD_DlgGameDataBuilding, false));
-
-		bInit = true;
-	}
-	
 	bool bCurVisible = !m_dlgVisibleFlags[IDD_DlgGameDataBuilding];
-	s_Dlg.ShowWindow(bCurVisible ? SW_SHOW : SW_HIDE);
-	s_Dlg.UpdateWindow();
+	m_dlgBuildingData->ShowWindow(bCurVisible ? SW_SHOW : SW_HIDE);
+	m_dlgBuildingData->UpdateWindow();
 	m_dlgVisibleFlags[IDD_DlgGameDataBuilding] = bCurVisible;
 }
 
@@ -1195,4 +1206,23 @@ void CMainFrame::_OnAttachmentPaneChange(BOOL bEnable, BOOL bRefresh)
 	CPropertiesPane* pane = _GetCurAttachmentPane();
 	pane->EnableMutableProperty(bEnable);
 	pane->UpdateAllFromEngine();
+}
+
+void CMainFrame::OnUpdateUI_BehaviorTreeEditor( CCmdUI* pCmdUI )
+{
+	pCmdUI->Enable(TRUE);
+	pCmdUI->SetCheck(!m_paneBTEditor->IsClosed());
+}
+
+void CMainFrame::OnToggleBehaviorTreeEditor()
+{
+	if (m_paneBTEditor->IsClosed())
+		m_paneManager.ShowPane(m_paneBTEditor);
+	else
+		m_paneManager.ClosePane(m_paneBTEditor);
+}
+
+void CMainFrame::RefreshRibbonBar()
+{
+	GetCommandBars()->RedrawCommandBars();
 }

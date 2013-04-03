@@ -87,8 +87,6 @@ void World::Init()
 	aiBehaviorTreeTemplateManager& btMgr = aiBehaviorTreeTemplateManager::GetSingleton();
 	btMgr.AddBehavior("Idle", new aiBehaviorIdle);
 	btMgr.AddBehavior("MoveToEnemyBase", new aiBehaviorMoveToEnemyBase);
-	//加载所有行为树模板
-	btMgr.LoadAll();
 
 	//测试两个AI
 	m_player[eGameRace_Terran] = new FactionAI(eGameRace_Terran);

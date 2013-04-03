@@ -11,75 +11,79 @@
 
 #include "KratosPrerequisites.h"
 
-class aiBlackBoard;
-class aiBehaviorConditon;
-
-enum eEvalState
+namespace Kratos
 {
-	eEvalState_Success,
-	eEvalState_Failure,
-	eEvalState_Running
-};
+	class aiBlackBoard;
+	class aiBehaviorConditon;
 
-///基类节点
-class aiBehaviorTreeNode
-{
-public:
-	aiBehaviorTreeNode() {}
-	virtual ~aiBehaviorTreeNode() {}
+	enum eEvalState
+	{
+		eEvalState_Success,
+		eEvalState_Failure,
+		eEvalState_Running
+	};
 
-public:
-	virtual	eEvalState	Evaluate(aiBlackBoard* pInfo, STRING& retBehavior) = 0;
-	virtual bool		Validate() { return true; }
-	void				AddChild(aiBehaviorTreeNode* node) { m_childs.push_back(node); }
+	///基类节点
+	class aiBehaviorTreeNode
+	{
+	public:
+		aiBehaviorTreeNode() {}
+		virtual ~aiBehaviorTreeNode() {}
 
-protected:
-	std::list<aiBehaviorTreeNode*>	m_childs;
-};
+	public:
+		virtual	eEvalState	Evaluate(aiBlackBoard* pInfo, STRING& retBehavior) = 0;
+		virtual bool		Validate() { return true; }
+		void				AddChild(aiBehaviorTreeNode* node) { m_childs.push_back(node); }
 
-///序列节点,从左往右进行
-class aiBTSequenceNode : public aiBehaviorTreeNode
-{
-public:
-	aiBTSequenceNode() {}
-	~aiBTSequenceNode() {}
+	protected:
+		std::list<aiBehaviorTreeNode*>	m_childs;
+	};
 
-public:
-	virtual	eEvalState	Evaluate(aiBlackBoard* pInfo, STRING& retBehavior);
-};
+	///序列节点,从左往右进行
+	class aiBTSequenceNode : public aiBehaviorTreeNode
+	{
+	public:
+		aiBTSequenceNode() {}
+		~aiBTSequenceNode() {}
 
-///行为节点,定为叶节点,代表一个具体执行的行为
-class aiBTActionNode : public aiBehaviorTreeNode
-{
-public:
-	aiBTActionNode();
-	~aiBTActionNode() {}
+	public:
+		virtual	eEvalState	Evaluate(aiBlackBoard* pInfo, STRING& retBehavior);
+	};
 
-public:
-	virtual	eEvalState	Evaluate(aiBlackBoard* pInfo, STRING& retBehavior);
-	virtual bool		Validate();
-	void				SetBehaviorName(const STRING& name) { m_behaviorName = name; }
+	///行为节点,定为叶节点,代表一个具体执行的行为
+	class aiBTActionNode : public aiBehaviorTreeNode
+	{
+	public:
+		aiBTActionNode();
+		~aiBTActionNode() {}
 
-private:
-	STRING		m_behaviorName;
-};
+	public:
+		virtual	eEvalState	Evaluate(aiBlackBoard* pInfo, STRING& retBehavior);
+		virtual bool		Validate();
+		void				SetBehaviorName(const STRING& name) { m_behaviorName = name; }
 
-///条件节点
-class aiBTConditionNode : public aiBehaviorTreeNode
-{
-public:
-	aiBTConditionNode();
-	~aiBTConditionNode() {}
+	private:
+		STRING		m_behaviorName;
+	};
 
-public:
-	virtual	eEvalState	Evaluate(aiBlackBoard* pInfo, STRING& retBehavior);
-	virtual bool		Validate();
-	void				SetConditions(const STRING& con, aiBlackBoard* pTmplBB);
-	const STRING&		GetConditions() const { return m_conditions; } 
+	///条件节点
+	class aiBTConditionNode : public aiBehaviorTreeNode
+	{
+	public:
+		aiBTConditionNode();
+		~aiBTConditionNode() {}
 
-private:
-	STRING				m_conditions;	//判定条件字符串
-	aiBehaviorConditon* m_pHandler;
-};
+	public:
+		virtual	eEvalState	Evaluate(aiBlackBoard* pInfo, STRING& retBehavior);
+		virtual bool		Validate();
+		void				SetConditions(const STRING& con, aiBlackBoard* pTmplBB);
+		const STRING&		GetConditions() const { return m_conditions; } 
+
+	private:
+		STRING				m_conditions;	//判定条件字符串
+		aiBehaviorConditon* m_pHandler;
+	};
+}
+
 
 #endif // BehaviorTreeNode_h__

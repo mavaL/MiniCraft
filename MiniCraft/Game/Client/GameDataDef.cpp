@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "GameDataDef.h"
 #include "Effect/EffectController.h"
+#include "AI/BehaviorTree/BehaviorTreeTemplateManager.h"
 
 void GameDataDefManager::LoadAllData()
 {
@@ -158,7 +159,8 @@ void GameDataDefManager::LoadAllData()
 	free(szData);
 	XMLDoc.clear();
 
-	///加载战斗数据配表
+	//加载所有行为树模板
+	Kratos::aiBehaviorTreeTemplateManager::GetSingleton().LoadAll();
 }
 
 void GameDataDefManager::SaveAllData()

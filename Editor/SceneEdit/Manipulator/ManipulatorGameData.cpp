@@ -1,11 +1,18 @@
 #include "stdafx.h"
 #include "ManipulatorGameData.h"
 #include "Utility.h"
-
+#include "AI/BehaviorTree/BehaviorTreeTemplateManager.h"
+#include "ScriptSystem.h"
 
 ManipulatorGameData::ManipulatorGameData()
 {
 	m_dataMgr = GameDataDefManager::GetSingletonPtr();
+	SCRIPTNAMAGER.Init();
+}
+
+ManipulatorGameData::~ManipulatorGameData()
+{
+	SCRIPTNAMAGER.Shutdown();
 }
 
 void ManipulatorGameData::LoadAllXml()
@@ -78,4 +85,14 @@ SUnitData* ManipulatorGameData::GetUnitData( const std::string& meshname )
 	}
 	
 	return nullptr;
+}
+
+std::vector<std::wstring> ManipulatorGameData::GetAllBehaviorTreeTemplateNames() const
+{
+	auto names = Kratos::aiBehaviorTreeTemplateManager::GetSingleton().GetAllTemplateNames();
+	std::vector<std::wstring> ret(names.size());
+	for(size_t i=0; i<names.size(); ++i)
+		ret[i] = Utility::EngineToUnicode(names[i]);
+
+	return std::move(ret);
 }

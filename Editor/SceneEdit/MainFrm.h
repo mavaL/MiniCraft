@@ -9,6 +9,8 @@ class PropertyPaneObject;
 class PropertyPaneEffect;
 class PropertyPaneParticle;
 class PropertyPaneDLight;
+class DialogBehaviorTreeEditor;
+class DialogGameDataBuilding;
 
 class CMainFrame : public CXTPFrameWnd, public ManipulatorSceneEventCallback, public ManipulatorObjectEventCallback
 {
@@ -38,6 +40,8 @@ public:
 
 	//初始化编辑器界面
 	bool			CreateEditorMainUI();
+	//刷新Ribbon面板
+	void			RefreshRibbonBar();
 
 protected:
 	DECLARE_DYNAMIC(CMainFrame)
@@ -111,7 +115,9 @@ private:
 
 	///GameData
 	void			OnUpdateUI_DataBuilding(CCmdUI* pCmdUI);
-	void			OnDataBuilding();		
+	void			OnDataBuilding();	
+	void			OnUpdateUI_BehaviorTreeEditor(CCmdUI* pCmdUI);
+	void			OnToggleBehaviorTreeEditor();
 	///Effect
 	void			OnUpdateUI_ShadowOnOff(CCmdUI* pCmdUI);
 	void			OnUpdateUI_SSAOOnOff(CCmdUI* pCmdUI);
@@ -132,6 +138,10 @@ private:
 	PropertyPaneEffect*		m_propertyEffect;		//特效属性
 	PropertyPaneParticle*	m_propertyParticle;		//挂接粒子属性
 	PropertyPaneDLight*		m_propertyDLight;		//挂接延迟光属性
+
+	DialogGameDataBuilding*	m_dlgBuildingData;
+	DialogBehaviorTreeEditor* m_dlgBTEditor;
+	CXTPDockingPane*		m_paneBTEditor;
 
 	CXTPRibbonTab*			m_animTab;
 	CXTPControlComboBox*	m_animList;

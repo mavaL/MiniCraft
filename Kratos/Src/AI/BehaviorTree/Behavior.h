@@ -17,19 +17,23 @@ namespace Ogre
 	class Any;
 }
 
-///行为基类
-class aiBehavior
+namespace Kratos
 {
-public:
-	aiBehavior() {}
-	virtual ~aiBehavior() {}
+	///行为基类
+	class aiBehavior
+	{
+	public:
+		aiBehavior() {}
+		virtual ~aiBehavior() {}
 
-public:
-	virtual	void	Execute(Ogre::Any& owner) = 0;
+	public:
+		virtual	void	Execute(Ogre::Any& owner) = 0;
 
-private:
-	aiBehavior(const aiBehavior&);
-	aiBehavior& operator= (const aiBehavior&);
-};
+	private:
+		aiBehavior(const aiBehavior&);
+		aiBehavior& operator= (const aiBehavior&);
+	};
+}
+
 
 #endif // Behavior_h__

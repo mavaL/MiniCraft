@@ -17,7 +17,7 @@ class ManipulatorGameData
 {
 public:
 	ManipulatorGameData();
-	~ManipulatorGameData() {}
+	~ManipulatorGameData();
 
 public:
 	//加载所有编辑器要用到的游戏XML配置文件
@@ -36,9 +36,11 @@ public:
 	void						SetBuildingAbility(const std::wstring& buildingName, int slotIndex, const std::wstring& abilName);
 	//获取单位数据.注意参数是mesh名字
 	SUnitData*					GetUnitData(const std::string& meshname);
+	//获取所有行为树模板名字
+	std::vector<std::wstring>	GetAllBehaviorTreeTemplateNames() const;
 
 private:
-	GameDataDefManager*			m_dataMgr;
+	GameDataDefManager*						m_dataMgr;
 };
 
 

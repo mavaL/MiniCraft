@@ -136,6 +136,7 @@ void Application::_UpdateInput(float dt)
 	if(GetAsyncKeyState(VK_ESCAPE) < 0)
 	{
 		ManipulatorAction::GetSingleton().SetActiveAction(eActionType_None);
+		((CMainFrame*)(AfxGetApp()->m_pMainWnd))->RefreshRibbonBar();
 	}
 
 	//Undo?

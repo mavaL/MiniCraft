@@ -12,32 +12,36 @@
 #include "KratosPrerequisites.h"
 #include <rapidxml.hpp>
 
-class aiBehaviorTree;
-class aiBlackBoard;
-class aiBehaviorTreeNode;
-
-class aiBehaviorTreeTemplate
+namespace Kratos
 {
-public:
-	aiBehaviorTreeTemplate();
-	~aiBehaviorTreeTemplate();
+	class aiBehaviorTree;
+	class aiBlackBoard;
+	class aiBehaviorTreeNode;
 
-public:
-	const STRING	Load(const STRING& filename);
-	void			Save() {}
-	aiBehaviorTree*	GetBT() { return m_pBT; }
-	void			CloneBlackBoard(aiBlackBoard& toClone);
-	const STRING&	GetBBScriptEntry() const { return m_BBScript; }
+	class aiBehaviorTreeTemplate
+	{
+	public:
+		aiBehaviorTreeTemplate();
+		~aiBehaviorTreeTemplate();
 
-private:
-	aiBehaviorTreeTemplate(const aiBehaviorTreeTemplate&);
-	aiBehaviorTreeTemplate& operator= (const aiBehaviorTreeTemplate&);
+	public:
+		const STRING	Load(const STRING& filename);
+		void			Save() {}
+		aiBehaviorTree*	GetBT() { return m_pBT; }
+		void			CloneBlackBoard(aiBlackBoard& toClone);
+		const STRING&	GetBBScriptEntry() const { return m_BBScript; }
 
-	void			_LoadTreeNode(rapidxml::xml_node<>* node, aiBehaviorTreeNode* parent);
+	private:
+		aiBehaviorTreeTemplate(const aiBehaviorTreeTemplate&);
+		aiBehaviorTreeTemplate& operator= (const aiBehaviorTreeTemplate&);
 
-	aiBehaviorTree*		m_pBT;
-	aiBlackBoard*		m_pBB;
-	STRING				m_BBScript;
-};
+		void			_LoadTreeNode(rapidxml::xml_node<>* node, aiBehaviorTreeNode* parent);
+
+		aiBehaviorTree*		m_pBT;
+		aiBlackBoard*		m_pBB;
+		STRING				m_BBScript;
+	};
+}
+
 
 #endif // BehaviorTreeTemplate_h__
