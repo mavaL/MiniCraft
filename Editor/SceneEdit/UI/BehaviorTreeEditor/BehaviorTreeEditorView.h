@@ -9,11 +9,22 @@
 #ifndef BehaviorTreeEditorView_h__
 #define BehaviorTreeEditorView_h__
 
+#include "Manipulator/ManipulatorGameData.h"
+
+class BehaviorTreeEditorProperty;
+
 class BehaviorTreeEditorView : public CWnd
 {
 public:
-	BehaviorTreeEditorView() {}
-	~BehaviorTreeEditorView() {}
+	BehaviorTreeEditorView(CXTPDialog* parent);
+	~BehaviorTreeEditorView();
+
+public:
+	void			SetPropertyDlg(BehaviorTreeEditorProperty* pProp);
+	void			SetActiveItem(const std::wstring& name);
+	void			Arrange();
+	void			Refresh();
+	ManipulatorGameData::BTTemplate* GetActiveTemplate() { return m_curTmpl; }
 
 protected:
 	virtual BOOL	PreCreateWindow(CREATESTRUCT& cs);
@@ -23,7 +34,10 @@ private:
 	afx_msg int		OnCreate(LPCREATESTRUCT lpCreateStruct);
 	afx_msg	void	OnSize(UINT nType, int cx, int cy);
 
-	CXTPFlowGraphControl	m_wndControl;
+	BehaviorTreeEditorProperty*			m_pProp;
+	CXTPFlowGraphControl				m_wndControl;
+	CXTPFlowGraphPage*					m_page;
+	ManipulatorGameData::BTTemplate*	m_curTmpl;
 };
 
 

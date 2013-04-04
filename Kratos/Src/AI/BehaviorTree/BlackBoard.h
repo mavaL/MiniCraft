@@ -39,12 +39,15 @@ namespace Kratos
 			eVarType	m_type;
 		};
 
+		typedef HashMap<STRING, SValue> ParamMap;
+
 	public:
 		void			LoadParams(rapidxml::xml_node<>* node);
 		//加入新参数到字典中
 		void			DefineParam(const STRING& name, const STRING& value, eVarType type);
 		void			Clone(aiBlackBoard& toClone);
 		const aiBlackBoard::SValue&	GetParam(const STRING& name) const;
+		const ParamMap&	GetParams() const { return m_params; }
 		bool			IsParamExists(const STRING& name) const;
 		void			SetParam(const STRING& name, const STRING& value);
 		aiBehaviorTree*	GetParent() const { return m_parent; }
@@ -55,9 +58,7 @@ namespace Kratos
 		aiBlackBoard(const aiBlackBoard&);
 		aiBlackBoard& operator= (const aiBlackBoard&);
 
-		typedef HashMap<STRING, SValue> ParamMap;
 		ParamMap		m_params;
-
 		aiBehaviorTree* m_parent;
 	};
 }

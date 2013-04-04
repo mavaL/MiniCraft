@@ -144,6 +144,7 @@
     <ClInclude Include="Resource.h" />
     <ClInclude Include="SceneEdit.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="SubclassHelper.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="UI\AttachmentPropertyPane.h" />
     <ClInclude Include="UI\BehaviorTreeEditor\BehaviorTreeEditorDlg.h" />
@@ -189,6 +190,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="SubclassHelper.cpp" />
     <ClCompile Include="UI\AttachmentPropertyPane.cpp" />
     <ClCompile Include="UI\BehaviorTreeEditor\BehaviorTreeEditorDlg.cpp" />
     <ClCompile Include="UI\BehaviorTreeEditor\BehaviorTreeEditorExplorer.cpp" />

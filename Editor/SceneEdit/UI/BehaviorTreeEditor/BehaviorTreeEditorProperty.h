@@ -10,19 +10,44 @@
 #define BehaviorTreeEditorProperty_h__
 
 #include "..\PropertiesPane.h"
+#include "Manipulator/ManipulatorGameData.h"
+
+class BehaviorTreeEditorView;
 
 class PropertyPaneBehaviorTree : public CPropertiesPane
 {
 public:
-	PropertyPaneBehaviorTree():CPropertiesPane() {}
+	PropertyPaneBehaviorTree();
 	~PropertyPaneBehaviorTree() {}
+
+	enum ePropertyID
+	{
+		////property range [propStart, propEnd)
+		propStart = 0,
+		////////These are Mutable items
+		propMutableItemStart = propStart,
+		propConditon = propMutableItemStart,
+		propAction,
+		propMutableItemEnd,
+		propEnd = propMutableItemEnd
+	};
+
+public:
+	void			SetView(BehaviorTreeEditorView* pView) { m_pView = pView; }
+	void			SetCurNode(ManipulatorGameData::BTTemplate::SBTNode* node);
 
 protected:
 	virtual	bool	_OnCreate();
-	virtual int		_GetIDStart() { return -1; }
-	virtual int		_GetIDEnd() { return -1; }
-	virtual int		_GetIDMutableStart() { return -1; }
-	virtual int		_GetIDMutableEnd() { return -1; }
+	virtual	void	_SetProperty(int nID);
+	virtual	void	_UpdateProperty(int nID);
+	virtual int		_GetIDStart()		{ return propStart; }
+	virtual int		_GetIDEnd()			{ return propEnd; }
+	virtual int		_GetIDMutableStart() { return propMutableItemStart; }
+	virtual int		_GetIDMutableEnd()	{ return propMutableItemEnd; }
+
+private:
+	ManipulatorGameData::BTTemplate::SBTNode*	m_curNode;
+	BehaviorTreeEditorView*						m_pView;
 };
 
 class BehaviorTreeEditorProperty : public CDialog	
@@ -30,6 +55,10 @@ class BehaviorTreeEditorProperty : public CDialog
 public:
 	BehaviorTreeEditorProperty(CXTPDialog* parent);
 	~BehaviorTreeEditorProperty() {}
+
+public:
+	void			SetView(BehaviorTreeEditorView* pView);
+	void			OnNodeSelected(bool bSelected, int id = -1);
 
 protected:
 	virtual BOOL	OnInitDialog();
@@ -39,7 +68,7 @@ private:
 	afx_msg	void	OnSize(UINT nType, int cx, int cy);
 
 private:
-	CXTPDialog*					m_parent;
+	BehaviorTreeEditorView*		m_pView;
 	PropertyPaneBehaviorTree	m_propertyBT;
 };
 

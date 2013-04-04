@@ -3,15 +3,22 @@
 #include "BehaviorTreeEditorView.h"
 #include "BehaviorTreeEditorExplorer.h"
 #include "BehaviorTreeEditorProperty.h"
+#include "Manipulator/ManipulatorScene.h"
 
 BEGIN_MESSAGE_MAP(DialogBehaviorTreeEditor, CXTPDialog)
 	ON_WM_SIZE()
 	ON_MESSAGE(XTPWM_DOCKINGPANE_NOTIFY, _AttachDockPane)
+	ON_COMMAND(IDC_BTEditor_Arrange, OnBtnArrange)
+	ON_UPDATE_COMMAND_UI(IDC_BTEditor_Arrange, OnUpdateUI_Btn)
+	ON_COMMAND(IDC_BTEditor_Validate, OnBtnValidate)
+	ON_UPDATE_COMMAND_UI(IDC_BTEditor_Validate, OnUpdateUI_Btn)
+	ON_COMMAND(IDC_BTEditor_Save, OnBtnSave)
+	ON_UPDATE_COMMAND_UI(IDC_BTEditor_Save, OnUpdateUI_Btn)
 END_MESSAGE_MAP()
 
 DialogBehaviorTreeEditor::DialogBehaviorTreeEditor( CWnd* pParent /*= NULL*/ )
 :CXTPDialog()
-,m_pView(new BehaviorTreeEditorView)
+,m_pView(new BehaviorTreeEditorView(this))
 ,m_pExplorer(new BehaviorTreeEditorExplorer(this))
 ,m_property(new BehaviorTreeEditorProperty(this))
 ,m_paneExplorer(NULL)
@@ -36,7 +43,12 @@ BOOL DialogBehaviorTreeEditor::OnInitDialog()
 		return FALSE;
 
 	_CreateRibbon();
+	_LoadIcon();
 	_CreateDockPane();
+
+	m_pView->SetPropertyDlg(m_property);
+	m_pExplorer->SetView(m_pView);
+	m_property->SetView(m_pView);
 
 	return TRUE;
 }
@@ -65,10 +77,23 @@ void DialogBehaviorTreeEditor::_CreateRibbon()
 
 	///RibbonHome
 	CXTPRibbonTab* pTab = pRibbonBar->AddTab(L"Home");
-	//RibbonHome - Groupxxx
-	CXTPRibbonGroup* pGroup = pTab->AddGroup(L"xxxx");
-	//RibbonHome - Groupxxx - AddNode
-	pGroup->Add(xtpControlButton, IDC_BTEditor_AddNode);
+	//RibbonHome - GroupHome
+	CXTPRibbonGroup* pGroup = pTab->AddGroup(L"Home");
+	//RibbonHome - GroupHome - Arrange
+	pGroup->Add(xtpControlButton, IDC_BTEditor_Arrange);
+	//RibbonHome - GroupHome - Validate
+	pGroup->Add(xtpControlButton, IDC_BTEditor_Validate);
+	//RibbonHome - GroupHome - Save
+	pGroup->Add(xtpControlButton, IDC_BTEditor_Save);
+	
+}
+
+void DialogBehaviorTreeEditor::_LoadIcon()
+{
+	CXTPImageManager* imgMgr = GetCommandBars()->GetImageManager();
+	UINT icon[1] = { IDC_BTEditor_Arrange };	imgMgr->SetIcons(IDB_Button, icon, _countof(icon), CSize(32, 32));
+	icon[0] = IDC_BTEditor_Validate;		imgMgr->SetIcons(IDB_Button, icon, _countof(icon), CSize(32, 32));
+	icon[0] = IDC_BTEditor_Save;			imgMgr->SetIcons(IDB_Button, icon, _countof(icon), CSize(32, 32));
 }
 
 void DialogBehaviorTreeEditor::_CreateDockPane()
@@ -82,7 +107,7 @@ void DialogBehaviorTreeEditor::_CreateDockPane()
 	m_dockMgr.SetShowContentsWhileDragging(TRUE);
 	m_dockMgr.SetDefaultPaneOptions(xtpPaneNoHideable);
 
-	m_paneExplorer = m_dockMgr.CreatePane(IDR_Pane_BT_Explorer, CRect(0, 0, 250, 0), xtpPaneDockLeft);
+	m_paneExplorer = m_dockMgr.CreatePane(IDR_Pane_BT_Explorer, CRect(0, 0, 150, 0), xtpPaneDockLeft);
 	m_paneExplorer->SetMinTrackSize(100);
 	m_paneExplorer->Attach(m_pExplorer);
 
@@ -110,4 +135,24 @@ LRESULT DialogBehaviorTreeEditor::_AttachDockPane( WPARAM wParam, LPARAM lParam 
 	}
 
 	return 0;
+}
+
+void DialogBehaviorTreeEditor::OnUpdateUI_Btn( CCmdUI* pCmdUI )
+{
+	pCmdUI->Enable(m_pView->GetActiveTemplate()?TRUE:FALSE);
+}
+
+void DialogBehaviorTreeEditor::OnBtnArrange()
+{
+	m_pView->Arrange();
+}
+
+void DialogBehaviorTreeEditor::OnBtnValidate()
+{
+	ManipulatorSystem.GetGameData().ValidateBehaviorTemplate(*m_pView->GetActiveTemplate());
+}
+
+void DialogBehaviorTreeEditor::OnBtnSave()
+{
+	ManipulatorSystem.GetGameData().SaveAllBehaviorTreeTemplates();
 }

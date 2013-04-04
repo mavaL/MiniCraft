@@ -383,7 +383,7 @@ void CMainFrame::_LoadIcon()
 	icon[0] = IDC_Object_Select;			pImageMgr->SetIcons(IDB_Button, icon, _countof(icon), CSize(32, 32));
 	icon[0] = IDC_Object_Remove;			pImageMgr->SetIcons(IDB_Button, icon, _countof(icon), CSize(32, 32));
 	icon[0] = IDC_GameData_Building;		pImageMgr->SetIcons(IDB_Button, icon, _countof(icon), CSize(32, 32));
-	icon[0] = IDC_Effect_Shadow;				pImageMgr->SetIcons(IDB_Button, icon, _countof(icon), CSize(32, 32));
+	icon[0] = IDC_Effect_Shadow;			pImageMgr->SetIcons(IDB_Button, icon, _countof(icon), CSize(32, 32));
 	icon[0] = IDC_Effect_SSAO;				pImageMgr->SetIcons(IDB_Button, icon, _countof(icon), CSize(32, 32));
 	icon[0] = IDC_Effect_Sharpen;			pImageMgr->SetIcons(IDB_Button, icon, _countof(icon), CSize(32, 32));
 	icon[0] = IDC_Effect_FXAA;				pImageMgr->SetIcons(IDB_Button, icon, _countof(icon), CSize(32, 32));
@@ -441,6 +441,7 @@ void CMainFrame::_CreateDockPane()
 
 	m_paneBTEditor		= m_paneManager.CreatePane(IDR_Pane_BTEditor, CRect(0, 0, 1024, 560), xtpPaneDockRight);
 	m_paneManager.ToggleDocking(m_paneBTEditor);
+	m_paneManager.ClosePane(m_paneBTEditor);
 }
 
 LRESULT CMainFrame::_AttachDockPane( WPARAM wParam, LPARAM lParam )

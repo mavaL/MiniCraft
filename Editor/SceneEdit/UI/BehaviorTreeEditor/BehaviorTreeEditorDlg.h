@@ -23,14 +23,22 @@ public:
 
 public:
 	virtual BOOL				OnInitDialog();
+	BehaviorTreeEditorView*		GetView()	{ return m_pView; }
+	BehaviorTreeEditorProperty*	GetProp()	{ return m_property; }
+	BehaviorTreeEditorExplorer*	GetExplorer()	{ return m_pExplorer; }
 
 private:
 	DECLARE_MESSAGE_MAP()
 	afx_msg	void				OnSize(UINT nType, int cx, int cy);
+	void						OnUpdateUI_Btn(CCmdUI* pCmdUI);
+	void						OnBtnArrange();
+	void						OnBtnValidate();
+	void						OnBtnSave();
 	
 	void						_CreateRibbon();
 	void						_CreateDockPane();
 	LRESULT						_AttachDockPane(WPARAM wParam, LPARAM lParam);
+	void						_LoadIcon();
 
 private:
 	CXTPDockingPaneManager		m_dockMgr;

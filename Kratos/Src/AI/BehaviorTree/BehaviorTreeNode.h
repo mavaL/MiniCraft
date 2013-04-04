@@ -23,6 +23,13 @@ namespace Kratos
 		eEvalState_Running
 	};
 
+	enum eNodeType
+	{
+		eNodeType_Sequence,
+		eNodeType_Condition,
+		eNodeType_Action
+	};
+
 	///基类节点
 	class aiBehaviorTreeNode
 	{
@@ -30,13 +37,20 @@ namespace Kratos
 		aiBehaviorTreeNode() {}
 		virtual ~aiBehaviorTreeNode() {}
 
+		typedef std::list<aiBehaviorTreeNode*> ChildNodes;
+
+		static const STRING	GetNodeTypeToStr(eNodeType type);
+		static eNodeType	GetNodeTypeFromStr(const STRING& type);
+
 	public:
+		virtual	eNodeType	GetType() const = 0;
 		virtual	eEvalState	Evaluate(aiBlackBoard* pInfo, STRING& retBehavior) = 0;
 		virtual bool		Validate() { return true; }
 		void				AddChild(aiBehaviorTreeNode* node) { m_childs.push_back(node); }
+		const ChildNodes&	GetChilds() const { return m_childs; }	
 
 	protected:
-		std::list<aiBehaviorTreeNode*>	m_childs;
+		ChildNodes	m_childs;
 	};
 
 	///序列节点,从左往右进行
@@ -47,6 +61,7 @@ namespace Kratos
 		~aiBTSequenceNode() {}
 
 	public:
+		virtual	eNodeType	GetType() const { return eNodeType_Sequence; }
 		virtual	eEvalState	Evaluate(aiBlackBoard* pInfo, STRING& retBehavior);
 	};
 
@@ -58,9 +73,11 @@ namespace Kratos
 		~aiBTActionNode() {}
 
 	public:
+		virtual	eNodeType	GetType() const { return eNodeType_Action; }
 		virtual	eEvalState	Evaluate(aiBlackBoard* pInfo, STRING& retBehavior);
 		virtual bool		Validate();
 		void				SetBehaviorName(const STRING& name) { m_behaviorName = name; }
+		const STRING&		GetBehaviorName() const	{ return m_behaviorName; }
 
 	private:
 		STRING		m_behaviorName;
@@ -74,6 +91,7 @@ namespace Kratos
 		~aiBTConditionNode() {}
 
 	public:
+		virtual	eNodeType	GetType() const { return eNodeType_Condition; }
 		virtual	eEvalState	Evaluate(aiBlackBoard* pInfo, STRING& retBehavior);
 		virtual bool		Validate();
 		void				SetConditions(const STRING& con, aiBlackBoard* pTmplBB);

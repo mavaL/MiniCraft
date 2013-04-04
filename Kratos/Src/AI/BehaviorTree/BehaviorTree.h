@@ -23,13 +23,14 @@ namespace Kratos
 		~aiBehaviorTree();
 
 	public:
-		eGameRace				GetRace() const { return m_race; }
-		aiBehaviorTreeNode*		GetRootNode() const { return m_root; }
-		void					AddNode(aiBehaviorTreeNode* node, aiBehaviorTreeNode* parent);
+		virtual	eNodeType		GetType() const { assert(0); return (eNodeType)-1; }
 		//遍历评估整个树,得到要进行的行为
 		virtual	eEvalState		Evaluate(aiBlackBoard* pInfo, STRING& retBehavior);
 		//校验有效性
 		void					ValidateTree();		
+		eGameRace				GetRace() const { return m_race; }
+		aiBehaviorTreeNode*		GetRootNode() const { return m_root; }
+		void					AddNode(aiBehaviorTreeNode* node, aiBehaviorTreeNode* parent);
 
 	private:
 		aiBehaviorTree(const aiBehaviorTree&);

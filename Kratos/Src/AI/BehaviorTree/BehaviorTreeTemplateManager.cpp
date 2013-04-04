@@ -76,11 +76,6 @@ namespace Kratos
 		}
 	}
 
-	void aiBehaviorTreeTemplateManager::SaveAll()
-	{
-		//TODO
-	}
-
 	aiBehaviorTreeTemplate* aiBehaviorTreeTemplateManager::GetTemplate( const STRING& name )
 	{
 		auto iter = m_bts.find(name);

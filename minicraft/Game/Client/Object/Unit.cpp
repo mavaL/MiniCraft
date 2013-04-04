@@ -45,6 +45,7 @@ Unit::Unit()
 ,m_unitName(Ogre::StringUtil::BLANK)
 ,m_fStopTime(0)
 ,m_data(nullptr)
+,m_pHealthBar(nullptr)
 {
 	if(InitParamDict("Unit"))
 	{
@@ -62,14 +63,6 @@ Unit::Unit()
 Unit::~Unit()
 {
 	DestroyRenderInstance();
-}
-
-void Unit::Update( float dt )
-{
-	if(m_bSelected)
-		m_portraitAnimCache[m_unitName]->addTime(dt);
-
-	__super::Update(dt);
 }
 
 int Unit::PlayAnimation( lua_State* L )
@@ -206,6 +199,14 @@ void Unit::Init()
 	//创建渲染实例
 	setParameter("meshname", m_data->params["meshname"]);
 
+	//血条
+	m_pHealthBar = RenderManager.m_pSceneMgr->createBillboardSet(2);
+	//m_pHealthBar->createBillboard(0,0,0, COLOR::Black)->setDimensions(0.5f, 0.1f);
+	m_pHealthBar->setBillboardOrigin(Ogre::BBO_CENTER_LEFT);
+	m_pHealthBar->createBillboard(0,0,0.01f, COLOR::Red)->setDimensions(0.5f, 0.1f);
+	m_pHealthBar->setMaterialName("HPBar");
+	m_pSceneNode->createChildSceneNode(POS(0,1.5f,0))->attachObject(m_pHealthBar);
+
 	//初始化技能
 	for (int iAbil=0; iAbil<MAX_ABILITY_SLOT; ++iAbil)
 	{
@@ -227,6 +228,19 @@ void Unit::Init()
 	AddComponent(eComponentType_AI, new AiComponent(this));
 	eGameRace race = (eGameRace)GetRace();
 	GetAi()->SetFaction(World::GetSingleton().GetFaction(race));
+}
+
+void Unit::Update( float dt )
+{
+	if(m_bSelected)
+		m_portraitAnimCache[m_unitName]->addTime(dt);
+
+	/////测试更新血条
+	Ogre::Billboard* bb = m_pHealthBar->getBillboard(0);
+	float oldWidth = bb->getOwnWidth();
+	bb->setDimensions(oldWidth + dt * 0.02f, 0.1f);
+
+	__super::Update(dt);
 }
 
 void Unit::StopAction()

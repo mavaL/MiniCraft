@@ -11,7 +11,8 @@ namespace Kratos
 	aiBehaviorTreeTemplate::aiBehaviorTreeTemplate()
 		:m_pBT(nullptr)
 		,m_pBB(nullptr)
-		,m_BBScript(Ogre::StringUtil::BLANK)
+		,m_BBScriptEntry(Ogre::StringUtil::BLANK)
+		,m_BBScriptName(Ogre::StringUtil::BLANK)
 	{
 
 	}
@@ -65,10 +66,9 @@ namespace Kratos
 		const STRING path = loc->at(0) + "\\Script\\";
 
 		rapidxml::xml_node<>* pScriptNode = pNode->first_node("Script");
-		const char* szFilename = pScriptNode->first_attribute("filename")->value();
-		const STRING filepath = path + szFilename;
-		SCRIPTNAMAGER.DoFile(filepath);
-		m_BBScript = pScriptNode->first_attribute("entry")->value();
+		m_BBScriptName = pScriptNode->first_attribute("filename")->value();
+		SCRIPTNAMAGER.DoFile(path+m_BBScriptName);
+		m_BBScriptEntry = pScriptNode->first_attribute("entry")->value();
 
 		free(szData);
 		XMLDoc.clear();
@@ -78,7 +78,6 @@ namespace Kratos
 
 	void aiBehaviorTreeTemplate::CloneBlackBoard( aiBlackBoard& toClone )
 	{
-		//TODO: 应该有共享数据,每个单位一份占用太大
 		m_pBB->Clone(toClone);
 	}
 
@@ -87,31 +86,36 @@ namespace Kratos
 		//self
 		const STRING type = node->name();
 		aiBehaviorTreeNode* newNode = nullptr;
-		if (type == "ConditionNode")
+		eNodeType etype = aiBehaviorTreeNode::GetNodeTypeFromStr(type);
+
+		switch (etype)
 		{
-			aiBTConditionNode* conditionNode = new aiBTConditionNode;
-			auto attr = node->first_attribute("expression");
-			if (attr)
+		case eNodeType_Sequence:
 			{
-				conditionNode->SetConditions(attr->value(), m_pBB);
+				aiBTSequenceNode* seqNode = new aiBTSequenceNode;
+				newNode = seqNode;
 			}
-			newNode = conditionNode;
-		}
-		else if (type == "SequenceNode")
-		{
-			aiBTSequenceNode* seqNode = new aiBTSequenceNode;
-			newNode = seqNode;
-		}
-		else if (type == "ActionNode")
-		{
-			aiBTActionNode* actionNode = new aiBTActionNode;
-			const STRING behavior = node->first_attribute("behavior")->value();
-			actionNode->SetBehaviorName(behavior);
-			newNode = actionNode;
-		}
-		else
-		{
-			assert(0);
+			break;
+		case eNodeType_Condition:
+			{
+				aiBTConditionNode* conditionNode = new aiBTConditionNode;
+				auto attr = node->first_attribute("expression");
+				if (attr)
+				{
+					conditionNode->SetConditions(attr->value(), m_pBB);
+				}
+				newNode = conditionNode;
+			}
+			break;
+		case eNodeType_Action:
+			{
+				aiBTActionNode* actionNode = new aiBTActionNode;
+				const STRING behavior = node->first_attribute("behavior")->value();
+				actionNode->SetBehaviorName(behavior);
+				newNode = actionNode;
+			}
+			break;
+		default: assert(0);
 		}
 
 		parent->AddChild(newNode);
@@ -122,14 +126,6 @@ namespace Kratos
 		{
 			_LoadTreeNode(child, newNode);
 			child = child->next_sibling();
-		}
-
-		//sibling
-		rapidxml::xml_node<>* bro = node->next_sibling();
-		while(bro)
-		{
-			_LoadTreeNode(bro, parent);
-			bro = bro->next_sibling();
 		}
 	}
 }

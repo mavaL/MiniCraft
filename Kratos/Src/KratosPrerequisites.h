@@ -26,6 +26,7 @@ namespace Kratos
 	class COgreManager;
 	class CGUIManager;
 	class aiBehaviorTreeTemplateManager;
+	class aiBehaviorTreeNode;
 }
 
 ///×¢²áOgreStringInterface

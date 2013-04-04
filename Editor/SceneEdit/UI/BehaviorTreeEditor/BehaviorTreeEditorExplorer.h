@@ -9,12 +9,16 @@
 #ifndef BehaviorTreeEditorExplorer_h__
 #define BehaviorTreeEditorExplorer_h__
 
+class BehaviorTreeEditorView;
 
 class BehaviorTreeEditorExplorer : public CDialog	
 {
 public:
 	BehaviorTreeEditorExplorer(CXTPDialog* parent);
 	~BehaviorTreeEditorExplorer() {}
+
+public:
+	void			SetView(BehaviorTreeEditorView* pView) { m_pView = pView; }
 
 protected:
 	virtual BOOL	OnInitDialog();
@@ -25,8 +29,8 @@ private:
 	afx_msg void	OnDoubleClick(NMHDR* pNMHDR, LRESULT* pResult);
 
 private:
-	HWND			m_hList;
-	CXTPDialog*		m_parent;
+	HWND					m_hList;
+	BehaviorTreeEditorView*	m_pView;
 };
 
 

@@ -2,6 +2,8 @@
 #include "BehaviorTreeEditorExplorer.h"
 #include "resource.h"
 #include "Manipulator/ManipulatorScene.h"
+#include "BehaviorTreeEditorView.h"
+#include "BehaviorTreeEditorDlg.h"
 
 BEGIN_MESSAGE_MAP(BehaviorTreeEditorExplorer, CDialog)
 	ON_WM_SIZE()
@@ -10,7 +12,6 @@ END_MESSAGE_MAP()
 
 BehaviorTreeEditorExplorer::BehaviorTreeEditorExplorer( CXTPDialog* parent )
 :CDialog()
-,m_parent(parent)
 {
 	Create(IDD_DlgBTEditor_Explorer, parent);
 }
@@ -61,7 +62,9 @@ void BehaviorTreeEditorExplorer::OnDoubleClick( NMHDR* pNMHDR, LRESULT* pResult 
 	NM_LISTVIEW* pNMListView = (NM_LISTVIEW*)pNMHDR;
 	if(pNMListView->iItem != -1)
 	{
-		int i = 0;
+		WCHAR text[128];
+		ListView_GetItemText(m_hList, pNMListView->iItem, 0, text, 128);
+		m_pView->SetActiveItem(text);
 	}
 	*pResult = 0;
 }

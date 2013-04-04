@@ -81,5 +81,30 @@ namespace Kratos
 		m_pHandler = new aiBehaviorConditon(con, *pTmplBB);
 		m_conditions = con;
 	}
+
+	const STRING aiBehaviorTreeNode::GetNodeTypeToStr( eNodeType type )
+	{
+		switch (type)
+		{
+		case eNodeType_Sequence:	return "Sequence"; break;
+		case eNodeType_Condition:	return "Condition"; break;
+		case eNodeType_Action:		return "Action"; break;
+		default: assert(0);			return "";
+		}
+	}
+
+	Kratos::eNodeType aiBehaviorTreeNode::GetNodeTypeFromStr( const STRING& type )
+	{
+		if(type == "Sequence" || type == "SequenceNode")
+			return eNodeType_Sequence;
+		if(type == "Condition" || type == "ConditionNode")
+			return eNodeType_Condition;
+		if(type == "Action" || type == "ActionNode")
+			return eNodeType_Action;
+		
+		assert(0);
+		return (eNodeType)-1;
+	}
+
 }
 

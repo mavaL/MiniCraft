@@ -183,6 +183,9 @@
     <ClInclude Include="UI\BehaviorTreeEditor\BehaviorTreeEditorProperty.h">
       <Filter>UI\BehaviorTreeEditor</Filter>
     </ClInclude>
+    <ClInclude Include="SubclassHelper.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SceneEdit.cpp">
@@ -301,6 +304,9 @@
     </ClCompile>
     <ClCompile Include="UI\BehaviorTreeEditor\BehaviorTreeEditorProperty.cpp">
       <Filter>UI\BehaviorTreeEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="SubclassHelper.cpp">
+      <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

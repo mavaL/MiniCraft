@@ -28,8 +28,10 @@ namespace Kratos
 		const STRING	Load(const STRING& filename);
 		void			Save() {}
 		aiBehaviorTree*	GetBT() { return m_pBT; }
+		aiBlackBoard*	GetBB() { return m_pBB; }
 		void			CloneBlackBoard(aiBlackBoard& toClone);
-		const STRING&	GetBBScriptEntry() const { return m_BBScript; }
+		const STRING&	GetBBScriptName() const { return m_BBScriptName; }
+		const STRING&	GetBBScriptEntry() const { return m_BBScriptEntry; }
 
 	private:
 		aiBehaviorTreeTemplate(const aiBehaviorTreeTemplate&);
@@ -39,7 +41,8 @@ namespace Kratos
 
 		aiBehaviorTree*		m_pBT;
 		aiBlackBoard*		m_pBB;
-		STRING				m_BBScript;
+		STRING				m_BBScriptEntry;
+		STRING				m_BBScriptName;
 	};
 }
 
