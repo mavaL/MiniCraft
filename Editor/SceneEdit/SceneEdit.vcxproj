@@ -59,6 +59,7 @@
       <AdditionalIncludeDirectories>./;../../Kratos/Src;../../Kratos/Dependency/rapidxml;../../Kratos/Dependency\Lua5_1_4\src;../../Kratos/Dependency/OIS/include;../../Kratos/Dependency/Ogre/include;../../Kratos/Dependency/Ogre/include/ParticleUniverse;../../Kratos/Dependency/Ogre/include/Terrain;../../Kratos/Dependency/OgreRecast/include;../Dependency/XTP/Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/Zm300 %(AdditionalOptions)</AdditionalOptions>
       <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

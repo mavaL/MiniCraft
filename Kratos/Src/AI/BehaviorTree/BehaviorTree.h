@@ -30,15 +30,12 @@ namespace Kratos
 		void					ValidateTree();		
 		eGameRace				GetRace() const { return m_race; }
 		aiBehaviorTreeNode*		GetRootNode() const { return m_root; }
-		void					AddNode(aiBehaviorTreeNode* node, aiBehaviorTreeNode* parent);
 
 	private:
 		aiBehaviorTree(const aiBehaviorTree&);
 		aiBehaviorTree& operator= (const aiBehaviorTree&);
 
 		aiBehaviorTreeNode*		m_root;
-		typedef HashMap<int, aiBehaviorTreeNode*> NodeMap;
-		NodeMap					m_nodeMap;	//根据节点地址快速获取
 		eGameRace				m_race;
 	};
 }

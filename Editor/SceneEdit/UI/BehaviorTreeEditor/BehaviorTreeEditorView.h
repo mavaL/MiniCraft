@@ -13,6 +13,14 @@
 
 class BehaviorTreeEditorProperty;
 
+enum eFlowGraphNodeType
+{
+	eFlowGraphNodeType_TreeNode,
+	eFlowGraphNodeType_OwnBlackboard,
+	eFlowGraphNodeType_GlobalBlackboard,
+	eFlowGraphNodeType_None
+};
+
 class BehaviorTreeEditorView : public CWnd
 {
 public:
@@ -25,6 +33,7 @@ public:
 	void			Arrange();
 	void			Refresh();
 	ManipulatorGameData::BTTemplate* GetActiveTemplate() { return m_curTmpl; }
+	void			AddNewNode(ManipulatorGameData::eBTNodeType type);
 
 protected:
 	virtual BOOL	PreCreateWindow(CREATESTRUCT& cs);
@@ -38,6 +47,8 @@ private:
 	CXTPFlowGraphControl				m_wndControl;
 	CXTPFlowGraphPage*					m_page;
 	ManipulatorGameData::BTTemplate*	m_curTmpl;
+	CXTPFlowGraphNode*					m_ownBBNode;
+	CXTPFlowGraphNode*					m_globalBBNode;
 };
 
 

@@ -107,7 +107,7 @@ namespace Kratos
 	bool ScriptSystem::Get_Bool( int index )
 	{
 		assert(lua_isboolean(m_pLuaState, index));
-		return (bool)lua_toboolean(m_pLuaState, index);
+		return lua_toboolean(m_pLuaState, index) == 1 ? true : false;
 	}
 
 	void ScriptSystem::Push_Bool( bool b )

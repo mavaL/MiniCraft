@@ -14,6 +14,17 @@ BEGIN_MESSAGE_MAP(DialogBehaviorTreeEditor, CXTPDialog)
 	ON_UPDATE_COMMAND_UI(IDC_BTEditor_Validate, OnUpdateUI_Btn)
 	ON_COMMAND(IDC_BTEditor_Save, OnBtnSave)
 	ON_UPDATE_COMMAND_UI(IDC_BTEditor_Save, OnUpdateUI_Btn)
+	ON_COMMAND(IDC_BTEditor_AddOwnParam, OnBtnAddOwnParam)
+	ON_UPDATE_COMMAND_UI(IDC_BTEditor_AddOwnParam, OnUpdateUI_Btn)
+	ON_COMMAND(IDC_BTEditor_AddRaceParam, OnBtnAddRaceParam)
+	ON_UPDATE_COMMAND_UI(IDC_BTEditor_AddRaceParam, OnUpdateUI_Btn)
+	ON_COMMAND(IDC_BTEditor_AddRaceParam, OnBtnAddRaceParam)
+	ON_UPDATE_COMMAND_UI(IDC_BTEditor_AddSequenceNode, OnUpdateUI_Btn)
+	ON_UPDATE_COMMAND_UI(IDC_BTEditor_AddConditionNode, OnUpdateUI_Btn)
+	ON_UPDATE_COMMAND_UI(IDC_BTEditor_AddActionNode, OnUpdateUI_Btn)
+	ON_COMMAND(IDC_BTEditor_AddSequenceNode, OnBtnAddNode<ManipulatorGameData::eBTNodeType_Sequence>)
+	ON_COMMAND(IDC_BTEditor_AddConditionNode, OnBtnAddNode<ManipulatorGameData::eBTNodeType_Condition>)
+	ON_COMMAND(IDC_BTEditor_AddActionNode, OnBtnAddNode<ManipulatorGameData::eBTNodeType_Action>)
 END_MESSAGE_MAP()
 
 DialogBehaviorTreeEditor::DialogBehaviorTreeEditor( CWnd* pParent /*= NULL*/ )
@@ -85,6 +96,22 @@ void DialogBehaviorTreeEditor::_CreateRibbon()
 	pGroup->Add(xtpControlButton, IDC_BTEditor_Validate);
 	//RibbonHome - GroupHome - Save
 	pGroup->Add(xtpControlButton, IDC_BTEditor_Save);
+
+	//RibbonHome - GroupBlackboard
+	pGroup = pTab->AddGroup(L"Blackboard");
+	//RibbonHome - GroupBlackboard - AddOwn
+	pGroup->Add(xtpControlButton, IDC_BTEditor_AddOwnParam);
+	//RibbonHome - GroupBlackboard - AddGlobal
+	pGroup->Add(xtpControlButton, IDC_BTEditor_AddRaceParam);
+
+	//RibbonHome - GroupAddNode
+	pGroup = pTab->AddGroup(L"AddNode");
+	//RibbonHome - GroupAddNode - Sequence
+	pGroup->Add(xtpControlButton, IDC_BTEditor_AddSequenceNode);
+	//RibbonHome - GroupAddNode - Condition
+	pGroup->Add(xtpControlButton, IDC_BTEditor_AddConditionNode);
+	//RibbonHome - GroupAddNode - Action
+	pGroup->Add(xtpControlButton, IDC_BTEditor_AddActionNode);
 	
 }
 
@@ -92,8 +119,13 @@ void DialogBehaviorTreeEditor::_LoadIcon()
 {
 	CXTPImageManager* imgMgr = GetCommandBars()->GetImageManager();
 	UINT icon[1] = { IDC_BTEditor_Arrange };	imgMgr->SetIcons(IDB_Button, icon, _countof(icon), CSize(32, 32));
-	icon[0] = IDC_BTEditor_Validate;		imgMgr->SetIcons(IDB_Button, icon, _countof(icon), CSize(32, 32));
-	icon[0] = IDC_BTEditor_Save;			imgMgr->SetIcons(IDB_Button, icon, _countof(icon), CSize(32, 32));
+	icon[0] = IDC_BTEditor_Validate;			imgMgr->SetIcons(IDB_Button, icon, _countof(icon), CSize(32, 32));
+	icon[0] = IDC_BTEditor_Save;				imgMgr->SetIcons(IDB_Button, icon, _countof(icon), CSize(32, 32));
+	icon[0] = IDC_BTEditor_AddOwnParam;			imgMgr->SetIcons(IDB_Button, icon, _countof(icon), CSize(32, 32));
+	icon[0] = IDC_BTEditor_AddRaceParam;		imgMgr->SetIcons(IDB_Button, icon, _countof(icon), CSize(32, 32));
+	icon[0] = IDC_BTEditor_AddSequenceNode;		imgMgr->SetIcons(IDB_Button, icon, _countof(icon), CSize(32, 32));
+	icon[0] = IDC_BTEditor_AddConditionNode;	imgMgr->SetIcons(IDB_Button, icon, _countof(icon), CSize(32, 32));
+	icon[0] = IDC_BTEditor_AddActionNode;		imgMgr->SetIcons(IDB_Button, icon, _countof(icon), CSize(32, 32));
 }
 
 void DialogBehaviorTreeEditor::_CreateDockPane()
@@ -155,4 +187,24 @@ void DialogBehaviorTreeEditor::OnBtnValidate()
 void DialogBehaviorTreeEditor::OnBtnSave()
 {
 	ManipulatorSystem.GetGameData().SaveAllBehaviorTreeTemplates();
+}
+
+void DialogBehaviorTreeEditor::OnBtnAddOwnParam()
+{
+	auto curTmpl = m_pView->GetActiveTemplate();
+	ManipulatorSystem.GetGameData().DefineBlackboardParam(true, *curTmpl);
+	m_pView->Refresh();
+}
+
+void DialogBehaviorTreeEditor::OnBtnAddRaceParam()
+{
+	auto curTmpl = m_pView->GetActiveTemplate();
+	ManipulatorSystem.GetGameData().DefineBlackboardParam(false, *curTmpl);
+	m_pView->Refresh();
+}
+
+template<int type>
+void DialogBehaviorTreeEditor::OnBtnAddNode()
+{
+	m_pView->AddNewNode((ManipulatorGameData::eBTNodeType)type);
 }

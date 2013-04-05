@@ -8,6 +8,7 @@ material SelectionCircleAlly
 	{	
 		pass
 		{
+			scene_blend add
             ambient 0.0 0.0 0.0 
 			diffuse 0.0 0.0 0.0 
 			specular 0.0 0.0 0.0 0.0
@@ -23,6 +24,7 @@ material SelectionCircleNeutral
 	{
 		pass
 		{
+			scene_blend add
             ambient 0.0 0.0 0.0 
 			diffuse 0.0 0.0 0.0 
 			specular 0.0 0.0 0.0 0.0
@@ -38,10 +40,23 @@ material SelectionCircleEnemy
 	{
 		pass
 		{
+			scene_blend add
             ambient 0.0 0.0 0.0 
 			diffuse 0.0 0.0 0.0 
 			specular 0.0 0.0 0.0 0.0
             emissive 0.8 0.0 0.0
+		}
+	}
+}
+
+//ÑªÌõ
+material HPBar
+{
+	technique
+	{
+		pass
+		{
+			scene_blend add
 		}
 	}
 }

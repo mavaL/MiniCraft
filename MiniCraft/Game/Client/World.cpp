@@ -84,7 +84,7 @@ void World::Init()
 	//cam->setFOVy(Degree(30));
 
 	//初始化行为库
-	aiBehaviorTreeTemplateManager& btMgr = aiBehaviorTreeTemplateManager::GetSingleton();
+	Kratos::aiBehaviorTreeTemplateManager& btMgr = Kratos::aiBehaviorTreeTemplateManager::GetSingleton();
 	btMgr.AddBehavior("Idle", new aiBehaviorIdle);
 	btMgr.AddBehavior("MoveToEnemyBase", new aiBehaviorMoveToEnemyBase);
 
@@ -464,7 +464,7 @@ int World::SetGlobalBBParam_Int( lua_State* L )
 	const int iValue = m_pScriptSystem->Get_Int(-1);
 	const STRING value = Ogre::StringConverter::toString(iValue);
 
-	aiBehaviorTreeTemplateManager::GetSingleton().GetGlobalBB(race)->SetParam(paramName, value);
+	Kratos::aiBehaviorTreeTemplateManager::GetSingleton().GetGlobalBB(race)->SetParam(paramName, value);
 
 	return 0;
 }
@@ -476,7 +476,7 @@ int World::SetGlobalBBParam_Float( lua_State* L )
 	const float fValue = m_pScriptSystem->Get_Float(-1);
 	const STRING value = Ogre::StringConverter::toString(fValue);
 
-	aiBehaviorTreeTemplateManager::GetSingleton().GetGlobalBB(race)->SetParam(paramName, value);
+	Kratos::aiBehaviorTreeTemplateManager::GetSingleton().GetGlobalBB(race)->SetParam(paramName, value);
 
 	return 0;
 }
@@ -488,7 +488,7 @@ int World::SetGlobalBBParam_Bool( lua_State* L )
 	const bool bValue = m_pScriptSystem->Get_Bool(-1);
 	const STRING value = Ogre::StringConverter::toString(bValue);
 
-	aiBehaviorTreeTemplateManager::GetSingleton().GetGlobalBB(race)->SetParam(paramName, value);
+	Kratos::aiBehaviorTreeTemplateManager::GetSingleton().GetGlobalBB(race)->SetParam(paramName, value);
 
 	return 0;
 }

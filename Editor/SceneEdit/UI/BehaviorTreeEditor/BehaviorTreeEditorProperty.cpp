@@ -2,7 +2,6 @@
 #include "BehaviorTreeEditorProperty.h"
 #include "BehaviorTreeEditorDlg.h"
 #include "Utility.h"
-#include "BehaviorTreeEditorView.h"
 #include "Manipulator/ManipulatorScene.h"
 
 BEGIN_MESSAGE_MAP(BehaviorTreeEditorProperty, CDialog)
@@ -38,32 +37,14 @@ BOOL BehaviorTreeEditorProperty::OnInitDialog()
 	return TRUE;
 }
 
-void BehaviorTreeEditorProperty::OnNodeSelected( bool bSelected, int id /*= -1*/ )
+void BehaviorTreeEditorProperty::OnNodeSelected( eFlowGraphNodeType nodeType, int id /*= -1*/ )
 {
-	if (bSelected)
-	{
-		ManipulatorGameData::BTTemplate* pTmpl = m_pView->GetActiveTemplate();
-		assert(pTmpl);
-
-		auto iter = std::find_if(pTmpl->m_nodeList.begin(), pTmpl->m_nodeList.end(), 
-			[&](const ManipulatorGameData::BTTemplate::SBTNode* pNode)
-		{
-			return pNode->flowGraphNodeID == id;
-		});
-
-		assert(iter != pTmpl->m_nodeList.end());
-		m_propertyBT.SetCurNode(*iter);
-	}
-	else
-	{
-		m_propertyBT.SetCurNode(NULL);
-	}
+	m_propertyBT.OnNodeSelected(nodeType, id);
 }
 
 void BehaviorTreeEditorProperty::SetView( BehaviorTreeEditorView* pView )
 {
-	m_pView = pView; 
-	m_propertyBT.SetView(m_pView);
+	m_propertyBT.SetView(pView);
 }
 
 /////////////////////////////////////////////////////////////////////
@@ -71,6 +52,8 @@ PropertyPaneBehaviorTree::PropertyPaneBehaviorTree()
 :CPropertiesPane()
 ,m_curNode(nullptr)
 ,m_pView(nullptr)
+,m_curNodeType(eFlowGraphNodeType_None)
+,m_curBBParamIndex(-1)
 {
 
 }
@@ -80,16 +63,19 @@ bool PropertyPaneBehaviorTree::_OnCreate()
 	CXTPPropertyGridItem* pCategory = m_wndPropertyGrid.AddCategory(L"SequenceNode");
 	pCategory->Expand();
 	pCategory->SetHidden(TRUE);
+	pCategory->SetID(eCategory_SequenceNode);
 
 	pCategory = m_wndPropertyGrid.AddCategory(L"ConditionNode");
 	PROPERTY_REG(pCategory,	, L"Expression"		, 			L"",	propConditon);
 	pCategory->Expand();
 	pCategory->SetHidden(TRUE);
+	pCategory->SetID(eCategory_ConditionNode);
 
 	pCategory = m_wndPropertyGrid.AddCategory(L"ActionNode");
 	PROPERTY_REG(pCategory,	, L"Action"		, 			L"",	propAction);
 	pCategory->Expand();
 	pCategory->SetHidden(TRUE);
+	pCategory->SetID(eCategory_ActionNode);
 
 	//Behavior列表
 	auto& behaviors = ManipulatorSystem.GetGameData().GetAllBehaviorNames();
@@ -99,6 +85,21 @@ bool PropertyPaneBehaviorTree::_OnCreate()
 
 	m_mapItem[propAction]->SetFlags(xtpGridItemHasComboButton);
 
+	pCategory = m_wndPropertyGrid.AddCategory(L"Blackboard");
+	PROPERTY_REG(pCategory,	, L"Name"		, 			L"",	propBBParamName);
+	PROPERTY_REG(pCategory,	, L"Value"		, 			L"",	propBBParamValue);
+	PROPERTY_REG(pCategory,	, L"Type"		, 			L"",	propBBParamType);
+	pCategory->Expand();
+	pCategory->SetHidden(TRUE);
+	pCategory->SetID(eCategory_Blackboard);
+
+	//黑板参数类型列表
+	pList = m_mapItem[propBBParamType]->GetConstraints();
+	pList->AddConstraint(L"Int");
+	pList->AddConstraint(L"Float");
+	pList->AddConstraint(L"Bool");
+	m_mapItem[propBBParamType]->SetFlags(xtpGridItemHasComboButton);
+
 	EnableMutableProperty(TRUE);
 
 	return true;
@@ -106,36 +107,144 @@ bool PropertyPaneBehaviorTree::_OnCreate()
 
 void PropertyPaneBehaviorTree::_SetProperty( int nID )
 {
-	assert(m_curNode);
-	m_curNode->txtProperty = m_mapItem[nID]->GetValue();
+	ManipulatorGameData& manGameData = ManipulatorSystem.GetGameData();
+
+	switch (nID)
+	{
+	case propAction:
+	case propConditon: m_curNode->txtProperty = m_mapItem[nID]->GetValue(); break;
+
+	case propBBParamName:
+		{
+			assert(m_curBBParamIndex != -1);
+			const std::wstring oldName = _GetCurBB()->at(m_curBBParamIndex);
+			const std::wstring newName = m_mapItem[nID]->GetValue();
+			manGameData.RenameBlackboardParam(oldName, newName, *m_pView->GetActiveTemplate(), m_curNodeType == eFlowGraphNodeType_OwnBlackboard);
+		}
+		break;
+
+	case propBBParamValue:
+		{
+			const std::wstring& paramName = _GetCurBB()->at(m_curBBParamIndex);
+			bool bOwnBB = m_curNodeType == eFlowGraphNodeType_OwnBlackboard;
+			auto param = manGameData.GetBlackboardParam(paramName, *m_pView->GetActiveTemplate(), bOwnBB);
+			param.value = m_mapItem[nID]->GetValue();
+
+			manGameData.SetBlackboardParam(paramName, param, *m_pView->GetActiveTemplate(), bOwnBB);
+		}
+		break;
+
+	case propBBParamType:
+		{
+			const std::wstring& paramName = _GetCurBB()->at(m_curBBParamIndex);
+			bool bOwnBB = m_curNodeType == eFlowGraphNodeType_OwnBlackboard;
+			auto param = manGameData.GetBlackboardParam(paramName, *m_pView->GetActiveTemplate(), bOwnBB);
+			param.type = m_mapItem[nID]->GetValue();
+
+			manGameData.SetBlackboardParam(paramName, param, *m_pView->GetActiveTemplate(), bOwnBB);
+		}
+		break;
+
+	default: assert(0);
+	}
+	
 	m_pView->Refresh();
 }
 
 void PropertyPaneBehaviorTree::_UpdateProperty( int nID )
 {
-	assert(m_curNode);
-	m_mapItem[nID]->SetValue(m_curNode->txtProperty.c_str());
+	ManipulatorGameData& manGameData = ManipulatorSystem.GetGameData();
+
+	switch (nID)
+	{
+	case propAction:
+	case propConditon: m_mapItem[nID]->SetValue(m_curNode->txtProperty.c_str()); break;
+	case propBBParamName:
+		{
+			assert(m_curBBParamIndex != -1);
+			m_mapItem[nID]->SetValue(_GetCurBB()->at(m_curBBParamIndex).c_str());
+		}
+		break;
+
+	case propBBParamValue:
+		{
+			assert(m_curBBParamIndex != -1);
+			const std::wstring& name = _GetCurBB()->at(m_curBBParamIndex);
+			auto param = manGameData.GetBlackboardParam(name, *m_pView->GetActiveTemplate(), m_curNodeType == eFlowGraphNodeType_OwnBlackboard);
+			m_mapItem[nID]->SetValue(param.value.c_str());
+		}
+		break;
+
+	case propBBParamType:
+		{
+			assert(m_curBBParamIndex != -1);
+			const std::wstring& name = _GetCurBB()->at(m_curBBParamIndex);
+			auto param = manGameData.GetBlackboardParam(name, *m_pView->GetActiveTemplate(), m_curNodeType == eFlowGraphNodeType_OwnBlackboard);
+			m_mapItem[nID]->SetValue(param.type.c_str());
+		}
+		break;
+
+	default: assert(0);
+	}
 }
 
-void PropertyPaneBehaviorTree::SetCurNode( ManipulatorGameData::BTTemplate::SBTNode* node )
+void PropertyPaneBehaviorTree::OnNodeSelected( eFlowGraphNodeType nodeType, int id /*= -1*/ )
 {
-	m_curNode = node;
+	m_curNode = nullptr;
+	m_curNodeType = nodeType;
+	m_curBBParamIndex = -1;
+
 	auto categories = m_wndPropertyGrid.GetCategories();
 	int count = categories->GetCount();
 	for(int i=0; i<count; ++i)
 		categories->GetAt(i)->SetHidden(TRUE);
 
-	if (m_curNode)
-	{
-		int category = -1;
-		if(m_curNode->type == L"Sequence")
-			category = 0;
-		else if(m_curNode->type == L"Condition")
-			category = 1;
-		else if(m_curNode->type == L"Action")
-			category = 2;
+	ManipulatorGameData::BTTemplate* pTmpl = m_pView->GetActiveTemplate();
+	if(!pTmpl)
+		return;
 
-		categories->GetAt(category)->SetHidden(FALSE);
-		UpdateAllFromEngine();
+	switch (nodeType)
+	{
+	case eFlowGraphNodeType_TreeNode:
+		{
+			auto iter = std::find_if(pTmpl->m_nodeList.begin(), pTmpl->m_nodeList.end(), 
+				[&](const ManipulatorGameData::BTTemplate::SBTNode* pNode)
+			{
+				return pNode->flowGraphNodeID == id;
+			});
+			assert(iter != pTmpl->m_nodeList.end());
+			m_curNode = *iter;
+
+			eCategory category;
+			if(m_curNode->type == L"Sequence")
+				category = eCategory_SequenceNode;
+			else if(m_curNode->type == L"Condition")
+				category = eCategory_ConditionNode;
+			else if(m_curNode->type == L"Action")
+				category = eCategory_ActionNode;
+
+			categories->GetAt(category)->SetHidden(FALSE);
+			UpdateCategoryProperty(category);
+		}
+		break;
+
+	case eFlowGraphNodeType_OwnBlackboard: 
+	case eFlowGraphNodeType_GlobalBlackboard: 
+		{
+			m_curBBParamIndex = id;
+			categories->GetAt(eCategory_Blackboard)->SetHidden(FALSE);
+			UpdateCategoryProperty(eCategory_Blackboard);
+		}
+		break;
 	}
+}
+
+ManipulatorGameData::Blackboard* PropertyPaneBehaviorTree::_GetCurBB()
+{
+	assert(m_curNodeType == eFlowGraphNodeType_OwnBlackboard || m_curNodeType == eFlowGraphNodeType_GlobalBlackboard);
+
+	if(m_curNodeType == eFlowGraphNodeType_OwnBlackboard)
+		return &m_pView->GetActiveTemplate()->m_ownBB;
+	else
+		return m_pView->GetActiveTemplate()->m_raceBB;	
 }

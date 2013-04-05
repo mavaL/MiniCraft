@@ -11,8 +11,7 @@
 
 #include "..\PropertiesPane.h"
 #include "Manipulator/ManipulatorGameData.h"
-
-class BehaviorTreeEditorView;
+#include "BehaviorTreeEditorView.h"
 
 class PropertyPaneBehaviorTree : public CPropertiesPane
 {
@@ -26,15 +25,26 @@ public:
 		propStart = 0,
 		////////These are Mutable items
 		propMutableItemStart = propStart,
-		propConditon = propMutableItemStart,
-		propAction,
+		propConditon = propMutableItemStart,		//条件节点表达式
+		propAction,									//行为项
+		propBBParamName,							//黑板参数名称
+		propBBParamValue,							//黑板参数值
+		propBBParamType,							//黑板参数类型
 		propMutableItemEnd,
 		propEnd = propMutableItemEnd
 	};
 
+	enum eCategory
+	{
+		eCategory_SequenceNode,
+		eCategory_ConditionNode,
+		eCategory_ActionNode,
+		eCategory_Blackboard,
+	};
+
 public:
 	void			SetView(BehaviorTreeEditorView* pView) { m_pView = pView; }
-	void			SetCurNode(ManipulatorGameData::BTTemplate::SBTNode* node);
+	void			OnNodeSelected(eFlowGraphNodeType nodeType, int id = -1);
 
 protected:
 	virtual	bool	_OnCreate();
@@ -46,8 +56,13 @@ protected:
 	virtual int		_GetIDMutableEnd()	{ return propMutableItemEnd; }
 
 private:
+	ManipulatorGameData::Blackboard*	_GetCurBB();
+
+private:
 	ManipulatorGameData::BTTemplate::SBTNode*	m_curNode;
+	int											m_curBBParamIndex;
 	BehaviorTreeEditorView*						m_pView;
+	eFlowGraphNodeType							m_curNodeType;
 };
 
 class BehaviorTreeEditorProperty : public CDialog	
@@ -58,7 +73,7 @@ public:
 
 public:
 	void			SetView(BehaviorTreeEditorView* pView);
-	void			OnNodeSelected(bool bSelected, int id = -1);
+	void			OnNodeSelected(eFlowGraphNodeType nodeType, int id = -1);
 
 protected:
 	virtual BOOL	OnInitDialog();
@@ -68,7 +83,6 @@ private:
 	afx_msg	void	OnSize(UINT nType, int cx, int cy);
 
 private:
-	BehaviorTreeEditorView*		m_pView;
 	PropertyPaneBehaviorTree	m_propertyBT;
 };
 

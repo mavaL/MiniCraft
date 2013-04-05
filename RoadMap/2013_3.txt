@@ -18,4 +18,4 @@ Attachment of particle effect done.
 
 5.Start to design of battle module, both logic and graphic. Say, a marine fights a zergling, interesting ha?
 
-0%
+Behavior tree system goes first,delay to next month.

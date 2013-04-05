@@ -77,6 +77,7 @@ private:
 	float					m_fStopTime;	//已经进入停止状态多久
 	static std::unordered_map<STRING, Ogre::Entity*>			m_portraitCache;		//cache每种单位的3D肖像模型
 	static std::unordered_map<STRING, Ogre::AnimationState*>	m_portraitAnimCache;	//cache每种单位的3D肖像动画
+	Ogre::BillboardSet*		m_pHealthBar;
 };
 
 

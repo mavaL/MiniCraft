@@ -12,8 +12,6 @@
 #include "Component.h"
 #include "KratosPrerequisites.h"
 
-class aiBehaviorTreeTemplate;
-class aiBlackBoard;
 class FactionAI;
 
 class BehaviorComponent : public Component
@@ -28,9 +26,9 @@ public:
 	void			SetTempalte(const STRING& name);
 
 private:
-	aiBehaviorTreeTemplate*	m_pTemplate;
-	aiBlackBoard*			m_pOwnBB;		//该单位独立的行为树黑板
-	STRING					m_curBehavior;	//当前所处行为
+	Kratos::aiBehaviorTreeTemplate*	m_pTemplate;
+	Kratos::aiBlackBoard*			m_pOwnBB;		//该单位独立的行为树黑板
+	STRING							m_curBehavior;	//当前所处行为
 };
 
 #endif // BehaviorComponent_h__

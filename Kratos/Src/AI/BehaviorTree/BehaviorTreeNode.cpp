@@ -1,6 +1,7 @@
 #include "BehaviorTreeNode.h"
 #include <OgreException.h>
 #include "BehaviorTreeCondition.h"
+#include "BehaviorTreeTemplateManager.h"
 
 namespace Kratos
 {
@@ -16,11 +17,16 @@ namespace Kratos
 		return eEvalState_Running;
 	}
 
+	bool aiBTSequenceNode::Validate()
+	{
+		return __super::Validate();
+	}
+
 	/////////////////////////////////////////////////////////////////////
 	aiBTActionNode::aiBTActionNode()
 		:m_behaviorName(Ogre::StringUtil::BLANK)
 	{
-
+		
 	}
 
 	eEvalState aiBTActionNode::Evaluate(aiBlackBoard* pInfo, STRING& retBehavior)
@@ -38,7 +44,17 @@ namespace Kratos
 			OGRE_EXCEPT(Ogre::Exception::ERR_INVALID_STATE, "Action node should be leaf node!", "aiBTActionNode::Validate()");
 			return false;
 		}
-		return true;
+
+		Kratos::aiBehaviorTreeTemplateManager& btMgr = Kratos::aiBehaviorTreeTemplateManager::GetSingleton();
+		if (!btMgr.IsBehaviorExist(m_behaviorName))
+		{
+			STRING errMsg = m_behaviorName;
+			errMsg += ", behavior doesn't exist!";
+			OGRE_EXCEPT(Ogre::Exception::ERR_INVALID_STATE, errMsg, "aiBTActionNode::Validate()");
+			return false;
+		}
+
+		return __super::Validate();
 	}
 
 	/////////////////////////////////////////////////////////////////////
@@ -69,10 +85,13 @@ namespace Kratos
 		}
 		else if (m_pHandler && !m_pHandler->Valid())
 		{
-			OGRE_EXCEPT(Ogre::Exception::ERR_INVALID_STATE, "The condition expression is invalid!", "aiBTConditionNode::Validate()");
+			STRING errMsg = m_conditions;
+			errMsg += ", conditon expression invalid!";
+			OGRE_EXCEPT(Ogre::Exception::ERR_INVALID_STATE, errMsg, "aiBTConditionNode::Validate()");
 			return false;
 		}
-		return true;
+
+		return __super::Validate();
 	}
 
 	void aiBTConditionNode::SetConditions( const STRING& con, aiBlackBoard* pTmplBB )
@@ -82,6 +101,7 @@ namespace Kratos
 		m_conditions = con;
 	}
 
+	/////////////////////////////////////////////////////////////////////
 	const STRING aiBehaviorTreeNode::GetNodeTypeToStr( eNodeType type )
 	{
 		switch (type)
@@ -104,6 +124,16 @@ namespace Kratos
 		
 		assert(0);
 		return (eNodeType)-1;
+	}
+
+	bool aiBehaviorTreeNode::Validate()
+	{
+		for(auto iter=m_childs.begin(); iter!=m_childs.end(); ++iter)
+		{
+			if(!(*iter)->Validate())
+				return false;
+		}
+		return true;
 	}
 
 }

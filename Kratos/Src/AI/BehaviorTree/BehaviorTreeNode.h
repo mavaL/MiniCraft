@@ -45,7 +45,7 @@ namespace Kratos
 	public:
 		virtual	eNodeType	GetType() const = 0;
 		virtual	eEvalState	Evaluate(aiBlackBoard* pInfo, STRING& retBehavior) = 0;
-		virtual bool		Validate() { return true; }
+		virtual bool		Validate();
 		void				AddChild(aiBehaviorTreeNode* node) { m_childs.push_back(node); }
 		const ChildNodes&	GetChilds() const { return m_childs; }	
 
@@ -62,6 +62,7 @@ namespace Kratos
 
 	public:
 		virtual	eNodeType	GetType() const { return eNodeType_Sequence; }
+		virtual bool		Validate();
 		virtual	eEvalState	Evaluate(aiBlackBoard* pInfo, STRING& retBehavior);
 	};
 

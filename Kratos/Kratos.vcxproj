@@ -50,6 +50,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>.\Src;.\Dependency\rapidxml;.\Dependency\Lua5_1_4\src;.\Dependency\CEGUI\include;.\Dependency\boost;.\Dependency\OgreRecast\Include;.\Dependency\OIS\include;.\Dependency\Ogre\include;.\Dependency\Ogre\include\ParticleUniverse;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <TreatWarningAsError>false</TreatWarningAsError>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>

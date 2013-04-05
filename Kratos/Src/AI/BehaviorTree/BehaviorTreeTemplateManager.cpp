@@ -83,11 +83,16 @@ namespace Kratos
 		return iter->second;
 	}
 
-	aiBehavior* aiBehaviorTreeTemplateManager::GetBehavior( const STRING& name )
+	bool aiBehaviorTreeTemplateManager::IsBehaviorExist( const STRING& name )
 	{
 		auto iter = m_behaviorLib.find(name);
-		assert(iter != m_behaviorLib.end() && "No behavior with this name!");
-		return iter->second;
+		return iter != m_behaviorLib.end();
+	}
+
+	aiBehavior* aiBehaviorTreeTemplateManager::GetBehavior( const STRING& name )
+	{
+		assert(IsBehaviorExist(name) && "No behavior with this name!");
+		return m_behaviorLib[name];
 	}
 
 	void aiBehaviorTreeTemplateManager::AddBehavior( const STRING& name, aiBehavior* behav )
@@ -101,6 +106,16 @@ namespace Kratos
 		Ogre::StringVector ret(m_bts.size());
 		int i = 0;
 		for (auto iter=m_bts.begin(); iter!=m_bts.end(); ++iter)
+			ret[i++] = iter->first;
+
+		return std::move(ret);
+	}
+
+	Ogre::StringVector aiBehaviorTreeTemplateManager::GetAllBehaviorNames() const
+	{
+		Ogre::StringVector ret(m_behaviorLib.size());
+		int i = 0;
+		for (auto iter=m_behaviorLib.begin(); iter!=m_behaviorLib.end(); ++iter)
 			ret[i++] = iter->first;
 
 		return std::move(ret);

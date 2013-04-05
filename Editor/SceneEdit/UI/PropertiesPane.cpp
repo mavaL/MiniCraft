@@ -170,3 +170,16 @@ LRESULT CPropertiesPane::OnGridNotify( WPARAM wParam, LPARAM lParam )
 
 	return 0;
 }
+
+void CPropertiesPane::UpdateCategoryProperty( int category )
+{
+	CXTPPropertyGridItems* cats = m_wndPropertyGrid.GetCategories();
+	assert(category >=0 && category < cats->GetCount());
+
+	CXTPPropertyGridItems* cat = cats->GetAt(category)->GetChilds();
+	for (int i=0; i<cat->GetCount(); ++i)
+	{
+		int id = cat->GetAt(i)->GetID();
+		UpdateProperty(id);
+	}
+}

@@ -7,8 +7,8 @@ namespace Kratos
 	aiBlackBoard::aiBlackBoard(aiBehaviorTree* parent)
 		:m_parent(parent)
 	{
-		m_params["true"] = SValue("true", eVarType_Bool);
-		m_params["false"] = SValue("false", eVarType_Bool);
+		m_params["true"] = SValue("true", eVarType_Bool, false);
+		m_params["false"] = SValue("false", eVarType_Bool, false);
 	}
 
 	aiBlackBoard::aiBlackBoard()
@@ -20,7 +20,7 @@ namespace Kratos
 	void aiBlackBoard::DefineParam( const STRING& name, const STRING& value, eVarType type )
 	{
 		assert(m_params.find(name) == m_params.end() && "Param already defined!");
-		m_params.insert(std::make_pair(name, SValue(value, type)));
+		m_params.insert(std::make_pair(name, SValue(value, type, true)));
 	}
 
 	void aiBlackBoard::Clone( aiBlackBoard& toClone )
@@ -29,7 +29,7 @@ namespace Kratos
 		toClone.m_parent = m_parent;
 	}
 
-	const aiBlackBoard::SValue& aiBlackBoard::GetParam( const STRING& name ) const
+	aiBlackBoard::SValue& aiBlackBoard::GetParam( const STRING& name )
 	{
 		assert(IsParamExists(name) && "Param doesn't exist!");
 		return m_params.find(name)->second;

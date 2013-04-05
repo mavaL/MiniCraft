@@ -65,20 +65,6 @@ namespace Kratos
 						return '!=';
 					}
 					return ch;
-				case '>':
-					if (next == '=')
-					{
-						++m_buffer;
-						return '>=';
-					}
-					return ch;
-				case '<':
-					if (next == '=')
-					{
-						++m_buffer;
-						return '<=';
-					}
-					return ch;
 				default:
 					{
 						if (isalpha(ch) || isalnum(ch) || (ch == '_') || (ch == '-'))
@@ -105,6 +91,14 @@ namespace Kratos
 								return 'true';
 							else if (!stricmp(m_ident.c_str(), "false"))
 								return 'fals';
+							else if (!stricmp(m_ident.c_str(), "greater"))
+								return 'g';
+							else if (!stricmp(m_ident.c_str(), "greaterequal"))
+								return 'ge';
+							else if (!stricmp(m_ident.c_str(), "less"))
+								return 'l';
+							else if (!stricmp(m_ident.c_str(), "lessequal"))
+								return 'le';
 							return 'var';
 						}
 						else if (isspace(ch))
@@ -187,10 +181,10 @@ namespace Kratos
 		tok = lex.peek();
 		if ((tok == '==')	|| 
 			(tok == '!=')	|| 
-			(tok == '>')	||
-			(tok == '>=')	||
-			(tok == '<')	||
-			(tok == '<=')	)
+			(tok == 'g')	||
+			(tok == 'ge')	||
+			(tok == 'l')	||
+			(tok == 'le')	)
 		{
 			lex();
 
@@ -207,13 +201,13 @@ namespace Kratos
 				return AddOp(ConditionOp(bVarLeft?ConditionOp::EqualArithmetical:ConditionOp::EqualLogical, leftID, rightID));
 			case '!=':
 				return AddOp(ConditionOp(bVarLeft?ConditionOp::NotEqualArithmetical:ConditionOp::NotEqualLogical, leftID, rightID));
-			case '>':
+			case 'g':
 				return AddOp(ConditionOp(ConditionOp::Greater, leftID, rightID));
-			case '>=':
+			case 'ge':
 				return AddOp(ConditionOp(ConditionOp::GreaterEqual, leftID, rightID));
-			case '<':
+			case 'l':
 				return AddOp(ConditionOp(ConditionOp::Lessthan, leftID, rightID));
-			case '<=':
+			case 'le':
 				return AddOp(ConditionOp(ConditionOp::LessthanEqual, leftID, rightID));
 			}
 		}
@@ -275,6 +269,7 @@ namespace Kratos
 				float f = Ogre::StringConverter::parseReal(str, 10000);
 				assert(f != 10000 && "Invalid number!");
 				bb.DefineParam(str, str, aiBlackBoard::eVarType_Float);
+				bb.GetParam(str).m_bSave = false;
 				return AddOp(ConditionOp(ConditionOp::Variable, str, aiBlackBoard::eVarType_Float, false));
 			}
 			else
@@ -283,6 +278,7 @@ namespace Kratos
 				int i = Ogre::StringConverter::parseInt(str, 10000);
 				assert(i != 10000 && "Invalid number!");
 				bb.DefineParam(str, str, aiBlackBoard::eVarType_Int);
+				bb.GetParam(str).m_bSave = false;
 				return AddOp(ConditionOp(ConditionOp::Variable, str, aiBlackBoard::eVarType_Int, false));
 			}
 		}

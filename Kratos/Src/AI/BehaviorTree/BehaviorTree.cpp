@@ -22,24 +22,9 @@ namespace Kratos
 
 	void aiBehaviorTree::ValidateTree()
 	{
-		try
-		{
-			m_root->Validate();	
-		}
-		catch(const Ogre::Exception& e)
-		{
+		if(!m_root->Validate())
 			OGRE_EXCEPT(Ogre::Exception::ERR_INVALID_STATE, 
-				e.getDescription(), "aiBehaviorTree::Validate()");
-		}
-	}
-
-	void aiBehaviorTree::AddNode( aiBehaviorTreeNode* node, aiBehaviorTreeNode* parent )
-	{
-		assert(node && parent);
-		int addrHash = (int)parent;
-		auto iter = m_nodeMap.find(addrHash);
-		assert(iter != m_nodeMap.end());
-		iter->second->AddChild(node);
+			"Behavior Tree validate failed!", "aiBehaviorTree::Validate()");
 	}
 }
 

@@ -31,7 +31,9 @@ namespace Kratos
 		void					AddBehavior(const STRING& name, aiBehavior* behav);
 		aiBehaviorTreeTemplate*	GetTemplate(const STRING& name);
 		Ogre::StringVector		GetAllTemplateNames() const;
+		Ogre::StringVector		GetAllBehaviorNames() const;
 		aiBehavior*				GetBehavior(const STRING& name);
+		bool					IsBehaviorExist(const STRING& name);
 		//获取种族全局黑板
 		aiBlackBoard*			GetGlobalBB(eGameRace race) { return m_globalBBs[race]; }
 

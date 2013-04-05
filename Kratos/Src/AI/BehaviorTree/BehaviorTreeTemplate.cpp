@@ -59,7 +59,6 @@ namespace Kratos
 		assert(pTreeNode && "The Behavior tree xml is broken!");
 
 		_LoadTreeNode(pTreeNode, m_pBT->GetRootNode());
-		m_pBT->ValidateTree();
 
 		//½Å±¾
 		Ogre::StringVectorPtr loc = Ogre::ResourceGroupManager::getSingleton().findResourceLocation("BehaviorTemplate", "*Behaviors");

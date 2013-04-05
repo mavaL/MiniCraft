@@ -34,9 +34,11 @@ namespace Kratos
 		struct SValue
 		{
 			SValue() {}
-			SValue(const STRING& val, eVarType type):m_value(val),m_type(type) {}
+			SValue(const STRING& val, eVarType type, bool bSave)
+			:m_value(val),m_type(type),m_bSave(bSave) {}
 			STRING		m_value;
 			eVarType	m_type;
+			bool		m_bSave;
 		};
 
 		typedef HashMap<STRING, SValue> ParamMap;
@@ -46,7 +48,7 @@ namespace Kratos
 		//加入新参数到字典中
 		void			DefineParam(const STRING& name, const STRING& value, eVarType type);
 		void			Clone(aiBlackBoard& toClone);
-		const aiBlackBoard::SValue&	GetParam(const STRING& name) const;
+		aiBlackBoard::SValue&	GetParam(const STRING& name);
 		const ParamMap&	GetParams() const { return m_params; }
 		bool			IsParamExists(const STRING& name) const;
 		void			SetParam(const STRING& name, const STRING& value);

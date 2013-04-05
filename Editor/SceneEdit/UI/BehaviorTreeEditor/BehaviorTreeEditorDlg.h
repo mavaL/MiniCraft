@@ -34,6 +34,9 @@ private:
 	void						OnBtnArrange();
 	void						OnBtnValidate();
 	void						OnBtnSave();
+	void						OnBtnAddOwnParam();
+	void						OnBtnAddRaceParam();
+	template<int type> void		OnBtnAddNode();
 	
 	void						_CreateRibbon();
 	void						_CreateDockPane();

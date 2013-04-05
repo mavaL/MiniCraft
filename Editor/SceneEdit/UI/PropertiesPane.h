@@ -44,6 +44,8 @@ public:
 public:
 	//更新所有控件数据
 	void			UpdateAllFromEngine();
+	//更新某组的控件数据
+	void			UpdateCategoryProperty(int category);
 	//更新控件数据
 	void			UpdateProperty(int id);
 	//允许/禁止编辑Mutable数据(ReadOnly数据不需要管,本来就不能编辑)

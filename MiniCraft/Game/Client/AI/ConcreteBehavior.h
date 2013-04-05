@@ -12,14 +12,14 @@
 #include "Behavior.h"
 
 ///空闲行为
-class aiBehaviorIdle : public aiBehavior
+class aiBehaviorIdle : public Kratos::aiBehavior
 {
 public:
 	virtual	void	Execute(Ogre::Any& owner);
 };
 
 ///向敌人基地移动行为
-class aiBehaviorMoveToEnemyBase : public aiBehavior
+class aiBehaviorMoveToEnemyBase : public Kratos::aiBehavior
 {
 public:
 	virtual	void	Execute(Ogre::Any& owner);
