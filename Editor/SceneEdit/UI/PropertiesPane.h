@@ -50,14 +50,12 @@ public:
 	void			UpdateProperty(int id);
 	//允许/禁止编辑Mutable数据(ReadOnly数据不需要管,本来就不能编辑)
 	void			EnableMutableProperty(BOOL bEnable);
+	void			EnableCategory(int category, BOOL bEnable);
 
-	// Generated message map functions
 protected:
-	//{{AFX_MSG(CPropertiesPane)
 	afx_msg int		OnCreate(LPCREATESTRUCT lpCreateStruct);
 	afx_msg LRESULT OnGridNotify(WPARAM, LPARAM);
 	afx_msg void	OnSize(UINT nType, int cx, int cy);
-	//}}AFX_MSG
 	afx_msg void	OnPanePropertiesCategorized();
 	afx_msg void	OnUpdatePanePropertiesCategorized(CCmdUI* pCmdUI);
 	afx_msg void	OnPanePropertiesAlphabetic();

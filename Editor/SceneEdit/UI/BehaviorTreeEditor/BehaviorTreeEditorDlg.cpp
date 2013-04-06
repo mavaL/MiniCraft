@@ -25,6 +25,8 @@ BEGIN_MESSAGE_MAP(DialogBehaviorTreeEditor, CXTPDialog)
 	ON_COMMAND(IDC_BTEditor_AddSequenceNode, OnBtnAddNode<ManipulatorGameData::eBTNodeType_Sequence>)
 	ON_COMMAND(IDC_BTEditor_AddConditionNode, OnBtnAddNode<ManipulatorGameData::eBTNodeType_Condition>)
 	ON_COMMAND(IDC_BTEditor_AddActionNode, OnBtnAddNode<ManipulatorGameData::eBTNodeType_Action>)
+	ON_UPDATE_COMMAND_UI(IDC_BTEditor_Sync, OnUpdateUI_Btn)
+	ON_COMMAND(IDC_BTEditor_Sync, OnBtnSync)
 END_MESSAGE_MAP()
 
 DialogBehaviorTreeEditor::DialogBehaviorTreeEditor( CWnd* pParent /*= NULL*/ )
@@ -94,6 +96,8 @@ void DialogBehaviorTreeEditor::_CreateRibbon()
 	pGroup->Add(xtpControlButton, IDC_BTEditor_Arrange);
 	//RibbonHome - GroupHome - Validate
 	pGroup->Add(xtpControlButton, IDC_BTEditor_Validate);
+	//RibbonHome - GroupHome - Sync
+	pGroup->Add(xtpControlButton, IDC_BTEditor_Sync);
 	//RibbonHome - GroupHome - Save
 	pGroup->Add(xtpControlButton, IDC_BTEditor_Save);
 
@@ -126,6 +130,7 @@ void DialogBehaviorTreeEditor::_LoadIcon()
 	icon[0] = IDC_BTEditor_AddSequenceNode;		imgMgr->SetIcons(IDB_Button, icon, _countof(icon), CSize(32, 32));
 	icon[0] = IDC_BTEditor_AddConditionNode;	imgMgr->SetIcons(IDB_Button, icon, _countof(icon), CSize(32, 32));
 	icon[0] = IDC_BTEditor_AddActionNode;		imgMgr->SetIcons(IDB_Button, icon, _countof(icon), CSize(32, 32));
+	icon[0] = IDC_BTEditor_Sync;				imgMgr->SetIcons(IDB_Button, icon, _countof(icon), CSize(32, 32));
 }
 
 void DialogBehaviorTreeEditor::_CreateDockPane()
@@ -191,20 +196,21 @@ void DialogBehaviorTreeEditor::OnBtnSave()
 
 void DialogBehaviorTreeEditor::OnBtnAddOwnParam()
 {
-	auto curTmpl = m_pView->GetActiveTemplate();
-	ManipulatorSystem.GetGameData().DefineBlackboardParam(true, *curTmpl);
-	m_pView->Refresh();
+	m_pView->AddBlackboardParam(true);
 }
 
 void DialogBehaviorTreeEditor::OnBtnAddRaceParam()
 {
-	auto curTmpl = m_pView->GetActiveTemplate();
-	ManipulatorSystem.GetGameData().DefineBlackboardParam(false, *curTmpl);
-	m_pView->Refresh();
+	m_pView->AddBlackboardParam(false);
 }
 
 template<int type>
 void DialogBehaviorTreeEditor::OnBtnAddNode()
 {
 	m_pView->AddNewNode((ManipulatorGameData::eBTNodeType)type);
+}
+
+void DialogBehaviorTreeEditor::OnBtnSync()
+{
+	m_pView->Sync();	
 }

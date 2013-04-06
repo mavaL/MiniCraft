@@ -10,6 +10,7 @@
 #include "OgreManager.h"
 #include "AnimatedComponent.h"
 #include "ObjectState.h"
+#include "AIComponent.h"
 
 HarvestComponent::HarvestComponent( SelectableObject* pOwner )
 :Component(pOwner)
@@ -30,7 +31,7 @@ HarvestComponent::HarvestComponent( SelectableObject* pOwner )
 
 void HarvestComponent::Update( float dt )
 {
-	if(m_curStage == eHarvestStage_None)
+	if(m_pOwner->GetAi()->GetCpuControl() || m_curStage == eHarvestStage_None)
 		return;
 
 	assert(m_pTarget);
@@ -100,4 +101,9 @@ void HarvestComponent::Update( float dt )
 			SetCurStage(eHarvestStage_ToRes);
 		}
 	}
+}
+
+void HarvestComponent::SetResVisible( bool bVisible )
+{
+	m_pCrystal->setVisible(bVisible);
 }

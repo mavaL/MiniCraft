@@ -28,6 +28,7 @@ public:
 	~SelectableObject();
 
 public:
+	virtual void	AddComponent(eComponentType type, Component* pCo);
 	virtual void	CreateRenderInstance();
 	//当前命令完成,接到通知
 	virtual void	_OnCommandFinished(eCommandType cmd);
@@ -35,7 +36,6 @@ public:
 public:
 	//!!在Ogre Root销毁前必须调用
 	static void		ReleaseMeshCache();
-
 
 	void			InitTeamColor(const COLOR& color);
 	void			SetSelected(bool bSelected);
@@ -45,15 +45,21 @@ public:
 	const SAbilityData*	GetActiveAbility() const { return m_pActiveAbility; }
 	bool			HasAbility(eCommandType type);
 
-	AiComponent*			GetAi();
-	PathComponent*			GetPath();
-	AnimatedComponent*		GetAnim();
-	HarvestComponent*		GetGather();
+	AiComponent*			GetAi()	;		
+	PathComponent*			GetPath();	
+	AnimatedComponent*		GetAnim();		
+	HarvestComponent*		GetGather();	
 	BehaviorComponent*		GetBehavior();
 
 protected:
 	virtual void	_OnSelected(bool bSelected);
 	bool			m_bSelected;
+
+	AiComponent*			m_pAi;
+	PathComponent*			m_pPath;
+	AnimatedComponent*		m_pAnim;
+	HarvestComponent*		m_pGather;
+	BehaviorComponent*		m_pBehavior;
 	
 private:
 	Ogre::MeshPtr	_CreateSelectionCircleMesh(const Ogre::MeshPtr& objMesh);
@@ -61,6 +67,7 @@ private:
 	typedef std::unordered_map<STRING, Ogre::MeshPtr>	SelectionCircleCache;
 	static SelectionCircleCache	m_selCircleCache;	//cache每种单位的选中框mesh
 	Ogre::SceneNode*			m_pSelCircleNode;
+
 	SAbilityData*				m_pAbilitySlots[MAX_ABILITY_SLOT];
 	const SAbilityData*			m_pActiveAbility;
 };

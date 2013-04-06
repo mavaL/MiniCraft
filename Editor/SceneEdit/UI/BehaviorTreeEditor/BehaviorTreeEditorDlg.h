@@ -37,6 +37,7 @@ private:
 	void						OnBtnAddOwnParam();
 	void						OnBtnAddRaceParam();
 	template<int type> void		OnBtnAddNode();
+	void						OnBtnSync();
 	
 	void						_CreateRibbon();
 	void						_CreateDockPane();

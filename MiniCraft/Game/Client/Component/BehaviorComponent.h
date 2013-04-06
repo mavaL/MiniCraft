@@ -21,14 +21,15 @@ public:
 	~BehaviorComponent();
 
 public:
-	virtual void	Update(float dt);
+	virtual void			Update(float dt);
 	//设置该单位要应用的行为树模板
-	void			SetTempalte(const STRING& name);
+	void					SetTempalte(const STRING& name);
+	Kratos::aiBlackBoard*	GetBlackboard() { return m_pOwnBB; }
 
 private:
 	Kratos::aiBehaviorTreeTemplate*	m_pTemplate;
 	Kratos::aiBlackBoard*			m_pOwnBB;		//该单位独立的行为树黑板
-	STRING							m_curBehavior;	//当前所处行为
+	Kratos::aiBehavior*				m_pCurBehavior;
 };
 
 #endif // BehaviorComponent_h__

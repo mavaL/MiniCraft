@@ -24,7 +24,7 @@ public:
 
 public:
 	int					GetID() const { return m_ID; }
-	void				AddComponent(eComponentType type, Component* pCo);
+	virtual void		AddComponent(eComponentType type, Component* pCo);
 	Component*			GetComponent(eComponentType type);
 	void				UpdateAllComponent(float dt);
 	virtual eObjectType GetType() const = 0;

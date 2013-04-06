@@ -47,11 +47,12 @@ public:
 		struct SBTNode
 		{
 			SBTNode()
-			:parent(nullptr),txtProperty(L""),flowGraphNodeID(-1) {}
+			:parent(nullptr),txtProperty(L""),flowGraphNodeID(-1),priority(0) {}
 
 			std::wstring	type;
 			std::wstring	txtProperty;
 			int				flowGraphNodeID;
+			int				priority;
 			DWORD			color;
 			SBTNode*		parent;
 			std::vector<SBTNode*> childs;
@@ -90,7 +91,7 @@ public:
 	void						ValidateBehaviorTemplate(const BTTemplate& tmpl);
 	BTTemplate::SBTNode*		AddBTNode(BTTemplate& tmpl, eBTNodeType type);
 	//加入黑板参数
-	void						DefineBlackboardParam(bool bOwnBB, BTTemplate& tmpl);
+	const std::string			DefineBlackboardParam(bool bOwnBB, BTTemplate& tmpl);
 	const SBBParam				GetBlackboardParam(const std::wstring& name, const BTTemplate& tmpl, bool bOwnBB) const;
 	void						SetBlackboardParam(const std::wstring& name, const SBBParam& param, const BTTemplate& tmpl, bool bOwnBB);
 	void						RenameBlackboardParam(const std::wstring& oldName, const std::wstring& newName, BTTemplate& tmpl, bool bOwnBB);

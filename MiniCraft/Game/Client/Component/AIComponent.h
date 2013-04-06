@@ -26,6 +26,8 @@ public:
 
 public:
 	virtual void	Update(float dt);
+	void			SetCpuControl(bool bCpu) { m_bCpuControl = bCpu; }
+	bool			GetCpuControl() const	{ return m_bCpuControl; }
 	//执行命令.bForceExecute为true则取消当前命令,直接执行该命令
 	void			GiveCommand(Command& cmd, bool bForceExecute = false);
 	//鼠标右键命令
@@ -55,6 +57,7 @@ private:
 	typedef std::list<Command> CommandQueue;
 	CommandQueue		m_cmdQueue;		//命令队列
 
+	bool				m_bCpuControl;	//该对象是否完全由电脑控制
 	bool				m_bExecuting;	//当前是否在执行命令
 	eObjectState		m_curState;		//对象当前所处状态
 	ObjectState*		m_parallelState;//并行状态.比如StateTargeting就需要与其他状态同时进行	

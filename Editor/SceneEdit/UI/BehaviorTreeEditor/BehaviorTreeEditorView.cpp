@@ -4,6 +4,7 @@
 #include "BehaviorTreeEditorProperty.h"
 #include "resource.h"
 #include "BehaviorTreeEditorDlg.h"
+#include "Utility.h"
 
 BEGIN_MESSAGE_MAP(BehaviorTreeEditorView, CWnd)
 	ON_WM_CREATE()
@@ -117,10 +118,10 @@ void BehaviorTreeEditorView::OnSize( UINT nType, int cx, int cy )
 void BehaviorTreeEditorView::SetActiveItem( const std::wstring& name )
 {
 	m_curTmpl = &ManipulatorSystem.GetGameData().GetBTTemplate(name);
-	Refresh();
+	RefreshAll();
 }
 
-void BehaviorTreeEditorView::Refresh()
+void BehaviorTreeEditorView::RefreshAll()
 {
 	m_page->GetNodes()->RemoveAll();
 
@@ -142,67 +143,49 @@ void BehaviorTreeEditorView::Refresh()
 	}
 
 	//连接节点
-	for (auto itNode=m_curTmpl->m_nodeList.begin(); itNode!=m_curTmpl->m_nodeList.end(); ++itNode,++id)
-	{
-		auto& node = *itNode;
-		CXTPFlowGraphNodes* nodes = m_page->GetNodes();
-		//父节点
-		if (node->parent)
-		{
-			CXTPFlowGraphConnection* pConnection;
-			pConnection = m_page->GetConnections()->AddConnection(new CXTPFlowGraphConnection());
+	ManipulatorGameData::BTTemplate::SBTNode* root = m_curTmpl->m_nodeList.front();
+	while(root->parent)
+		root = root->parent;
 
-			int nFrom = node->parent->flowGraphNodeID;
-			int nTo = node->flowGraphNodeID;
-
-			pConnection->SetOutputPoint(nodes->GetAt(nFrom)->GetConnectionPoints()->GetAt(0));
-			pConnection->SetInputPoint(nodes->GetAt(nTo)->GetConnectionPoints()->GetAt(0));
-		}
-
-		//子节点
-		for (size_t iChild=0; iChild<node->childs.size(); ++iChild)
-		{
-			CXTPFlowGraphConnection* pConnection;
-			pConnection = m_page->GetConnections()->AddConnection(new CXTPFlowGraphConnection());
-
-			int nFrom = node->flowGraphNodeID;
-			int nTo = node->childs[iChild]->flowGraphNodeID;
-
-			pConnection->SetOutputPoint(nodes->GetAt(nFrom)->GetConnectionPoints()->GetAt(0));
-			pConnection->SetInputPoint(nodes->GetAt(nTo)->GetConnectionPoints()->GetAt(0));
-		}
-	}
+	_ConnectFgNodes(root);
 
 	///独有黑板
 	m_ownBBNode = m_page->GetNodes()->AddNode(new CXTPFlowGraphNode());
 	m_ownBBNode->SetCaption(L"OwnBlackBoard");
 	m_ownBBNode->SetColor(0xc0c0c0ff);
 	m_ownBBNode->SetID(OWN_BLACKBOARD_NODE_ID);
-	for (size_t i=0; i<m_curTmpl->m_ownBB.size(); ++i)
-	{
-		CXTPFlowGraphConnectionPoint* pConnectionPoint;
-		pConnectionPoint = m_ownBBNode->GetConnectionPoints()->AddConnectionPoint(new CXTPFlowGraphConnectionPoint());
-		pConnectionPoint->SetCaption(m_curTmpl->m_ownBB[i].c_str());
-		pConnectionPoint->SetType(xtpFlowGraphPointOutput);
-		pConnectionPoint->SetID(i);
-	}
+	RefreshBlackboard(true);
 	
 	///种族全局黑板
 	m_globalBBNode = m_page->GetNodes()->AddNode(new CXTPFlowGraphNode());
 	m_globalBBNode->SetCaption(L"RaceBlackBoard");
 	m_globalBBNode->SetColor(0xc0c0c0ff);
 	m_globalBBNode->SetID(GLOBAL_BLACKBOARD_NODE_ID);
-	for (size_t i=0; i<m_curTmpl->m_raceBB->size(); ++i)
-	{
-		CXTPFlowGraphConnectionPoint* pConnectionPoint;
-		pConnectionPoint = m_globalBBNode->GetConnectionPoints()->AddConnectionPoint(new CXTPFlowGraphConnectionPoint());
-		pConnectionPoint->SetCaption(m_curTmpl->m_raceBB->at(i).c_str());
-		pConnectionPoint->SetType(xtpFlowGraphPointOutput);
-		pConnectionPoint->SetID(i);
-	}
+	RefreshBlackboard(false);
 
 	g_ownBB = m_ownBBNode;
 	g_globalBB = m_globalBBNode;
+}
+
+void BehaviorTreeEditorView::_ConnectFgNodes( ManipulatorGameData::BTTemplate::SBTNode* root )
+{
+	CXTPFlowGraphNodes* nodes = m_page->GetNodes();
+	//连接到子节点
+	for (size_t iChild=0; iChild<root->childs.size(); ++iChild)
+	{
+		CXTPFlowGraphConnection* pConnection;
+		pConnection = m_page->GetConnections()->AddConnection(new CXTPFlowGraphConnection());
+
+		CXTPFlowGraphNode* pFrom = FindFgNodeByID(root->flowGraphNodeID);
+		CXTPFlowGraphNode* pTo = FindFgNodeByID(root->childs[iChild]->flowGraphNodeID);
+
+		pConnection->SetOutputPoint(pFrom->GetConnectionPoints()->GetAt(0));
+		pConnection->SetInputPoint(pTo->GetConnectionPoints()->GetAt(0));
+	}
+
+	//遍历子节点
+	for(size_t i=0; i<root->childs.size(); ++i)
+		_ConnectFgNodes(root->childs[i]);
 }
 
 void BehaviorTreeEditorView::Arrange()
@@ -231,6 +214,126 @@ void BehaviorTreeEditorView::AddNewNode( ManipulatorGameData::eBTNodeType type )
 	pNode->SetColor(node->color);
 	node->flowGraphNodeID = m_curTmpl->m_nodeList.size();
 }
+
+void BehaviorTreeEditorView::RefreshTreeNode( ManipulatorGameData::BTTemplate::SBTNode* pNode )
+{
+	FindFgNodeByID(pNode->flowGraphNodeID)->GetConnectionPoints()->GetAt(0)->SetCaption(pNode->txtProperty.c_str());
+}
+
+void BehaviorTreeEditorView::RefreshBlackboard( bool bOwnBB )
+{
+	CXTPFlowGraphNode* pNode = bOwnBB ? m_ownBBNode : m_globalBBNode;
+	ManipulatorGameData::Blackboard* pBB = bOwnBB ? &m_curTmpl->m_ownBB : m_curTmpl->m_raceBB;
+	pNode->GetConnectionPoints()->RemoveAll();
+
+	for (size_t i=0; i<pBB->size(); ++i)
+	{
+		CXTPFlowGraphConnectionPoint* pConnectionPoint;
+		pConnectionPoint = pNode->GetConnectionPoints()->AddConnectionPoint(new CXTPFlowGraphConnectionPoint());
+		pConnectionPoint->SetCaption(pBB->at(i).c_str());
+		pConnectionPoint->SetType(xtpFlowGraphPointOutput);
+		pConnectionPoint->SetID(i);
+	}
+}
+
+void BehaviorTreeEditorView::AddBlackboardParam( bool bOwnBB )
+{
+	CXTPFlowGraphNode* pNode = bOwnBB ? m_ownBBNode : m_globalBBNode;
+	ManipulatorGameData::Blackboard* pBB = bOwnBB ? &m_curTmpl->m_ownBB : m_curTmpl->m_raceBB;
+	const std::string paramName = ManipulatorSystem.GetGameData().DefineBlackboardParam(true, *m_curTmpl);
+
+	CXTPFlowGraphConnectionPoint* pConnectionPoint = pNode->GetConnectionPoints()->AddConnectionPoint(new CXTPFlowGraphConnectionPoint);
+	pConnectionPoint->SetCaption(Utility::EngineToUnicode(paramName).c_str());
+	pConnectionPoint->SetType(xtpFlowGraphPointOutput);
+	pConnectionPoint->SetID(pBB->size() - 1);
+}
+
+ManipulatorGameData::BTTemplate::SBTNode* BehaviorTreeEditorView::FindNodeByID( int id )
+{
+	auto iter = std::find_if(m_curTmpl->m_nodeList.begin(), m_curTmpl->m_nodeList.end(), 
+		[&](const ManipulatorGameData::BTTemplate::SBTNode* pNode)
+	{
+		return pNode->flowGraphNodeID == id;
+	});
+	assert(iter != m_curTmpl->m_nodeList.end());
+
+	return *iter;
+}
+
+CXTPFlowGraphNode* BehaviorTreeEditorView::FindFgNodeByID( int id )
+{
+	CXTPFlowGraphNodes* pNodes = m_page->GetNodes();
+	CXTPFlowGraphNode* pFgNode = nullptr;
+	for (int i=0; i<pNodes->GetCount(); ++i)
+	{
+		if (pNodes->GetAt(i)->GetID() == id)
+		{
+			pFgNode = pNodes->GetAt(i);
+			break;
+		}
+	}
+	assert(pFgNode != nullptr);
+
+	return pFgNode;
+}
+
+void BehaviorTreeEditorView::Sync()
+{
+	//清空目前保存的结构
+	for (auto iter=m_curTmpl->m_nodeList.begin(); iter!=m_curTmpl->m_nodeList.end(); ++iter)
+	{
+		auto treenode = *iter;
+		treenode->parent = nullptr;
+		//no clear()!
+		for(size_t i=0; i<treenode->childs.size(); ++i)
+			treenode->childs[i] = nullptr;
+	}
+
+	//同步行为树的结构
+	CXTPFlowGraphNodes* pNodes = m_page->GetNodes();
+	for (int iNode=0; iNode<pNodes->GetCount(); ++iNode)
+	{
+		CXTPFlowGraphNode* pNode = pNodes->GetAt(iNode);
+		if(pNode == m_ownBBNode || pNode == m_globalBBNode)
+			continue;
+
+		CXTPFlowGraphConnectionPoint* pConnectionPoint = pNode->GetConnectionPoints()->GetAt(0);
+		if(pConnectionPoint->GetInputConnectionsCount() > 1)
+		{
+			::MessageBoxW(0, L"Node has more than one parent!", L"Warning", MB_ICONWARNING);
+			continue;
+		}
+
+		auto self = FindNodeByID(pNode->GetID());
+
+		//parent
+		if (pConnectionPoint->GetInputConnectionsCount() > 0)
+		{
+			CXTPFlowGraphConnection* pConnection = pConnectionPoint->GetInputConnectionAt(0);
+			auto parent = FindNodeByID(pConnection->GetOutputNode()->GetID());
+			self->parent = parent;
+			
+			if(parent->childs.size() <= (size_t)self->priority)
+				parent->childs.resize(self->priority + 1);
+			parent->childs[self->priority] = self;
+		}
+		
+		//childs
+		int childCnt = pConnectionPoint->GetOutputConnectionsCount();
+		for (int iChild=0; iChild<childCnt; ++iChild)
+		{
+			CXTPFlowGraphConnection* pConnection = pConnectionPoint->GetOutputConnectionAt(iChild);
+			auto child = FindNodeByID(pConnection->GetInputNode()->GetID());
+
+			if(self->childs.size() <= (size_t)child->priority)
+				self->childs.resize(child->priority + 1);
+			self->childs[child->priority] = child;
+			child->parent = self;
+		}
+	}
+}
+
+
 
 
 

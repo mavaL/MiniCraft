@@ -183,3 +183,13 @@ void CPropertiesPane::UpdateCategoryProperty( int category )
 		UpdateProperty(id);
 	}
 }
+
+void CPropertiesPane::EnableCategory( int category, BOOL bEnable )
+{
+	CXTPPropertyGridItems* cats = m_wndPropertyGrid.GetCategories();
+	assert(category >=0 && category < cats->GetCount());
+
+	CXTPPropertyGridItems* cat = cats->GetAt(category)->GetChilds();
+	for (int i=0; i<cat->GetCount(); ++i)
+		cat->GetAt(i)->SetReadOnly(!bEnable);
+}

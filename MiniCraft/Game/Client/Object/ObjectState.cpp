@@ -75,14 +75,14 @@ void StateProduce::Update( float dt, SelectableObject* pOwner )
 		pOwner->GetAi()->SetCurState(eObjectState_Idle);
 
 		//鲜活的单位出炉了
-		SelectableObject* pNewObj = static_cast<SelectableObject*>(ObjectManager::GetSingleton().CreateObject(eObjectType_Unit));
-		pNewObj->setParameter("name", unitName);
-		static_cast<Unit*>(pNewObj)->Init();
-		pNewObj->SetPosition(pObj->GetRallyPoint());
-		pNewObj->AddComponent(eComponentType_Path, new PathComponent(pNewObj));
+		Unit* pUnit = static_cast<Unit*>(ObjectManager::GetSingleton().CreateObject(eObjectType_Unit));
+		pUnit->setParameter("name", unitName);
+		pUnit->Init();
+		pUnit->SetPosition(pObj->GetRallyPoint());
+		pUnit->AddComponent(eComponentType_Path, new PathComponent(pUnit));
 
 		//新单位进入空闲状态
-		pNewObj->GetAi()->SetCurState(eObjectState_Idle);
+		pUnit->GetAi()->SetCurState(eObjectState_Idle);
 	}
 }
 
@@ -225,7 +225,7 @@ void StateStop::Update( float dt, SelectableObject* pOwner )
 ///////////////////////////////////////////////////////////////
 void StateGather::Enter( SelectableObject* pOwner )
 {
-	pOwner->GetGather()->SetCurStage(eHarvestStage_ToRes);
+	pOwner->GetGather()->SetCurStage(HarvestComponent::eHarvestStage_ToRes);
 	//禁止单位间阻挡
 	pOwner->GetPath()->EnableObstcleAvoidance(false);
 }
@@ -237,7 +237,7 @@ void StateGather::Update( float dt, SelectableObject* pOwner )
 
 void StateGather::Exit( SelectableObject* pOwner )
 {
-	pOwner->GetGather()->SetCurStage(eHarvestStage_None);
+	pOwner->GetGather()->SetCurStage(HarvestComponent::eHarvestStage_None);
 	//恢复单位间阻挡
 	pOwner->GetPath()->EnableObstcleAvoidance(true);
 }

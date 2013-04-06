@@ -11,14 +11,6 @@
 
 #include "Component.h"
 
-enum eHarvestStage
-{
-	eHarvestStage_ToRes,		//向资源移动
-	eHarvestStage_Gather,		//正在采集
-	eHarvestStage_Return,		//正在返还
-	eHarvestStage_None			//还未进入采集阶段
-};
-
 class SelectableObject;
 class Resource;
 class Unit;
@@ -29,13 +21,27 @@ public:
 	HarvestComponent(SelectableObject* pOwner);
 	~HarvestComponent() {}
 
+	enum eHarvestStage
+	{
+		eHarvestStage_ToRes,		//向资源移动
+		eHarvestStage_NearRes,		//已到达资源采集点
+		eHarvestStage_Gather,		//正在采集
+		eHarvestStage_Return,		//正在返还
+		eHarvestStage_NearBase,		//已到达返还资源点
+		eHarvestStage_None			//还未进入采集阶段
+	};
+
 public:
 	virtual void	Update(float dt);
 	//设置当前阶段
 	void			SetCurStage(eHarvestStage stage) { m_curStage = stage; }
+	eHarvestStage	GetCurStage() const	{ return m_curStage; }
+
 	//设置采集目标
 	void			SetTarget(Resource* pRes) { m_pTarget = pRes; }
-	
+	void			SetGatherTime(float fTime) { m_fGatherTime = fTime; }
+	float			GetGatherTime() const	{ return m_fGatherTime; }
+	void			SetResVisible(bool bVisible); 
 
 private:
 	Resource*		m_pTarget;		//目标资源

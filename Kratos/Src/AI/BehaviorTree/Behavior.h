@@ -28,6 +28,8 @@ namespace Kratos
 
 	public:
 		virtual	void	Execute(Ogre::Any& owner) = 0;
+		virtual	void	Update(Ogre::Any& owner, float dt) {}
+		virtual void	Exit(Ogre::Any& owner)	{}
 
 	private:
 		aiBehavior(const aiBehavior&);

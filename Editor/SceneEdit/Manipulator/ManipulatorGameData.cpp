@@ -154,6 +154,11 @@ void ManipulatorGameData::_ParseAllBTTemplates()
 
 	btMgr.AddBehavior("Idle", new FakeBehavior);
 	btMgr.AddBehavior("MoveToEnemyBase", new FakeBehavior);
+	btMgr.AddBehavior("MoveToBase", new FakeBehavior);
+	btMgr.AddBehavior("MoveToRes", new FakeBehavior);
+	btMgr.AddBehavior("GatherRes", new FakeBehavior);
+	btMgr.AddBehavior("RetriveRes", new FakeBehavior);
+	btMgr.AddBehavior("ReturnRes", new FakeBehavior);
 }
 
 void ManipulatorGameData::_ParseBlackboard( Blackboard& bb, Kratos::aiBlackBoard* pEngineBB )
@@ -198,11 +203,14 @@ void ManipulatorGameData::_ParseBTNode( const Kratos::aiBehaviorTreeNode* pEngin
 	}
 
 	auto& childs = pEngineNode->GetChilds();
-	for(auto iter=childs.begin(); iter!=childs.end(); ++iter)
+	int i = 0;
+	for(auto iter=childs.begin(); iter!=childs.end(); ++iter,++i)
 	{
 		BTTemplate::SBTNode* childNode = new BTTemplate::SBTNode;
 		_ParseBTNode(*iter, childNode, pNode, tmpl);
 		pNode->childs.push_back(childNode);
+		//确定子节点的顺序
+		childNode->priority = i;
 	}
 
 	tmpl.m_nodeList.push_back(pNode);
@@ -389,11 +397,11 @@ void ManipulatorGameData::ValidateBehaviorTemplate( const BTTemplate& tmpl )
 	Ogre::ResourceGroupManager::getSingleton().deleteResource("TempBehaviorTreeTemplate.xml", "BehaviorTemplate");
 }
 
-void ManipulatorGameData::DefineBlackboardParam( bool bOwnBB, BTTemplate& tmpl )
+const std::string ManipulatorGameData::DefineBlackboardParam( bool bOwnBB, BTTemplate& tmpl )
 {
+	STRING name = "Param_"; 
 	if (bOwnBB)
 	{
-		STRING name = "Param_";
 		name += Ogre::StringConverter::toString(tmpl.m_ownBB.size());
 		
 		Kratos::aiBlackBoard* pBB = Kratos::aiBehaviorTreeTemplateManager::GetSingleton().GetTemplate(
@@ -404,7 +412,6 @@ void ManipulatorGameData::DefineBlackboardParam( bool bOwnBB, BTTemplate& tmpl )
 	}
 	else
 	{
-		STRING name = "Param_";
 		name += Ogre::StringConverter::toString(tmpl.m_raceBB->size());
 
 		Kratos::aiBlackBoard* pBB = Kratos::aiBehaviorTreeTemplateManager::GetSingleton().GetGlobalBB((eGameRace)tmpl.race);
@@ -412,6 +419,8 @@ void ManipulatorGameData::DefineBlackboardParam( bool bOwnBB, BTTemplate& tmpl )
 
 		tmpl.m_raceBB->push_back(Utility::EngineToUnicode(name));
 	}
+
+	return name;
 }
 
 const ManipulatorGameData::SBBParam ManipulatorGameData::GetBlackboardParam(const std::wstring& name, const BTTemplate& tmpl, bool bOwnBB) const

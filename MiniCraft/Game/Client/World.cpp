@@ -1,22 +1,27 @@
 #include "stdafx.h"
 #include "World.h"
-#include "Unit.h"
 #include "GameDefine.h"
 #include "OgreManager.h"
 #include "GUIManager.h"
 #include <SdkCameraMan.h>
 #include "ObjectManager.h"
 #include "GameDataDef.h"
-#include "AIFaction.h"
 #include "CommandPanel.h"
 #include "InfoPanel.h"
 #include "Scene.h"
-#include "Building.h"
 #include "PortraitPanel.h"
+
+///TODO: 一些测试代码去掉后,这些该去的也要去
+#include "Unit.h"
+#include "AIFaction.h"
+#include "Building.h"
 #include "Resource.h"
 #include "BehaviorTreeTemplateManager.h"
 #include "ConcreteBehavior.h"
 #include "BlackBoard.h"
+#include "BehaviorComponent.h"
+#include "PathComponent.h"
+#include "AIComponent.h"
 
 SGlobalEnvironment	g_Environment;
 
@@ -52,6 +57,7 @@ World::World()
 ,m_pRenderSystem(Kratos::COgreManager::GetSingletonPtr())
 {
 	Luna<World>::Register(m_pScriptSystem->GetLuaState());
+	Luna<Unit>::Register(m_pScriptSystem->GetLuaState());
 	m_pScriptSystem->BindObjectToLua<World>("world", this);
 }
 
@@ -87,6 +93,11 @@ void World::Init()
 	Kratos::aiBehaviorTreeTemplateManager& btMgr = Kratos::aiBehaviorTreeTemplateManager::GetSingleton();
 	btMgr.AddBehavior("Idle", new aiBehaviorIdle);
 	btMgr.AddBehavior("MoveToEnemyBase", new aiBehaviorMoveToEnemyBase);
+	btMgr.AddBehavior("MoveToBase", new aiBehaviorMoveToBase);
+	btMgr.AddBehavior("MoveToRes", new aiBehaviorMoveToRes);
+	btMgr.AddBehavior("GatherRes", new aiBehaviorGathering);
+	btMgr.AddBehavior("RetriveRes", new aiBehaviorRetriveRes);
+	btMgr.AddBehavior("ReturnRes", new aiBehaviorReturnRes);
 
 	//测试两个AI
 	m_player[eGameRace_Terran] = new FactionAI(eGameRace_Terran);
@@ -133,6 +144,16 @@ void World::Init()
 	//加载测试场景
 	m_pTestScene = new Kratos::Scene();
 	m_pTestScene->Load("MyStarCraft.Scene", "General", this);
+
+	///////////////行为树测试
+	Unit* pUnit = static_cast<Unit*>(ObjectManager::GetSingleton().CreateObject(eObjectType_Unit));
+	pUnit->setParameter("name", "Scv");
+	pUnit->Init();
+	pUnit->SetPosition(m_player[eGameRace_Terran]->GetBase()->GetRallyPoint());
+	pUnit->AddComponent(eComponentType_Path, new PathComponent(pUnit));
+	pUnit->AddComponent(eComponentType_Behevior, new BehaviorComponent(pUnit));
+	pUnit->GetAi()->SetCpuControl(true);
+	pUnit->GetBehavior()->SetTempalte("Scv");
 
 	//UI for test
 	Ogre::Entity* pEntConsole = m_pRenderSystem->CreateEntityWithTangent("ConsoleTerran_0.mesh", sm);

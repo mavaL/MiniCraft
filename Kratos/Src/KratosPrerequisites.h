@@ -29,6 +29,7 @@ namespace Kratos
 	class aiBehaviorTreeNode;
 	class aiBehaviorTreeTemplate;
 	class aiBlackBoard;
+	class aiBehavior;
 }
 
 ///×¢²áOgreStringInterface

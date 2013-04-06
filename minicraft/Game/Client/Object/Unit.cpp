@@ -7,8 +7,11 @@
 #include "PathComponent.h"
 #include "HarvestComponent.h"
 #include "AnimatedComponent.h"
+#include "BehaviorComponent.h"
 #include "OgreManager.h"
 #include "GameDataDef.h"
+#include "AI/BehaviorTree/BehaviorTreeTemplate.h"
+#include "AI/BehaviorTree/BlackBoard.h"
 
 IMPL_PARAM_COMMAND_STR(Unit, Name)
 IMPL_PARAM_COMMAND(Unit, Race, Int)
@@ -23,16 +26,11 @@ const char Unit::className[] = "Unit";
 #define method(class, name) {#name, &class::name}
 Luna<Unit>::RegType Unit::methods[] = 
 {
-	method(Unit, PlayAnimation),
-	method(Unit, StopAnimation),
-	method(Unit, FindPath),
-	method(Unit, SetState),
-	method(Unit, SetDestPosition),
-	method(Unit, GetDestPosition),
-	method(Unit, GetCurCommandType),
-	method(Unit, UpdatePathFinding),
-	method(Unit, AttachRes),
-	method(Unit, DetachRes),
+	method(Unit, SetBlackboardParamInt),
+	method(Unit, SetBlackboardParamFloat),
+	method(Unit, SetBlackboardParamBool),
+	method(Unit, GetHarvestStage),
+	method(Unit, GetGatheringTime),
 	{0,0}
 };
 
@@ -46,6 +44,7 @@ Unit::Unit()
 ,m_fStopTime(0)
 ,m_data(nullptr)
 ,m_pHealthBar(nullptr)
+,m_pScriptSystem(Kratos::ScriptSystem::GetSingletonPtr())
 {
 	if(InitParamDict("Unit"))
 	{
@@ -57,131 +56,12 @@ Unit::Unit()
 	}
 
 	//将对象绑定到lua
-	//ScriptSystem::GetSingleton().BindObjectToLua<Unit>(UNIT_TABLE_NAME, GetID(), this);
+	m_pScriptSystem->BindObjectToLua<Unit>(UNIT_TABLE_NAME, GetID(), this);
 }
 
 Unit::~Unit()
 {
 	DestroyRenderInstance();
-}
-
-int Unit::PlayAnimation( lua_State* L )
-{
-// 	bool bLoop = ScriptSystem::GetSingleton().Get_Bool(-1);
-// 	const STRING topAnimName = ScriptSystem::GetSingleton().Get_String(-2);
-// 	PlayAnimation(topAnimName, bLoop);
-
-	return 0;
-}
-
-int Unit::StopAnimation( lua_State* L )
-{
-	//StopAnimation();
-	return 0;
-}
-
-int Unit::SetState( lua_State* L )
-{
-// 	const eUnitState state = static_cast<eUnitState>(ScriptSystem::GetSingleton().Get_Int(-1));
-// 	m_pAI->SetState(state);
-
-	return 0;
-}
-
-int Unit::FindPath( lua_State* L )
-{
-// 	ScriptSystem& system = ScriptSystem::GetSingleton();
-// 	float x = system.Get_Float(-3);
-// 	float y = system.Get_Float(-2);
-// 	float z = system.Get_Float(-1);
-// 
-// 	if(m_pAI->FindPath(Ogre::Vector3(x, y, z)))
-// 	{
-// 		system.Push_Bool(true);
-// 	}
-// 	else
-// 	{
-// 		system.Push_Bool(false);
-// 	}
-
-	return 1;
-}
-
-int Unit::GetDestPosition( lua_State* L )
-{
-// 	ScriptSystem& system = ScriptSystem::GetSingleton();
-// 	system.Push_Float(m_destPos.x);
-// 	system.Push_Float(m_destPos.y);
-// 	system.Push_Float(m_destPos.z);
-
-	return 3;
-}
-
-int Unit::GetCurCommandType( lua_State* L )
-{
-// 	ScriptSystem::GetSingleton().Push_Int((int)m_pAI->GetCurCommand()->GetType());
-
-	return 1;
-}
-
-int Unit::UpdatePathFinding( lua_State* L )
-{
-// 	const float dt = ScriptSystem::GetSingleton().Get_Float(-1);
-// 	bool bArrived = false;
-// 
-// 	POS curPos = m_pAI->GetAgentPos();
-// 	World::GetSingleton().ClampToTerrain(curPos);
-// 
-// 	m_pSceneNode->lookAt(curPos, Ogre::Node::TS_WORLD/*, Ogre::Vector3::UNIT_Z*/);
-// 	SetPosition(curPos);
-// 
-// 	if (curPos.positionEquals(m_destPos, 0.1f))
-// 		bArrived = true;
-// 
-// 	ScriptSystem::GetSingleton().Push_Bool(bArrived);
-
-	return 1;
-}
-
-int Unit::AttachRes( lua_State* L )
-{
-// 	ScriptSystem& system = ScriptSystem::GetSingleton();
-// 	float x = system.Get_Float(-4);
-// 	float y = system.Get_Float(-3);
-// 	float z = system.Get_Float(-2);
-// 	float fScale = system.Get_Float(-1);
-// 	const STRING meshname = system.Get_String(-5);
-
-// 	//创建背负资源
-// 	if(m_pResEnt == nullptr)
-// 	{
-// 		m_pResEnt = Ogre::Root::getSingleton().getSceneManager(SCENE_MANAGER_NAME)->createEntity(meshname.c_str());
-// 		m_pResNode = m_pNode->createChildSceneNode(Ogre::Vector3(x, y, z));
-// 		m_pResNode->attachObject(m_pResEnt);
-// 		m_pResNode->scale(fScale, fScale, fScale);
-// 	}
-// 	m_pResNode->setVisible(true);
-
-	return 0;
-}
-
-int Unit::DetachRes( lua_State* L )
-{
-	//m_pResNode->setVisible(false);
-
-	return 0;
-}
-
-int Unit::SetDestPosition( lua_State* L )
-{
-// 	ScriptSystem& system = ScriptSystem::GetSingleton();
-// 	float x = system.Get_Float(-3);
-// 	float y = system.Get_Float(-2);
-// 	float z = system.Get_Float(-1);
-// 
-// 	m_destPos = Ogre::Vector3(x, y, z);
-
-	return 0;
 }
 
 void Unit::_OnCommandFinished( eCommandType cmd )
@@ -200,12 +80,12 @@ void Unit::Init()
 	setParameter("meshname", m_data->params["meshname"]);
 
 	//血条
-	m_pHealthBar = RenderManager.m_pSceneMgr->createBillboardSet(2);
-	//m_pHealthBar->createBillboard(0,0,0, COLOR::Black)->setDimensions(0.5f, 0.1f);
-	m_pHealthBar->setBillboardOrigin(Ogre::BBO_CENTER_LEFT);
-	m_pHealthBar->createBillboard(0,0,0.01f, COLOR::Red)->setDimensions(0.5f, 0.1f);
-	m_pHealthBar->setMaterialName("HPBar");
-	m_pSceneNode->createChildSceneNode(POS(0,1.5f,0))->attachObject(m_pHealthBar);
+// 	m_pHealthBar = RenderManager.m_pSceneMgr->createBillboardSet(2);
+// 	//m_pHealthBar->createBillboard(0,0,0, COLOR::Black)->setDimensions(0.5f, 0.1f);
+// 	m_pHealthBar->setBillboardOrigin(Ogre::BBO_CENTER_LEFT);
+// 	m_pHealthBar->createBillboard(0,0,0.01f, COLOR::Red)->setDimensions(0.5f, 0.1f);
+// 	m_pHealthBar->setMaterialName("HPBar");
+// 	m_pSceneNode->createChildSceneNode(POS(0,1.5f,0))->attachObject(m_pHealthBar);
 
 	//初始化技能
 	for (int iAbil=0; iAbil<MAX_ABILITY_SLOT; ++iAbil)
@@ -236,9 +116,9 @@ void Unit::Update( float dt )
 		m_portraitAnimCache[m_unitName]->addTime(dt);
 
 	/////测试更新血条
-	Ogre::Billboard* bb = m_pHealthBar->getBillboard(0);
-	float oldWidth = bb->getOwnWidth();
-	bb->setDimensions(oldWidth + dt * 0.02f, 0.1f);
+// 	Ogre::Billboard* bb = m_pHealthBar->getBillboard(0);
+// 	float oldWidth = bb->getOwnWidth();
+// 	bb->setDimensions(oldWidth + dt * 0.02f, 0.1f);
 
 	__super::Update(dt);
 }
@@ -310,4 +190,53 @@ int Unit::GetRace() const
 float Unit::GetProduceTime() const
 {
 	return Ogre::StringConverter::parseReal(m_data->params["timecost"]);
+}
+
+int Unit::SetBlackboardParamInt( lua_State* L )
+{
+	const STRING paramName = m_pScriptSystem->Get_String(-2);
+	const int iValue = m_pScriptSystem->Get_Int(-1);
+	const STRING value = Ogre::StringConverter::toString(iValue);
+
+	m_pBehavior->GetBlackboard()->SetParam(paramName, value);
+
+	return 0;
+}
+
+int Unit::SetBlackboardParamFloat( lua_State* L )
+{
+	const STRING paramName = m_pScriptSystem->Get_String(-2);
+	const float fValue = m_pScriptSystem->Get_Float(-1);
+	const STRING value = Ogre::StringConverter::toString(fValue);
+
+	m_pBehavior->GetBlackboard()->SetParam(paramName, value);
+
+	return 0;
+}
+
+int Unit::SetBlackboardParamBool( lua_State* L )
+{
+	const STRING paramName = m_pScriptSystem->Get_String(-2);
+	const bool bValue = m_pScriptSystem->Get_Bool(-1);
+	const STRING value = Ogre::StringConverter::toString(bValue);
+
+	m_pBehavior->GetBlackboard()->SetParam(paramName, value);
+
+	return 0;
+}
+
+int Unit::GetHarvestStage( lua_State* L )
+{
+	int iStage = m_pGather->GetCurStage();
+	m_pScriptSystem->Push_Int(iStage);
+
+	return 1;
+}
+
+int Unit::GetGatheringTime( lua_State* L )
+{
+	float fTime = m_pGather->GetGatherTime();
+	m_pScriptSystem->Push_Float(fTime);
+
+	return 1;
 }

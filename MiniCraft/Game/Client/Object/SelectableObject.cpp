@@ -309,7 +309,13 @@ SelectableObject::SelectableObject()
 ,m_pSelCircleNode(nullptr)
 ,m_bSelected(false)
 ,m_pActiveAbility(nullptr)
+,m_pAi(nullptr)
+,m_pPath(nullptr)
+,m_pAnim(nullptr)
+,m_pGather(nullptr)
+,m_pBehavior(nullptr)
 {
+	
 	memset(m_pAbilitySlots, 0, MAX_ABILITY_SLOT * sizeof(SAbilityData*));
 }
 
@@ -548,22 +554,42 @@ bool SelectableObject::HasAbility( eCommandType type )
 
 AiComponent* SelectableObject::GetAi()
 {
-	return QueryComponent(this, eComponentType_AI, AiComponent);
+#ifdef DEBUG
+	QueryComponent(this, eComponentType_AI, AiComponent);
+#endif
+	return m_pAi;
 }
 
 PathComponent* SelectableObject::GetPath()
 {
+#ifdef DEBUG
 	return QueryComponent(this, eComponentType_Path, PathComponent);
+#endif
+	return m_pPath;
 }
 
 AnimatedComponent* SelectableObject::GetAnim()
 {
-	return QueryComponent(this, eComponentType_Animated, AnimatedComponent);
+#ifdef DEBUG
+	QueryComponent(this, eComponentType_Animated, AnimatedComponent);
+#endif
+	return m_pAnim;
 }
 
 HarvestComponent* SelectableObject::GetGather()
 {
-	return QueryComponent(this, eComponentType_Harvest, HarvestComponent);
+#ifdef DEBUG
+	QueryComponent(this, eComponentType_Harvest, HarvestComponent);
+#endif
+	return m_pGather;
+}
+
+BehaviorComponent* SelectableObject::GetBehavior()
+{
+#ifdef DEBUG
+	QueryComponent(this, eComponentType_Behevior, BehaviorComponent);
+#endif
+	return m_pBehavior;
 }
 
 void SelectableObject::InitTeamColor(const COLOR& color)
@@ -574,8 +600,19 @@ void SelectableObject::InitTeamColor(const COLOR& color)
 		m_pEntity->getSubEntity(i)->setUserAny(Ogre::Any(color));
 }
 
-BehaviorComponent* SelectableObject::GetBehavior()
+void SelectableObject::AddComponent( eComponentType type, Component* pCo )
 {
-	return QueryComponent(this, eComponentType_Behevior, BehaviorComponent);
+	Object::AddComponent(type, pCo);
+	switch (type)
+	{
+	case eComponentType_AI:			m_pAi = QueryComponent(this, eComponentType_AI, AiComponent); break;
+	case eComponentType_Path:		m_pPath = QueryComponent(this, eComponentType_Path, PathComponent); break;
+	case eComponentType_Animated:	m_pAnim = QueryComponent(this, eComponentType_Animated, AnimatedComponent); break;
+	case eComponentType_Harvest:	m_pGather = QueryComponent(this, eComponentType_Harvest, HarvestComponent); break;
+	case eComponentType_Behevior:	m_pBehavior = QueryComponent(this, eComponentType_Behevior, BehaviorComponent); break;
+	default: assert(0);
+	}
 }
+
+
 

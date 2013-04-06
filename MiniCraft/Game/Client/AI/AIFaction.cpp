@@ -7,7 +7,6 @@
 #include "PathComponent.h"
 #include "BehaviorComponent.h"
 #include "BehaviorTreeTemplateManager.h"
-#include "BlackBoard.h"
 
 FactionAI::FactionAI( eGameRace race )
 :Faction(race)
@@ -18,32 +17,32 @@ FactionAI::FactionAI( eGameRace race )
 
 void FactionAI::Update( float dt )
 {
-	m_fPastTime += dt;
-	///测试.每隔一段时间出生一个单位
-	static const float BORN_INTERNAL = 5;
-	if (m_fPastTime >= BORN_INTERNAL)
-	{
-		//限制10个
-		if (m_unitNum <= 10)
-		{
-			++m_unitNum;
-
-			STRING unitName;
-			if(m_race == eGameRace_Terran)
-				unitName = "Marine";
-			else if(m_race == eGameRace_Zerg)
-				unitName = "Zergling";
-
-			SelectableObject* pNewObj = static_cast<SelectableObject*>(ObjectManager::GetSingleton().CreateObject(eObjectType_Unit));
-			pNewObj->setParameter("name", unitName);
-			static_cast<Unit*>(pNewObj)->Init();
-			pNewObj->SetPosition(m_base->GetRallyPoint());
-			pNewObj->AddComponent(eComponentType_Path, new PathComponent(pNewObj));
-
-			//设置行为树
-			pNewObj->AddComponent(eComponentType_Behevior, new BehaviorComponent(pNewObj));
-			pNewObj->GetBehavior()->SetTempalte(unitName);
-		}
-		m_fPastTime = 0;
-	}
+// 	m_fPastTime += dt;
+// 	///测试.每隔一段时间出生一个单位
+// 	static const float BORN_INTERNAL = 5;
+// 	if (m_fPastTime >= BORN_INTERNAL)
+// 	{
+// 		//限制10个
+// 		if (m_unitNum <= 10)
+// 		{
+// 			++m_unitNum;
+// 
+// 			STRING unitName;
+// 			if(m_race == eGameRace_Terran)
+// 				unitName = "Marine";
+// 			else if(m_race == eGameRace_Zerg)
+// 				unitName = "Zergling";
+// 
+// 			SelectableObject* pNewObj = static_cast<SelectableObject*>(ObjectManager::GetSingleton().CreateObject(eObjectType_Unit));
+// 			pNewObj->setParameter("name", unitName);
+// 			static_cast<Unit*>(pNewObj)->Init();
+// 			pNewObj->SetPosition(m_base->GetRallyPoint());
+// 			pNewObj->AddComponent(eComponentType_Path, new PathComponent(pNewObj));
+// 
+// 			//设置行为树
+// 			pNewObj->AddComponent(eComponentType_Behevior, new BehaviorComponent(pNewObj));
+// 			pNewObj->GetBehavior()->SetTempalte(unitName);
+// 		}
+// 		m_fPastTime = 0;
+// 	}
 }

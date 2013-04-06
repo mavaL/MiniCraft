@@ -17,6 +17,7 @@ AiComponent::AiComponent(SelectableObject* pOwner)
 ,m_parallelState(nullptr)
 ,m_player(nullptr)
 ,m_attkTarget(nullptr)
+,m_bCpuControl(false)
 {
 	m_states.push_back(new StateIdle);
 	m_states.push_back(new StateProduce);
@@ -66,6 +67,9 @@ void AiComponent::SetCurState(eObjectState state)
 
 void AiComponent::Update( float dt )
 {
+	if(m_bCpuControl)
+		return;
+
 	m_states[m_curState]->Update(dt, m_pOwner);
 	//更新并行状态
 	if(m_parallelState) 

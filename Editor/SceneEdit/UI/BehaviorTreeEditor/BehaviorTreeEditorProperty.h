@@ -27,19 +27,24 @@ public:
 		propMutableItemStart = propStart,
 		propConditon = propMutableItemStart,		//条件节点表达式
 		propAction,									//行为项
+		propPriority,								//节点次序
 		propBBParamName,							//黑板参数名称
 		propBBParamValue,							//黑板参数值
 		propBBParamType,							//黑板参数类型
+// 		propConnectionInput,						//连接的输入节点
+// 		propConnectionOutput,						//连接的输出节点
 		propMutableItemEnd,
 		propEnd = propMutableItemEnd
 	};
 
 	enum eCategory
 	{
+		eCategory_Node,
 		eCategory_SequenceNode,
 		eCategory_ConditionNode,
 		eCategory_ActionNode,
 		eCategory_Blackboard,
+		//eCategory_Connection
 	};
 
 public:

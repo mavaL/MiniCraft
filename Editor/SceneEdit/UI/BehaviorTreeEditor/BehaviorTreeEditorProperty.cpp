@@ -60,7 +60,13 @@ PropertyPaneBehaviorTree::PropertyPaneBehaviorTree()
 
 bool PropertyPaneBehaviorTree::_OnCreate()
 {
-	CXTPPropertyGridItem* pCategory = m_wndPropertyGrid.AddCategory(L"SequenceNode");
+	CXTPPropertyGridItem* pCategory = m_wndPropertyGrid.AddCategory(L"General");
+	PROPERTY_REG(pCategory,	Number, L"Priority"		, 		0,	propPriority);
+	pCategory->Expand();
+	pCategory->SetHidden(TRUE);
+	pCategory->SetID(eCategory_Node);
+
+	pCategory = m_wndPropertyGrid.AddCategory(L"SequenceNode");
 	pCategory->Expand();
 	pCategory->SetHidden(TRUE);
 	pCategory->SetID(eCategory_SequenceNode);
@@ -112,14 +118,21 @@ void PropertyPaneBehaviorTree::_SetProperty( int nID )
 	switch (nID)
 	{
 	case propAction:
-	case propConditon: m_curNode->txtProperty = m_mapItem[nID]->GetValue(); break;
+	case propConditon: 
+		{
+			m_curNode->txtProperty = m_mapItem[nID]->GetValue();
+			m_pView->RefreshTreeNode(m_curNode);
+		}
+		break;
 
 	case propBBParamName:
 		{
 			assert(m_curBBParamIndex != -1);
 			const std::wstring oldName = _GetCurBB()->at(m_curBBParamIndex);
+			bool bOwnBB = m_curNodeType == eFlowGraphNodeType_OwnBlackboard;
 			const std::wstring newName = m_mapItem[nID]->GetValue();
-			manGameData.RenameBlackboardParam(oldName, newName, *m_pView->GetActiveTemplate(), m_curNodeType == eFlowGraphNodeType_OwnBlackboard);
+			manGameData.RenameBlackboardParam(oldName, newName, *m_pView->GetActiveTemplate(), bOwnBB);
+			m_pView->RefreshBlackboard(bOwnBB);
 		}
 		break;
 
@@ -145,10 +158,15 @@ void PropertyPaneBehaviorTree::_SetProperty( int nID )
 		}
 		break;
 
+	case propPriority:
+		{
+			CXTPPropertyGridItemNumber* pItem = dynamic_cast<CXTPPropertyGridItemNumber*>(m_mapItem[propPriority]);
+			m_curNode->priority = pItem->GetNumber();
+		}
+		break;
+
 	default: assert(0);
 	}
-	
-	m_pView->Refresh();
 }
 
 void PropertyPaneBehaviorTree::_UpdateProperty( int nID )
@@ -184,6 +202,13 @@ void PropertyPaneBehaviorTree::_UpdateProperty( int nID )
 		}
 		break;
 
+	case propPriority:
+		{
+			CXTPPropertyGridItemNumber* pItem = dynamic_cast<CXTPPropertyGridItemNumber*>(m_mapItem[propPriority]);
+			pItem->SetNumber(m_curNode->priority);
+		}
+		break;
+
 	default: assert(0);
 	}
 }
@@ -207,13 +232,7 @@ void PropertyPaneBehaviorTree::OnNodeSelected( eFlowGraphNodeType nodeType, int 
 	{
 	case eFlowGraphNodeType_TreeNode:
 		{
-			auto iter = std::find_if(pTmpl->m_nodeList.begin(), pTmpl->m_nodeList.end(), 
-				[&](const ManipulatorGameData::BTTemplate::SBTNode* pNode)
-			{
-				return pNode->flowGraphNodeID == id;
-			});
-			assert(iter != pTmpl->m_nodeList.end());
-			m_curNode = *iter;
+			m_curNode = m_pView->FindNodeByID(id);
 
 			eCategory category;
 			if(m_curNode->type == L"Sequence")
@@ -223,7 +242,9 @@ void PropertyPaneBehaviorTree::OnNodeSelected( eFlowGraphNodeType nodeType, int 
 			else if(m_curNode->type == L"Action")
 				category = eCategory_ActionNode;
 
+			categories->GetAt(eCategory_Node)->SetHidden(FALSE);
 			categories->GetAt(category)->SetHidden(FALSE);
+			UpdateCategoryProperty(eCategory_Node);
 			UpdateCategoryProperty(category);
 		}
 		break;

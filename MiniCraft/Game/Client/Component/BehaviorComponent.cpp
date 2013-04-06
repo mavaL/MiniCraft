@@ -13,7 +13,7 @@ BehaviorComponent::BehaviorComponent( SelectableObject* pOwner )
 :Component(pOwner)
 ,m_pTemplate(nullptr)
 ,m_pOwnBB(new Kratos::aiBlackBoard)
-,m_curBehavior(Ogre::StringUtil::BLANK)
+,m_pCurBehavior(nullptr)
 {
 	assert(m_pOwner->GetType() == eObjectType_Unit);
 }
@@ -32,19 +32,26 @@ void BehaviorComponent::SetTempalte( const STRING& name )
 void BehaviorComponent::Update( float dt )
 {
 	//更新黑板
-	SCRIPTNAMAGER.Call(m_pTemplate->GetBBScriptEntry().c_str());
+	SCRIPTNAMAGER.Call(m_pTemplate->GetBBScriptEntry().c_str(), m_pOwner->GetID());
 
 	//更新该单位的行为
 	STRING newBehavior("");
 	Kratos::eEvalState state = m_pTemplate->GetBT()->Evaluate(m_pOwnBB, newBehavior);
 	assert(state == Kratos::eEvalState_Success);
 
-	if (m_curBehavior != newBehavior)
+	Ogre::Any any(static_cast<Unit*>(m_pOwner));
+	Kratos::aiBehavior* pNewBehavior = Kratos::aiBehaviorTreeTemplateManager::GetSingleton().GetBehavior(newBehavior);
+
+	if (m_pCurBehavior != pNewBehavior)
 	{
-		Ogre::Any any(static_cast<Unit*>(m_pOwner));
-		Kratos::aiBehaviorTreeTemplateManager::GetSingleton().GetBehavior(newBehavior)->Execute(any);
-		m_curBehavior = newBehavior;
+		if(m_pCurBehavior)
+			m_pCurBehavior->Exit(any);
+		
+		pNewBehavior->Execute(any);
+		m_pCurBehavior = pNewBehavior;
 	}
+
+	m_pCurBehavior->Update(any, dt);
 }
 
 

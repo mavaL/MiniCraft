@@ -57,16 +57,11 @@ public:
 
 public:
 	///lua导出函数
-	int				PlayAnimation(lua_State* L);
-	int				StopAnimation(lua_State* L);
-	int				FindPath(lua_State* L);
-	int				SetState(lua_State* L);
-	int				SetDestPosition(lua_State* L);
-	int				GetDestPosition(lua_State* L);
-	int				UpdatePathFinding(lua_State* L);
-	int				GetCurCommandType(lua_State* L);
-	int				AttachRes(lua_State* L);
-	int				DetachRes(lua_State* L);
+	int				SetBlackboardParamInt(lua_State* L);
+	int				SetBlackboardParamFloat(lua_State* L);
+	int				SetBlackboardParamBool(lua_State* L);
+	int				GetHarvestStage(lua_State* L);
+	int				GetGatheringTime(lua_State* L);
 
 protected:
 	virtual void	_OnSelected(bool bSelected);
@@ -78,6 +73,7 @@ private:
 	static std::unordered_map<STRING, Ogre::Entity*>			m_portraitCache;		//cache每种单位的3D肖像模型
 	static std::unordered_map<STRING, Ogre::AnimationState*>	m_portraitAnimCache;	//cache每种单位的3D肖像动画
 	Ogre::BillboardSet*		m_pHealthBar;
+	Kratos::ScriptSystem*	m_pScriptSystem;
 };
 
 
