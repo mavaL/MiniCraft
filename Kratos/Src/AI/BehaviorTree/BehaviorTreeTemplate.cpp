@@ -24,16 +24,15 @@ namespace Kratos
 	}
 
 	const STRING aiBehaviorTreeTemplate::Load( const STRING& filename )
-	{
+	{	
+		Reset();
+
 		Ogre::DataStreamPtr stream = Ogre::ResourceGroupManager::getSingleton().openResource(filename, "BehaviorTemplate");
 		char* szData = strdup(stream->getAsString().c_str());
 
 		rapidxml::xml_document<> XMLDoc;
 		XMLDoc.parse<0>(szData);
 		rapidxml::xml_node<>* pNode = XMLDoc.first_node("Root")->first_node("BehaviorTemplate");
-
-		SAFE_DELETE(m_pBT);
-		SAFE_DELETE(m_pBB);
 
 		//加载行为树
 		const STRING tmplName = pNode->first_attribute("name")->value();
@@ -43,9 +42,7 @@ namespace Kratos
 		if(raceName == "Terran") race = eGameRace_Terran;
 		else if(raceName == "Zerg") race = eGameRace_Zerg;
 		else assert(0);
-
-		m_pBT = new aiBehaviorTree(race);
-		m_pBB = new aiBlackBoard(m_pBT);
+		m_pBT->SetRace(race);
 
 		//加载黑板
 		rapidxml::xml_node<>* pBBNode = pNode->first_node("BlackBoard");
@@ -56,9 +53,8 @@ namespace Kratos
 
 		//加载行为树节点
 		rapidxml::xml_node<>* pTreeNode = pNode->first_node("BehaviorTree")->first_node();
-		assert(pTreeNode && "The Behavior tree xml is broken!");
-
-		_LoadTreeNode(pTreeNode, m_pBT->GetRootNode());
+		if(pTreeNode)
+			_LoadTreeNode(pTreeNode, m_pBT->GetRootNode());
 
 		//脚本
 		Ogre::StringVectorPtr loc = Ogre::ResourceGroupManager::getSingleton().findResourceLocation("BehaviorTemplate", "*Behaviors");
@@ -127,5 +123,16 @@ namespace Kratos
 			child = child->next_sibling();
 		}
 	}
+
+	void aiBehaviorTreeTemplate::Reset()
+	{
+		SAFE_DELETE(m_pBT);
+		SAFE_DELETE(m_pBB);
+		m_pBT = new aiBehaviorTree(eGameRace_Terran);
+		m_pBB = new aiBlackBoard(m_pBT);
+		m_BBScriptName.clear();
+		m_BBScriptEntry.clear();
+	}
+
 }
 

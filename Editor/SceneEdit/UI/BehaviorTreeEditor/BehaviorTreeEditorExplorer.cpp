@@ -33,6 +33,15 @@ BOOL BehaviorTreeEditorExplorer::OnInitDialog()
 	col.pszText = L"Template";
 	ListView_InsertColumn(m_hList,0, &col);
 
+	Refresh();
+
+	return TRUE;
+}
+
+void BehaviorTreeEditorExplorer::Refresh()
+{
+	ListView_DeleteAllItems(m_hList);
+
 	LVITEM vitem;  
 	vitem.mask = LVIF_TEXT;
 	auto names = ManipulatorSystem.GetGameData().GetAllBehaviorTreeTemplateNames();
@@ -43,8 +52,6 @@ BOOL BehaviorTreeEditorExplorer::OnInitDialog()
 		vitem.iSubItem = 0;
 		ListView_InsertItem(m_hList, &vitem);
 	}
-
-	return TRUE;
 }
 
 void BehaviorTreeEditorExplorer::OnSize( UINT nType, int cx, int cy )
@@ -68,4 +75,5 @@ void BehaviorTreeEditorExplorer::OnDoubleClick( NMHDR* pNMHDR, LRESULT* pResult 
 	}
 	*pResult = 0;
 }
+
 

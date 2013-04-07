@@ -38,6 +38,12 @@ private:
 	void						OnBtnAddRaceParam();
 	template<int type> void		OnBtnAddNode();
 	void						OnBtnSync();
+	void						OnUpdateUI_BtnDelete(CCmdUI* pCmdUI);
+	void						OnBtnDelete();
+	void						OnBtnRefresh();
+	void						OnUpdateUI_BtnNewBT(CCmdUI* pCmdUI);
+	void						OnBtnNewBT();
+
 	
 	void						_CreateRibbon();
 	void						_CreateDockPane();

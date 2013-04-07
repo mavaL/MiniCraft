@@ -439,7 +439,7 @@ void CMainFrame::_CreateDockPane()
 	m_paneEffect		= m_paneManager.CreatePane(IDR_Pane_EffectProperty, CRect(0, 0, 250, 120), xtpPaneDockRight);
 	m_paneAttachment	= m_paneManager.CreatePane(IDR_Pane_Attachment, CRect(0, 0, 250, 120), xtpPaneDockRight);
 
-	m_paneBTEditor		= m_paneManager.CreatePane(IDR_Pane_BTEditor, CRect(0, 0, 1024, 560), xtpPaneDockRight);
+	m_paneBTEditor		= m_paneManager.CreatePane(IDR_Pane_BTEditor, CRect(0, 0, 1280, 560), xtpPaneDockRight);
 	m_paneManager.ToggleDocking(m_paneBTEditor);
 	m_paneManager.ClosePane(m_paneBTEditor);
 }

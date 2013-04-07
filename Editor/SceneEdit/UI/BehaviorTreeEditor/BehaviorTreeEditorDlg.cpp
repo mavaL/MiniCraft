@@ -4,6 +4,7 @@
 #include "BehaviorTreeEditorExplorer.h"
 #include "BehaviorTreeEditorProperty.h"
 #include "Manipulator/ManipulatorScene.h"
+#include "DialogStringInput.h"
 
 BEGIN_MESSAGE_MAP(DialogBehaviorTreeEditor, CXTPDialog)
 	ON_WM_SIZE()
@@ -27,6 +28,12 @@ BEGIN_MESSAGE_MAP(DialogBehaviorTreeEditor, CXTPDialog)
 	ON_COMMAND(IDC_BTEditor_AddActionNode, OnBtnAddNode<ManipulatorGameData::eBTNodeType_Action>)
 	ON_UPDATE_COMMAND_UI(IDC_BTEditor_Sync, OnUpdateUI_Btn)
 	ON_COMMAND(IDC_BTEditor_Sync, OnBtnSync)
+	ON_UPDATE_COMMAND_UI(IDC_BTEditor_Delete, OnUpdateUI_BtnDelete)
+	ON_COMMAND(IDC_BTEditor_Delete, OnBtnDelete)
+	ON_UPDATE_COMMAND_UI(IDC_BTEditor_Refresh, OnUpdateUI_Btn)
+	ON_COMMAND(IDC_BTEditor_Refresh, OnBtnRefresh)
+	ON_UPDATE_COMMAND_UI(IDC_BTEditor_NewBT, OnUpdateUI_BtnNewBT)
+	ON_COMMAND(IDC_BTEditor_NewBT, OnBtnNewBT)
 END_MESSAGE_MAP()
 
 DialogBehaviorTreeEditor::DialogBehaviorTreeEditor( CWnd* pParent /*= NULL*/ )
@@ -60,6 +67,7 @@ BOOL DialogBehaviorTreeEditor::OnInitDialog()
 	_CreateDockPane();
 
 	m_pView->SetPropertyDlg(m_property);
+	m_pView->SetExplorer(m_pExplorer);
 	m_pExplorer->SetView(m_pView);
 	m_property->SetView(m_pView);
 
@@ -92,6 +100,10 @@ void DialogBehaviorTreeEditor::_CreateRibbon()
 	CXTPRibbonTab* pTab = pRibbonBar->AddTab(L"Home");
 	//RibbonHome - GroupHome
 	CXTPRibbonGroup* pGroup = pTab->AddGroup(L"Home");
+	//RibbonHome - GroupHome - NewBT
+	pGroup->Add(xtpControlButton, IDC_BTEditor_NewBT);
+	//RibbonHome - GroupHome - Refresh
+	pGroup->Add(xtpControlButton, IDC_BTEditor_Refresh);
 	//RibbonHome - GroupHome - Arrange
 	pGroup->Add(xtpControlButton, IDC_BTEditor_Arrange);
 	//RibbonHome - GroupHome - Validate
@@ -108,14 +120,16 @@ void DialogBehaviorTreeEditor::_CreateRibbon()
 	//RibbonHome - GroupBlackboard - AddGlobal
 	pGroup->Add(xtpControlButton, IDC_BTEditor_AddRaceParam);
 
-	//RibbonHome - GroupAddNode
-	pGroup = pTab->AddGroup(L"AddNode");
-	//RibbonHome - GroupAddNode - Sequence
+	//RibbonHome - GroupEdit
+	pGroup = pTab->AddGroup(L"Edit");
+	//RibbonHome - GroupEdit - Sequence
 	pGroup->Add(xtpControlButton, IDC_BTEditor_AddSequenceNode);
-	//RibbonHome - GroupAddNode - Condition
+	//RibbonHome - GroupEdit - Condition
 	pGroup->Add(xtpControlButton, IDC_BTEditor_AddConditionNode);
-	//RibbonHome - GroupAddNode - Action
+	//RibbonHome - GroupEdit - Action
 	pGroup->Add(xtpControlButton, IDC_BTEditor_AddActionNode);
+	//RibbonHome - GroupEdit - Delete
+	pGroup->Add(xtpControlButton, IDC_BTEditor_Delete);
 	
 }
 
@@ -131,6 +145,9 @@ void DialogBehaviorTreeEditor::_LoadIcon()
 	icon[0] = IDC_BTEditor_AddConditionNode;	imgMgr->SetIcons(IDB_Button, icon, _countof(icon), CSize(32, 32));
 	icon[0] = IDC_BTEditor_AddActionNode;		imgMgr->SetIcons(IDB_Button, icon, _countof(icon), CSize(32, 32));
 	icon[0] = IDC_BTEditor_Sync;				imgMgr->SetIcons(IDB_Button, icon, _countof(icon), CSize(32, 32));
+	icon[0] = IDC_BTEditor_Delete;				imgMgr->SetIcons(IDB_Button, icon, _countof(icon), CSize(32, 32));
+	icon[0] = IDC_BTEditor_Refresh;				imgMgr->SetIcons(IDB_Button, icon, _countof(icon), CSize(32, 32));
+	icon[0] = IDC_BTEditor_NewBT;				imgMgr->SetIcons(IDB_Button, icon, _countof(icon), CSize(32, 32));
 }
 
 void DialogBehaviorTreeEditor::_CreateDockPane()
@@ -213,4 +230,46 @@ void DialogBehaviorTreeEditor::OnBtnAddNode()
 void DialogBehaviorTreeEditor::OnBtnSync()
 {
 	m_pView->Sync();	
+}
+
+void DialogBehaviorTreeEditor::OnUpdateUI_BtnDelete( CCmdUI* pCmdUI )
+{
+	const eBTSelectionType type = m_property->GetPropPane().GetCurSelType();
+	BOOL bEnable = m_pView->GetActiveTemplate() && (type != eBTSelectionType_None) && (type != eBTSelectionType_BT);
+	
+	pCmdUI->Enable(bEnable);
+}
+
+void DialogBehaviorTreeEditor::OnBtnDelete()
+{
+	m_pView->DeleteCurElement();
+}
+
+void DialogBehaviorTreeEditor::OnBtnRefresh()
+{
+	m_pView->RefreshAll();
+}
+
+void DialogBehaviorTreeEditor::OnBtnNewBT()
+{
+	if (m_pView->GetActiveTemplate())
+	{
+		if(IDOK == ::MessageBoxW(0, L"Sync and save current file?", L"Warning", MB_OKCANCEL | MB_ICONWARNING))
+		{
+			OnBtnSync();
+			OnBtnSave();
+		}
+	}
+
+	std::wstring btName;
+	DialogStringInput dlg;
+	if (IDOK == dlg.DoModal(btName, L"New Behavior Tree"))
+	{
+		m_pView->NewBT(btName);
+	}
+}
+
+void DialogBehaviorTreeEditor::OnUpdateUI_BtnNewBT( CCmdUI* pCmdUI )
+{
+	pCmdUI->Enable(TRUE);
 }

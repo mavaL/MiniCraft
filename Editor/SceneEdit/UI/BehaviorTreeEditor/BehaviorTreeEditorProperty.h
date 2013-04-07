@@ -23,33 +23,44 @@ public:
 	{
 		////property range [propStart, propEnd)
 		propStart = 0,
+		////////These are Readonly items
+		propBTName = propStart,						//行为树名字
+		propFgElementName,							//Flow graph元素名字
+		propConnectionInput,						//连接的输入节点
+		propConnectionOutput,						//连接的输出节点
 		////////These are Mutable items
-		propMutableItemStart = propStart,
-		propConditon = propMutableItemStart,		//条件节点表达式
+		propMutableItemStart,
+		propBTRace = propMutableItemStart,			//行为树种族
+		propBTScriptName,							//行为树脚本文件名
+		propBTScriptEntry,							//行为树脚本入口函数名
+		propConditon,								//条件节点表达式
 		propAction,									//行为项
 		propPriority,								//节点次序
 		propBBParamName,							//黑板参数名称
 		propBBParamValue,							//黑板参数值
 		propBBParamType,							//黑板参数类型
-// 		propConnectionInput,						//连接的输入节点
-// 		propConnectionOutput,						//连接的输出节点
 		propMutableItemEnd,
 		propEnd = propMutableItemEnd
 	};
 
 	enum eCategory
 	{
+		eCategory_BehaviorTree,
+		eCategory_Name,
 		eCategory_Node,
 		eCategory_SequenceNode,
 		eCategory_ConditionNode,
 		eCategory_ActionNode,
 		eCategory_Blackboard,
-		//eCategory_Connection
+		eCategory_Connection
 	};
 
 public:
 	void			SetView(BehaviorTreeEditorView* pView) { m_pView = pView; }
-	void			OnNodeSelected(eFlowGraphNodeType nodeType, int id = -1);
+	void			OnFgElementSelected(eBTSelectionType nodeType, CXTPFlowGraphElement* element = nullptr);
+	eBTSelectionType	GetCurSelType() const { return m_curNodeType; }
+	CXTPFlowGraphElement*
+					GetCurFgElement()	{ return m_curFgElement; }
 
 protected:
 	virtual	bool	_OnCreate();
@@ -64,10 +75,9 @@ private:
 	ManipulatorGameData::Blackboard*	_GetCurBB();
 
 private:
-	ManipulatorGameData::BTTemplate::SBTNode*	m_curNode;
-	int											m_curBBParamIndex;
 	BehaviorTreeEditorView*						m_pView;
-	eFlowGraphNodeType							m_curNodeType;
+	CXTPFlowGraphElement*						m_curFgElement;
+	eBTSelectionType								m_curNodeType;
 };
 
 class BehaviorTreeEditorProperty : public CDialog	
@@ -78,7 +88,7 @@ public:
 
 public:
 	void			SetView(BehaviorTreeEditorView* pView);
-	void			OnNodeSelected(eFlowGraphNodeType nodeType, int id = -1);
+	PropertyPaneBehaviorTree& GetPropPane()	{ return m_propertyBT; }
 
 protected:
 	virtual BOOL	OnInitDialog();

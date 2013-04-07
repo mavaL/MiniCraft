@@ -19,6 +19,7 @@ public:
 
 public:
 	void			SetView(BehaviorTreeEditorView* pView) { m_pView = pView; }
+	void			Refresh();
 
 protected:
 	virtual BOOL	OnInitDialog();

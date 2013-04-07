@@ -27,7 +27,8 @@ namespace Kratos
 		//遍历评估整个树,得到要进行的行为
 		virtual	eEvalState		Evaluate(aiBlackBoard* pInfo, STRING& retBehavior);
 		//校验有效性
-		void					ValidateTree();		
+		void					ValidateTree();
+		void					SetRace(eGameRace race) { m_race = race; }
 		eGameRace				GetRace() const { return m_race; }
 		aiBehaviorTreeNode*		GetRootNode() const { return m_root; }
 

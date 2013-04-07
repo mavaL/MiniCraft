@@ -25,6 +25,7 @@ namespace Kratos
 		~aiBehaviorTreeTemplate();
 
 	public:
+		void			Reset();
 		const STRING	Load(const STRING& filename);
 		void			Save() {}
 		aiBehaviorTree*	GetBT() { return m_pBT; }

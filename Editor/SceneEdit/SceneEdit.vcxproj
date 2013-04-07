@@ -56,7 +56,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>./;../../Kratos/Src;../../Kratos/Dependency/rapidxml;../../Kratos/Dependency\Lua5_1_4\src;../../Kratos/Dependency/OIS/include;../../Kratos/Dependency/Ogre/include;../../Kratos/Dependency/Ogre/include/ParticleUniverse;../../Kratos/Dependency/Ogre/include/Terrain;../../Kratos/Dependency/OgreRecast/include;../Dependency/XTP/Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./UI/Common;./;../../Kratos/Src;../../Kratos/Dependency/rapidxml;../../Kratos/Dependency\Lua5_1_4\src;../../Kratos/Dependency/OIS/include;../../Kratos/Dependency/Ogre/include;../../Kratos/Dependency/Ogre/include/ParticleUniverse;../../Kratos/Dependency/Ogre/include/Terrain;../../Kratos/Dependency/OgreRecast/include;../Dependency/XTP/Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/Zm300 %(AdditionalOptions)</AdditionalOptions>
       <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
       <TreatWarningAsError>false</TreatWarningAsError>
@@ -86,7 +86,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>./;../../Kratos/Src;../../Kratos/Dependency\Lua5_1_4\src;../../Kratos/Dependency/rapidxml;../../Kratos/Dependency/OIS/include;../../Kratos/Dependency/Ogre/include;../../Kratos/Dependency/Ogre/include/ParticleUniverse;../../Kratos/Dependency/Ogre/include/Terrain;../../Kratos/Dependency/OgreRecast/include;../Dependency/XTP/Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./UI/Common;./;../../Kratos/Src;../../Kratos/Dependency\Lua5_1_4\src;../../Kratos/Dependency/rapidxml;../../Kratos/Dependency/OIS/include;../../Kratos/Dependency/Ogre/include;../../Kratos/Dependency/Ogre/include/ParticleUniverse;../../Kratos/Dependency/Ogre/include/Terrain;../../Kratos/Dependency/OgreRecast/include;../Dependency/XTP/Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/Zm300 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
@@ -152,6 +152,8 @@
     <ClInclude Include="UI\BehaviorTreeEditor\BehaviorTreeEditorExplorer.h" />
     <ClInclude Include="UI\BehaviorTreeEditor\BehaviorTreeEditorProperty.h" />
     <ClInclude Include="UI\BehaviorTreeEditor\BehaviorTreeEditorView.h" />
+    <ClInclude Include="UI\Common\DialogStringInput.h" />
+    <ClInclude Include="UI\Common\XTPCustomPropertyGridItem.h" />
     <ClInclude Include="UI\DialogGameDataBuilding.h" />
     <ClInclude Include="UI\DialogSceneNew.h" />
     <ClInclude Include="UI\DLightPropertyPane.h" />
@@ -160,7 +162,6 @@
     <ClInclude Include="UI\ParticlePropertyPane.h" />
     <ClInclude Include="UI\PropertiesPane.h" />
     <ClInclude Include="UI\TerrainPropertyPane.h" />
-    <ClInclude Include="UI\XTPCustomPropertyGridItem.h" />
     <ClInclude Include="Utility.h" />
     <ClInclude Include="View.h" />
   </ItemGroup>
@@ -197,6 +198,8 @@
     <ClCompile Include="UI\BehaviorTreeEditor\BehaviorTreeEditorExplorer.cpp" />
     <ClCompile Include="UI\BehaviorTreeEditor\BehaviorTreeEditorProperty.cpp" />
     <ClCompile Include="UI\BehaviorTreeEditor\BehaviorTreeEditorView.cpp" />
+    <ClCompile Include="UI\Common\DialogStringInput.cpp" />
+    <ClCompile Include="UI\Common\XTPCustomPropertyGridItem.cpp" />
     <ClCompile Include="UI\DialogGameDataBuilding.cpp" />
     <ClCompile Include="UI\DialogSceneNew.cpp" />
     <ClCompile Include="UI\DLightPropertyPane.cpp" />
@@ -205,7 +208,6 @@
     <ClCompile Include="UI\ParticlePropertyPane.cpp" />
     <ClCompile Include="UI\PropertiesPane.cpp" />
     <ClCompile Include="UI\TerrainPropertyPane.cpp" />
-    <ClCompile Include="UI\XTPCustomPropertyGridItem.cpp" />
     <ClCompile Include="Utility.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
     </ClCompile>

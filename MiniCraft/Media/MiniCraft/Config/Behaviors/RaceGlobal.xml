@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='utf-8' ?>
 <Root>
 	<BlackBoard race="Terran">
-		<Variable name="floatyoyo" value="100.25" type="float"/>
 		<Variable name="UnitNumber" value="0" type="int"/>
+		<Variable name="floatyoyo" value="100.25" type="float"/>
 		<Variable name="boolParam" value="false" type="bool"/>
 	</BlackBoard>
 	<BlackBoard race="Zerg">

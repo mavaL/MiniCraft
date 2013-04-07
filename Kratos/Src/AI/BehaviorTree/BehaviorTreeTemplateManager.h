@@ -29,6 +29,7 @@ namespace Kratos
 	public:
 		void					LoadAll();
 		void					AddBehavior(const STRING& name, aiBehavior* behav);
+		void					AddTemplate(const STRING& name);
 		aiBehaviorTreeTemplate*	GetTemplate(const STRING& name);
 		Ogre::StringVector		GetAllTemplateNames() const;
 		Ogre::StringVector		GetAllBehaviorNames() const;

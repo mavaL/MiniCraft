@@ -5,6 +5,7 @@
 #include "resource.h"
 #include "BehaviorTreeEditorDlg.h"
 #include "Utility.h"
+#include "BehaviorTreeEditorExplorer.h"
 
 BEGIN_MESSAGE_MAP(BehaviorTreeEditorView, CWnd)
 	ON_WM_CREATE()
@@ -19,6 +20,7 @@ BehaviorTreeEditorView::BehaviorTreeEditorView(CXTPDialog* parent)
 ,m_curTmpl(nullptr)
 ,m_ownBBNode(nullptr)
 ,m_globalBBNode(nullptr)
+,m_pExplorer(nullptr)
 {
 }
 
@@ -53,33 +55,55 @@ LRESULT CALLBACK MyWndProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam )
 		g_ctrl->ScreenToClient(&point);
 
 		CXTPFlowGraphNode* pNode = g_ctrl->HitTestNode(point);
+		CXTPFlowGraphConnection* pConne = g_ctrl->HitTestConnection(point);
+		eBTSelectionType type;
+		CXTPFlowGraphElement* curElement = nullptr;
+
 		if (pNode)
 		{
 			if(pNode == g_ownBB)
 			{
 				CXTPFlowGraphConnectionPoint* pItem = g_ctrl->HitTestConnectionArea(point);
 				if(pItem)
-					g_prop->OnNodeSelected(eFlowGraphNodeType_OwnBlackboard, pItem->GetID());
+				{
+					type = eBTSelectionType_OwnBlackboard;
+					curElement = pItem;
+				}
 				else
-					g_prop->OnNodeSelected(eFlowGraphNodeType_None);
+				{
+					type = eBTSelectionType_BT;
+				}
 			}
 			else if(pNode == g_globalBB)
 			{
 				CXTPFlowGraphConnectionPoint* pItem = g_ctrl->HitTestConnectionArea(point);
 				if(pItem)
-					g_prop->OnNodeSelected(eFlowGraphNodeType_GlobalBlackboard, pItem->GetID());
+				{
+					type = eBTSelectionType_GlobalBlackboard;
+					curElement = pItem;
+				}
 				else
-					g_prop->OnNodeSelected(eFlowGraphNodeType_None);
+				{
+					type = eBTSelectionType_BT;
+				}
 			}
 			else
 			{
-				g_prop->OnNodeSelected(eFlowGraphNodeType_TreeNode, pNode->GetID());
+				type = eBTSelectionType_TreeNode;
+				curElement = pNode;
 			}
+		}
+		else if (pConne)
+		{
+			type = eBTSelectionType_Connection;
+			curElement = pConne;
 		}
 		else
 		{
-			g_prop->OnNodeSelected(eFlowGraphNodeType_None);
+			type = eBTSelectionType_BT;
 		}
+
+		g_prop->GetPropPane().OnFgElementSelected(type, curElement);
 	}
 	return CallWindowProcW(g_proc, hWnd, uMsg, wParam, lParam);
 }
@@ -117,8 +141,17 @@ void BehaviorTreeEditorView::OnSize( UINT nType, int cx, int cy )
 
 void BehaviorTreeEditorView::SetActiveItem( const std::wstring& name )
 {
-	m_curTmpl = &ManipulatorSystem.GetGameData().GetBTTemplate(name);
-	RefreshAll();
+	if (name.empty())
+	{
+		m_pProp->GetPropPane().OnFgElementSelected(eBTSelectionType_None);
+		m_page->GetNodes()->RemoveAll();
+	}
+	else
+	{
+		m_curTmpl = &ManipulatorSystem.GetGameData().GetBTTemplate(name);
+		m_pProp->GetPropPane().OnFgElementSelected(eBTSelectionType_BT);
+		RefreshAll();
+	}
 }
 
 void BehaviorTreeEditorView::RefreshAll()
@@ -126,28 +159,23 @@ void BehaviorTreeEditorView::RefreshAll()
 	m_page->GetNodes()->RemoveAll();
 
 	//创建节点
-	int id = 0;
-	for (auto itNode=m_curTmpl->m_nodeList.begin(); itNode!=m_curTmpl->m_nodeList.end(); ++itNode,++id)
+	for (auto itNode=m_curTmpl->m_nodeList.begin(); itNode!=m_curTmpl->m_nodeList.end(); ++itNode)
 	{
 		auto& node = *itNode;
 		CXTPFlowGraphNode* pNode = m_page->GetNodes()->AddNode(new CXTPFlowGraphNode());
-		pNode->SetCaption(node->type.c_str());
-		pNode->SetID(id);
-		pNode->SetColor(node->color);
-		node->flowGraphNodeID = id;
+		node->fgElementName = _OnFgElementAdded(pNode);
 
-		CXTPFlowGraphConnectionPoint* pConnectionPoint;
-		pConnectionPoint = pNode->GetConnectionPoints()->AddConnectionPoint(new CXTPFlowGraphConnectionPoint());
-		pConnectionPoint->SetCaption(node->txtProperty.c_str());
-		pConnectionPoint->SetType(xtpFlowGraphPointInputAndOutput);
+		pNode->SetCaption(node->type.c_str());
+		pNode->SetColor(node->color);
+		pNode->GetConnectionPoints()->GetAt(0)->SetCaption(node->txtProperty.c_str());
+
+		int id = Utility::GenGUID();
+		pNode->SetID(id);
+		node->flowGraphNodeID = id;
 	}
 
 	//连接节点
-	ManipulatorGameData::BTTemplate::SBTNode* root = m_curTmpl->m_nodeList.front();
-	while(root->parent)
-		root = root->parent;
-
-	_ConnectFgNodes(root);
+	_ConnectFgNodes(m_curTmpl->rootNode);
 
 	///独有黑板
 	m_ownBBNode = m_page->GetNodes()->AddNode(new CXTPFlowGraphNode());
@@ -167,25 +195,32 @@ void BehaviorTreeEditorView::RefreshAll()
 	g_globalBB = m_globalBBNode;
 }
 
-void BehaviorTreeEditorView::_ConnectFgNodes( ManipulatorGameData::BTTemplate::SBTNode* root )
+void BehaviorTreeEditorView::_ConnectFgNodes( ManipulatorGameData::BTTemplate::SBTNode* node )
 {
 	CXTPFlowGraphNodes* nodes = m_page->GetNodes();
 	//连接到子节点
-	for (size_t iChild=0; iChild<root->childs.size(); ++iChild)
+	for (size_t iChild=0; iChild<node->childs.size(); ++iChild)
 	{
+		if(!node->childs[iChild])
+			continue;
+
 		CXTPFlowGraphConnection* pConnection;
 		pConnection = m_page->GetConnections()->AddConnection(new CXTPFlowGraphConnection());
+		_OnFgElementAdded(pConnection);
 
-		CXTPFlowGraphNode* pFrom = FindFgNodeByID(root->flowGraphNodeID);
-		CXTPFlowGraphNode* pTo = FindFgNodeByID(root->childs[iChild]->flowGraphNodeID);
+		CXTPFlowGraphNode* pFrom = FindFgNodeByID(node->flowGraphNodeID);
+		CXTPFlowGraphNode* pTo = FindFgNodeByID(node->childs[iChild]->flowGraphNodeID);
 
 		pConnection->SetOutputPoint(pFrom->GetConnectionPoints()->GetAt(0));
 		pConnection->SetInputPoint(pTo->GetConnectionPoints()->GetAt(0));
 	}
 
 	//遍历子节点
-	for(size_t i=0; i<root->childs.size(); ++i)
-		_ConnectFgNodes(root->childs[i]);
+	for(size_t i=0; i<node->childs.size(); ++i)
+	{
+		if(node->childs[i])
+			_ConnectFgNodes(node->childs[i]);
+	}
 }
 
 void BehaviorTreeEditorView::Arrange()
@@ -202,17 +237,15 @@ void BehaviorTreeEditorView::SetPropertyDlg( BehaviorTreeEditorProperty* pProp )
 void BehaviorTreeEditorView::AddNewNode( ManipulatorGameData::eBTNodeType type )
 {
 	CXTPFlowGraphNode* pNode = m_page->GetNodes()->AddNode(new CXTPFlowGraphNode());
-	CXTPFlowGraphConnectionPoint* pConnectionPoint;
-	pConnectionPoint = pNode->GetConnectionPoints()->AddConnectionPoint(new CXTPFlowGraphConnectionPoint());
-	pConnectionPoint->SetCaption(L"");
-	pConnectionPoint->SetType(xtpFlowGraphPointInputAndOutput);
-
 	auto node = ManipulatorSystem.GetGameData().AddBTNode(*m_curTmpl, type);
+	node->fgElementName = _OnFgElementAdded(pNode);
 
 	pNode->SetCaption(node->type.c_str());
-	pNode->SetID(m_curTmpl->m_nodeList.size());
 	pNode->SetColor(node->color);
-	node->flowGraphNodeID = m_curTmpl->m_nodeList.size();
+
+	int id = Utility::GenGUID();
+	pNode->SetID(id);
+	node->flowGraphNodeID = id;
 }
 
 void BehaviorTreeEditorView::RefreshTreeNode( ManipulatorGameData::BTTemplate::SBTNode* pNode )
@@ -228,11 +261,15 @@ void BehaviorTreeEditorView::RefreshBlackboard( bool bOwnBB )
 
 	for (size_t i=0; i<pBB->size(); ++i)
 	{
+		ManipulatorGameData::SBBParam& param = pBB->at(i);
 		CXTPFlowGraphConnectionPoint* pConnectionPoint;
 		pConnectionPoint = pNode->GetConnectionPoints()->AddConnectionPoint(new CXTPFlowGraphConnectionPoint());
-		pConnectionPoint->SetCaption(pBB->at(i).c_str());
+		pConnectionPoint->SetCaption(param.name.c_str());
 		pConnectionPoint->SetType(xtpFlowGraphPointOutput);
-		pConnectionPoint->SetID(i);
+
+		int id = Utility::GenGUID();
+		pConnectionPoint->SetID(id);
+		param.fgID = id;
 	}
 }
 
@@ -240,12 +277,15 @@ void BehaviorTreeEditorView::AddBlackboardParam( bool bOwnBB )
 {
 	CXTPFlowGraphNode* pNode = bOwnBB ? m_ownBBNode : m_globalBBNode;
 	ManipulatorGameData::Blackboard* pBB = bOwnBB ? &m_curTmpl->m_ownBB : m_curTmpl->m_raceBB;
-	const std::string paramName = ManipulatorSystem.GetGameData().DefineBlackboardParam(true, *m_curTmpl);
+	const std::string paramName = ManipulatorSystem.GetGameData().DefineBlackboardParam(bOwnBB, *m_curTmpl);
 
 	CXTPFlowGraphConnectionPoint* pConnectionPoint = pNode->GetConnectionPoints()->AddConnectionPoint(new CXTPFlowGraphConnectionPoint);
 	pConnectionPoint->SetCaption(Utility::EngineToUnicode(paramName).c_str());
 	pConnectionPoint->SetType(xtpFlowGraphPointOutput);
-	pConnectionPoint->SetID(pBB->size() - 1);
+
+	int id = Utility::GenGUID();
+	pConnectionPoint->SetID(id);
+	pBB->at(pBB->size()-1).fgID = id;
 }
 
 ManipulatorGameData::BTTemplate::SBTNode* BehaviorTreeEditorView::FindNodeByID( int id )
@@ -296,7 +336,7 @@ void BehaviorTreeEditorView::Sync()
 		CXTPFlowGraphNode* pNode = pNodes->GetAt(iNode);
 		if(pNode == m_ownBBNode || pNode == m_globalBBNode)
 			continue;
-
+		
 		CXTPFlowGraphConnectionPoint* pConnectionPoint = pNode->GetConnectionPoints()->GetAt(0);
 		if(pConnectionPoint->GetInputConnectionsCount() > 1)
 		{
@@ -331,6 +371,180 @@ void BehaviorTreeEditorView::Sync()
 			child->parent = self;
 		}
 	}
+
+	//将不在行为树中的节点清除
+	for (int iNode=0; iNode<pNodes->GetCount(); ++iNode)
+	{
+		CXTPFlowGraphNode* pNode = pNodes->GetAt(iNode);
+		if(pNode == m_ownBBNode || pNode == m_globalBBNode)
+			continue;
+
+		auto self = FindNodeByID(pNode->GetID());
+		if(!(m_curTmpl->rootNode == self) && !_IsChildOf(m_curTmpl->rootNode, self))
+			ManipulatorSystem.GetGameData().DeleteBTNode(*m_curTmpl, pNode->GetID());
+	}
+}
+
+std::wstring BehaviorTreeEditorView::_OnFgElementAdded( CXTPFlowGraphElement* element )
+{
+	
+	std::string name = "Element_";
+	name += Ogre::StringConverter::toString(Utility::GenGUID());
+	const std::wstring wname = Utility::EngineToUnicode(name);
+
+	m_elements.insert(std::make_pair(wname, element));
+
+	if(element->IsKindOf(RUNTIME_CLASS(CXTPFlowGraphNode)))
+	{
+		CXTPFlowGraphNode* pNode = dynamic_cast<CXTPFlowGraphNode*>(element);
+		CXTPFlowGraphConnectionPoint* pConnectionPoint;
+		pConnectionPoint = pNode->GetConnectionPoints()->AddConnectionPoint(new CXTPFlowGraphConnectionPoint());
+		pConnectionPoint->SetCaption(L"");
+		pConnectionPoint->SetType(xtpFlowGraphPointInputAndOutput);
+	}
+	else if (element->IsKindOf(RUNTIME_CLASS(CXTPFlowGraphConnection)))
+	{
+		CXTPFlowGraphConnection* pConne = dynamic_cast<CXTPFlowGraphConnection*>(element);
+		pConne->SetCaption(wname.c_str());
+	}
+	else
+	{
+		assert(0);
+	}
+
+	return std::move(wname);
+}
+
+void BehaviorTreeEditorView::_OnFgElememtRemoved( const std::wstring& name )
+{
+	auto iter = m_elements.find(name);
+	assert(iter != m_elements.end());
+	m_elements.erase(iter);
+}
+
+std::wstring BehaviorTreeEditorView::GetFgElementName(eBTSelectionType type, CXTPFlowGraphElement* element)
+{
+	std::wstring name;
+	if(type == eBTSelectionType_TreeNode)
+	{
+		CXTPFlowGraphNode* pFgNode = dynamic_cast<CXTPFlowGraphNode*>(element);
+		auto node = FindNodeByID(pFgNode->GetID());
+		name = node->fgElementName;
+	}
+	else if (type == eBTSelectionType_Connection)
+	{
+		CXTPFlowGraphConnection* pConne = dynamic_cast<CXTPFlowGraphConnection*>(element);
+		name = pConne->GetCaption();
+	}
+	else
+	{
+		assert(0);
+	}
+
+	return std::move(name);
+}
+
+void BehaviorTreeEditorView::DeleteCurElement()
+{
+	assert(m_curTmpl);
+	ManipulatorGameData& manGameData = ManipulatorSystem.GetGameData();
+	eBTSelectionType type = m_pProp->GetPropPane().GetCurSelType();
+	CXTPFlowGraphElement* curFgElement = m_pProp->GetPropPane().GetCurFgElement();
+
+	switch (type)
+	{
+	case eBTSelectionType_TreeNode:
+		{
+			CXTPFlowGraphNode* pFgNode = dynamic_cast<CXTPFlowGraphNode*>(curFgElement);
+
+			if(FindNodeByID(pFgNode->GetID()) == m_curTmpl->rootNode)
+			{
+				if(IDCANCEL == ::MessageBoxW(0, L"Really remove root node?", L"Warning", MB_ICONWARNING | MB_OKCANCEL))
+					return;
+			}
+
+			//节点被移除,那么它的所有连接也会被移除
+			CXTPFlowGraphConnectionPoint* pConnePt = pFgNode->GetConnectionPoints()->GetAt(0);
+			for (int i=0; i<pConnePt->GetInputConnectionsCount(); ++i)
+			{
+				CXTPFlowGraphConnection* pConne = pConnePt->GetInputConnectionAt(i);
+				_OnFgConnectionRemoved(pConne);
+			}
+			for (int i=0; i<pConnePt->GetOutputConnectionsCount(); ++i)
+			{
+				CXTPFlowGraphConnection* pConne = pConnePt->GetOutputConnectionAt(i);
+				_OnFgConnectionRemoved(pConne);
+			}
+
+			const std::wstring name = GetFgElementName(type, curFgElement);
+			_OnFgElememtRemoved(name);
+			manGameData.DeleteBTNode(*m_curTmpl, pFgNode->GetID());
+			pFgNode->Remove();
+		}
+		break;
+
+	case eBTSelectionType_Connection:
+		{
+			CXTPFlowGraphConnection* pConne = dynamic_cast<CXTPFlowGraphConnection*>(curFgElement);
+			_OnFgConnectionRemoved(pConne);
+
+			const std::wstring name = GetFgElementName(type, curFgElement);
+			_OnFgElememtRemoved(name);
+			pConne->Remove();
+		}
+		break;
+
+	case eBTSelectionType_OwnBlackboard:
+		{
+			CXTPFlowGraphConnectionPoint* pConnePt = dynamic_cast<CXTPFlowGraphConnectionPoint*>(curFgElement);
+			manGameData.DeleteBlackboardParam(pConnePt->GetID(), true, *m_curTmpl);
+
+			pConnePt->Remove();
+		}
+		break;
+
+	case eBTSelectionType_GlobalBlackboard:
+		{
+			CXTPFlowGraphConnectionPoint* pConnePt = dynamic_cast<CXTPFlowGraphConnectionPoint*>(curFgElement);
+			manGameData.DeleteBlackboardParam(pConnePt->GetID(), false, *m_curTmpl);
+
+			pConnePt->Remove();
+		}
+		break;
+
+	default: assert(0);
+	}
+
+	m_pProp->GetPropPane().OnFgElementSelected(eBTSelectionType_BT);
+}
+
+void BehaviorTreeEditorView::_OnFgConnectionRemoved( CXTPFlowGraphConnection* pConne )
+{
+	auto inputNode = FindNodeByID(pConne->GetInputNode()->GetID());
+	auto outputNode = FindNodeByID(pConne->GetOutputNode()->GetID());
+
+	inputNode->parent = nullptr;
+	outputNode->childs[inputNode->priority] = nullptr;
+}
+
+bool BehaviorTreeEditorView::_IsChildOf( ManipulatorGameData::BTTemplate::SBTNode* parent, ManipulatorGameData::BTTemplate::SBTNode* self )
+{
+	while(self->parent)
+	{
+		if(self->parent == parent)
+			return true;
+		self = self->parent;
+	}
+	return false;
+}
+
+void BehaviorTreeEditorView::NewBT( const std::wstring& name )
+{
+	SetActiveItem(L"");
+	m_curTmpl = &ManipulatorSystem.GetGameData().NewBTTemplate(name);
+	assert(m_curTmpl);
+	RefreshAll();
+	m_pExplorer->Refresh();
 }
 
 

@@ -9,7 +9,6 @@
 #ifndef ManipulatorScene_h__
 #define ManipulatorScene_h__
 
-#include "../Singleton.h"
 #include "KratosPrerequisites.h"
 #include "ManipulatorObject.h"
 #include "ManipulatorTerrain.h"

@@ -134,11 +134,16 @@ void ManipulatorGameData::_ParseAllBTTemplates()
 
 		Kratos::aiBehaviorTreeNode* pNode = pEngineTmpl->GetBT()->GetRootNode();
 		BTTemplate::SBTNode* root = new BTTemplate::SBTNode;
+		tmpl.rootNode = root;
 		_ParseBTNode(pNode, root, nullptr, tmpl);
 
 		//黑板
 		_ParseBlackboard(tmpl.m_ownBB, pEngineTmpl->GetBB());
 		tmpl.m_raceBB = &m_raceBlackboards[pEngineTmpl->GetBT()->GetRace()];
+
+		//脚本
+		tmpl.m_scriptName = Utility::EngineToUnicode(pEngineTmpl->GetBBScriptName());
+		tmpl.m_scriptEntry = Utility::EngineToUnicode(pEngineTmpl->GetBBScriptEntry());
 	}
 
 	//所有全局黑板
@@ -167,7 +172,7 @@ void ManipulatorGameData::_ParseBlackboard( Blackboard& bb, Kratos::aiBlackBoard
 	for(auto iter=params.begin(); iter!=params.end(); ++iter)
 	{
 		if (iter->second.m_bSave)
-			bb.push_back(Utility::EngineToUnicode(iter->first));
+			bb.push_back(SBBParam(Utility::EngineToUnicode(iter->first)));
 	}
 }
 
@@ -288,13 +293,9 @@ void ManipulatorGameData::_SaveBTTemplate( const BTTemplate& tmpl, const STRING&
 	xml_node<>* btreeNode = doc.allocate_node(node_element, "BehaviorTree");
 	tmplNode->append_node(btreeNode);
 
-	//寻找根节点
-	BTTemplate::SBTNode* node = tmpl.m_nodeList.front();
-	while(node->parent)
-		node = node->parent;
-
 	//保存树结构
-	_SaveBTNode(&doc, node->childs[0], btreeNode);
+	if(!tmpl.rootNode->childs.empty())
+		_SaveBTNode(&doc, tmpl.rootNode->childs[0], btreeNode);
 
 	//保存黑板
 	Kratos::aiBehaviorTreeTemplate* engineTmpl = Kratos::aiBehaviorTreeTemplateManager::GetSingleton().GetTemplate(
@@ -305,10 +306,11 @@ void ManipulatorGameData::_SaveBTTemplate( const BTTemplate& tmpl, const STRING&
 	_SaveBlackboard(&doc, engineTmpl->GetBB(), bbNode);
 
 	//保存脚本信息
-	const STRING& scriptName = engineTmpl->GetBBScriptName();
-	const STRING& scriptEntry = engineTmpl->GetBBScriptEntry();
 	xml_node<>* scriptNode = doc.allocate_node(node_element, "Script");
 	tmplNode->append_node(scriptNode);
+
+	const STRING scriptName = Utility::UnicodeToEngine(tmpl.m_scriptName);
+	const STRING scriptEntry = Utility::UnicodeToEngine(tmpl.m_scriptEntry);
 	scriptNode->append_attribute(doc.allocate_attribute("filename", scriptName.c_str()));
 	scriptNode->append_attribute(doc.allocate_attribute("entry", scriptEntry.c_str()));
 
@@ -344,7 +346,10 @@ void ManipulatorGameData::_SaveBTNode( rapidxml::xml_document<>* doc, BTTemplate
 
 	//子节点
 	for(size_t i=0; i<node->childs.size(); ++i)
-		_SaveBTNode(doc, node->childs[i], treeNode);
+	{
+		if(node->childs[i])
+			_SaveBTNode(doc, node->childs[i], treeNode);
+	}
 }
 
 void ManipulatorGameData::_SaveBlackboard( rapidxml::xml_document<>* doc, Kratos::aiBlackBoard* pBB, rapidxml::xml_node<>* xmlNode)
@@ -399,40 +404,40 @@ void ManipulatorGameData::ValidateBehaviorTemplate( const BTTemplate& tmpl )
 
 const std::string ManipulatorGameData::DefineBlackboardParam( bool bOwnBB, BTTemplate& tmpl )
 {
-	STRING name = "Param_"; 
-	if (bOwnBB)
-	{
-		name += Ogre::StringConverter::toString(tmpl.m_ownBB.size());
-		
-		Kratos::aiBlackBoard* pBB = Kratos::aiBehaviorTreeTemplateManager::GetSingleton().GetTemplate(
-			Utility::UnicodeToEngine(tmpl.m_name))->GetBB();
-		pBB->DefineParam(name, "0", Kratos::aiBlackBoard::eVarType_Int);
+	Kratos::aiBlackBoard* pEngineBB = nullptr;
+	Blackboard* pBB = nullptr;
+	_GetBlackboard(bOwnBB, tmpl, pBB, pEngineBB);
 
-		tmpl.m_ownBB.push_back(Utility::EngineToUnicode(name));
-	}
-	else
-	{
-		name += Ogre::StringConverter::toString(tmpl.m_raceBB->size());
-
-		Kratos::aiBlackBoard* pBB = Kratos::aiBehaviorTreeTemplateManager::GetSingleton().GetGlobalBB((eGameRace)tmpl.race);
-		pBB->DefineParam(name, "0", Kratos::aiBlackBoard::eVarType_Int);
-
-		tmpl.m_raceBB->push_back(Utility::EngineToUnicode(name));
-	}
+	STRING name = "Param_" + Ogre::StringConverter::toString(Utility::GenGUID()); 
+	pEngineBB->DefineParam(name, "0", Kratos::aiBlackBoard::eVarType_Int);
+	pBB->push_back(SBBParam(Utility::EngineToUnicode(name)));
 
 	return name;
 }
 
-const ManipulatorGameData::SBBParam ManipulatorGameData::GetBlackboardParam(const std::wstring& name, const BTTemplate& tmpl, bool bOwnBB) const
+void ManipulatorGameData::DeleteBlackboardParam( int paramID, bool bOwnBB, BTTemplate& tmpl )
 {
-	Kratos::aiBlackBoard* pBB = nullptr;
-	if (bOwnBB)
-		pBB = Kratos::aiBehaviorTreeTemplateManager::GetSingleton().GetTemplate(Utility::UnicodeToEngine(tmpl.m_name))->GetBB();
-	else
-		pBB = Kratos::aiBehaviorTreeTemplateManager::GetSingleton().GetGlobalBB((eGameRace)tmpl.race);
+	Kratos::aiBlackBoard* pEngineBB = nullptr;
+	Blackboard* pBB = nullptr;
+	_GetBlackboard(bOwnBB, tmpl, pBB, pEngineBB);
 
-	auto& param = pBB->GetParam(Utility::UnicodeToEngine(name));
-	SBBParam p;
+	auto param = FindBBParam(*pBB, paramID);
+	pEngineBB->RemoveParam(Utility::UnicodeToEngine(param->name));
+
+	auto iter = std::find(pBB->begin(), pBB->end(), *param);
+	assert(iter != pBB->end());
+	pBB->erase(iter);
+}
+
+const ManipulatorGameData::SBBValue ManipulatorGameData::GetBlackboardParam(int paramID, BTTemplate& tmpl, bool bOwnBB)
+{
+	Kratos::aiBlackBoard* pEngineBB = nullptr;
+	Blackboard* pBB = nullptr;
+	_GetBlackboard(bOwnBB, tmpl, pBB, pEngineBB);
+
+	const std::wstring& name = FindBBParam(*pBB, paramID)->name;
+	auto& param = pEngineBB->GetParam(Utility::UnicodeToEngine(name));
+	SBBValue p;
 	p.value = Utility::EngineToUnicode(param.m_value);
 
 	if(param.m_type == Kratos::aiBlackBoard::eVarType_Int) p.type = L"Int";
@@ -443,11 +448,52 @@ const ManipulatorGameData::SBBParam ManipulatorGameData::GetBlackboardParam(cons
 	return p;
 }
 
-void ManipulatorGameData::RenameBlackboardParam( const std::wstring& oldName, const std::wstring& newName, BTTemplate& tmpl, bool bOwnBB )
+void ManipulatorGameData::RenameBlackboardParam( int paramID, const std::wstring& newName, BTTemplate& tmpl, bool bOwnBB )
 {
 	Kratos::aiBlackBoard* pEngineBB = nullptr;
 	Blackboard* pBB = nullptr;
-	if (bOwnBB)
+	_GetBlackboard(bOwnBB, tmpl, pBB, pEngineBB);
+
+	auto param = FindBBParam(*pBB, paramID);
+	auto iter = std::find(pBB->begin(), pBB->end(), *param);
+	assert(iter != pBB->end());
+	*iter = std::move(SBBParam(newName));
+
+	auto paramEngine = pEngineBB->GetParam(Utility::UnicodeToEngine(param->name));
+	pEngineBB->RemoveParam(Utility::UnicodeToEngine(param->name));
+	pEngineBB->DefineParam(Utility::UnicodeToEngine(newName), paramEngine.m_value, paramEngine.m_type);
+}
+
+void ManipulatorGameData::SetBlackboardParam( int paramID, const SBBValue& param, BTTemplate& tmpl, bool bOwnBB )
+{
+	Kratos::aiBlackBoard* pEngineBB = nullptr;
+	Blackboard* pBB = nullptr;
+	_GetBlackboard(bOwnBB, tmpl, pBB, pEngineBB);
+
+	const std::wstring& name = FindBBParam(*pBB, paramID)->name;
+	auto& paramEngine = pEngineBB->GetParam(Utility::UnicodeToEngine(name));
+	paramEngine.m_value = Utility::UnicodeToEngine(param.value);
+
+	if(param.type == L"Int") paramEngine.m_type = Kratos::aiBlackBoard::eVarType_Int;
+	else if(param.type == L"Float") paramEngine.m_type = Kratos::aiBlackBoard::eVarType_Float;
+	else if(param.type == L"Bool") paramEngine.m_type = Kratos::aiBlackBoard::eVarType_Bool;
+	else assert(0);
+}
+
+ManipulatorGameData::SBBParam* ManipulatorGameData::FindBBParam( Blackboard& BB, int id )
+{
+	for (size_t i=0; i<BB.size(); ++i)
+	{
+		if(BB[i].fgID == id)
+			return &BB[i];
+	}
+	assert(0);
+	return nullptr;
+}
+
+void ManipulatorGameData::_GetBlackboard( bool bOwn, BTTemplate& tmpl, Blackboard*& pBB, Kratos::aiBlackBoard*& pEngineBB )
+{
+	if (bOwn)
 	{
 		pBB = &tmpl.m_ownBB;
 		pEngineBB = Kratos::aiBehaviorTreeTemplateManager::GetSingleton().GetTemplate(Utility::UnicodeToEngine(tmpl.m_name))->GetBB();
@@ -457,32 +503,6 @@ void ManipulatorGameData::RenameBlackboardParam( const std::wstring& oldName, co
 		pBB = tmpl.m_raceBB;
 		pEngineBB = Kratos::aiBehaviorTreeTemplateManager::GetSingleton().GetGlobalBB((eGameRace)tmpl.race);
 	}
-
-	auto iter = std::find(pBB->begin(), pBB->end(), oldName);
-	assert(iter != pBB->end());
-	*iter = newName;
-
-	auto param = pEngineBB->GetParam(Utility::UnicodeToEngine(oldName));
-	auto& paramMap = const_cast<Kratos::aiBlackBoard::ParamMap&>(pEngineBB->GetParams());
-	paramMap.erase(Utility::UnicodeToEngine(oldName));
-	paramMap[Utility::UnicodeToEngine(newName)] = param;
-}
-
-void ManipulatorGameData::SetBlackboardParam( const std::wstring& name, const SBBParam& param, const BTTemplate& tmpl, bool bOwnBB )
-{
-	Kratos::aiBlackBoard* pBB = nullptr;
-	if (bOwnBB)
-		pBB = Kratos::aiBehaviorTreeTemplateManager::GetSingleton().GetTemplate(Utility::UnicodeToEngine(tmpl.m_name))->GetBB();
-	else
-		pBB = Kratos::aiBehaviorTreeTemplateManager::GetSingleton().GetGlobalBB((eGameRace)tmpl.race);
-
-	auto& paramEngine = pBB->GetParam(Utility::UnicodeToEngine(name));
-	paramEngine.m_value = Utility::UnicodeToEngine(param.value);
-
-	if(param.type == L"Int") paramEngine.m_type = Kratos::aiBlackBoard::eVarType_Int;
-	else if(param.type == L"Float") paramEngine.m_type = Kratos::aiBlackBoard::eVarType_Float;
-	else if(param.type == L"Bool") paramEngine.m_type = Kratos::aiBlackBoard::eVarType_Bool;
-	else assert(0);
 }
 
 ManipulatorGameData::BTTemplate::SBTNode* ManipulatorGameData::AddBTNode( BTTemplate& tmpl, eBTNodeType type )
@@ -506,3 +526,40 @@ DWORD ManipulatorGameData::_GetBTNodeColor( eBTNodeType type )
 	default:					return 0;
 	}
 }
+
+void ManipulatorGameData::DeleteBTNode( BTTemplate& tmpl, int id )
+{
+	auto iter = std::find_if(tmpl.m_nodeList.begin(), tmpl.m_nodeList.end(), 
+		[&](const ManipulatorGameData::BTTemplate::SBTNode* pNode)
+	{
+		return pNode->flowGraphNodeID == id;
+	});
+	assert(iter != tmpl.m_nodeList.end());
+
+	SAFE_DELETE(*iter);
+	tmpl.m_nodeList.erase(iter);
+}
+
+ManipulatorGameData::BTTemplate& ManipulatorGameData::NewBTTemplate( const std::wstring& name )
+{
+	Kratos::aiBehaviorTreeTemplateManager& btMgr = Kratos::aiBehaviorTreeTemplateManager::GetSingleton();
+	btMgr.AddTemplate(Utility::UnicodeToEngine(name));
+	auto tmpl = btMgr.GetTemplate(Utility::UnicodeToEngine(name));
+
+	m_btTemplates.push_back(std::move(BTTemplate()));
+	BTTemplate& bt = m_btTemplates.back();
+	int race = tmpl->GetBT()->GetRace();
+	
+	bt.m_name = name;
+	bt.race = race;
+	bt.m_raceBB = &m_raceBlackboards[race];
+	bt.rootNode = AddBTNode(bt, eBTNodeType_Condition);
+	bt.m_scriptName = L"";
+	bt.m_scriptEntry = L"";
+
+	return bt;
+}
+
+
+
+

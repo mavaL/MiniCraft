@@ -28,9 +28,19 @@ public:
 		eBTNodeType_Action
 	};
 
-	typedef std::vector<std::wstring> Blackboard;
+	struct SBBParam
+	{
+		explicit SBBParam(const std::wstring paramName)
+		:name(paramName),fgID(-1) {}
 
-	struct SBBParam 
+		bool operator== (const SBBParam& rhs) { return name == rhs.name; }
+
+		std::wstring name;
+		int fgID;
+	};
+	typedef std::vector<SBBParam> Blackboard;
+
+	struct SBBValue 
 	{
 		std::wstring value;
 		std::wstring type;
@@ -43,14 +53,17 @@ public:
 	public:
 		std::wstring	m_name;
 		int				race;
+		std::wstring	m_scriptName;
+		std::wstring	m_scriptEntry;
 
 		struct SBTNode
 		{
 			SBTNode()
-			:parent(nullptr),txtProperty(L""),flowGraphNodeID(-1),priority(0) {}
+			:parent(nullptr),txtProperty(L""),fgElementName(L""),flowGraphNodeID(-1),priority(0) {}
 
 			std::wstring	type;
 			std::wstring	txtProperty;
+			std::wstring	fgElementName;
 			int				flowGraphNodeID;
 			int				priority;
 			DWORD			color;
@@ -58,6 +71,7 @@ public:
 			std::vector<SBTNode*> childs;
 		};
 		std::list<SBTNode*>	m_nodeList;
+		SBTNode*			rootNode;
 
 		Blackboard			m_ownBB;
 		Blackboard*			m_raceBB;
@@ -81,6 +95,10 @@ public:
 	void						SetBuildingAbility(const std::wstring& buildingName, int slotIndex, const std::wstring& abilName);
 	//获取单位数据.注意参数是mesh名字
 	SUnitData*					GetUnitData(const std::string& meshname);
+
+	////////////////////////////////////////////////////////////////////////
+	////////////////////// Behavior Tree
+	BTTemplate&					NewBTTemplate(const std::wstring& name);
 	//获取所有行为树模板名字
 	std::vector<std::wstring>	GetAllBehaviorTreeTemplateNames() const;
 	BTTemplate&					GetBTTemplate(const std::wstring& name);
@@ -90,11 +108,14 @@ public:
 	//校验该行为树模板的有效性
 	void						ValidateBehaviorTemplate(const BTTemplate& tmpl);
 	BTTemplate::SBTNode*		AddBTNode(BTTemplate& tmpl, eBTNodeType type);
+	void						DeleteBTNode(BTTemplate& tmpl, int id);
 	//加入黑板参数
 	const std::string			DefineBlackboardParam(bool bOwnBB, BTTemplate& tmpl);
-	const SBBParam				GetBlackboardParam(const std::wstring& name, const BTTemplate& tmpl, bool bOwnBB) const;
-	void						SetBlackboardParam(const std::wstring& name, const SBBParam& param, const BTTemplate& tmpl, bool bOwnBB);
-	void						RenameBlackboardParam(const std::wstring& oldName, const std::wstring& newName, BTTemplate& tmpl, bool bOwnBB);
+	void						DeleteBlackboardParam(int paramID, bool bOwnBB, BTTemplate& tmpl);
+	const SBBValue				GetBlackboardParam(int paramID, BTTemplate& tmpl, bool bOwnBB);
+	void						SetBlackboardParam(int paramID, const SBBValue& param, BTTemplate& tmpl, bool bOwnBB);
+	void						RenameBlackboardParam(int paramID, const std::wstring& newName, BTTemplate& tmpl, bool bOwnBB);
+	SBBParam*					FindBBParam(Blackboard& BB, int id);
 
 private:
 	void						_ParseAllBTTemplates();
@@ -105,6 +126,7 @@ private:
 	void						_SaveBTTemplate(const BTTemplate& tmpl, const STRING& filepath);
 	void						_SaveBTNode(rapidxml::xml_document<>* doc, BTTemplate::SBTNode* node, rapidxml::xml_node<>* xmlNode);
 	void						_SaveBlackboard(rapidxml::xml_document<>* doc, Kratos::aiBlackBoard* pBB, rapidxml::xml_node<>* xmlNode);
+	void						_GetBlackboard(bool bOwn, BTTemplate& tmpl, Blackboard*& pBB, Kratos::aiBlackBoard*& pEngineBB);
 
 	GameDataDefManager*			m_dataMgr;
 	BTTemplates					m_btTemplates;

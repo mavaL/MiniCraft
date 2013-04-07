@@ -4,6 +4,7 @@
 	author:		maval
 	
 	purpose:	XTP属性控件扩展
+				TODO:改成模板类
 *********************************************************************/
 
 #ifndef XTPCustomPropertyGridItem_h__

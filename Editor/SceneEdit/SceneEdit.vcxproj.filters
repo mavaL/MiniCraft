@@ -28,6 +28,9 @@
     <Filter Include="UI\BehaviorTreeEditor">
       <UniqueIdentifier>{1ee5ef73-0a8f-40be-83c2-b63e6584a246}</UniqueIdentifier>
     </Filter>
+    <Filter Include="UI\Common">
+      <UniqueIdentifier>{c282c38e-54a2-40ae-89f5-09295d51d232}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
@@ -132,9 +135,6 @@
     <ClInclude Include="UI\ObjectPropertyPane.h">
       <Filter>UI</Filter>
     </ClInclude>
-    <ClInclude Include="UI\XTPCustomPropertyGridItem.h">
-      <Filter>UI</Filter>
-    </ClInclude>
     <ClInclude Include="Manipulator\ManipulatorCamera.h">
       <Filter>Manipulator</Filter>
     </ClInclude>
@@ -185,6 +185,12 @@
     </ClInclude>
     <ClInclude Include="SubclassHelper.h">
       <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\Common\DialogStringInput.h">
+      <Filter>UI\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\Common\XTPCustomPropertyGridItem.h">
+      <Filter>UI\Common</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -254,9 +260,6 @@
     <ClCompile Include="UI\ObjectPropertyPane.cpp">
       <Filter>UI</Filter>
     </ClCompile>
-    <ClCompile Include="UI\XTPCustomPropertyGridItem.cpp">
-      <Filter>UI</Filter>
-    </ClCompile>
     <ClCompile Include="Manipulator\ManipulatorCamera..cpp">
       <Filter>Manipulator</Filter>
     </ClCompile>
@@ -307,6 +310,12 @@
     </ClCompile>
     <ClCompile Include="SubclassHelper.cpp">
       <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\Common\DialogStringInput.cpp">
+      <Filter>UI\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\Common\XTPCustomPropertyGridItem.cpp">
+      <Filter>UI\Common</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

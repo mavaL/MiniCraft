@@ -79,5 +79,12 @@ namespace Kratos
 			node = node->next_sibling();
 		}
 	}
+
+	void aiBlackBoard::RemoveParam( const STRING& name )
+	{
+		assert(IsParamExists(name));
+		m_params.erase(name);
+	}
+
 }
 

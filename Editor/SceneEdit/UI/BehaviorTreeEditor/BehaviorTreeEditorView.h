@@ -12,13 +12,16 @@
 #include "Manipulator/ManipulatorGameData.h"
 
 class BehaviorTreeEditorProperty;
+class BehaviorTreeEditorExplorer;
 
-enum eFlowGraphNodeType
+enum eBTSelectionType
 {
-	eFlowGraphNodeType_TreeNode,
-	eFlowGraphNodeType_OwnBlackboard,
-	eFlowGraphNodeType_GlobalBlackboard,
-	eFlowGraphNodeType_None
+	eBTSelectionType_BT,
+	eBTSelectionType_TreeNode,
+	eBTSelectionType_OwnBlackboard,
+	eBTSelectionType_GlobalBlackboard,
+	eBTSelectionType_Connection,
+	eBTSelectionType_None
 };
 
 class BehaviorTreeEditorView : public CWnd
@@ -27,8 +30,11 @@ public:
 	BehaviorTreeEditorView(CXTPDialog* parent);
 	~BehaviorTreeEditorView();
 
-public:
 	void			SetPropertyDlg(BehaviorTreeEditorProperty* pProp);
+	void			SetExplorer(BehaviorTreeEditorExplorer* pExp)	{ m_pExplorer = pExp; }
+
+public:
+	void			NewBT(const std::wstring& name);
 	void			SetActiveItem(const std::wstring& name);
 	void			Arrange();
 	void			Sync();
@@ -42,6 +48,8 @@ public:
 	ManipulatorGameData::BTTemplate::SBTNode*
 					FindNodeByID(int id);
 	CXTPFlowGraphNode* FindFgNodeByID(int id);
+	std::wstring	GetFgElementName(eBTSelectionType type, CXTPFlowGraphElement* element);
+	void			DeleteCurElement();
 
 protected:
 	virtual BOOL	PreCreateWindow(CREATESTRUCT& cs);
@@ -50,9 +58,14 @@ private:
 	DECLARE_MESSAGE_MAP()
 	afx_msg int		OnCreate(LPCREATESTRUCT lpCreateStruct);
 	afx_msg	void	OnSize(UINT nType, int cx, int cy);
-	void			_ConnectFgNodes(ManipulatorGameData::BTTemplate::SBTNode* root);
+	void			_ConnectFgNodes(ManipulatorGameData::BTTemplate::SBTNode* node);
+	std::wstring	_OnFgElementAdded(CXTPFlowGraphElement* element);
+	void			_OnFgElememtRemoved(const std::wstring& name);
+	void			_OnFgConnectionRemoved(CXTPFlowGraphConnection* pConne);
+	bool			_IsChildOf(ManipulatorGameData::BTTemplate::SBTNode* parent, ManipulatorGameData::BTTemplate::SBTNode* self);
 
 	BehaviorTreeEditorProperty*			m_pProp;
+	BehaviorTreeEditorExplorer*			m_pExplorer;
 	CXTPFlowGraphControl				m_wndControl;
 	CXTPFlowGraphPage*					m_page;
 	ManipulatorGameData::BTTemplate*	m_curTmpl;

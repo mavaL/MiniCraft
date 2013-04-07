@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "Utility.h"
+#include "objbase.h"
 
 namespace Utility
 {
@@ -51,6 +52,17 @@ namespace Utility
 		}
 
 		return str;
+	}
+
+	int GenGUID()
+	{
+		GUID guid;
+		if (S_OK == ::CoCreateGuid(&guid))
+		{
+			return *(int*)&guid;
+		}
+		assert(0);
+		return 0;
 	}
 
 }

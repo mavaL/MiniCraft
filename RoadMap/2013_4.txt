@@ -1,0 +1,9 @@
+1. Behavior tree system and edit tool.		
+
+100%	V1.0 complete!
+
+2. Construct AI behavior of RTS with the edit tool.
+
+0%
+
+3.Make a branch for physic middleware integreate testing. Havok or PhysX. Anyway, SC2 uses Havok, isn't it ?

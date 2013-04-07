@@ -30,6 +30,9 @@ namespace Utility
 	std::wstring	FloatToString_CutPrecision(float f);
 	std::wstring	StringCutPrecision(const CString& strFloat);
 
+	//获取GUID
+	int				GenGUID();
+
 	//获取数值正负号
 	template<typename T>
 	T GetSign(T val)

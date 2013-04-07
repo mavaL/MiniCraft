@@ -47,6 +47,7 @@ namespace Kratos
 		void			LoadParams(rapidxml::xml_node<>* node);
 		//加入新参数到字典中
 		void			DefineParam(const STRING& name, const STRING& value, eVarType type);
+		void			RemoveParam(const STRING& name);
 		void			Clone(aiBlackBoard& toClone);
 		aiBlackBoard::SValue&	GetParam(const STRING& name);
 		const ParamMap&	GetParams() const { return m_params; }

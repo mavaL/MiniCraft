@@ -121,5 +121,12 @@ namespace Kratos
 		return std::move(ret);
 	}
 
+	void aiBehaviorTreeTemplateManager::AddTemplate( const STRING& name )
+	{
+		aiBehaviorTreeTemplate* pTmpl = new aiBehaviorTreeTemplate;
+		pTmpl->Reset();
+		m_bts.insert(std::make_pair(name, pTmpl));
+	}
+
 }
 

@@ -22,6 +22,7 @@
 #include "BehaviorComponent.h"
 #include "PathComponent.h"
 #include "AIComponent.h"
+#include "HarvestComponent.h"
 
 SGlobalEnvironment	g_Environment;
 

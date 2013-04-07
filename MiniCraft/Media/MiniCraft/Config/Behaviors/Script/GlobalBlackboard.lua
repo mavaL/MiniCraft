@@ -6,7 +6,7 @@ eRace_Zerg = 1
 ---------------------------------
 function GlobalBBUpdate_Terran()
 	local numUnit = world:GetPlayerUnitNum(eRace_Terran)
-	world:SetGlobalBBParam_Int(eRace_Terran, "UnitNumber", numUnit)
+	--world:SetGlobalBBParam_Int(eRace_Terran, "UnitNumber", numUnit)
 end
 
 

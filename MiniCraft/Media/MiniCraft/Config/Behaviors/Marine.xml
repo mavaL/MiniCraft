@@ -3,17 +3,14 @@
 	<BehaviorTemplate name="Marine" race="Terran">
 		<BehaviorTree>
 			<SequenceNode>
-				<ConditionNode expression="UnitNumber greaterequal 3">
+				<ConditionNode expression="">
 					<ActionNode behavior="MoveToEnemyBase"/>
 				</ConditionNode>
 				<ActionNode behavior="MoveToEnemyBase"/>
 				<ActionNode behavior="Idle"/>
 			</SequenceNode>
 		</BehaviorTree>
-		<BlackBoard>
-			<Variable name="Own0" value="3.6" type="float"/>
-			<Variable name="Param_1" value="0" type="int"/>
-		</BlackBoard>
+		<BlackBoard/>
 		<Script filename="MarineBlackboard.lua" entry="BBUpdate_Marine"/>
 	</BehaviorTemplate>
 </Root>
