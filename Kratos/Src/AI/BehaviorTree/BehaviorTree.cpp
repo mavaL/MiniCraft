@@ -20,7 +20,7 @@ namespace Kratos
 		return m_root->Evaluate(pInfo, retBehavior);	
 	}
 
-	void aiBehaviorTree::ValidateTree()
+	bool aiBehaviorTree::ValidateTree()
 	{
 		if(!m_root->Validate())
 			OGRE_EXCEPT(Ogre::Exception::ERR_INVALID_STATE, 

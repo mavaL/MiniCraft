@@ -108,8 +108,8 @@ void DialogBehaviorTreeEditor::_CreateRibbon()
 	pGroup->Add(xtpControlButton, IDC_BTEditor_Arrange);
 	//RibbonHome - GroupHome - Validate
 	pGroup->Add(xtpControlButton, IDC_BTEditor_Validate);
-	//RibbonHome - GroupHome - Sync
-	pGroup->Add(xtpControlButton, IDC_BTEditor_Sync);
+//  	//RibbonHome - GroupHome - Sync
+//  	pGroup->Add(xtpControlButton, IDC_BTEditor_Sync);
 	//RibbonHome - GroupHome - Save
 	pGroup->Add(xtpControlButton, IDC_BTEditor_Save);
 

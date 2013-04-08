@@ -11,16 +11,13 @@
 						<ActionNode behavior="MoveToBase"/>
 					</SequenceNode>
 				</ConditionNode>
-				<ConditionNode expression="IsGathering==true">
+				<ConditionNode expression="IsNearRes or IsGathering">
 					<SequenceNode>
-						<ConditionNode expression="fGatheringTime greaterequal 3.0">
+						<ConditionNode expression="IsGathering and fGatheringTime greaterequal 3.0">
 							<ActionNode behavior="RetriveRes"/>
 						</ConditionNode>
 						<ActionNode behavior="GatherRes"/>
 					</SequenceNode>
-				</ConditionNode>
-				<ConditionNode expression="IsNearRes==true">
-					<ActionNode behavior="GatherRes"/>
 				</ConditionNode>
 				<ActionNode behavior="MoveToRes"/>
 			</SequenceNode>

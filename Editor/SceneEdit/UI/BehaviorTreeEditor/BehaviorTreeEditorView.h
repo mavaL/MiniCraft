@@ -60,6 +60,8 @@ private:
 	afx_msg	void	OnSize(UINT nType, int cx, int cy);
 	void			_ConnectFgNodes(ManipulatorGameData::BTTemplate::SBTNode* node);
 	std::wstring	_OnFgElementAdded(CXTPFlowGraphElement* element);
+	void			_OnXtpConnectionChanging(NMHDR* pNMHDR, LRESULT* pResult);
+	void			_OnXtpConnectionChanged(NMHDR* pNMHDR, LRESULT* pResult);
 	void			_OnFgElememtRemoved(const std::wstring& name);
 	void			_OnFgConnectionRemoved(CXTPFlowGraphConnection* pConne);
 	bool			_IsChildOf(ManipulatorGameData::BTTemplate::SBTNode* parent, ManipulatorGameData::BTTemplate::SBTNode* self);

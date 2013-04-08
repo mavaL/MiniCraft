@@ -391,7 +391,8 @@ void ManipulatorGameData::ValidateBehaviorTemplate( const BTTemplate& tmpl )
 
 	try
 	{
-		temp.GetBT()->ValidateTree();
+		if(temp.GetBT()->ValidateTree())
+			MessageBoxW(nullptr, L"It seems that everything is OK!..", L"Succeed", MB_OK);
 	} 
 	catch(Ogre::Exception& e)
 	{

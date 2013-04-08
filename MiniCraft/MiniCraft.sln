@@ -35,6 +35,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ParticleUniverse", "..\..\O
 		{7A18F419-4956-4B41-80A1-ACCCEB79B654} = {7A18F419-4956-4B41-80A1-ACCCEB79B654}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Codejock.ToolkitPro.Shared", "..\..\Xtreme ToolkitPro v15.2.1\Workspace\ToolkitPro\ToolkitProShared_vc100.vcxproj", "{06739158-FFB0-66BD-4A6E-CD5E37D64486}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug_Static|Win32 = Debug_Static|Win32
@@ -300,6 +302,37 @@ Global
 		{1C741C2F-3278-43D8-9FD2-E631A64B70AE}.Unicode Release|Win32.ActiveCfg = Release|Win32
 		{1C741C2F-3278-43D8-9FD2-E631A64B70AE}.Unicode Release|Win32.Build.0 = Release|Win32
 		{1C741C2F-3278-43D8-9FD2-E631A64B70AE}.Unicode Release|x64.ActiveCfg = Release|Win32
+		{06739158-FFB0-66BD-4A6E-CD5E37D64486}.Debug_Static|Win32.ActiveCfg = Debug|x64
+		{06739158-FFB0-66BD-4A6E-CD5E37D64486}.Debug_Static|x64.ActiveCfg = Debug|x64
+		{06739158-FFB0-66BD-4A6E-CD5E37D64486}.Debug_Static|x64.Build.0 = Debug|x64
+		{06739158-FFB0-66BD-4A6E-CD5E37D64486}.Debug|Win32.ActiveCfg = Debug|Win32
+		{06739158-FFB0-66BD-4A6E-CD5E37D64486}.Debug|Win32.Build.0 = Debug|Win32
+		{06739158-FFB0-66BD-4A6E-CD5E37D64486}.Debug|x64.ActiveCfg = Debug|x64
+		{06739158-FFB0-66BD-4A6E-CD5E37D64486}.Debug|x64.Build.0 = Debug|x64
+		{06739158-FFB0-66BD-4A6E-CD5E37D64486}.MinSizeRel|Win32.ActiveCfg = Unicode Release|x64
+		{06739158-FFB0-66BD-4A6E-CD5E37D64486}.MinSizeRel|x64.ActiveCfg = Unicode Release|x64
+		{06739158-FFB0-66BD-4A6E-CD5E37D64486}.MinSizeRel|x64.Build.0 = Unicode Release|x64
+		{06739158-FFB0-66BD-4A6E-CD5E37D64486}.Release_Static|Win32.ActiveCfg = Release|x64
+		{06739158-FFB0-66BD-4A6E-CD5E37D64486}.Release_Static|x64.ActiveCfg = Release|x64
+		{06739158-FFB0-66BD-4A6E-CD5E37D64486}.Release_Static|x64.Build.0 = Release|x64
+		{06739158-FFB0-66BD-4A6E-CD5E37D64486}.Release|Win32.ActiveCfg = Release|Win32
+		{06739158-FFB0-66BD-4A6E-CD5E37D64486}.Release|Win32.Build.0 = Release|Win32
+		{06739158-FFB0-66BD-4A6E-CD5E37D64486}.Release|x64.ActiveCfg = Release|x64
+		{06739158-FFB0-66BD-4A6E-CD5E37D64486}.Release|x64.Build.0 = Release|x64
+		{06739158-FFB0-66BD-4A6E-CD5E37D64486}.ReleaseWithSymbols|Win32.ActiveCfg = Release|x64
+		{06739158-FFB0-66BD-4A6E-CD5E37D64486}.ReleaseWithSymbols|x64.ActiveCfg = Release|x64
+		{06739158-FFB0-66BD-4A6E-CD5E37D64486}.ReleaseWithSymbols|x64.Build.0 = Release|x64
+		{06739158-FFB0-66BD-4A6E-CD5E37D64486}.RelWithDebInfo|Win32.ActiveCfg = Release|x64
+		{06739158-FFB0-66BD-4A6E-CD5E37D64486}.RelWithDebInfo|x64.ActiveCfg = Release|x64
+		{06739158-FFB0-66BD-4A6E-CD5E37D64486}.RelWithDebInfo|x64.Build.0 = Release|x64
+		{06739158-FFB0-66BD-4A6E-CD5E37D64486}.Unicode Debug|Win32.ActiveCfg = Unicode Debug|Win32
+		{06739158-FFB0-66BD-4A6E-CD5E37D64486}.Unicode Debug|Win32.Build.0 = Unicode Debug|Win32
+		{06739158-FFB0-66BD-4A6E-CD5E37D64486}.Unicode Debug|x64.ActiveCfg = Unicode Debug|x64
+		{06739158-FFB0-66BD-4A6E-CD5E37D64486}.Unicode Debug|x64.Build.0 = Unicode Debug|x64
+		{06739158-FFB0-66BD-4A6E-CD5E37D64486}.Unicode Release|Win32.ActiveCfg = Unicode Release|Win32
+		{06739158-FFB0-66BD-4A6E-CD5E37D64486}.Unicode Release|Win32.Build.0 = Unicode Release|Win32
+		{06739158-FFB0-66BD-4A6E-CD5E37D64486}.Unicode Release|x64.ActiveCfg = Unicode Release|x64
+		{06739158-FFB0-66BD-4A6E-CD5E37D64486}.Unicode Release|x64.Build.0 = Unicode Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
