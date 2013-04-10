@@ -34,6 +34,7 @@ public:
 	void			SetExplorer(BehaviorTreeEditorExplorer* pExp)	{ m_pExplorer = pExp; }
 
 public:
+	bool			FlowGraphProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam, LRESULT& result);
 	void			NewBT(const std::wstring& name);
 	void			SetActiveItem(const std::wstring& name);
 	void			Arrange();

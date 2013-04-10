@@ -145,7 +145,6 @@
     <ClInclude Include="Resource.h" />
     <ClInclude Include="SceneEdit.h" />
     <ClInclude Include="stdafx.h" />
-    <ClInclude Include="SubclassHelper.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="UI\AttachmentPropertyPane.h" />
     <ClInclude Include="UI\BehaviorTreeEditor\BehaviorTreeEditorDlg.h" />
@@ -153,6 +152,7 @@
     <ClInclude Include="UI\BehaviorTreeEditor\BehaviorTreeEditorProperty.h" />
     <ClInclude Include="UI\BehaviorTreeEditor\BehaviorTreeEditorView.h" />
     <ClInclude Include="UI\Common\DialogStringInput.h" />
+    <ClInclude Include="UI\Common\SubclassHelper.h" />
     <ClInclude Include="UI\Common\XTPCustomPropertyGridItem.h" />
     <ClInclude Include="UI\DialogGameDataBuilding.h" />
     <ClInclude Include="UI\DialogSceneNew.h" />
@@ -192,13 +192,13 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="SubclassHelper.cpp" />
     <ClCompile Include="UI\AttachmentPropertyPane.cpp" />
     <ClCompile Include="UI\BehaviorTreeEditor\BehaviorTreeEditorDlg.cpp" />
     <ClCompile Include="UI\BehaviorTreeEditor\BehaviorTreeEditorExplorer.cpp" />
     <ClCompile Include="UI\BehaviorTreeEditor\BehaviorTreeEditorProperty.cpp" />
     <ClCompile Include="UI\BehaviorTreeEditor\BehaviorTreeEditorView.cpp" />
     <ClCompile Include="UI\Common\DialogStringInput.cpp" />
+    <ClCompile Include="UI\Common\SubclassHelper.cpp" />
     <ClCompile Include="UI\Common\XTPCustomPropertyGridItem.cpp" />
     <ClCompile Include="UI\DialogGameDataBuilding.cpp" />
     <ClCompile Include="UI\DialogSceneNew.cpp" />

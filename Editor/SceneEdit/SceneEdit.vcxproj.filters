@@ -183,13 +183,13 @@
     <ClInclude Include="UI\BehaviorTreeEditor\BehaviorTreeEditorProperty.h">
       <Filter>UI\BehaviorTreeEditor</Filter>
     </ClInclude>
-    <ClInclude Include="SubclassHelper.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="UI\Common\DialogStringInput.h">
       <Filter>UI\Common</Filter>
     </ClInclude>
     <ClInclude Include="UI\Common\XTPCustomPropertyGridItem.h">
+      <Filter>UI\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\Common\SubclassHelper.h">
       <Filter>UI\Common</Filter>
     </ClInclude>
   </ItemGroup>
@@ -308,13 +308,13 @@
     <ClCompile Include="UI\BehaviorTreeEditor\BehaviorTreeEditorProperty.cpp">
       <Filter>UI\BehaviorTreeEditor</Filter>
     </ClCompile>
-    <ClCompile Include="SubclassHelper.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="UI\Common\DialogStringInput.cpp">
       <Filter>UI\Common</Filter>
     </ClCompile>
     <ClCompile Include="UI\Common\XTPCustomPropertyGridItem.cpp">
+      <Filter>UI\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\Common\SubclassHelper.cpp">
       <Filter>UI\Common</Filter>
     </ClCompile>
   </ItemGroup>

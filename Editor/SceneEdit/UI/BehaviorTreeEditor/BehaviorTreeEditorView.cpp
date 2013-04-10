@@ -6,6 +6,7 @@
 #include "BehaviorTreeEditorDlg.h"
 #include "Utility.h"
 #include "BehaviorTreeEditorExplorer.h"
+#include "SubclassHelper.h"
 
 BEGIN_MESSAGE_MAP(BehaviorTreeEditorView, CWnd)
 	ON_WM_CREATE()
@@ -41,31 +42,24 @@ BOOL BehaviorTreeEditorView::PreCreateWindow( CREATESTRUCT& cs )
 	return TRUE;
 }
 
-//TODO: SubclassHelper not finished yet..
-WNDPROC	g_proc;
-CXTPFlowGraphControl* g_ctrl;
-BehaviorTreeEditorProperty* g_prop;
-CXTPFlowGraphNode*	g_ownBB;
-CXTPFlowGraphNode*	g_globalBB;
-
-LRESULT CALLBACK MyWndProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam )
+bool BehaviorTreeEditorView::FlowGraphProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam, LRESULT& result )
 {
 	if (uMsg == WM_LBUTTONDOWN)
 	{
 		CPoint point;
 		GetCursorPos(&point);
-		g_ctrl->ScreenToClient(&point);
+		m_wndControl.ScreenToClient(&point);
 
-		CXTPFlowGraphNode* pNode = g_ctrl->HitTestNode(point);
-		CXTPFlowGraphConnection* pConne = g_ctrl->HitTestConnection(point);
+		CXTPFlowGraphNode* pNode = m_wndControl.HitTestNode(point);
+		CXTPFlowGraphConnection* pConne = m_wndControl.HitTestConnection(point);
 		eBTSelectionType type;
 		CXTPFlowGraphElement* curElement = nullptr;
 
 		if (pNode)
 		{
-			if(pNode == g_ownBB)
+			if(pNode == m_ownBBNode)
 			{
-				CXTPFlowGraphConnectionPoint* pItem = g_ctrl->HitTestConnectionArea(point);
+				CXTPFlowGraphConnectionPoint* pItem = m_wndControl.HitTestConnectionArea(point);
 				if(pItem)
 				{
 					type = eBTSelectionType_OwnBlackboard;
@@ -76,9 +70,9 @@ LRESULT CALLBACK MyWndProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam )
 					type = eBTSelectionType_BT;
 				}
 			}
-			else if(pNode == g_globalBB)
+			else if(pNode == m_globalBBNode)
 			{
-				CXTPFlowGraphConnectionPoint* pItem = g_ctrl->HitTestConnectionArea(point);
+				CXTPFlowGraphConnectionPoint* pItem = m_wndControl.HitTestConnectionArea(point);
 				if(pItem)
 				{
 					type = eBTSelectionType_GlobalBlackboard;
@@ -105,9 +99,13 @@ LRESULT CALLBACK MyWndProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam )
 			type = eBTSelectionType_BT;
 		}
 
-		g_prop->GetPropPane().OnFgElementSelected(type, curElement);
+		m_pProp->GetPropPane().OnFgElementSelected(type, curElement);
+
+		return true;
+		result = 0;
 	}
-	return CallWindowProcW(g_proc, hWnd, uMsg, wParam, lParam);
+	
+	return false;
 }
 
 int BehaviorTreeEditorView::OnCreate( LPCREATESTRUCT lpCreateStruct )
@@ -118,8 +116,8 @@ int BehaviorTreeEditorView::OnCreate( LPCREATESTRUCT lpCreateStruct )
 	m_wndControl.Create(WS_VSCROLL | WS_HSCROLL | WS_CHILD | WS_VISIBLE, CRect(0, 0, 0, 0), 
 		this, IDC_BTEditor_FlowGraph);
 
-	g_proc = (WNDPROC)SetWindowLongPtrW(m_wndControl.GetSafeHwnd(), GWLP_WNDPROC, (LONG_PTR)MyWndProc);
-	g_ctrl = &m_wndControl;
+	WndSubclassHelper<BehaviorTreeEditorView>::GetSingleton().Subclass(
+		m_wndControl.GetSafeHwnd(),this, &BehaviorTreeEditorView::FlowGraphProc);
 
 	m_wndControl.SetPaintManager(new CXTPFlowGraphMetallicTheme());
 	m_wndControl.SetSmoothingMode(xtpFlowGraphSmoothingModeHighQuality);
@@ -195,9 +193,6 @@ void BehaviorTreeEditorView::RefreshAll()
 	m_globalBBNode->SetColor(0xc0c0c0ff);
 	m_globalBBNode->SetID(GLOBAL_BLACKBOARD_NODE_ID);
 	RefreshBlackboard(false);
-
-	g_ownBB = m_ownBBNode;
-	g_globalBB = m_globalBBNode;
 }
 
 void BehaviorTreeEditorView::_ConnectFgNodes( ManipulatorGameData::BTTemplate::SBTNode* node )
@@ -235,7 +230,6 @@ void BehaviorTreeEditorView::Arrange()
 void BehaviorTreeEditorView::SetPropertyDlg( BehaviorTreeEditorProperty* pProp )
 {
 	m_pProp = pProp;
-	g_prop = m_pProp;
 }
 
 void BehaviorTreeEditorView::AddNewNode( ManipulatorGameData::eBTNodeType type )
