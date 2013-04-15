@@ -25,11 +25,14 @@ namespace Kratos
 	class CInputManager;
 	class COgreManager;
 	class CGUIManager;
+	class CPhysicManager;
+	class aiBehaviorTree;
 	class aiBehaviorTreeTemplateManager;
 	class aiBehaviorTreeNode;
 	class aiBehaviorTreeTemplate;
 	class aiBlackBoard;
 	class aiBehavior;
+	class Ragdoll;
 }
 
 ///×¢²áOgreStringInterface
@@ -74,5 +77,6 @@ void classname::Cmd##cmdname::doSet(void* target, const STRING& val)					\
 #define GUIMANAGER		Kratos::CGUIManager::GetSingleton()
 #define INPUTMANAGER	Kratos::CInputManager::GetSingleton()
 #define SCRIPTNAMAGER	Kratos::ScriptSystem::GetSingleton()
+#define PHYSICMANAGER	Kratos::CPhysicManager::GetSingleton()
 
 #endif // KratosPrerequisites_h__

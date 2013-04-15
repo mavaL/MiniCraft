@@ -9,7 +9,6 @@
 #ifndef EffectBase_h__
 #define EffectBase_h__
 
-#include <OgreStringInterface.h>
 #include "KratosPrerequisites.h"
 
 namespace Kratos

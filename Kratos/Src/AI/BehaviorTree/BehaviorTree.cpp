@@ -1,5 +1,5 @@
+#include "stdafx.h"
 #include "BehaviorTree.h"
-#include <OgreException.h>
 
 namespace Kratos
 {
@@ -22,9 +22,11 @@ namespace Kratos
 
 	bool aiBehaviorTree::ValidateTree()
 	{
-		if(!m_root->Validate())
+		bool ret = m_root->Validate();
+		if(!ret)
 			OGRE_EXCEPT(Ogre::Exception::ERR_INVALID_STATE, 
 			"Behavior Tree validate failed!", "aiBehaviorTree::Validate()");
+		return ret;
 	}
 }
 

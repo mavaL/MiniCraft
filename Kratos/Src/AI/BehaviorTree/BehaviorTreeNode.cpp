@@ -1,5 +1,5 @@
+#include "stdafx.h"
 #include "BehaviorTreeNode.h"
-#include <OgreException.h>
 #include "BehaviorTreeCondition.h"
 #include "BehaviorTreeTemplateManager.h"
 

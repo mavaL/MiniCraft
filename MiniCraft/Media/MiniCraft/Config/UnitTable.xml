@@ -41,5 +41,11 @@
     <Ability name="Stop" slotindex="1"/>
     <Ability name="Attack" slotindex="4"/>
   </Unit>
+
+  <Unit name="Zombie" timecost="5" meshname="zombie.mesh" race="1" portrait="MarinePortrait_1.mesh" hp="35">
+    <AnimationSet>
+      <Animation type="Move" name="Walk"/>
+    </AnimationSet>
+  </Unit>
 </Root>
 

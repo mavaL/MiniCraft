@@ -23,6 +23,8 @@
 #include "PathComponent.h"
 #include "AIComponent.h"
 #include "HarvestComponent.h"
+#include "RagdollComponent.h"
+#include "PhysicManager.h"
 
 SGlobalEnvironment	g_Environment;
 
@@ -40,6 +42,8 @@ Luna<World>::RegType World::methods[] =
 	method(World, SetGlobalBBParam_Bool),
 	{0,0}
 };
+
+Unit* g_pTestUnit = nullptr;
 
 ////////////////////////////////////////////////////////////////
 World::World()
@@ -146,15 +150,26 @@ void World::Init()
 	m_pTestScene = new Kratos::Scene();
 	m_pTestScene->Load("MyStarCraft.Scene", "General", this);
 
-	///////////////行为树测试
-	Unit* pUnit = static_cast<Unit*>(ObjectManager::GetSingleton().CreateObject(eObjectType_Unit));
-	pUnit->setParameter("name", "Scv");
-	pUnit->Init();
-	pUnit->SetPosition(m_player[eGameRace_Terran]->GetBase()->GetRallyPoint());
-	pUnit->AddComponent(eComponentType_Path, new PathComponent(pUnit));
-	pUnit->AddComponent(eComponentType_Behevior, new BehaviorComponent(pUnit));
-	pUnit->GetAi()->SetCpuControl(true);
-	pUnit->GetBehavior()->SetTempalte("Scv");
+ 	///////////////Ragdoll测试
+	g_pTestUnit = static_cast<Unit*>(ObjectManager::GetSingleton().CreateObject(eObjectType_Unit));
+	g_pTestUnit->setParameter("name", "Zombie");
+	g_pTestUnit->Init();
+	g_pTestUnit->SetPosition(POS(0,0,0));
+	g_pTestUnit->SetScale(SCALE(5,5,5));
+	g_pTestUnit->AddComponent(eComponentType_Ragoll, new RagdollComponent(g_pTestUnit));
+
+	//地板
+	PHYSICMANAGER.CreateGround();
+
+// 	///////////////行为树测试
+// 	Unit* pUnit = static_cast<Unit*>(ObjectManager::GetSingleton().CreateObject(eObjectType_Unit));
+// 	pUnit->setParameter("name", "Scv");
+// 	pUnit->Init();
+// 	pUnit->SetPosition(m_player[eGameRace_Terran]->GetBase()->GetRallyPoint());
+// 	pUnit->AddComponent(eComponentType_Path, new PathComponent(pUnit));
+// 	pUnit->AddComponent(eComponentType_Behevior, new BehaviorComponent(pUnit));
+// 	pUnit->GetAi()->SetCpuControl(true);
+// 	pUnit->GetBehavior()->SetTempalte("Scv");
 
 	//UI for test
 	Ogre::Entity* pEntConsole = m_pRenderSystem->CreateEntityWithTangent("ConsoleTerran_0.mesh", sm);
@@ -513,4 +528,10 @@ int World::SetGlobalBBParam_Bool( lua_State* L )
 	Kratos::aiBehaviorTreeTemplateManager::GetSingleton().GetGlobalBB(race)->SetParam(paramName, value);
 
 	return 0;
+}
+
+void World::StartRagdoll()
+{
+	RagdollComponent* cp = QueryComponent(g_pTestUnit, eComponentType_Ragoll, RagdollComponent);
+	cp->StartRagdoll();
 }

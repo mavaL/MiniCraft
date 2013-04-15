@@ -15,7 +15,6 @@ same license as the rest of the engine.
 #ifndef _AMBIENTLIGHT_H
 #define _AMBIENTLIGHT_H
 
-#include "OgreSimpleRenderable.h"
 
 namespace Kratos
 {

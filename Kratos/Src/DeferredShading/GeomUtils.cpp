@@ -12,12 +12,8 @@ same license as the rest of the engine.
 -----------------------------------------------------------------------------
 */
 
-
+#include "stdafx.h"
 #include "GeomUtils.h"
-
-#include "OgreMeshManager.h"
-#include "OgreSubMesh.h"
-#include "OgreHardwareBufferManager.h"
 
 using namespace Ogre;
 

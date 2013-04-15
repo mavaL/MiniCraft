@@ -1,6 +1,6 @@
+#include "stdafx.h"
 #include "BehaviorTreeTemplateManager.h"
 #include "BehaviorTreeTemplate.h"
-#include <OgreResourceGroupManager.h>
 #include "Behavior.h"
 #include "BlackBoard.h"
 #include "ScriptSystem.h"

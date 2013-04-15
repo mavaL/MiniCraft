@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "ScriptSystem.h"
 #include <windows.h>
 

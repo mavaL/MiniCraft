@@ -49,8 +49,10 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>.\Src;.\Dependency\rapidxml;.\Dependency\Lua5_1_4\src;.\Dependency\CEGUI\include;.\Dependency\boost;.\Dependency\OgreRecast\Include;.\Dependency\OIS\include;.\Dependency\Ogre\include;.\Dependency\Ogre\include\ParticleUniverse;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\Src;.\Dependency\Havok\Include;.\Dependency\rapidxml;.\Dependency\Lua5_1_4\src;.\Dependency\CEGUI\include;.\Dependency\boost;.\Dependency\OgreRecast\Include;.\Dependency\OIS\include;.\Dependency\Ogre\include;.\Dependency\Ogre\include\ParticleUniverse;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TreatWarningAsError>false</TreatWarningAsError>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <AdditionalOptions>/Zm173 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -135,61 +137,148 @@
     <ClInclude Include="Src\KratosPrerequisites.h" />
     <ClInclude Include="Src\luna.h" />
     <ClInclude Include="Src\OgreManager.h" />
+    <ClInclude Include="Src\PhysicManager.h" />
+    <ClInclude Include="Src\Physics\Ragdoll.h" />
     <ClInclude Include="Src\Scene.h" />
     <ClInclude Include="Src\SceneSerializer.h" />
     <ClInclude Include="Src\ScriptSystem.h" />
     <ClInclude Include="Src\Singleton.h" />
+    <ClInclude Include="Src\stdafx.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Dependency\OgreRecast\Src\DetourCrowd\DetourCrowd.cpp" />
-    <ClCompile Include="Dependency\OgreRecast\Src\DetourCrowd\DetourLocalBoundary.cpp" />
-    <ClCompile Include="Dependency\OgreRecast\Src\DetourCrowd\DetourObstacleAvoidance.cpp" />
-    <ClCompile Include="Dependency\OgreRecast\Src\DetourCrowd\DetourPathCorridor.cpp" />
-    <ClCompile Include="Dependency\OgreRecast\Src\DetourCrowd\DetourPathQueue.cpp" />
-    <ClCompile Include="Dependency\OgreRecast\Src\DetourCrowd\DetourProximityGrid.cpp" />
-    <ClCompile Include="Dependency\OgreRecast\Src\DetourTileCache\DetourTileCache.cpp" />
-    <ClCompile Include="Dependency\OgreRecast\Src\DetourTileCache\DetourTileCacheBuilder.cpp" />
-    <ClCompile Include="Dependency\OgreRecast\Src\Detour\DetourAlloc.cpp" />
-    <ClCompile Include="Dependency\OgreRecast\Src\Detour\DetourCommon.cpp" />
-    <ClCompile Include="Dependency\OgreRecast\Src\Detour\DetourNavMesh.cpp" />
-    <ClCompile Include="Dependency\OgreRecast\Src\Detour\DetourNavMeshBuilder.cpp" />
-    <ClCompile Include="Dependency\OgreRecast\Src\Detour\DetourNavMeshQuery.cpp" />
-    <ClCompile Include="Dependency\OgreRecast\Src\Detour\DetourNode.cpp" />
-    <ClCompile Include="Dependency\OgreRecast\Src\OgreDetourCrowd.cpp" />
-    <ClCompile Include="Dependency\OgreRecast\Src\OgreDetourTileCache.cpp" />
-    <ClCompile Include="Dependency\OgreRecast\Src\OgreRecast.cpp" />
-    <ClCompile Include="Dependency\OgreRecast\Src\OgreRecastNavmeshPruner.cpp" />
-    <ClCompile Include="Dependency\OgreRecast\Src\RecastContrib\fastlz\fastlz.c" />
-    <ClCompile Include="Dependency\OgreRecast\Src\RecastConvexHull.cpp" />
-    <ClCompile Include="Dependency\OgreRecast\Src\RecastInputGeom.cpp" />
-    <ClCompile Include="Dependency\OgreRecast\Src\Recast\Recast.cpp" />
-    <ClCompile Include="Dependency\OgreRecast\Src\Recast\RecastAlloc.cpp" />
-    <ClCompile Include="Dependency\OgreRecast\Src\Recast\RecastArea.cpp" />
-    <ClCompile Include="Dependency\OgreRecast\Src\Recast\RecastContour.cpp" />
-    <ClCompile Include="Dependency\OgreRecast\Src\Recast\RecastFilter.cpp" />
-    <ClCompile Include="Dependency\OgreRecast\Src\Recast\RecastLayers.cpp" />
-    <ClCompile Include="Dependency\OgreRecast\Src\Recast\RecastMesh.cpp" />
-    <ClCompile Include="Dependency\OgreRecast\Src\Recast\RecastMeshDetail.cpp" />
-    <ClCompile Include="Dependency\OgreRecast\Src\Recast\RecastRasterization.cpp" />
-    <ClCompile Include="Dependency\OgreRecast\Src\Recast\RecastRegion.cpp" />
+    <ClCompile Include="Dependency\OgreRecast\Src\DetourCrowd\DetourCrowd.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Dependency\OgreRecast\Src\DetourCrowd\DetourLocalBoundary.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Dependency\OgreRecast\Src\DetourCrowd\DetourObstacleAvoidance.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Dependency\OgreRecast\Src\DetourCrowd\DetourPathCorridor.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Dependency\OgreRecast\Src\DetourCrowd\DetourPathQueue.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Dependency\OgreRecast\Src\DetourCrowd\DetourProximityGrid.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Dependency\OgreRecast\Src\DetourTileCache\DetourTileCache.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Dependency\OgreRecast\Src\DetourTileCache\DetourTileCacheBuilder.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Dependency\OgreRecast\Src\Detour\DetourAlloc.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Dependency\OgreRecast\Src\Detour\DetourCommon.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Dependency\OgreRecast\Src\Detour\DetourNavMesh.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Dependency\OgreRecast\Src\Detour\DetourNavMeshBuilder.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Dependency\OgreRecast\Src\Detour\DetourNavMeshQuery.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Dependency\OgreRecast\Src\Detour\DetourNode.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Dependency\OgreRecast\Src\OgreDetourCrowd.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Dependency\OgreRecast\Src\OgreDetourTileCache.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Dependency\OgreRecast\Src\OgreRecast.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Dependency\OgreRecast\Src\OgreRecastNavmeshPruner.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Dependency\OgreRecast\Src\RecastContrib\fastlz\fastlz.c">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Dependency\OgreRecast\Src\RecastConvexHull.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Dependency\OgreRecast\Src\RecastInputGeom.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Dependency\OgreRecast\Src\Recast\Recast.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Dependency\OgreRecast\Src\Recast\RecastAlloc.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Dependency\OgreRecast\Src\Recast\RecastArea.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Dependency\OgreRecast\Src\Recast\RecastContour.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Dependency\OgreRecast\Src\Recast\RecastFilter.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Dependency\OgreRecast\Src\Recast\RecastLayers.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Dependency\OgreRecast\Src\Recast\RecastMesh.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Dependency\OgreRecast\Src\Recast\RecastMeshDetail.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Dependency\OgreRecast\Src\Recast\RecastRasterization.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Dependency\OgreRecast\Src\Recast\RecastRegion.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="Src\AI\BehaviorTree\BehaviorTree.cpp" />
     <ClCompile Include="Src\AI\BehaviorTree\BehaviorTreeTemplate.cpp" />
     <ClCompile Include="Src\AI\BehaviorTree\BehaviorTreeTemplateManager.cpp" />
     <ClCompile Include="Src\AI\BehaviorTree\BehaviorTreeNode.cpp" />
     <ClCompile Include="Src\AI\BehaviorTree\BlackBoard.cpp" />
     <ClCompile Include="Src\AI\BehaviorTree\BehaviorTreeCondition.cpp" />
-    <ClCompile Include="Src\AI\BehaviorTree\ConditionUnitTest.cpp" />
+    <ClCompile Include="Src\AI\BehaviorTree\ConditionUnitTest.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="Src\AppStateManager.cpp" />
-    <ClCompile Include="Src\DeferredShading\AmbientLight.cpp" />
-    <ClCompile Include="Src\DeferredShading\DeferredLightCP.cpp" />
-    <ClCompile Include="Src\DeferredShading\DeferredShading.cpp" />
-    <ClCompile Include="Src\DeferredShading\DLight.cpp" />
-    <ClCompile Include="Src\DeferredShading\GBufferMaterialGenerator.cpp" />
-    <ClCompile Include="Src\DeferredShading\GBufferSchemeHandler.cpp" />
-    <ClCompile Include="Src\DeferredShading\GeomUtils.cpp" />
-    <ClCompile Include="Src\DeferredShading\LightMaterialGenerator.cpp" />
-    <ClCompile Include="Src\DeferredShading\MaterialGenerator.cpp" />
-    <ClCompile Include="Src\DeferredShading\TerrainMaterialGeneratorD.cpp" />
+    <ClCompile Include="Src\DeferredShading\AmbientLight.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Src\DeferredShading\DeferredLightCP.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Src\DeferredShading\DeferredShading.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Src\DeferredShading\DLight.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Src\DeferredShading\GBufferMaterialGenerator.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Src\DeferredShading\GBufferSchemeHandler.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Src\DeferredShading\GeomUtils.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Src\DeferredShading\LightMaterialGenerator.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Src\DeferredShading\MaterialGenerator.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Src\DeferredShading\TerrainMaterialGeneratorD.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="Src\Effect\DeferredLightEffect.cpp" />
     <ClCompile Include="Src\Effect\EffectBase.cpp" />
     <ClCompile Include="Src\Effect\EffectController.cpp" />
@@ -197,9 +286,14 @@
     <ClCompile Include="Src\GUIManager.cpp" />
     <ClCompile Include="Src\InputManager.cpp" />
     <ClCompile Include="Src\OgreManager.cpp" />
+    <ClCompile Include="Src\PhysicManager.cpp" />
+    <ClCompile Include="Src\Physics\Ragdoll.cpp" />
     <ClCompile Include="Src\Scene.cpp" />
     <ClCompile Include="Src\SceneSerializer.cpp" />
     <ClCompile Include="Src\ScriptSystem.cpp" />
+    <ClCompile Include="Src\stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -18,23 +18,10 @@ HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTIO
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,OUT OF OR IN CONNECTION WITH THE 
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ******************************************************************************/
-
+#include "stdafx.h"
 #include "LightMaterialGenerator.h"
-
-#include "OgreStringConverter.h"
-#include "OgreException.h"
-#include "OgreMaterialManager.h"
-
-#include "OgrePass.h"
-#include "OgreTechnique.h"
-
-#include "OgreHighLevelGpuProgram.h"
-#include "OgreHighLevelGpuProgramManager.h"
-
 #include "DLight.h"
-#include "OgreShadowCameraSetupPSSM.h"
 #include "OgreManager.h"
-#include <OgreSceneManager.h>
 
 using namespace Ogre;
 

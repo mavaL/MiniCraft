@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "DeferredLightEffect.h"
 #include "OgreManager.h"
 #include "DeferredShading/DLight.h"

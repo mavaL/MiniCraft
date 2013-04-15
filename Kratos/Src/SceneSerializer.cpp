@@ -1,8 +1,6 @@
+#include "stdafx.h"
 #include "SceneSerializer.h"
 #include "Scene.h"
-#include <Ogre.h>
-#include <Terrain/OgreTerrain.h>
-#include <Terrain/OgreTerrainGroup.h>
 #include "OgreManager.h"
 #include "DeferredShading/TerrainMaterialGeneratorD.h"
 #include "DeferredShading/DeferredShading.h"
@@ -119,7 +117,7 @@ namespace Kratos
 #else	//deferred shading
 		RenderManager.m_pDS->setActive(true);
 		Ogre::TerrainGlobalOptions::getSingleton().setDefaultMaterialGenerator(
-			Ogre::TerrainMaterialGeneratorPtr(new Ogre::TerrainMaterialGeneratorD));
+			Ogre::TerrainMaterialGeneratorPtr(new Kratos::TerrainMaterialGeneratorD));
 		TerrainMaterialGeneratorD::SM2Profile* matProfile = static_cast<TerrainMaterialGeneratorD::SM2Profile*>(
 			TerrainGlobalOptions::getSingleton().getDefaultMaterialGenerator()->getActiveProfile());
 		matProfile->setCompositeMapEnabled(false);
@@ -134,6 +132,7 @@ namespace Kratos
 		m_pOwner->m_pTerrain = pTerrainGroup->getTerrain(0, 0);
 		m_pOwner->m_terrainGroup = pTerrainGroup;
 		m_pOwner->m_terrainOption = option;
+		m_pOwner->m_pTerrain->setPosition(POS(500,500,500));
 	}
 
 	void SceneSerializer::_LoadEffect( rapidxml::xml_node<>* node )
@@ -184,7 +183,7 @@ namespace Kratos
 			cam->setOptimalAdjustFactor(1, param4.y);
 			cam->setOptimalAdjustFactor(2, param4.z);
 			cam->setUseSimpleOptimalAdjust(param5);
-			cam->setCameraLightDirectionThreshold(Degree(param6));
+			cam->setCameraLightDirectionThreshold(Degree((float)param6));
 
 
 #ifdef FORWARD_RENDERING

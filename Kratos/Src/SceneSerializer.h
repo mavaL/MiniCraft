@@ -11,9 +11,6 @@
 #define SceneSerializer_h__
 
 #include <OgrePrerequisites.h>
-#include <rapidxml.hpp>       
-#include <rapidxml_utils.hpp>
-#include <rapidxml_print.hpp>
 
 namespace Kratos
 {

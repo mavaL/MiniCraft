@@ -12,6 +12,7 @@ same license as the rest of the engine.
 -----------------------------------------------------------------------------
 */
 
+#include "stdafx.h"
 #include "DeferredLightCP.h"
 #include "LightMaterialGenerator.h"
 #include "OgreManager.h"

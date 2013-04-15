@@ -50,16 +50,19 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\Kratos\Src\AI\BehaviorTree;..\Kratos\Src;..\Kratos\Dependency\rapidxml;..\Kratos\Dependency\Lua5_1_4\src;..\Kratos\Dependency\CEGUI\include;..\Kratos\Dependency\boost;..\Kratos\Dependency\OgreRecast\Include;..\Kratos\Dependency\OIS\include;..\Kratos\Dependency\Ogre\include;..\Kratos\Dependency\Ogre\include\ParticleUniverse;.\Game;.\Game\Client\UI;.\Game\Client;.\Game\Core;.\Game\Client\Object;.\Game\Client\AI;.\Game\Client\Component;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Kratos\Src\AI\BehaviorTree;..\Kratos\Src;..\Kratos\Dependency\Havok\Include;..\Kratos\Dependency\rapidxml;..\Kratos\Dependency\Lua5_1_4\src;..\Kratos\Dependency\CEGUI\include;..\Kratos\Dependency\boost;..\Kratos\Dependency\OgreRecast\Include;..\Kratos\Dependency\OIS\include;..\Kratos\Dependency\Ogre\include;..\Kratos\Dependency\Ogre\include\ParticleUniverse;.\Game;.\Game\Client\UI;.\Game\Client;.\Game\Core;.\Game\Client\Object;.\Game\Client\AI;.\Game\Client\Component;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <AdditionalOptions>/Zm163 %(AdditionalOptions)</AdditionalOptions>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <TreatWarningAsError>true</TreatWarningAsError>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;HK_DEBUG;HK_FULLDEBUG;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <TreatWarningAsError>false</TreatWarningAsError>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>.\Build\Bin\$(Configuration);..\Kratos\Dependency\Lua5_1_4\lib;..\Kratos\Dependency\CEGUI\lib\debug;..\Kratos\Dependency\boost\Lib;..\Kratos\Dependency\OIS\Lib\$(Configuration);..\Kratos\Dependency\Ogre\Lib\$(Configuration)\opt;..\Kratos\Dependency\Ogre\Lib\$(Configuration)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>OgreMain_d.lib;ParticleUniverse_d.lib;OIS_d.lib;OgreTerrain_d.lib;CEGUIBase_d.lib;CEGUIOgreRenderer_d.lib;lua51.lib;Kratos_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>.\Build\Bin\$(Configuration);..\Kratos\Dependency\Lua5_1_4\lib;..\Kratos\Dependency\CEGUI\lib\debug;..\Kratos\Dependency\Havok\Lib\debug_dll;..\Kratos\Dependency\boost\Lib;..\Kratos\Dependency\OIS\Lib\$(Configuration);..\Kratos\Dependency\Ogre\Lib\$(Configuration)\opt;..\Kratos\Dependency\Ogre\Lib\$(Configuration)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>OgreMain_d.lib;ParticleUniverse_d.lib;OIS_d.lib;OgreTerrain_d.lib;CEGUIBase_d.lib;CEGUIOgreRenderer_d.lib;lua51.lib;Kratos_d.lib;hkpConstraint.lib;hkpConstraintSolver.lib;hkpUtilities.lib;hkpVehicle.lib;hkpDynamics.lib;hkpCollide.lib;hkpInternal.lib;hkaInternal.lib;hkaAnimation.lib;hkaRagdoll.lib;hkInternal.lib;hkGeometryUtilities.lib;hkVisualize.lib;hkSerialize.lib;hkCompat.lib;hkSceneData.lib;hkBase.lib;hkcdCollide.lib;hkcdInternal.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <IgnoreSpecificDefaultLibraries>
+      </IgnoreSpecificDefaultLibraries>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -91,6 +94,7 @@
     <ClInclude Include="Game\Client\Component\Component.h" />
     <ClInclude Include="Game\Client\Component\HarvestComponent.h" />
     <ClInclude Include="Game\Client\Component\PathComponent.h" />
+    <ClInclude Include="Game\Client\Component\RagdollComponent.h" />
     <ClInclude Include="Game\Client\Faction.h" />
     <ClInclude Include="Game\Client\GameDataDef.h" />
     <ClInclude Include="Game\Client\Object\Building.h" />
@@ -118,6 +122,7 @@
     <ClCompile Include="Game\Client\Component\BehaviorComponent.cpp" />
     <ClCompile Include="Game\Client\Component\HarvestComponent.cpp" />
     <ClCompile Include="Game\Client\Component\PathComponent.cpp" />
+    <ClCompile Include="Game\Client\Component\RagdollComponent.cpp" />
     <ClCompile Include="Game\Client\Faction.cpp" />
     <ClCompile Include="Game\Client\GameDataDef.cpp" />
     <ClCompile Include="Game\Client\MiniCraft.cpp" />

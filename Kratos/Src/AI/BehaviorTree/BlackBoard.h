@@ -10,13 +10,9 @@
 #define BlackBoard_h__
 
 #include "KratosPrerequisites.h"
-#include <OgreCommon.h>
-#include <rapidxml.hpp>
 
 namespace Kratos
 {
-	class aiBehaviorTree;
-
 	class aiBlackBoard
 	{
 	public:

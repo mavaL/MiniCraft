@@ -12,16 +12,8 @@ same license as the rest of the engine.
 -----------------------------------------------------------------------------
 */
 
+#include "stdafx.h"
 #include "MaterialGenerator.h"
-
-#include "OgreStringConverter.h"
-#include "OgreException.h"
-
-#include "OgrePass.h"
-#include "OgreTechnique.h"
-
-#include "OgreHighLevelGpuProgram.h"
-#include "OgreHighLevelGpuProgramManager.h"
 
 using namespace Ogre;
 

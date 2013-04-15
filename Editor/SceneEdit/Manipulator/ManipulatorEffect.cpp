@@ -15,7 +15,6 @@ ManipulatorEffect::ManipulatorEffect()
 ,m_bIsPlayAnim(false)
 ,m_curAnim(Ogre::StringUtil::BLANK)
 ,m_curEffect(Ogre::StringUtil::BLANK)
-,m_effectNameID(0)
 {
 	ManipulatorScene::GetSingleton().AddCallback(this);
 }
@@ -418,7 +417,6 @@ bool ManipulatorEffect::GetIsPlayingAnim() const
 
 void ManipulatorEffect::LoadEffect( rapidxml::xml_node<>* node )
 {
-	std::string nameID("");
 	//per unit
 	auto& unitTable = GameDataDefManager::GetSingleton().m_unitData;
 	for (auto itUnit=unitTable.begin(); itUnit!=unitTable.end(); ++itUnit)
@@ -438,22 +436,10 @@ void ManipulatorEffect::LoadEffect( rapidxml::xml_node<>* node )
 				int type = Ogre::StringConverter::parseInt(info["type"]);
 				Kratos::AttachEffectBase* effect = effectTmpl->AddEffect(itAnim->first, (Kratos::eAttachEffect)type);
 				effect->setParameterList(info);
-
-				//查找最大名字ID,以后命名新的特效以此为据
-				const std::string& name = effect->GetName();
-				if(name > nameID)
-					nameID = name;
 			}
 		}
 		//特效模板已加载,清空原始数据,因为发生编辑,它们即无效了
 		unitData.m_effects.clear();
-	}
-
-	if(!nameID.empty())
-	{
-		int len = strlen("Effect_");
-		m_effectNameID = Ogre::StringConverter::parseInt(nameID.substr(len));
-		m_effectNameID++;
 	}
 }
 
@@ -468,7 +454,7 @@ std::wstring ManipulatorEffect::AddEffect(int type)
 	assert(!m_curAnim.empty());
 
 	std::string newName("Effect_");
-	newName += Ogre::StringConverter::toString(m_effectNameID++);
+	newName += Ogre::StringConverter::toString(Utility::GenGUID());
 
 	Kratos::EffectController* pCtrl = _GetEffectController(ManipulatorSystem.GetObject().GetSelection());
 	pCtrl->AddEffect(m_curAnim, (Kratos::eAttachEffect)type)->SetName(newName);

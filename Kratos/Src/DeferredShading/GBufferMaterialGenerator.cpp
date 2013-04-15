@@ -12,13 +12,8 @@ same license as the rest of the engine.
 -----------------------------------------------------------------------------
 */
 
+#include "stdafx.h"
 #include "GBufferMaterialGenerator.h"
-
-#include "OgreMaterialManager.h"
-#include "OgreGpuProgramManager.h"
-#include "OgreStringConverter.h"
-#include "OgreHighLevelGpuProgramManager.h"
-#include "OgreTechnique.h"
 
 //Use this directive to control whether you are writing projective (regular) or linear depth.
 #define WRITE_LINEAR_DEPTH

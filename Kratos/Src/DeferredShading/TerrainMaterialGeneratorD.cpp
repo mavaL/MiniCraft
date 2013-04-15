@@ -1,16 +1,9 @@
-
-
+#include "stdafx.h"
 #include "TerrainMaterialGeneratorD.h"
-#include "Terrain/OgreTerrain.h"
-#include "OgreMaterialManager.h"
-#include "OgreTechnique.h"
-#include "OgrePass.h"
-#include "OgreTextureUnitState.h"
-#include "OgreGpuProgramManager.h"
-#include "OgreHighLevelGpuProgramManager.h"
-#include "OgreHardwarePixelBuffer.h"
  
-namespace Ogre
+using namespace Ogre;
+
+namespace Kratos
 {
 	//---------------------------------------------------------------------
 	TerrainMaterialGeneratorD::TerrainMaterialGeneratorD()
@@ -44,7 +37,7 @@ namespace Ogre
 	}
 	//---------------------------------------------------------------------
 	//---------------------------------------------------------------------
-	TerrainMaterialGeneratorD::SM2Profile::SM2Profile(TerrainMaterialGenerator* parent, const String& name, const String& desc)
+	TerrainMaterialGeneratorD::SM2Profile::SM2Profile(TerrainMaterialGenerator* parent, const STRING& name, const STRING& desc)
 		: Profile(parent, name, desc)
 		, mShaderGen(0)
 		, mGlobalColourMapEnabled(false)
@@ -127,7 +120,7 @@ namespace Ogre
  
 			// it's important that the names are deterministic for a given terrain, so
 			// use the terrain pointer as an ID
-			const String& matName = terrain->getMaterialName();
+			const STRING& matName = terrain->getMaterialName();
 			mat = matMgr.getByName(matName);
 			if (mat.isNull())
 			{
@@ -165,7 +158,7 @@ namespace Ogre
 //  
 // 			// it's important that the names are deterministic for a given terrain, so
 // 			// use the terrain pointer as an ID
-// 			const String& matName = terrain->getMaterialName() + "/comp";
+// 			const STRING& matName = terrain->getMaterialName() + "/comp";
 // 			mat = matMgr.getByName(matName);
 // 			if (mat.isNull())
 // 			{
@@ -448,7 +441,7 @@ namespace Ogre
  
 	}
 	//---------------------------------------------------------------------
-	String TerrainMaterialGeneratorD::SM2Profile::ShaderHelper::getChannel(uint idx)
+	STRING TerrainMaterialGeneratorD::SM2Profile::ShaderHelper::getChannel(uint idx)
 	{
 		uint rem = idx % 4;
 		switch(rem)
@@ -465,10 +458,10 @@ namespace Ogre
 		};
 	}
 	//---------------------------------------------------------------------
-	String TerrainMaterialGeneratorD::SM2Profile::ShaderHelper::getVertexProgramName(
+	STRING TerrainMaterialGeneratorD::SM2Profile::ShaderHelper::getVertexProgramName(
 		const SM2Profile* prof, const Terrain* terrain, TechniqueType tt)
 	{
-		String progName = terrain->getMaterialName() + "/sm2/vp";
+		STRING progName = terrain->getMaterialName() + "/sm2/vp";
  
 // 		switch(tt)
 // 		{
@@ -488,11 +481,11 @@ namespace Ogre
  
 	}
 	//---------------------------------------------------------------------
-	String TerrainMaterialGeneratorD::SM2Profile::ShaderHelper::getFragmentProgramName(
+	STRING TerrainMaterialGeneratorD::SM2Profile::ShaderHelper::getFragmentProgramName(
 		const SM2Profile* prof, const Terrain* terrain, TechniqueType tt)
 	{
  
-		String progName = terrain->getMaterialName() + "/sm2/fp";
+		STRING progName = terrain->getMaterialName() + "/sm2/fp";
  
 // 		switch(tt)
 // 		{
@@ -518,7 +511,7 @@ namespace Ogre
 		const SM2Profile* prof, const Terrain* terrain, TechniqueType tt)
 	{
 		HighLevelGpuProgramManager& mgr = HighLevelGpuProgramManager::getSingleton();
-		String progName = getVertexProgramName(prof, terrain, tt);
+		STRING progName = getVertexProgramName(prof, terrain, tt);
 		HighLevelGpuProgramPtr ret = mgr.getByName(progName);
 		if (ret.isNull())
 		{
@@ -542,7 +535,7 @@ namespace Ogre
 			const SM2Profile* prof, const Terrain* terrain, TechniqueType tt)
 	{
 		HighLevelGpuProgramManager& mgr = HighLevelGpuProgramManager::getSingleton();
-		String progName = getFragmentProgramName(prof, terrain, tt);
+		STRING progName = getFragmentProgramName(prof, terrain, tt);
  
 		HighLevelGpuProgramPtr ret = mgr.getByName(progName);
 		if (ret.isNull())
@@ -879,10 +872,10 @@ namespace Ogre
 		const SM2Profile* prof, const Terrain* terrain, TechniqueType tt, uint layer, StringUtil::StrStreamType& outStream)
 	{
 		uint uvIdx = layer / 2;
-		String uvChannels = (layer % 2) ? ".zw" : ".xy";
+		STRING uvChannels = (layer % 2) ? ".zw" : ".xy";
 		uint blendIdx = (layer-1) / 4;
-		String blendChannel = getChannel(layer-1);
-		String blendWeightStr = String("blendTexVal") + StringConverter::toString(blendIdx) + 
+		STRING blendChannel = getChannel(layer-1);
+		STRING blendWeightStr = STRING("blendTexVal") + StringConverter::toString(blendIdx) + 
 			"." + blendChannel;
  
 		// generate UV

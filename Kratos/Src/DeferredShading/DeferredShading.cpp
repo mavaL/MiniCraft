@@ -12,26 +12,8 @@ same license as the rest of the engine.
 -----------------------------------------------------------------------------
 */
 
+#include "stdafx.h"
 #include "DeferredShading.h"
-
-#include "OgreConfigFile.h"
-#include "OgreStringConverter.h"
-#include "OgreException.h"
-
-#include "OgreRoot.h"
-#include "OgreRenderSystem.h"
-
-#include "OgreEntity.h"
-#include "OgreSubEntity.h"
-#include "OgreRoot.h"
-
-#include "OgreCompositor.h"
-#include "OgreCompositorManager.h"
-#include "OgreCompositorChain.h"
-#include "OgreCompositorInstance.h"
-
-#include "OgreLogManager.h"
-
 #include "DeferredLightCP.h"
 #include "GBufferSchemeHandler.h"
 #include "NullSchemeHandler.h"

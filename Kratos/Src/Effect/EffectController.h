@@ -24,14 +24,15 @@ namespace Kratos
 
 	public:
 		//增加一个挂接特效
-		AttachEffectBase*	AddEffect(const STRING& animName, eAttachEffect type);
+		AttachEffectBase*		AddEffect(const STRING& animName, eAttachEffect type);
 		//删除挂接特效
-		void			RemoveEffect(const STRING& name);
+		void					RemoveEffect(const STRING& name);
 		//获取模型对应特效
-		AttachEffectBase*	GetEffect(const STRING& name);
+		AttachEffectBase*		GetEffect(const STRING& name);
 		//播放动画,自动管理特效的播放
-		void			PlayAnimation(const STRING& animName, bool bLoop);
-		void			StopAnimation();
+		void					PlayAnimation(const STRING& animName, bool bLoop);
+		void					StopAnimation();
+		Ogre::AnimationState*	GetAnimState()	{ return m_anim; }
 		//更新该控制器
 		void			Update(float dt);
 		//编辑器用

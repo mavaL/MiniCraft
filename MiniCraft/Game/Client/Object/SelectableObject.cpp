@@ -610,7 +610,6 @@ void SelectableObject::AddComponent( eComponentType type, Component* pCo )
 	case eComponentType_Animated:	m_pAnim = QueryComponent(this, eComponentType_Animated, AnimatedComponent); break;
 	case eComponentType_Harvest:	m_pGather = QueryComponent(this, eComponentType_Harvest, HarvestComponent); break;
 	case eComponentType_Behevior:	m_pBehavior = QueryComponent(this, eComponentType_Behevior, BehaviorComponent); break;
-	default: assert(0);
 	}
 }
 

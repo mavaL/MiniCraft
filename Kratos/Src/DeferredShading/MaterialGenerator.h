@@ -15,8 +15,7 @@ same license as the rest of the engine.
 #ifndef H_WJ_MaterialGenerator
 #define H_WJ_MaterialGenerator
 
-#include "OgreMaterial.h"
-#include "OgreStringVector.h"
+#include "KratosPrerequisites.h"
 
 namespace Kratos
 {

@@ -15,8 +15,7 @@ same license as the rest of the engine.
 #ifndef H_WJ_DLight
 #define H_WJ_DLight
 
-#include "OgreSimpleRenderable.h"
-#include "MaterialGenerator.h"
+#include "KratosPrerequisites.h"
 
 /** Deferred light geometry. Each instance matches a normal light.
 	Should not be created by the user.
@@ -25,6 +24,8 @@ same license as the rest of the engine.
 
 namespace Kratos
 {
+	class MaterialGenerator;
+
 	class DLight: public Ogre::SimpleRenderable
 	{
 	public:

@@ -1,10 +1,5 @@
+#include "stdafx.h"
 #include "Scene.h"
-#include <OgreResourceGroupManager.h>
-#include <OgreSceneManager.h>
-#include <Terrain/OgreTerrain.h>
-#include <Terrain/OgreTerrainGroup.h>
-#include <Terrain/OgreTerrainQuadTreeNode.h>
-#include <Terrain/OgreTerrainMaterialGeneratorA.h>
 #include "SceneSerializer.h"
 #include "OgreManager.h"
 

@@ -6,4 +6,6 @@
 
 0%
 
-3.Make a branch for physic middleware integreate testing. Havok or PhysX. Anyway, SC2 uses Havok, isn't it ?
+3.Make a branch for physics middleware integreate with Havok and try ragdoll.
+
+[30%]		Ragdoll running has problem and not finish yet.

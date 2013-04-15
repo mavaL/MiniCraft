@@ -10,7 +10,6 @@
 #define DeferredLightEffect_h__
 
 #include "EffectBase.h"
-#include <OgreVector3.h>
 
 namespace Kratos
 {
