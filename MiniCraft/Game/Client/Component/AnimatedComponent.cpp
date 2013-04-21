@@ -54,11 +54,7 @@ void AnimatedComponent::Update( float dt )
 
 void AnimatedComponent::SetManuallyControlBones()
 {
-	assert(m_pController->GetAnimState());
-	const STRING& animName = m_pController->GetAnimState()->getAnimationName();
 	Ogre::Skeleton* pSkel = m_pOwner->GetEntity()->getSkeleton();
-	Ogre::Animation* anim = pSkel->getAnimation(animName);
-
 	Ogre::Skeleton::BoneIterator iter = pSkel->getBoneIterator();
 	size_t numBones = pSkel->getNumBones();
 	for(size_t i=0; i<numBones; ++i)

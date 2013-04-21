@@ -155,7 +155,7 @@ void World::Init()
 	g_pTestUnit->setParameter("name", "Zombie");
 	g_pTestUnit->Init();
 	g_pTestUnit->SetPosition(POS(0,0,0));
-	g_pTestUnit->SetScale(SCALE(5,5,5));
+	//g_pTestUnit->SetScale(SCALE(5,5,5));
 	g_pTestUnit->AddComponent(eComponentType_Ragoll, new RagdollComponent(g_pTestUnit));
 
 	//µØ°å

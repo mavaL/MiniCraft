@@ -3,6 +3,7 @@
 #include "SelectableObject.h"
 #include "Physics/Ragdoll.h"
 #include "AnimatedComponent.h"
+#include "OgreManager.h"
 
 RagdollComponent::RagdollComponent( SelectableObject* pOwner )
 :Component(pOwner)
@@ -13,7 +14,7 @@ RagdollComponent::RagdollComponent( SelectableObject* pOwner )
 	m_pRagdoll = new Kratos::Ragdoll(m_pOwner->GetEntity(), m_pOwner->GetSceneNode(), filename);
 
 	m_animCp = m_pOwner->GetAnim();
-	m_animCp->PlayAnimation(eAnimation_Move, true);
+	//m_animCp->PlayAnimation(eAnimation_Move, true);
 }
 
 RagdollComponent::~RagdollComponent()
@@ -33,4 +34,11 @@ void RagdollComponent::Update( float dt )
 {
 	if(m_bStart)
 		m_pRagdoll->UpdateRagdoll();
+
+	int numBones = m_pOwner->GetEntity()->getSkeleton()->getNumBones();
+	for (unsigned short b = 0; b < numBones; ++b)
+	{
+		Ogre::Bone* bone = m_pOwner->GetEntity()->getSkeleton()->getBone(b);
+		RenderManager.m_pSceneMgr->getRenderQueue()->addRenderable(bone->getDebugRenderable(1), Ogre::RENDER_QUEUE_OVERLAY);
+	}
 }

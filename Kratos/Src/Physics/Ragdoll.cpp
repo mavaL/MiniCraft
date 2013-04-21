@@ -41,14 +41,14 @@ namespace Kratos
 		// Locks all translations, except root.
 		hkaSkeletonUtils::lockTranslations(*animationSkeleton, true);
 		// Notice: Only "Triangle Pelvis Setup" should unlock these
-// 		const char* boneName[] = { "Ragdoll_HavokBipedRig L Thigh", "Ragdoll_HavokBipedRig R Thigh", "Bip01 L Thigh", "Bip01 R Thigh" };
-// 		const hkaSkeleton* skeleton[] = { ragdollSkel, ragdollSkel, animationSkeleton, animationSkeleton };
-// 		for ( int i = 0; i < 4; i++ )
-// 		{
-// 			const hkInt16 bone = hkaSkeletonUtils::findBoneWithName( *skeleton[ i ], boneName[ i ] );
-// 			HK_ASSERT3( 0x0ceee644, bone >= 0, "Bone " << boneName << " not found." );
-// 			const_cast<hkaSkeleton*>(skeleton[ i ])->m_bones[ bone ].m_lockTranslation = false;
-// 		}
+		const char* boneName[] = { "Ragdoll_HavokBipedRig L Thigh", "Ragdoll_HavokBipedRig R Thigh", "Bip01 L Thigh", "Bip01 R Thigh" };
+		const hkaSkeleton* skeleton[] = { ragdollSkel, ragdollSkel, animationSkeleton, animationSkeleton };
+		for ( int i = 0; i < 4; i++ )
+		{
+			const hkInt16 bone = hkaSkeletonUtils::findBoneWithName( *skeleton[ i ], boneName[ i ] );
+			HK_ASSERT3( 0x0ceee644, bone >= 0, "Bone " << boneName << " not found." );
+			const_cast<hkaSkeleton*>(skeleton[ i ])->m_bones[ bone ].m_lockTranslation = false;
+		}
 
 		hkaSkeletonMapper* tempMapper1,*tempMapper2;
 		tempMapper1 = (hkaSkeletonMapper*)(container->findObjectByType(hkaSkeletonMapperClass.getName()));
@@ -115,31 +115,27 @@ namespace Kratos
 	void Ragdoll::UpdateRagdoll()
 	{
  		//low pose -> high pose 
- 		m_pRagdollInstance->getPoseWorldSpace(m_pRagdollPose->accessUnsyncedPoseModelSpace().begin());
+		m_pHighPose->setToReferencePose();
+ 		m_pRagdollInstance->getPoseModelSpace(m_pRagdollPose->accessUnsyncedPoseModelSpace().begin(), hkQsTransform::getIdentity());
  		m_pRagdollPose->syncAll();
  		m_pLowToHighMapper->mapPose(*m_pRagdollPose, *m_pHighPose, hkaSkeletonMapper::CURRENT_POSE);
- 
- 		//???
- // 		static Ogre::Vector3 pos;
- // 		hkVector4 trans = m_pHighPose->getSyncedPoseModelSpace()[1].getTranslation(); 
- // 		m_pSceneNode->setPosition(Vec3_Havok_to_Ogre(trans.getQuad()));
- // 		trans.setNeg4(trans);
- // 		trans.setAdd4(m_pHighPose->accessSyncedPoseLocalSpace()[0].getTranslation(),trans);
- // 		m_pHighPose->accessSyncedPoseLocalSpace()[0].setTranslation(trans);
  
  		//high pose -> ogre skeleton
  		const hkaSkeleton* hkSkeleton = m_pHighPose->getSkeleton();
  		Ogre::Skeleton* ogreSkel = m_pEntity->getSkeleton();
  
  		const hkArray<hkQsTransform>& localSpaceTransformArray = m_pHighPose->getSyncedPoseLocalSpace();
- //  		const hkQsTransform& transRoot = localSpaceTransformArray[0];
- // 		m_pSceneNode->setScale(Vec3_Havok_to_Ogre(transRoot.m_scale.getQuad()));
- // 		m_pSceneNode->setOrientation(Rot_Havok_to_Ogre(transRoot.m_rotation.m_vec.getQuad()));
- // 		m_pSceneNode->setPosition(Vec3_Havok_to_Ogre(transRoot.m_translation.getQuad()));
+   		const hkQsTransform& transRoot = localSpaceTransformArray[0];
+
+// 		hkQsTransform worldTrans;
+// 		m_pRagdollInstance->getWorldFromBoneTransform(0, worldTrans);
+//   		m_pSceneNode->setScale(Vec3_Havok_to_Ogre(worldTrans.m_scale.getQuad()));
+//   		m_pSceneNode->setOrientation(Rot_Havok_to_Ogre(worldTrans.m_rotation.m_vec.getQuad()));
+//   		m_pSceneNode->setPosition(Vec3_Havok_to_Ogre(worldTrans.m_translation.getQuad()));
  
- 		ogreSkel->getRootBone()->setPosition(Ogre::Vector3::ZERO);
- 		ogreSkel->getRootBone()->setOrientation(Ogre::Quaternion::IDENTITY);
- 		ogreSkel->getRootBone()->setScale(Ogre::Vector3::UNIT_SCALE);
+ 		ogreSkel->getRootBone()->setPosition(Vec3_Havok_to_Ogre(transRoot.m_scale.getQuad()));
+ 		ogreSkel->getRootBone()->setOrientation(Rot_Havok_to_Ogre(transRoot.m_rotation.m_vec.getQuad()));
+ 		ogreSkel->getRootBone()->setScale(Vec3_Havok_to_Ogre(transRoot.m_translation.getQuad()));
  
  		for (int i = 1;i < hkSkeleton->m_bones.getSize();++i)
  		{
@@ -149,12 +145,6 @@ namespace Kratos
  			ogreBone = ogreSkel->getBone(boneName);
  			assert(ogreBone);
  			const hkQsTransform& trans = localSpaceTransformArray[i];
-
-			if (boneName == "Bip01 L Finger0Nub")
-			{
-				Ogre::LogManager::getSingleton().logMessage(
-					Ogre::StringConverter::toString(Vec3_Havok_to_Ogre(trans.m_translation.getQuad())));
-			}
  
  			ogreBone->setPosition(Vec3_Havok_to_Ogre(trans.m_translation.getQuad()));
  			ogreBone->setOrientation(Rot_Havok_to_Ogre(trans.m_rotation.m_vec.getQuad()));
