@@ -7,6 +7,7 @@
 #include "Building.h"
 #include "HarvestComponent.h"
 #include "AnimatedComponent.h"
+#include "Resource.h"
 
 void aiBehaviorIdle::Execute( Ogre::Any& owner )
 {
@@ -89,7 +90,7 @@ void aiBehaviorMoveToRes::Execute( Ogre::Any& owner )
 	PathComponent* path = pUnit->GetPath();
 	HarvestComponent* gather = pUnit->GetGather();
 
-	POS target(49.6f, 0, -17.2f);
+	POS target = gather->GetTarget()->GetPosition();
 
 	if(path->FindPath(target, true))
 	{
@@ -155,4 +156,22 @@ void aiBehaviorReturnRes::Execute( Ogre::Any& owner )
 
 	gather->SetResVisible(false);
 	gather->SetCurStage(HarvestComponent::eHarvestStage_None);
+}
+
+/////////////////////////////////////////////////////////
+void aiBehaviorAttackTarget::Execute( Ogre::Any& owner )
+{
+	Unit* pUnit = Ogre::any_cast<Unit*>(owner);
+	pUnit->GetAnim()->PlayAnimation(eAnimation_Attack, true);
+}
+
+void aiBehaviorAttackTarget::Update( Ogre::Any& owner, float dt )
+{
+	Unit* pUnit = Ogre::any_cast<Unit*>(owner);
+}
+
+void aiBehaviorAttackTarget::Exit( Ogre::Any& owner )
+{
+	Unit* pUnit = Ogre::any_cast<Unit*>(owner);
+	pUnit->GetAnim()->StopAnimation();
 }

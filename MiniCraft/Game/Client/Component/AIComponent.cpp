@@ -9,6 +9,7 @@
 #include "OgreManager.h"
 #include "Faction.h"
 #include "GameDataDef.h"
+#include "BehaviorComponent.h"
 
 AiComponent::AiComponent(SelectableObject* pOwner)
 :Component(pOwner)
@@ -89,7 +90,7 @@ void AiComponent::GiveCommand( const OIS::MouseEvent& arg, OIS::MouseButtonID id
 
 	//是否选中了其他物体
 	POS intersectPos;
-	Ogre::MovableObject* pMovable = world.GetRaySceneQueryResult(arg, eQueryType_SelectableObject, &intersectPos);
+	Ogre::MovableObject* pMovable = world.GetRaySceneQueryResult(arg, QueryTypeSelectableObject, &intersectPos);
 	SelectableObject* pHitObj = nullptr;
 	if(pMovable)
 	{
@@ -113,17 +114,30 @@ void AiComponent::GiveCommand( const OIS::MouseEvent& arg, OIS::MouseButtonID id
 	
 			//设置采集目标
 			m_pOwner->GetGather()->SetTarget(static_cast<Resource*>(pHitObj));
-			//执行采集命令
-			m_pOwner->GetAi()->GiveCommand(Command(eCommandType_Gather, m_pOwner), true);
+
+			if(m_bCpuControl)
+				m_pOwner->GetBehavior()->SetTemplate("Scv");
+			else
+				m_pOwner->GetAi()->GiveCommand(Command(eCommandType_Gather, m_pOwner), true);
 		}
 		else	
 		{
 			if(id == OIS::MB_Left && pData->m_type == eCommandType_Attack)
 			{
 				assert(m_pOwner->HasAbility(eCommandType_Attack));
+				//设定攻击目标
 				m_pOwner->GetAi()->SetAttackTarget(pHitObj);
-				//执行攻击命令
-				m_pOwner->GetAi()->GiveCommand(Command(eCommandType_Attack, m_pOwner), true);
+
+				if(m_bCpuControl)
+				{
+					STRING btTmpl = m_pOwner->getParameter("name");
+					btTmpl += "Attack";
+					m_pOwner->GetBehavior()->SetTemplate(btTmpl);
+				}
+				else				
+				{
+					m_pOwner->GetAi()->GiveCommand(Command(eCommandType_Attack, m_pOwner), true);
+				}
 			}
 		}
 	}

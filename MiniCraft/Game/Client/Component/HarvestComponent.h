@@ -39,6 +39,7 @@ public:
 
 	//设置采集目标
 	void			SetTarget(Resource* pRes) { m_pTarget = pRes; }
+	Resource*		GetTarget()	{ return m_pTarget; }
 	void			SetGatherTime(float fTime) { m_fGatherTime = fTime; }
 	float			GetGatherTime() const	{ return m_fGatherTime; }
 	void			SetResVisible(bool bVisible); 

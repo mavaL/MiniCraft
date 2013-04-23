@@ -62,6 +62,9 @@ public:
 	int				SetBlackboardParamBool(lua_State* L);
 	int				GetHarvestStage(lua_State* L);
 	int				GetGatheringTime(lua_State* L);
+	int				GetAttackTargetID(lua_State* L);
+	int				SetAttackTargetID(lua_State* L);
+	int				FindNearestEnemy(lua_State* L);
 
 protected:
 	virtual void	_OnSelected(bool bSelected);
@@ -74,6 +77,7 @@ private:
 	static std::unordered_map<STRING, Ogre::AnimationState*>	m_portraitAnimCache;	//cache每种单位的3D肖像动画
 	Ogre::BillboardSet*		m_pHealthBar;
 	Kratos::ScriptSystem*	m_pScriptSystem;
+	int						m_attkTargetID;
 };
 
 

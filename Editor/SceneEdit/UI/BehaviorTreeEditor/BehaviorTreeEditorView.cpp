@@ -100,9 +100,6 @@ bool BehaviorTreeEditorView::FlowGraphProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPA
 		}
 
 		m_pProp->GetPropPane().OnFgElementSelected(type, curElement);
-
-		return true;
-		result = 0;
 	}
 	
 	return false;
@@ -149,7 +146,6 @@ void BehaviorTreeEditorView::SetActiveItem( const std::wstring& name )
 	else
 	{
 		m_curTmpl = &ManipulatorSystem.GetGameData().GetBTTemplate(name);
-		m_pProp->GetPropPane().OnFgElementSelected(eBTSelectionType_BT);
 		RefreshAll();
 	}
 }
@@ -193,6 +189,8 @@ void BehaviorTreeEditorView::RefreshAll()
 	m_globalBBNode->SetColor(0xc0c0c0ff);
 	m_globalBBNode->SetID(GLOBAL_BLACKBOARD_NODE_ID);
 	RefreshBlackboard(false);
+
+	m_pProp->GetPropPane().OnFgElementSelected(eBTSelectionType_BT);
 }
 
 void BehaviorTreeEditorView::_ConnectFgNodes( ManipulatorGameData::BTTemplate::SBTNode* node )
@@ -570,13 +568,16 @@ void BehaviorTreeEditorView::_OnXtpConnectionChanging( NMHDR* pNMHDR, LRESULT* p
 		auto from = FindNodeByID(pInfo->pConnection->GetOutputNode()->GetID());
 		auto to	= FindNodeByID(pInfo->pInputConnectionPoint->GetNode()->GetID());
 
-		auto& childs = from->childs;
-		size_t priority = childs.size();
-		childs.resize(priority + 1);
-		childs[priority] = to;
+		if (from != to)
+		{
+			auto& childs = from->childs;
+			size_t priority = childs.size();
+			childs.resize(priority + 1);
+			childs[priority] = to;
 
-		to->parent = from;
-		to->priority = priority;
+			to->parent = from;
+			to->priority = priority;
+		}
 	}
 }
 

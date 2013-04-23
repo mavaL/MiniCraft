@@ -10,18 +10,23 @@
 #include "World.h"
 #include "HarvestComponent.h"
 #include "AnimatedComponent.h"
+#include "BehaviorComponent.h"
 #include "InfoPanel.h"
 
 void StateIdle::Enter( SelectableObject* pOwner )
 {
 	//播放休闲动画
-	pOwner->GetAnim()->PlayAnimation(eAnimation_Idle, true);
+	AnimatedComponent* anim = pOwner->GetAnim();
+	if(anim)
+		anim->PlayAnimation(eAnimation_Idle, true);
 }
 
 void StateIdle::Exit( SelectableObject* pOwner )
 {
 	//停止播放休闲动画
-	pOwner->GetAnim()->StopAnimation();
+	AnimatedComponent* anim = pOwner->GetAnim();
+	if(anim)
+		anim->StopAnimation();
 }
 
 ///////////////////////////////////////////////////////////////
@@ -139,7 +144,7 @@ bool StateTargeting::OnInputSys_MouseMove( const OIS::MouseEvent &arg )
 	eCommandType cmd = pObj->GetActiveAbility()->m_type;
 
 	//获取当前鼠标hover下的物体
-	Ogre::MovableObject* pMovable = World::GetSingleton().GetRaySceneQueryResult(arg, eQueryType_SelectableObject);
+	Ogre::MovableObject* pMovable = World::GetSingleton().GetRaySceneQueryResult(arg, QueryTypeSelectableObject);
 	SelectableObject* pHoverObj = nullptr;
 	if(pMovable)
 	{

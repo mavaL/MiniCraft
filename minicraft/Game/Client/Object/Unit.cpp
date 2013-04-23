@@ -31,6 +31,9 @@ Luna<Unit>::RegType Unit::methods[] =
 	method(Unit, SetBlackboardParamBool),
 	method(Unit, GetHarvestStage),
 	method(Unit, GetGatheringTime),
+	method(Unit, GetAttackTargetID),
+	method(Unit, SetAttackTargetID),
+	method(Unit, FindNearestEnemy),
 	{0,0}
 };
 
@@ -45,6 +48,7 @@ Unit::Unit()
 ,m_data(nullptr)
 ,m_pHealthBar(nullptr)
 ,m_pScriptSystem(Kratos::ScriptSystem::GetSingletonPtr())
+,m_attkTargetID(-1)
 {
 	if(InitParamDict("Unit"))
 	{
@@ -53,6 +57,8 @@ Unit::Unit()
 		dict->addParameter(Ogre::ParameterDef("race", "Race", Ogre::PT_INT), &m_sCmdRace);
 		dict->addParameter(Ogre::ParameterDef("portrait", "Portrait mesh name", Ogre::PT_STRING), &m_sCmdPortraitName);
 		dict->addParameter(Ogre::ParameterDef("timecost", "Time cost to produce this unit", Ogre::PT_REAL), &m_sCmdProduceTime);
+
+		Luna<Unit>::Register(m_pScriptSystem->GetLuaState());
 	}
 
 	//将对象绑定到lua
@@ -108,6 +114,8 @@ void Unit::Init()
 	AddComponent(eComponentType_AI, new AiComponent(this));
 	eGameRace race = (eGameRace)GetRace();
 	GetAi()->SetFaction(World::GetSingleton().GetFaction(race));
+
+	GetEntity()->setQueryFlags(eQueryType_Unit);
 }
 
 void Unit::Update( float dt )
@@ -238,5 +246,46 @@ int Unit::GetGatheringTime( lua_State* L )
 	float fTime = m_pGather->GetGatherTime();
 	m_pScriptSystem->Push_Float(fTime);
 
+	return 1;
+}
+
+int Unit::GetAttackTargetID( lua_State* L )
+{
+	m_pScriptSystem->Push_Int(m_attkTargetID);
+	return 1;
+}
+
+int Unit::SetAttackTargetID( lua_State* L )
+{
+	m_attkTargetID = m_pScriptSystem->Get_Int(-1);
+	return 0;
+}
+
+int Unit::FindNearestEnemy( lua_State* L )
+{
+	///// !! Notice:单位数量多了之后,这里可能存在性能问题
+	const POS& origin = GetPosition();
+	const int ALERT_RADIUS = 2;
+	Ogre::Sphere s(origin, ALERT_RADIUS);
+	std::vector<Ogre::MovableObject*> queryResult;
+	World::GetSingleton().GetSphereSceneQueryResult(s, queryResult, eQueryType_Unit);
+
+	//寻找距离最近单位
+	float nearestDist = 10000;
+	int findID = -1;
+	for (size_t i=0; i<queryResult.size(); ++i)
+	{
+		float sqDist = queryResult[i]->getParentNode()->_getDerivedPosition().squaredDistance(origin);
+		SelectableObject* obj = Ogre::any_cast<SelectableObject*>(queryResult[i]->getUserAny());
+		bool bAlly = obj->GetAi()->IsAlly(this);
+
+		if(sqDist < nearestDist && !bAlly)
+		{
+			findID = obj->GetID();
+			nearestDist = sqDist;
+		}
+	}
+
+	m_pScriptSystem->Push_Int(findID);
 	return 1;
 }

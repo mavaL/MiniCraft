@@ -3,11 +3,15 @@
 #include "OgreDetourCrowd.h"
 #include "World.h"
 #include "SelectableObject.h"
+#include "OgreManager.h"
+#include "Scene.h"
+
+OgreDetourCrowd* PathComponent::m_pDetour = nullptr;
+OgreRecast* PathComponent::m_pRecast = nullptr;
+OgreDetourTileCache* PathComponent::m_pDetourTileCache = nullptr;
 
 PathComponent::PathComponent( SelectableObject* pOwner )
 :Component(pOwner)
-,m_pRecast(g_Environment.m_pRecast)
-,m_pDetour(g_Environment.m_pCrowd)
 ,m_pAgent(nullptr)
 ,m_agentID(-1)
 ,m_bIsMoving(false)
@@ -30,12 +34,57 @@ PathComponent::~PathComponent()
 	}
 }
 
+void PathComponent::InitRecastLib(const STRING& sceneName)
+{
+	OgreRecastConfigParams recastParams = OgreRecastConfigParams();
+	recastParams.setCellSize(1);
+	recastParams.setCellHeight(0.16f);
+	recastParams.setAgentMaxSlope(15);
+	recastParams.setAgentHeight(1.5f);
+	recastParams.setAgentMaxClimb(0.5f);
+	recastParams.setAgentRadius(0.4f);
+	recastParams.setEdgeMaxLen(2);
+	recastParams.setEdgeMaxError(1.3f);
+	recastParams.setVertsPerPoly(6);
+	recastParams.setRegionMinSize(2);
+	recastParams.setRegionMergeSize(3);
+	recastParams.setDetailSampleDist(6);
+	recastParams.setDetailSampleMaxError(1);
+
+	m_pRecast = new OgreRecast(RenderManager.m_pSceneMgr, recastParams);
+	m_pDetourTileCache = new OgreDetourTileCache(m_pRecast);
+
+	STRING basename, extname;
+	Ogre::StringUtil::splitBaseFilename(sceneName, basename, extname);
+	STRING navMeshFilename = basename + "_NavMesh.Bin";
+	Ogre::DataStreamPtr stream = Ogre::ResourceGroupManager::getSingleton().openResource(navMeshFilename, "General", false);
+	m_pDetourTileCache->loadAll(stream);
+	//m_pDetourTileCache->drawNavMesh();
+
+	m_pDetour = new OgreDetourCrowd(m_pRecast);
+
+	g_Environment.m_pCrowd = m_pDetour;
+	g_Environment.m_pRecast = m_pRecast;
+	g_Environment.m_pDetourTileCache = m_pDetourTileCache;
+}
+
+void PathComponent::DestroyRecastLib()
+{
+	SAFE_DELETE(m_pDetour);
+	SAFE_DELETE(m_pDetourTileCache);
+	SAFE_DELETE(m_pRecast);
+}
+
+void PathComponent::UpdateRecastLib(float dt)
+{
+	m_pDetour->updateTick(dt);
+}
+
 bool PathComponent::FindPath( POS& destPos, bool bJustTry )
 {
 	POS beginPos(m_pOwner->GetPosition());
-	World::GetSingleton().ClampPosToNavMesh(beginPos);
-
-	World::GetSingleton().ClampPosToNavMesh(destPos);
+	ClampPosToNavMesh(beginPos);
+	ClampPosToNavMesh(destPos);
 
 	int ret = m_pRecast->FindPath(beginPos, destPos, 1, 1);
 	if(ret >= 0 && !bJustTry)
@@ -70,7 +119,7 @@ bool PathComponent::StopMove()
 void PathComponent::SetDestPos( const POS& destPos )
 {
 	POS adjustPos(destPos);
-	World::GetSingleton().ClampPosToNavMesh(adjustPos);
+	ClampPosToNavMesh(adjustPos);
 
 	m_destPos = adjustPos;
 }
@@ -99,3 +148,30 @@ void PathComponent::EnableObstcleAvoidance( bool bEnable )
 	else
 		m_pAgent->params.updateFlags = 0;
 }
+
+POS PathComponent::GetRandomPositionOnNavmesh()
+{
+	TileSelection bound = m_pDetourTileCache->getBounds();
+	int tx = (int)(Ogre::Math::RangeRandom(0, 1) * bound.maxTx);
+	int ty = (int)(Ogre::Math::RangeRandom(0, 1) * bound.maxTy);
+
+	Ogre::AxisAlignedBox tileBounds = m_pDetourTileCache->getTileBounds(tx, ty);
+	Ogre::Vector3 center = tileBounds.getCenter();  // Center of the specified tile
+	//center.y = tileBounds.getMinimum().y;   // Place on the ground
+	// TODO centering probably has the biggest change of the point clipping to the navmesh
+
+	// Get random point in tile (in circle in the middle of the tile with radius of tilesize/2)
+	Ogre::Real radius = m_pDetourTileCache->getTileSize()/2;
+	return m_pRecast->getRandomNavMeshPointInCircle(center, radius-1);   // TODO I could also make RADIUS_EPSILON be a fraction of the tileSize
+}
+
+bool PathComponent::ClampPosToNavMesh( POS& wPos )
+{
+	bool ret = m_pRecast->findNearestPointOnNavmesh(wPos, wPos);
+	assert(ret);
+	return ret;
+}
+
+
+
+

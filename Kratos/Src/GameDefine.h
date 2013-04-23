@@ -27,8 +27,11 @@ enum eQueryType
 	eQueryType_All				=	0xffffffff,
 	eQueryType_Default			=	1<<0,
 	eQueryType_WorldGeometry	=	1<<1,
-	eQueryType_SelectableObject	=	1<<2
+	eQueryType_Unit				=	1<<2,
+	eQueryType_Resource			=	1<<3,
+	eQueryType_Building			=	1<<4,
 };
+#define QueryTypeSelectableObject (eQueryType_Unit | eQueryType_Resource | eQueryType_Building)
 
 //ÃüÁî
 enum eCommandType

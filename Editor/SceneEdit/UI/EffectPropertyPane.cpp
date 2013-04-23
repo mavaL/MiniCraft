@@ -15,7 +15,7 @@ bool PropertyPaneEffect::_OnCreate()
 	PROPERTY_REG(pCategory, Vec3	, L"Shadow Map Size"			, Ogre::Vector3(2048,1024,1024)	, propShadowMapSize);
 	PROPERTY_REG(pCategory,	Bool	, L"Self Shadow"				, FALSE						, propShadowSelfShadow);
 	PROPERTY_REG(pCategory, Bool	, L"Render Back Faces"			, TRUE						, propShadowCasterRenderBackFaces);
-	PROPERTY_REG(pCategory,	Double	, L"Lambda"						, ManipulatorSystem.GetEffect().GetShadowPssmLambda(), propShadowLambda);
+	PROPERTY_REG(pCategory,	Double	, L"Lambda"						, 0.75f						, propShadowLambda);
 	PROPERTY_REG(pCategory,	Double	, L"Extrusion Distance"			, 10000						, propShadowDirectionalLightExtrusionDistance);
 	pCategory->Expand();
 
@@ -39,116 +39,42 @@ void PropertyPaneEffect::_SetProperty( int id)
 
 	switch (id)
 	{
-	case propShadowFarDist: 
-		{
-			CXTPPropertyGridItemDouble* pItemVal = dynamic_cast<CXTPPropertyGridItemDouble*>(pItem);
-			manEffect.SetShadowFarDist((float)pItemVal->GetDouble());
-		}
-		break;
-
-	case propShadowSplitPadding:
-		{
-			CXTPPropertyGridItemDouble* pItemVal = dynamic_cast<CXTPPropertyGridItemDouble*>(pItem);
-			manEffect.SetShadowSplitPadding((float)pItemVal->GetDouble());
-		}
-		break;
-
+	case propShadowFarDist:			manEffect.SetShadowParam("FarDistance", (LPCTSTR)pItem->GetValue()); break;
+	case propShadowSplitPadding:	manEffect.SetShadowParam("SplitPadding", (LPCTSTR)pItem->GetValue()); break;
 	case propOptimalAdjustFactor0:
 	case propOptimalAdjustFactor1:
-	case propOptimalAdjustFactor2: pItem = m_mapItem[propShadowOptimalAdjustFactor];
+	case propOptimalAdjustFactor2:	pItem = m_mapItem[propShadowOptimalAdjustFactor];
 	case propShadowOptimalAdjustFactor: 
 		{
 			CXTPPropertyGridItemVec3* pItemVal = dynamic_cast<CXTPPropertyGridItemVec3*>(pItem);
 			const Ogre::Vector3 factor = GetVec3Value(pItemVal, id != propShadowOptimalAdjustFactor);
-			manEffect.SetShadowOptimalAdjustFactor(0, factor.x);
-			manEffect.SetShadowOptimalAdjustFactor(1, factor.y);
-			manEffect.SetShadowOptimalAdjustFactor(2, factor.z);
+			Ogre::String val = Ogre::StringConverter::toString(factor);
+			manEffect.SetShadowParam("AdjustFactor", Utility::EngineToUnicode(val));
 		}
 		break;
 
-	case propShadowUseSimpleOptimalAdjust:
-		{
-			CXTPPropertyGridItemBool* pItemVal = dynamic_cast<CXTPPropertyGridItemBool*>(pItem);
-			manEffect.SetShadowUseSimpleOptimalAdjust(pItemVal->GetBool());
-		}
-		break;
-
-	case propShadowCameraLightDirectionThreshold:
-		{
-			CXTPPropertyGridItemNumber* pItemVal = dynamic_cast<CXTPPropertyGridItemNumber*>(pItem);
-			manEffect.SetShadowCameraLightDirectionThreshold(pItemVal->GetNumber());
-		}
-		break;
-
+	case propShadowUseSimpleOptimalAdjust: manEffect.SetShadowParam("UseSimpleAdjust", (LPCTSTR)pItem->GetValue()); break;
+	case propShadowCameraLightDirectionThreshold: manEffect.SetShadowParam("CameraLightDirectionThreshold", (LPCTSTR)pItem->GetValue()); break;
 	case propShadowMapSize0:
 	case propShadowMapSize1:
-	case propShadowMapSize2: pItem = m_mapItem[propShadowMapSize];
+	case propShadowMapSize2:		pItem = m_mapItem[propShadowMapSize];
 	case propShadowMapSize: 
 		{
 			CXTPPropertyGridItemVec3* pItemVal = dynamic_cast<CXTPPropertyGridItemVec3*>(pItem);
 			const Ogre::Vector3 size = GetVec3Value(pItemVal, id != propShadowMapSize);
-			manEffect.SetShadowMapSize(0, (int)size.x);
-			manEffect.SetShadowMapSize(1, (int)size.y);
-			manEffect.SetShadowMapSize(2, (int)size.z);
+			Ogre::String val = Ogre::StringConverter::toString(size);
+			manEffect.SetShadowParam("ShadowMapSize", Utility::EngineToUnicode(val));
 		}
 		break;
 
-	case propShadowSelfShadow:
-		{
-			CXTPPropertyGridItemBool* pItemVal = dynamic_cast<CXTPPropertyGridItemBool*>(pItem);
-			manEffect.SetShadowSelfShadow(pItemVal->GetBool());
-		}
-		break;
-
-	case propShadowCasterRenderBackFaces:
-		{
-			CXTPPropertyGridItemBool* pItemVal = dynamic_cast<CXTPPropertyGridItemBool*>(pItem);
-			manEffect.SetShadowCasterRenderBackFaces(pItemVal->GetBool());
-		}
-		break;
-
-	case propShadowLambda:
-		{
-			CXTPPropertyGridItemDouble* pItemVal = dynamic_cast<CXTPPropertyGridItemDouble*>(pItem);
-			manEffect.SetShadowPssmLambda((float)pItemVal->GetDouble());
-		}
-		break;
-
-	case propShadowDirectionalLightExtrusionDistance:
-		{
-			CXTPPropertyGridItemDouble* pItemVal = dynamic_cast<CXTPPropertyGridItemDouble*>(pItem);
-			manEffect.SetShadowDirectionalLightExtrusionDistance((float)pItemVal->GetDouble());
-		}
-		break;
-
-	case propSSAOSampleLength:
-		{
-			CXTPPropertyGridItemDouble* pItemVal = dynamic_cast<CXTPPropertyGridItemDouble*>(pItem);
-			manEffect.SetSSAOSampleLength((float)pItemVal->GetDouble());
-		}
-		break;
-
-	case propSSAOOffsetScale:
-		{
-			CXTPPropertyGridItemDouble* pItemVal = dynamic_cast<CXTPPropertyGridItemDouble*>(pItem);
-			manEffect.SetSSAOOffsetScale((float)pItemVal->GetDouble());
-		}
-		break;
-
-	case propSSAODefaultAccessibility:
-		{
-			CXTPPropertyGridItemDouble* pItemVal = dynamic_cast<CXTPPropertyGridItemDouble*>(pItem);
-			manEffect.SetSSAODefaultAccessibility((float)pItemVal->GetDouble());
-		}
-		break;
-
-	case propSSAOEdgeHighlight:
-		{
-			CXTPPropertyGridItemDouble* pItemVal = dynamic_cast<CXTPPropertyGridItemDouble*>(pItem);
-			manEffect.SetSSAOEdgeHighlight((float)pItemVal->GetDouble());
-		}
-		break;
-
+	case propShadowSelfShadow:				manEffect.SetShadowParam("SelfShadow"		, (LPCTSTR)pItem->GetValue()); break;
+	case propShadowCasterRenderBackFaces:	manEffect.SetShadowParam("RenderBackFace"	, (LPCTSTR)pItem->GetValue()); break;
+	case propShadowLambda:					manEffect.SetShadowParam("PssmLambda"		, (LPCTSTR)pItem->GetValue()); break;
+	case propShadowDirectionalLightExtrusionDistance: manEffect.SetShadowParam("LightExtrusionDistance", (LPCTSTR)pItem->GetValue()); break;
+	case propSSAOSampleLength:				manEffect.SetSsaoParam("SampleLength"		, (LPCTSTR)pItem->GetValue()); break;
+	case propSSAOOffsetScale:				manEffect.SetSsaoParam("OffsetScale"		, (LPCTSTR)pItem->GetValue()); break;
+	case propSSAODefaultAccessibility:		manEffect.SetSsaoParam("DefaultAccessibility", (LPCTSTR)pItem->GetValue()); break;
+	case propSSAOEdgeHighlight:				manEffect.SetSsaoParam("EdgeHighlight"		, (LPCTSTR)pItem->GetValue()); break;
 	default: assert(0);
 	}
 }
@@ -156,33 +82,33 @@ void PropertyPaneEffect::_SetProperty( int id)
 void PropertyPaneEffect::_UpdateProperty( int id )
 {
 	ManipulatorEffect& manEffect = ManipulatorSystem.GetEffect();
-	std::string strNewValue;
+	const std::string* strNewValue = nullptr;
 
 	switch (id)
 	{
-	case propShadowFarDist:					strNewValue = Ogre::StringConverter::toString(manEffect.GetShadowFarDist()); break;
-	case propShadowSplitPadding:			strNewValue = Ogre::StringConverter::toString(manEffect.GetShadowSplitPadding()); break;
+	case propShadowFarDist:					strNewValue = &manEffect.GetShadowParam("FarDistance"); break;
+	case propShadowSplitPadding:			strNewValue = &manEffect.GetShadowParam("SplitPadding"); break;
 	case propOptimalAdjustFactor0:
 	case propOptimalAdjustFactor1:
 	case propOptimalAdjustFactor2:			id = propShadowOptimalAdjustFactor;
-	case propShadowOptimalAdjustFactor:		strNewValue = Ogre::StringConverter::toString(manEffect.GetShadowOptimalAdjustFactor()); break;
-	case propShadowUseSimpleOptimalAdjust : strNewValue = Ogre::StringConverter::toString(manEffect.GetShadowUseSimpleOptimalAdjust()); break;
-	case propShadowCameraLightDirectionThreshold:	strNewValue = Ogre::StringConverter::toString(manEffect.GetShadowCameraLightDirectionThreshold()); break;
+	case propShadowOptimalAdjustFactor:		strNewValue = &manEffect.GetShadowParam("AdjustFactor"); break;
+	case propShadowUseSimpleOptimalAdjust : strNewValue = &manEffect.GetShadowParam("UseSimpleAdjust"); break;
+	case propShadowCameraLightDirectionThreshold: strNewValue = &manEffect.GetShadowParam("CameraLightDirectionThreshold"); break;
 	case propShadowMapSize0:
 	case propShadowMapSize1:
 	case propShadowMapSize2:				id = propShadowMapSize;
-	case propShadowMapSize:					strNewValue = Ogre::StringConverter::toString(manEffect.GetShadowMapSize()); break;
-	case propShadowSelfShadow:				strNewValue = Ogre::StringConverter::toString(manEffect.GetShadowSelfShadow()); break;
-	case propShadowCasterRenderBackFaces:	strNewValue = Ogre::StringConverter::toString(manEffect.GetShadowCasterRenderBackFaces()); break;
-	case propShadowLambda:					strNewValue = Ogre::StringConverter::toString(manEffect.GetShadowPssmLambda()); break;
-	case propShadowDirectionalLightExtrusionDistance:	strNewValue = Ogre::StringConverter::toString(manEffect.GetShadowDirectionalLightExtrusionDistance()); break;
-	case propSSAOSampleLength:				strNewValue = Ogre::StringConverter::toString(manEffect.GetSSAOSampleLength()); break;
-	case propSSAOOffsetScale:				strNewValue = Ogre::StringConverter::toString(manEffect.GetSSAOOffsetScale()); break;
-	case propSSAODefaultAccessibility:		strNewValue = Ogre::StringConverter::toString(manEffect.GetSSAODefaultAccessibility()); break;
-	case propSSAOEdgeHighlight:				strNewValue = Ogre::StringConverter::toString(manEffect.GetSSAOEdgeHighlight()); break;
+	case propShadowMapSize:					strNewValue = &manEffect.GetShadowParam("ShadowMapSize"); break;
+	case propShadowSelfShadow:				strNewValue = &manEffect.GetShadowParam("SelfShadow"); break;
+	case propShadowCasterRenderBackFaces:	strNewValue = &manEffect.GetShadowParam("RenderBackFace"); break;
+	case propShadowLambda:					strNewValue = &manEffect.GetShadowParam("PssmLambda"); break;
+	case propShadowDirectionalLightExtrusionDistance: strNewValue = &manEffect.GetShadowParam("LightExtrusionDistance"); break;
+	case propSSAOSampleLength:				strNewValue = &manEffect.GetSsaoParam("SampleLength"); break;
+	case propSSAOOffsetScale:				strNewValue = &manEffect.GetSsaoParam("OffsetScale"); break;
+	case propSSAODefaultAccessibility:		strNewValue = &manEffect.GetSsaoParam("DefaultAccessibility"); break;
+	case propSSAOEdgeHighlight:				strNewValue = &manEffect.GetSsaoParam("EdgeHighlight"); break;
 	default: assert(0);
 	}
 	
-	std::wstring wcsNewValue = Utility::EngineToUnicode(strNewValue);
+	std::wstring wcsNewValue = Utility::EngineToUnicode(*strNewValue);
 	m_mapItem[id]->SetValue(wcsNewValue.c_str());
 }

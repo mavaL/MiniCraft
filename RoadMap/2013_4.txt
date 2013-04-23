@@ -2,8 +2,10 @@
 
 100%	V1.0 complete!
 
-2. Construct AI behavior of RTS with the edit tool.
+2. Cpu controlled scene for marines fighting against zerglings.
 
-0%
+20%
 
 3.Make a branch for physic middleware integreate testing. Havok or PhysX. Anyway, SC2 uses Havok, isn't it ?
+
+70% Ragoll to ogre skinning has problem.

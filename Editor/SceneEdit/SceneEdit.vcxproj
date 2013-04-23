@@ -198,7 +198,6 @@
     <ClCompile Include="UI\BehaviorTreeEditor\BehaviorTreeEditorProperty.cpp" />
     <ClCompile Include="UI\BehaviorTreeEditor\BehaviorTreeEditorView.cpp" />
     <ClCompile Include="UI\Common\DialogStringInput.cpp" />
-    <ClCompile Include="UI\Common\SubclassHelper.cpp" />
     <ClCompile Include="UI\Common\XTPCustomPropertyGridItem.cpp" />
     <ClCompile Include="UI\DialogGameDataBuilding.cpp" />
     <ClCompile Include="UI\DialogSceneNew.cpp" />

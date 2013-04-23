@@ -162,7 +162,7 @@ void PropertyPaneBehaviorTree::_SetProperty( int nID )
 			bool bOwnBB = m_curNodeType == eBTSelectionType_OwnBlackboard;
 			const std::wstring newName = m_mapItem[nID]->GetValue();
 			manGameData.RenameBlackboardParam(pConnePt->GetID(), newName, *m_pView->GetActiveTemplate(), bOwnBB);
-			m_pView->RefreshBlackboard(bOwnBB);
+			pConnePt->SetCaption(newName.c_str());
 		}
 		break;
 

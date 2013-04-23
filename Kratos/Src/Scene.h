@@ -9,7 +9,7 @@
 #ifndef Scene_h__
 #define Scene_h__
 
-#include <OgrePrerequisites.h>
+#include "KratosPrerequisites.h"
 #include <OgreVector3.h>
 #include <OgreColourValue.h>
 
@@ -34,9 +34,9 @@ namespace Kratos
 
 	public:
 		void	New();
-		void	Load(const std::string& sceneName, const std::string& sceneGroup, SceneSerializer* pHandler);
-		void	Load(const std::string& fullPath, SceneSerializer* pHandler);
-		void	Save(const std::string& fullPath, SceneSerializer* pHandler);
+		void	Load(const STRING& sceneName, const STRING& sceneGroup, SceneSerializer* pHandler);
+		void	Load(const STRING& fullPath, SceneSerializer* pHandler);
+		void	Save(const STRING& fullPath, SceneSerializer* pHandler);
 		void	Reset();
 
 		Ogre::TerrainGroup*			GetTerrainGroup() { return m_terrainGroup; }

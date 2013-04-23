@@ -20,7 +20,7 @@ namespace Kratos
 
 	}
 
-	void SceneSerializer::LoadScene( const std::string& sceneName, const std::string& sceneGroup, Scene* pOwner )
+	void SceneSerializer::LoadScene( const STRING& sceneName, const STRING& sceneGroup, Scene* pOwner )
 	{
 		DataStreamPtr stream = ResourceGroupManager::getSingleton().openResource(sceneName, sceneGroup);
 		char* szData = strdup(stream->getAsString().c_str());
@@ -59,7 +59,7 @@ namespace Kratos
 		free(szData);
 	}
 
-	void SceneSerializer::SaveScene(const std::string& fullPath, Scene* pOwner)
+	void SceneSerializer::SaveScene(const STRING& fullPath, Scene* pOwner)
 	{
 		using namespace rapidxml;
 
@@ -108,22 +108,7 @@ namespace Kratos
 		TerrainGroup* pTerrainGroup = new TerrainGroup(sm, Terrain::ALIGN_X_Z, mapSize, worldSize);
 		pTerrainGroup->setOrigin(Vector3::ZERO);
 
-#ifdef FORWARD_RENDERING
-		RenderManager.m_pDS->setActive(false);
-		Ogre::TerrainGlobalOptions::getSingleton().setDefaultMaterialGenerator(
-			Ogre::TerrainMaterialGeneratorPtr(new Ogre::TerrainMaterialGeneratorA));
-		TerrainMaterialGeneratorA::SM2Profile* matProfile = static_cast<TerrainMaterialGeneratorA::SM2Profile*>(
-			TerrainGlobalOptions::getSingleton().getDefaultMaterialGenerator()->getActiveProfile());
-		matProfile->setCompositeMapEnabled(false);
-
-#else	//deferred shading
-		RenderManager.m_pDS->setActive(true);
-		Ogre::TerrainGlobalOptions::getSingleton().setDefaultMaterialGenerator(
-			Ogre::TerrainMaterialGeneratorPtr(new Ogre::TerrainMaterialGeneratorD));
-		TerrainMaterialGeneratorD::SM2Profile* matProfile = static_cast<TerrainMaterialGeneratorD::SM2Profile*>(
-			TerrainGlobalOptions::getSingleton().getDefaultMaterialGenerator()->getActiveProfile());
-		matProfile->setCompositeMapEnabled(false);
-#endif
+		RenderManager.SetRenderingStyle();
 
 		//加载地形数据
 		pTerrainGroup->setResourceGroup(m_sceneGroup);
@@ -138,10 +123,11 @@ namespace Kratos
 
 	void SceneSerializer::_LoadEffect( rapidxml::xml_node<>* node )
 	{
-		SceneManager* sm = RenderManager.m_pSceneMgr;
+		COgreManager& ogreMgr = COgreManager::GetSingleton();
+		SceneManager* sm = ogreMgr.m_pSceneMgr;
 
 		//全局光
-		RenderManager.CreateSunLight(m_pOwner->GetSunLightDirection(), m_pOwner->GetSunLightDiffuse());
+		ogreMgr.CreateSunLight(m_pOwner->GetSunLightDirection(), m_pOwner->GetSunLightDiffuse());
 
 		//shadow
 		{
@@ -151,69 +137,46 @@ namespace Kratos
 			const String strAmbient = shadowNode->first_attribute("AmbientLight")->value();
 			sm->setAmbientLight(Ogre::StringConverter::parseColourValue(strAmbient));
 
-			const bool param1 =		StringConverter::parseBool(shadowNode->first_attribute("EnableShadow")->value());
-			const float param2 =	StringConverter::parseReal(shadowNode->first_attribute("FarDistance")->value());
-			const float param3 =	StringConverter::parseReal(shadowNode->first_attribute("SplitPadding")->value());
-			const Vector3 param4 =	StringConverter::parseVector3(shadowNode->first_attribute("AdjustFactor")->value());
-			const bool param5 =		StringConverter::parseBool(shadowNode->first_attribute("UseSimpleAdjust")->value());
-			const int param6 =		StringConverter::parseInt(shadowNode->first_attribute("CameraLightDirectionThreshold")->value());
-			const Vector3 param7 =	StringConverter::parseVector3(shadowNode->first_attribute("ShadowMapSize")->value());
-			const bool param8 =		StringConverter::parseBool(shadowNode->first_attribute("SelfShadow")->value());
-			const bool param9 =		StringConverter::parseBool(shadowNode->first_attribute("RenderBackFace")->value());
-			const float param10 =	StringConverter::parseReal(shadowNode->first_attribute("PssmLambda")->value());
-			const float param11 =	StringConverter::parseReal(shadowNode->first_attribute("LightExtrusionDistance")->value());
+			ogreMgr.GetEffectConfig().bShadow = Ogre::StringConverter::parseBool(shadowNode->first_attribute("EnableShadow")->value());
 
-			RenderManager.EnableShadow(param1);
-			sm->setShadowFarDistance(param2);
-			sm->setShadowTextureCountPerLightType(Ogre::Light::LT_DIRECTIONAL, 3);
-			sm->setShadowDirectionalLightExtrusionDistance(param11);
-			sm->setShadowCameraSetup(RenderManager.mPSSMSetup);
-			sm->setShadowTextureCount(3);
-			sm->setShadowTextureConfig(0, param7.x, param7.x, PF_FLOAT32_R);
-			sm->setShadowTextureConfig(1, param7.y, param7.y, PF_FLOAT32_R);
-			sm->setShadowTextureConfig(2, param7.z, param7.z, PF_FLOAT32_R);
-			sm->setShadowTextureSelfShadow(param8);
-			sm->setShadowCasterRenderBackFaces(param9);
-			sm->setShadowTextureCasterMaterial("Ogre/shadow/depth/caster");
-
-			PSSMShadowCameraSetup* cam = RenderManager.GetShadowCameraSetup();
-
-			cam->setSplitPadding(param3);
-			cam->calculateSplitPoints(3, RenderManager.m_pMainCamera->getNearClipDistance(), sm->getShadowFarDistance(), param10);
-			cam->setOptimalAdjustFactor(0, param4.x);
-			cam->setOptimalAdjustFactor(1, param4.y);
-			cam->setOptimalAdjustFactor(2, param4.z);
-			cam->setUseSimpleOptimalAdjust(param5);
-			cam->setCameraLightDirectionThreshold(Degree(param6));
-
+			Kratos::ShadowParams& shadowParams = ogreMgr.GetShadowParams();
+			shadowParams["FarDistance"]		= shadowNode->first_attribute("FarDistance")->value();
+			shadowParams["SplitPadding"]	= shadowNode->first_attribute("SplitPadding")->value();
+			shadowParams["AdjustFactor"]	= shadowNode->first_attribute("AdjustFactor")->value();
+			shadowParams["UseSimpleAdjust"] = shadowNode->first_attribute("UseSimpleAdjust")->value();
+			shadowParams["CameraLightDirectionThreshold"] = shadowNode->first_attribute("CameraLightDirectionThreshold")->value();
+			shadowParams["ShadowMapSize"]	= shadowNode->first_attribute("ShadowMapSize")->value();
+			shadowParams["SelfShadow"]		= shadowNode->first_attribute("SelfShadow")->value();
+			shadowParams["RenderBackFace"]	= shadowNode->first_attribute("RenderBackFace")->value();
+			shadowParams["PssmLambda"]		= shadowNode->first_attribute("PssmLambda")->value();
+			shadowParams["LightExtrusionDistance"] = shadowNode->first_attribute("LightExtrusionDistance")->value();
 
 #ifdef FORWARD_RENDERING
 			TerrainMaterialGeneratorA::SM2Profile* matProfile = static_cast<TerrainMaterialGeneratorA::SM2Profile*>(
 				TerrainGlobalOptions::getSingleton().getDefaultMaterialGenerator()->getActiveProfile());
 			matProfile->setReceiveDynamicShadowsEnabled(true);
 			matProfile->setReceiveDynamicShadowsDepth(true);
-			matProfile->setReceiveDynamicShadowsPSSM(cam);
+			matProfile->setReceiveDynamicShadowsPSSM(ogreMgr.GetShadowCameraSetup());
 #else	//deferred shading
 			TerrainGlobalOptions::getSingleton().setRenderQueueGroup(RENDER_QUEUE_WORLD_GEOMETRY_2);
 			sm->getRenderQueue()->getQueueGroup(RENDER_QUEUE_WORLD_GEOMETRY_2)->setShadowsEnabled(false);
 #endif
+			ogreMgr.ApplyShadowParams();
 		}
 
 		//ssao
 		{
 			rapidxml::xml_node<>* ssaoNode = node->first_node("ssao");
 
-			const bool param1 =		StringConverter::parseBool(ssaoNode->first_attribute("EnableSSAO")->value());
-			const float param2 =	StringConverter::parseReal(ssaoNode->first_attribute("SampleLength")->value());
-			const float param3 =	StringConverter::parseReal(ssaoNode->first_attribute("OffsetScale")->value());
-			const float param4 =	StringConverter::parseReal(ssaoNode->first_attribute("DefaultAccessibility")->value());
-			const float param5 =	StringConverter::parseReal(ssaoNode->first_attribute("EdgeHighlight")->value());
+			ogreMgr.GetEffectConfig().bSSAO = StringConverter::parseBool(ssaoNode->first_attribute("EnableSSAO")->value());
 
-			RenderManager.SetSSAOParam("cSampleLengthScreenSpace", param2/100, false);
-			RenderManager.SetSSAOParam("cOffsetScale", param3/100, false);
-			RenderManager.SetSSAOParam("cDefaultAccessibility", param4, false);
-			RenderManager.SetSSAOParam("cEdgeHighlight", param5, true);
-			RenderManager.EnableSSAO(param1);
+			Kratos::SsaoParams& ssaoParams = ogreMgr.GetSsaoParams();
+			ssaoParams["SampleLength"]	= ssaoNode->first_attribute("SampleLength")->value();
+			ssaoParams["OffsetScale"]	= ssaoNode->first_attribute("OffsetScale")->value();
+			ssaoParams["DefaultAccessibility"]	= ssaoNode->first_attribute("DefaultAccessibility")->value();
+			ssaoParams["EdgeHighlight"]	= ssaoNode->first_attribute("EdgeHighlight")->value();
+
+			ogreMgr.ApplySsaoParams();
 		}
 
 		//sharpen

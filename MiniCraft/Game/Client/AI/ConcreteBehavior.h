@@ -69,4 +69,13 @@ public:
 	virtual	void	Execute(Ogre::Any& owner);
 };
 
+///¹¥»÷Ä¿±ê
+class aiBehaviorAttackTarget : public Kratos::aiBehavior
+{
+public:
+	virtual	void	Execute(Ogre::Any& owner);
+	virtual	void	Update(Ogre::Any& owner, float dt);
+	virtual void	Exit(Ogre::Any& owner);
+};
+
 #endif // ConcreteBehavior_h__

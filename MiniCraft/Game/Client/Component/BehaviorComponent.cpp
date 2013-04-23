@@ -23,7 +23,7 @@ BehaviorComponent::~BehaviorComponent()
 	SAFE_DELETE(m_pOwnBB);
 }
 
-void BehaviorComponent::SetTempalte( const STRING& name )
+void BehaviorComponent::SetTemplate( const STRING& name )
 {
 	m_pTemplate = Kratos::aiBehaviorTreeTemplateManager::GetSingleton().GetTemplate(name);
 	m_pTemplate->CloneBlackBoard(*m_pOwnBB);
@@ -31,6 +31,9 @@ void BehaviorComponent::SetTempalte( const STRING& name )
 
 void BehaviorComponent::Update( float dt )
 {
+	if(!m_pTemplate)
+		return;
+
 	//¸üÐÂºÚ°å
 	SCRIPTNAMAGER.Call(m_pTemplate->GetBBScriptEntry().c_str(), m_pOwner->GetID());
 

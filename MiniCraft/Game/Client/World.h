@@ -14,16 +14,21 @@ class Faction;
 class UiCommandPanel;
 class UiInfoPanel;
 class UiPortraitPanel;
-class Scene;
 
 //常用成员全局环境
 struct SGlobalEnvironment 
 {
 	SGlobalEnvironment() { Reset(); }
-	void	Reset() { m_pRecast=nullptr; m_pCrowd=nullptr; } 
+	void	Reset() 
+	{ 
+		m_pRecast=nullptr; 
+		m_pCrowd=nullptr; 
+		m_pDetourTileCache=nullptr; 
+	} 
 
-	OgreRecast*			m_pRecast;
-	OgreDetourCrowd*	m_pCrowd;
+	OgreRecast*				m_pRecast;
+	OgreDetourCrowd*		m_pCrowd;
+	OgreDetourTileCache*	m_pDetourTileCache;
 };
 
 extern SGlobalEnvironment	g_Environment;
@@ -50,6 +55,8 @@ protected:
 	virtual void	_LoadObjects(rapidxml::xml_node<>* node);
 
 public:
+	static const char className[];
+	static Luna<World>::RegType methods[];
 	World(lua_State* L) {}
 	///////////////////////////////////////////
 	/////////////lua导出函数
@@ -63,24 +70,21 @@ public:
 	void	Update(float dt);
 	void	Shutdown();
 
-	static const char className[];
-	static Luna<World>::RegType methods[];
-
-	const Ogre::AxisAlignedBox&	GetResAABB() const { return m_pGold->getWorldBoundingBox(); }
-	POS				GetRandomPositionOnNavmesh();
-
+	Kratos::Scene*	GetScene()	{ return m_pTestScene; }
 	void			EnableFreeCamera(bool bEnable);
 	bool			IsFreeCameraEnabled() { return m_bFreeCamMode; }
 	OgreBites::SdkCameraMan*	GetCameraMan()	{ return m_cameraMan; }
 
-	//返回AABB场景查询到的物体
+	//AABB场景查询
 	void			GetAABBSceneQueryResult(const Ogre::AxisAlignedBox& box, 
-		std::vector<Ogre::MovableObject*>& result, eQueryType mask = eQueryType_All);
-	//返回射线场景查询到的第1个物体
-	Ogre::MovableObject*	GetRaySceneQueryResult(const OIS::MouseEvent& arg, eQueryType mask = eQueryType_All, POS* retIntersect = nullptr);
+		std::vector<Ogre::MovableObject*>& result, int mask = eQueryType_All);
+	//射线场景查询
+	Ogre::MovableObject*	GetRaySceneQueryResult(const OIS::MouseEvent& arg, 
+		int mask = eQueryType_All, POS* retIntersect = nullptr);
+	//球形场景查询
+	void			GetSphereSceneQueryResult(const Ogre::Sphere& s, 
+		std::vector<Ogre::MovableObject*>& result, int mask = eQueryType_All);
 
-	//尝试调整世界坐标在有效的NavMesh上
-	bool			ClampPosToNavMesh(POS& wPos);
 	//设置对象为选中状态
 	void			SetObjectSelected(int ID);
 	//清除所有选中状态
@@ -106,14 +110,9 @@ private:
 	Kratos::COgreManager*		m_pRenderSystem;
 
 	SelectedContainer			m_vecSelectUnis;	//所有选中单位
-	Ogre::Entity*				m_pGold;
-	Ogre::AxisAlignedBoxSceneQuery*		m_pSceneQuery;
+	Ogre::AxisAlignedBoxSceneQuery*	m_pSceneQuery;
 	Ogre::RaySceneQuery*		m_pRaySceneQuery;
-
-	//Recast寻路库
-	OgreRecast*					m_pRecast;
-	OgreDetourTileCache*		m_pDetourTileCache;
-	OgreDetourCrowd*			m_pDetourCrowd;
+	Ogre::SphereSceneQuery*		m_pSphereSceneQuery;
 
 	//调试观察用第三人称摄像机
 	OgreBites::SdkCameraMan*	m_cameraMan;

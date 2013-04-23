@@ -160,7 +160,7 @@ bool CBattleState::OnInputSys_MouseReleased( const OIS::MouseEvent& arg, OIS::Mo
 		float dist = m_LBDownScreenPos.squaredDistance(FLOAT2(screenX, screenY));
 		if(dist <= 0.001f)
 		{
-			Ogre::MovableObject* pObject = world.GetRaySceneQueryResult(arg, eQueryType_SelectableObject);
+			Ogre::MovableObject* pObject = world.GetRaySceneQueryResult(arg, QueryTypeSelectableObject);
 			if (pObject)
 				vecResult.push_back(pObject);
 		}
@@ -180,7 +180,7 @@ bool CBattleState::OnInputSys_MouseReleased( const OIS::MouseEvent& arg, OIS::Mo
 			aabb.setMaximum(std::max(m_LBDownPos.x, intersectPos.x), std::max(m_LBDownPos.y + 100, intersectPos.y + 100),
 				std::max(m_LBDownPos.z, intersectPos.z));
 
-			world.GetAABBSceneQueryResult(aabb, vecResult, eQueryType_SelectableObject);
+			world.GetAABBSceneQueryResult(aabb, vecResult, QueryTypeSelectableObject);
 		}
 
 		//单位设置为选中状态

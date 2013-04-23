@@ -33,6 +33,11 @@ namespace Kratos
 		bool	bSharpen;
 	};
 
+	//阴影参数
+	typedef Ogre::NameValuePairList ShadowParams;
+	//SSAO参数
+	typedef Ogre::NameValuePairList SsaoParams;
+
 	typedef std::unordered_map<Ogre::Light*, DLight*>	DeferredLightList;
 
 	/*------------------------------------------------
@@ -63,6 +68,7 @@ namespace Kratos
 		Ogre::Timer*	GetTimer()			{ return m_Timer; }
 		void			GetMainWndHandle(unsigned long& hwnd);
 		Ogre::PSSMShadowCameraSetup*	GetShadowCameraSetup() { return (Ogre::PSSMShadowCameraSetup*)mPSSMSetup.get(); }
+		void			SetRenderingStyle();
 		//创建RT
 		Ogre::TexturePtr	CreateRT(const Ogre::String& name, int w, int h, Ogre::PixelFormat format);
 		//创建Entity,带tangent vector
@@ -76,12 +82,15 @@ namespace Kratos
 		void				DestroyDLight(DLight* light);
 		DeferredLightList&	GetDLightList() { return m_dLightList; }	
 
-		const SEffectConfig&	GetEffectConfig() const { return m_effectCfg; }
+		SEffectConfig&	GetEffectConfig() { return m_effectCfg; }
 		void			EnableShadow(bool bEnable);
 		void			EnableFXAA(bool bEnable);
 		void			EnableSSAO(bool bEnable);
 		void			EnableSharpen(bool bEnable);
-		void			SetSSAOParam(const Ogre::String& name, float val, bool bRemoveAndAdd = true);
+		ShadowParams&	GetShadowParams()	{ return m_shadowParams; }
+		SsaoParams&		GetSsaoParams()		{ return m_ssaoParams; }
+		void			ApplyShadowParams();
+		void			ApplySsaoParams();
 
 		Ogre::Root*			mRoot;
 		Ogre::RenderWindow* mWindow;
@@ -99,6 +108,8 @@ namespace Kratos
 	private:
 		bool				m_bHasInit;
 		SEffectConfig		m_effectCfg;
+		ShadowParams		m_shadowParams;
+		SsaoParams			m_ssaoParams;
 
 		Ogre::CompositorInstance*	m_fxaa;
 		Ogre::CompositorInstance*	m_ssao;

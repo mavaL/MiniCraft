@@ -49,9 +49,10 @@ DialogBehaviorTreeEditor::DialogBehaviorTreeEditor( CWnd* pParent /*= NULL*/ )
 
 DialogBehaviorTreeEditor::~DialogBehaviorTreeEditor()
 {
-	SAFE_DELETE(m_pView);
-	SAFE_DELETE(m_pExplorer);
-	SAFE_DELETE(m_property);
+	// See MFC TN017 [4/23/2013 mavaL]
+	m_pView->DestroyWindow();
+	m_pExplorer->DestroyWindow();
+	m_property->DestroyWindow();
 }
 
 BOOL DialogBehaviorTreeEditor::OnInitDialog()

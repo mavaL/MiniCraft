@@ -10,19 +10,14 @@
 #include "InfoPanel.h"
 #include "Scene.h"
 #include "PortraitPanel.h"
-
-///TODO: 一些测试代码去掉后,这些该去的也要去
-#include "Unit.h"
 #include "AIFaction.h"
-#include "Building.h"
 #include "Resource.h"
 #include "BehaviorTreeTemplateManager.h"
+#include "Building.h"
 #include "ConcreteBehavior.h"
 #include "BlackBoard.h"
-#include "BehaviorComponent.h"
 #include "PathComponent.h"
-#include "AIComponent.h"
-#include "HarvestComponent.h"
+
 
 SGlobalEnvironment	g_Environment;
 
@@ -43,14 +38,11 @@ Luna<World>::RegType World::methods[] =
 
 ////////////////////////////////////////////////////////////////
 World::World()
-:m_pRecast(nullptr)
-,m_pDetourTileCache(nullptr)
-,m_pDetourCrowd(nullptr)
-,m_pGold(nullptr)
-,m_cameraMan(nullptr)
+:m_cameraMan(nullptr)
 ,m_bFreeCamMode(false)
 ,m_pSceneQuery(nullptr)
 ,m_pRaySceneQuery(nullptr)
+,m_pSphereSceneQuery(nullptr)
 ,m_cmdPanel(new UiCommandPanel)
 ,m_infoPanel(new UiInfoPanel)
 ,m_portraitPanel(new UiPortraitPanel)
@@ -58,7 +50,6 @@ World::World()
 ,m_pRenderSystem(Kratos::COgreManager::GetSingletonPtr())
 {
 	Luna<World>::Register(m_pScriptSystem->GetLuaState());
-	Luna<Unit>::Register(m_pScriptSystem->GetLuaState());
 	m_pScriptSystem->BindObjectToLua<World>("world", this);
 }
 
@@ -79,6 +70,7 @@ void World::Init()
 	m_pSceneQuery = sm->createAABBQuery(AxisAlignedBox());
 	m_pRaySceneQuery = sm->createRayQuery(Ray());
 	m_pRaySceneQuery->setSortByDistance(true);
+	m_pSphereSceneQuery = sm->createSphereQuery(Sphere());
 
 	Ogre::MovableObject::setDefaultQueryFlags(eQueryType_Default);
 
@@ -90,6 +82,8 @@ void World::Init()
 	cam->lookAt(0, 0, 8);
 	//cam->setFOVy(Degree(30));
 
+	GameDataDefManager::GetSingleton().LoadAllData();
+
 	//初始化行为库
 	Kratos::aiBehaviorTreeTemplateManager& btMgr = Kratos::aiBehaviorTreeTemplateManager::GetSingleton();
 	btMgr.AddBehavior("Idle", new aiBehaviorIdle);
@@ -99,6 +93,7 @@ void World::Init()
 	btMgr.AddBehavior("GatherRes", new aiBehaviorGathering);
 	btMgr.AddBehavior("RetriveRes", new aiBehaviorRetriveRes);
 	btMgr.AddBehavior("ReturnRes", new aiBehaviorReturnRes);
+	btMgr.AddBehavior("AttackTarget", new aiBehaviorAttackTarget);
 
 	//测试两个AI
 	m_player[eGameRace_Terran] = new FactionAI(eGameRace_Terran);
@@ -108,53 +103,16 @@ void World::Init()
 	m_player[eGameRace_Terran]->SetTeamColor(COLOR::Blue);
 	m_player[eGameRace_Zerg]->SetTeamColor(COLOR::Red);
 
-	GameDataDefManager::GetSingleton().LoadAllData();
-
+	const STRING sceneName("BattleAI.Scene");
 	//初始化Recast库
-	OgreRecastConfigParams recastParams = OgreRecastConfigParams();
-	recastParams.setCellSize(1);
-	recastParams.setCellHeight(0.16f);
-	recastParams.setAgentMaxSlope(15);
-	recastParams.setAgentHeight(1.5f);
-	recastParams.setAgentMaxClimb(0.5f);
-	recastParams.setAgentRadius(0.4f);
-	recastParams.setEdgeMaxLen(2);
-	recastParams.setEdgeMaxError(1.3f);
-	recastParams.setVertsPerPoly(6);
-	recastParams.setRegionMinSize(2);
-	recastParams.setRegionMergeSize(3);
-	recastParams.setDetailSampleDist(6);
-	recastParams.setDetailSampleMaxError(1);
-
-	m_pRecast = new OgreRecast(sm, recastParams);
-	m_pDetourTileCache = new OgreDetourTileCache(m_pRecast);
-
-	//加载编辑器导出的导航网格数据
-	Ogre::DataStreamPtr stream = Ogre::ResourceGroupManager::getSingleton().openResource(
-		"NavMesh.Bin", "General", false);
-	assert(m_pDetourTileCache->loadAll(stream));
-
-	//m_pDetourTileCache->drawNavMesh();
-
-	//初始化Detour寻路库
-	m_pDetourCrowd = new OgreDetourCrowd(m_pRecast);
-
-	g_Environment.m_pRecast = m_pRecast;
-	g_Environment.m_pCrowd = m_pDetourCrowd;
+	PathComponent::InitRecastLib(sceneName);
 
 	//加载测试场景
 	m_pTestScene = new Kratos::Scene();
-	m_pTestScene->Load("MyStarCraft.Scene", "General", this);
+	m_pTestScene->Load(sceneName, "General", this);
 
-	///////////////行为树测试
-	Unit* pUnit = static_cast<Unit*>(ObjectManager::GetSingleton().CreateObject(eObjectType_Unit));
-	pUnit->setParameter("name", "Scv");
-	pUnit->Init();
-	pUnit->SetPosition(m_player[eGameRace_Terran]->GetBase()->GetRallyPoint());
-	pUnit->AddComponent(eComponentType_Path, new PathComponent(pUnit));
-	pUnit->AddComponent(eComponentType_Behevior, new BehaviorComponent(pUnit));
-	pUnit->GetAi()->SetCpuControl(true);
-	pUnit->GetBehavior()->SetTempalte("Scv");
+	dynamic_cast<FactionAI*>(m_player[eGameRace_Zerg])->Init();
+	dynamic_cast<FactionAI*>(m_player[eGameRace_Terran])->Init();
 
 	//UI for test
 	Ogre::Entity* pEntConsole = m_pRenderSystem->CreateEntityWithTangent("ConsoleTerran_0.mesh", sm);
@@ -208,16 +166,15 @@ void World::Shutdown()
 	SAFE_DELETE(m_player[eGameRace_Zerg]);
 
 	ObjectManager::GetSingleton().DestroyAll();
-
-	SAFE_DELETE(m_pDetourCrowd);
-	SAFE_DELETE(m_pDetourTileCache);
-	SAFE_DELETE(m_pRecast);
+	PathComponent::DestroyRecastLib();
 	SAFE_DELETE(m_cameraMan);
 
 	m_pRenderSystem->m_pSceneMgr->destroyQuery(m_pSceneQuery);
 	m_pRenderSystem->m_pSceneMgr->destroyQuery(m_pRaySceneQuery);
+	m_pRenderSystem->m_pSceneMgr->destroyQuery(m_pSphereSceneQuery);
 	m_pSceneQuery = nullptr;
 	m_pRaySceneQuery = nullptr;
+	m_pSphereSceneQuery = nullptr;
 
 	SelectableObject::ReleaseMeshCache();
 
@@ -239,35 +196,12 @@ void World::Update(float dt)
 	m_player[eGameRace_Terran]->Update(dt);
 	m_player[eGameRace_Zerg]->Update(dt);
 
-	m_pDetourCrowd->updateTick(dt);
+	PathComponent::UpdateRecastLib(dt);
 
 	ObjectManager::GetSingleton().UpdateAll(dt);
 
 	m_infoPanel->Update();
 	m_portraitPanel->Update();
-}
-
-bool World::ClampPosToNavMesh( Ogre::Vector3& wPos )
-{
-	bool ret = m_pRecast->findNearestPointOnNavmesh(wPos, wPos);
-	assert(ret);
-	return ret;
-}
-
-Ogre::Vector3 World::GetRandomPositionOnNavmesh()
-{
-	TileSelection bound = m_pDetourTileCache->getBounds();
-	int tx = (int)(Ogre::Math::RangeRandom(0, 1) * bound.maxTx);
-	int ty = (int)(Ogre::Math::RangeRandom(0, 1) * bound.maxTy);
-
-	Ogre::AxisAlignedBox tileBounds = m_pDetourTileCache->getTileBounds(tx, ty);
-	Ogre::Vector3 center = tileBounds.getCenter();  // Center of the specified tile
-	//center.y = tileBounds.getMinimum().y;   // Place on the ground
-	// TODO centering probably has the biggest change of the point clipping to the navmesh
-
-	// Get random point in tile (in circle in the middle of the tile with radius of tilesize/2)
-	Ogre::Real radius = m_pDetourTileCache->getTileSize()/2;
-	return m_pRecast->getRandomNavMeshPointInCircle(center, radius-1);   // TODO I could also make RADIUS_EPSILON be a fraction of the tileSize
 }
 
 void World::EnableFreeCamera( bool bEnable )
@@ -286,10 +220,8 @@ void World::EnableFreeCamera( bool bEnable )
 }
 
 void World::GetAABBSceneQueryResult(const Ogre::AxisAlignedBox& box, 
-	std::vector<Ogre::MovableObject*>& result, eQueryType mask)
+	std::vector<Ogre::MovableObject*>& result, int mask)
 {
-	assert(m_pSceneQuery);
-
 	m_pSceneQuery->setBox(box);
 	m_pSceneQuery->setQueryMask(mask);
 	Ogre::SceneQueryResult& queryResults = m_pSceneQuery->execute();
@@ -299,7 +231,7 @@ void World::GetAABBSceneQueryResult(const Ogre::AxisAlignedBox& box,
 		result.push_back(*iter);
 }
 
-Ogre::MovableObject* World::GetRaySceneQueryResult( const OIS::MouseEvent& arg, eQueryType mask, POS* retIntersect )
+Ogre::MovableObject* World::GetRaySceneQueryResult( const OIS::MouseEvent& arg, int mask, POS* retIntersect )
 {
 	float screenX = arg.state.X.abs / (float)arg.state.width;
 	float screenY = arg.state.Y.abs / (float)arg.state.height;
@@ -318,6 +250,17 @@ Ogre::MovableObject* World::GetRaySceneQueryResult( const OIS::MouseEvent& arg, 
 		return nullptr;
 
 	return result[0].movable;
+}
+
+void World::GetSphereSceneQueryResult( const Ogre::Sphere& s, std::vector<Ogre::MovableObject*>& result, int mask /*= eQueryType_All*/ )
+{
+	m_pSphereSceneQuery->setSphere(s);
+	m_pSphereSceneQuery->setQueryMask(mask);
+	Ogre::SceneQueryResult& queryResults = m_pSphereSceneQuery->execute();
+
+	auto movableList = queryResults.movables;
+	for (auto iter=movableList.begin(); iter!=movableList.end(); ++iter)
+		result.push_back(*iter);
 }
 
 void World::SetObjectSelected( int ID )
@@ -453,12 +396,13 @@ void World::_LoadObjects( rapidxml::xml_node<>* node )
 				pRes->SetPosition(pos);
 				pRes->SetOrientation(orient);
 				pRes->SetScale(scale);
+				pRes->GetEntity()->setQueryFlags(eQueryType_Resource);
 			}
 		}
 		else
 		{
 			//非游戏对象,不纳入逻辑管理,只渲染
-			Ogre::Entity* entity = m_pRenderSystem->m_pSceneMgr->createEntity(strMesh);
+			Ogre::Entity* entity = m_pRenderSystem->CreateEntityWithTangent(strMesh, m_pRenderSystem->m_pSceneMgr);
 			assert(entity);
 
 			Ogre::SceneNode* pNode = m_pRenderSystem->m_pSceneMgr->getRootSceneNode()->createChildSceneNode(pos, orient);
@@ -514,3 +458,7 @@ int World::SetGlobalBBParam_Bool( lua_State* L )
 
 	return 0;
 }
+
+
+
+

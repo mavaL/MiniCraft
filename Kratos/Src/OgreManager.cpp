@@ -119,6 +119,7 @@ namespace Kratos
 
 		PSSMShadowCameraSetup* pssmSetup = new PSSMShadowCameraSetup;
 		mPSSMSetup.bind(pssmSetup);
+		m_pSceneMgr->setShadowCameraSetup(mPSSMSetup);
 
 		m_Timer = new Ogre::Timer();
 		m_Timer->reset();
@@ -236,18 +237,6 @@ namespace Kratos
 		EnableFXAA(m_effectCfg.bFXAA);
 	}
 
-	void COgreManager::SetSSAOParam( const Ogre::String& name, float val, bool bRemoveAndAdd )
-	{
-		assert(m_ssao);
-
-		Material* mat = static_cast<Material*>(MaterialManager::getSingleton().getByName("SSAO/Crytek").get());
-		assert(mat);
-		mat->getTechnique(0)->getPass(0)->getFragmentProgramParameters()->setNamedConstant(name, val);
-
-		if(bRemoveAndAdd)
-			ResetEffect();
-	}
-
 	Ogre::TexturePtr COgreManager::CreateRT(const Ogre::String& name, int w, int h, Ogre::PixelFormat format)
 	{
 		return TextureManager::getSingleton().createManual( name, ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, 
@@ -337,6 +326,69 @@ namespace Kratos
 			m_dLightList.erase(m_pSunLight->getParentLight());
 			SAFE_DELETE(m_pSunLight);
 		}
+	}
+
+	void COgreManager::SetRenderingStyle()
+	{
+#ifdef FORWARD_RENDERING
+		RenderManager.m_pDS->setActive(false);
+		Ogre::TerrainGlobalOptions::getSingleton().setDefaultMaterialGenerator(
+			Ogre::TerrainMaterialGeneratorPtr(new Ogre::TerrainMaterialGeneratorA));
+		TerrainMaterialGeneratorA::SM2Profile* matProfile = static_cast<TerrainMaterialGeneratorA::SM2Profile*>(
+			TerrainGlobalOptions::getSingleton().getDefaultMaterialGenerator()->getActiveProfile());
+		matProfile->setCompositeMapEnabled(false);
+
+#else	//deferred shading
+		RenderManager.m_pDS->setActive(true);
+		Ogre::TerrainGlobalOptions::getSingleton().setDefaultMaterialGenerator(
+			Ogre::TerrainMaterialGeneratorPtr(new Ogre::TerrainMaterialGeneratorD));
+		TerrainMaterialGeneratorD::SM2Profile* matProfile = static_cast<TerrainMaterialGeneratorD::SM2Profile*>(
+			TerrainGlobalOptions::getSingleton().getDefaultMaterialGenerator()->getActiveProfile());
+		matProfile->setCompositeMapEnabled(false);
+#endif
+	}
+
+	void COgreManager::ApplyShadowParams()
+	{
+		EnableShadow(m_effectCfg.bShadow);
+		m_pSceneMgr->setShadowFarDistance(Ogre::StringConverter::parseReal(m_shadowParams["FarDistance"]));
+		m_pSceneMgr->setShadowTextureCountPerLightType(Ogre::Light::LT_DIRECTIONAL, 3);
+		m_pSceneMgr->setShadowDirectionalLightExtrusionDistance(Ogre::StringConverter::parseReal(m_shadowParams["LightExtrusionDistance"]));
+		m_pSceneMgr->setShadowTextureCount(3);
+		FLOAT3 texSize = Ogre::StringConverter::parseVector3(m_shadowParams["ShadowMapSize"]);
+		m_pSceneMgr->setShadowTextureConfig(0, texSize.x, texSize.x, PF_FLOAT32_R);
+		m_pSceneMgr->setShadowTextureConfig(1, texSize.y, texSize.y, PF_FLOAT32_R);
+		m_pSceneMgr->setShadowTextureConfig(2, texSize.z, texSize.z, PF_FLOAT32_R);
+		m_pSceneMgr->setShadowTextureSelfShadow(Ogre::StringConverter::parseBool(m_shadowParams["SelfShadow"]));
+		m_pSceneMgr->setShadowCasterRenderBackFaces(Ogre::StringConverter::parseBool(m_shadowParams["RenderBackFace"]));
+		m_pSceneMgr->setShadowTextureCasterMaterial("Ogre/shadow/depth/caster");
+
+		PSSMShadowCameraSetup* cam = GetShadowCameraSetup();
+
+		cam->setSplitPadding(Ogre::StringConverter::parseBool(m_shadowParams["SplitPadding"]));
+		cam->calculateSplitPoints(3, m_pMainCamera->getNearClipDistance(), m_pSceneMgr->getShadowFarDistance(), 
+			Ogre::StringConverter::parseReal(m_shadowParams["PssmLambda"]));
+		FLOAT3 adjust = Ogre::StringConverter::parseVector3(m_shadowParams["AdjustFactor"]);
+		cam->setOptimalAdjustFactor(0, adjust.x);
+		cam->setOptimalAdjustFactor(1, adjust.y);
+		cam->setOptimalAdjustFactor(2, adjust.z);
+		cam->setUseSimpleOptimalAdjust(Ogre::StringConverter::parseBool(m_shadowParams["UseSimpleAdjust"]));
+		cam->setCameraLightDirectionThreshold(Degree(Ogre::StringConverter::parseReal(m_shadowParams["CameraLightDirectionThreshold"])));
+	}
+
+	void COgreManager::ApplySsaoParams()
+	{
+		Material* mat = static_cast<Material*>(MaterialManager::getSingleton().getByName("SSAO/Crytek").get());
+		assert(mat);
+		auto gpuParams = mat->getTechnique(0)->getPass(0)->getFragmentProgramParameters();
+
+		gpuParams->setNamedConstant("cSampleLengthScreenSpace", Ogre::StringConverter::parseReal(m_ssaoParams["SampleLength"])/100);
+		gpuParams->setNamedConstant("cOffsetScale", Ogre::StringConverter::parseReal(m_ssaoParams["OffsetScale"])/100);
+		gpuParams->setNamedConstant("cDefaultAccessibility", Ogre::StringConverter::parseReal(m_ssaoParams["DefaultAccessibility"]));
+		gpuParams->setNamedConstant("cEdgeHighlight", Ogre::StringConverter::parseReal(m_ssaoParams["EdgeHighlight"]));
+
+		ResetEffect();
+		RenderManager.EnableSSAO(m_effectCfg.bSSAO);
 	}
 
 }

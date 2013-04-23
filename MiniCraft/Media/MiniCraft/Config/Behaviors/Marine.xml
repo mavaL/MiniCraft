@@ -3,14 +3,16 @@
 	<BehaviorTemplate name="Marine" race="Terran">
 		<BehaviorTree>
 			<SequenceNode>
-				<ConditionNode expression="">
-					<ActionNode behavior="MoveToEnemyBase"/>
+				<ConditionNode expression="AttackTargetID != -1 or bFindEnemy">
+					<ActionNode behavior="AttackTarget"/>
 				</ConditionNode>
 				<ActionNode behavior="MoveToEnemyBase"/>
-				<ActionNode behavior="Idle"/>
 			</SequenceNode>
 		</BehaviorTree>
-		<BlackBoard/>
+		<BlackBoard>
+			<Variable name="AttackTargetID" value="0" type="int"/>
+			<Variable name="bFindEnemy" value="false" type="bool"/>
+		</BlackBoard>
 		<Script filename="MarineBlackboard.lua" entry="BBUpdate_Marine"/>
 	</BehaviorTemplate>
 </Root>

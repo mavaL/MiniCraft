@@ -21,7 +21,7 @@ HarvestComponent::HarvestComponent( SelectableObject* pOwner )
 {
 	assert(m_pOwner->IsRenderableReady());
 
-	m_pCrystal = RenderManager.m_pSceneMgr->createEntity("Crystal_0.mesh");
+	m_pCrystal = RenderManager.CreateEntityWithTangent("Crystal_0.mesh", RenderManager.m_pSceneMgr);
 	assert(m_pCrystal);
 	Ogre::SceneNode* pNode = m_pOwner->GetSceneNode()->createChildSceneNode(POS(0, 0, 0.3f));
 	pNode->setScale(2,2,2);
@@ -84,7 +84,7 @@ void HarvestComponent::Update( float dt )
 		{
 			//向基地移动
 			POS destPos = player->GetBase()->GetPosition();
-			World::GetSingleton().ClampPosToNavMesh(destPos);
+			PathComponent::ClampPosToNavMesh(destPos);
 			path->SetDestPos(destPos);
 
 			StateMove tmpState;

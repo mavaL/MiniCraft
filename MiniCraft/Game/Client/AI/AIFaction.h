@@ -19,6 +19,7 @@ public:
 
 public:
 	virtual void	Update(float dt);
+	void			Init();
 
 private:
 	float	m_fPastTime;

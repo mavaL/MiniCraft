@@ -164,6 +164,7 @@ void ManipulatorGameData::_ParseAllBTTemplates()
 	btMgr.AddBehavior("GatherRes", new FakeBehavior);
 	btMgr.AddBehavior("RetriveRes", new FakeBehavior);
 	btMgr.AddBehavior("ReturnRes", new FakeBehavior);
+	btMgr.AddBehavior("AttackTarget", new FakeBehavior);
 }
 
 void ManipulatorGameData::_ParseBlackboard( Blackboard& bb, Kratos::aiBlackBoard* pEngineBB )
@@ -456,13 +457,11 @@ void ManipulatorGameData::RenameBlackboardParam( int paramID, const std::wstring
 	_GetBlackboard(bOwnBB, tmpl, pBB, pEngineBB);
 
 	auto param = FindBBParam(*pBB, paramID);
-	auto iter = std::find(pBB->begin(), pBB->end(), *param);
-	assert(iter != pBB->end());
-	*iter = std::move(SBBParam(newName));
-
 	auto paramEngine = pEngineBB->GetParam(Utility::UnicodeToEngine(param->name));
 	pEngineBB->RemoveParam(Utility::UnicodeToEngine(param->name));
 	pEngineBB->DefineParam(Utility::UnicodeToEngine(newName), paramEngine.m_value, paramEngine.m_type);
+
+	param->name = newName;
 }
 
 void ManipulatorGameData::SetBlackboardParam( int paramID, const SBBValue& param, BTTemplate& tmpl, bool bOwnBB )

@@ -7,42 +7,49 @@
 #include "PathComponent.h"
 #include "BehaviorComponent.h"
 #include "BehaviorTreeTemplateManager.h"
+#include "AIComponent.h"
 
 FactionAI::FactionAI( eGameRace race )
 :Faction(race)
 ,m_fPastTime(0)
 {
+	
+}
 
+void FactionAI::Init()
+{
+	POS rallyPos = m_base->GetRallyPoint();
+	rallyPos.z -= 1;
+
+	for (int i=0; i<3; ++i)
+	{
+		for (int j=0; j<3; ++j)
+		{
+			STRING unitName;
+			if(m_race == eGameRace_Terran)
+				unitName = "Marine";
+			else if(m_race == eGameRace_Zerg)
+				unitName = "Zergling";
+
+			Unit* pUnit = static_cast<Unit*>(ObjectManager::GetSingleton().CreateObject(eObjectType_Unit));
+			pUnit->setParameter("name", unitName);
+			pUnit->Init();
+			pUnit->GetAi()->SetCpuControl(true);
+			pUnit->SetPosition(rallyPos);
+			pUnit->AddComponent(eComponentType_Path, new PathComponent(pUnit));
+			pUnit->AddComponent(eComponentType_Behevior, new BehaviorComponent(pUnit));
+			pUnit->GetBehavior()->SetTemplate(unitName);
+
+			rallyPos.x -= 1;
+		}
+		rallyPos.x = m_base->GetRallyPoint().x;
+		rallyPos.z -= 1;
+	}
 }
 
 void FactionAI::Update( float dt )
 {
-// 	m_fPastTime += dt;
-// 	///测试.每隔一段时间出生一个单位
-// 	static const float BORN_INTERNAL = 5;
-// 	if (m_fPastTime >= BORN_INTERNAL)
-// 	{
-// 		//限制10个
-// 		if (m_unitNum <= 10)
-// 		{
-// 			++m_unitNum;
-// 
-// 			STRING unitName;
-// 			if(m_race == eGameRace_Terran)
-// 				unitName = "Marine";
-// 			else if(m_race == eGameRace_Zerg)
-// 				unitName = "Zergling";
-// 
-// 			SelectableObject* pNewObj = static_cast<SelectableObject*>(ObjectManager::GetSingleton().CreateObject(eObjectType_Unit));
-// 			pNewObj->setParameter("name", unitName);
-// 			static_cast<Unit*>(pNewObj)->Init();
-// 			pNewObj->SetPosition(m_base->GetRallyPoint());
-// 			pNewObj->AddComponent(eComponentType_Path, new PathComponent(pNewObj));
-// 
-// 			//设置行为树
-// 			pNewObj->AddComponent(eComponentType_Behevior, new BehaviorComponent(pNewObj));
-// 			pNewObj->GetBehavior()->SetTempalte(unitName);
-// 		}
-// 		m_fPastTime = 0;
-// 	}
+	
 }
+
+

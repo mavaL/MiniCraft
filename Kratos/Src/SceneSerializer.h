@@ -10,7 +10,7 @@
 #ifndef SceneSerializer_h__
 #define SceneSerializer_h__
 
-#include <OgrePrerequisites.h>
+#include "KratosPrerequisites.h"
 #include <rapidxml.hpp>       
 #include <rapidxml_utils.hpp>
 #include <rapidxml_print.hpp>
@@ -27,8 +27,8 @@ namespace Kratos
 		virtual ~SceneSerializer() {}
 
 	public:
-		void			LoadScene(const std::string& sceneName, const std::string& sceneGroup, Scene* pOwner);
-		void			SaveScene(const std::string& fullPath, Scene* pOwner);
+		void			LoadScene(const STRING& sceneName, const STRING& sceneGroup, Scene* pOwner);
+		void			SaveScene(const STRING& fullPath, Scene* pOwner);
 
 	protected:
 		virtual	void	_LoadTerrain(rapidxml::xml_node<>* node);
@@ -39,8 +39,8 @@ namespace Kratos
 		virtual void	_SaveEffect(rapidxml::xml_document<>* doc, rapidxml::xml_node<>* XMLNode) {}
 
 	private:
-		Scene*				m_pOwner;
-		std::string			m_sceneGroup;
+		Scene*			m_pOwner;
+		STRING			m_sceneGroup;
 	};
 
 }

@@ -23,12 +23,12 @@ namespace Kratos
 		m_sunLightDir.normalise();
 	}
 
-	void Scene::Load( const std::string& sceneName, const std::string& sceneGroup, SceneSerializer* pHandler )
+	void Scene::Load( const STRING& sceneName, const STRING& sceneGroup, SceneSerializer* pHandler )
 	{
 		pHandler->LoadScene(sceneName, sceneGroup, this);
 	}
 
-	void Scene::Load( const std::string& fullPath, SceneSerializer* pHandler )
+	void Scene::Load( const STRING& fullPath, SceneSerializer* pHandler )
 	{
 		String pathname, basename, extname;
 		StringUtil::splitFullFilename(fullPath, basename, extname, pathname);
@@ -40,7 +40,7 @@ namespace Kratos
 		Load(sceneName, tmpGroup, pHandler);
 	}
 
-	void Scene::Save(const std::string& fullPath, SceneSerializer* pHandler)
+	void Scene::Save(const STRING& fullPath, SceneSerializer* pHandler)
 	{
 		pHandler->SaveScene(fullPath, this);
 	}
@@ -72,18 +72,20 @@ namespace Kratos
 
 	void Scene::New()
 	{
+		COgreManager& ogreMgr = COgreManager::GetSingleton();
+		Ogre::SceneManager* sm = ogreMgr.m_pSceneMgr;
 		//环境光
-		RenderManager.m_pSceneMgr->setAmbientLight(Ogre::ColourValue::White);
+		sm->setAmbientLight(Ogre::ColourValue::White);
 
 		//全局光
-		RenderManager.CreateSunLight(m_sunLightDir, m_sunLightDiffuse);
+		ogreMgr.CreateSunLight(m_sunLightDir, m_sunLightDiffuse);
 
 		float WORLD_SIZE = 128;
 		Ogre::uint16 MAP_SIZE = 129;
 		Ogre::Vector3 ORIGIN = Ogre::Vector3::ZERO;
 
 		m_terrainOption = new TerrainGlobalOptions;
-		m_terrainGroup = new TerrainGroup(RenderManager.m_pSceneMgr, Terrain::ALIGN_X_Z, MAP_SIZE, WORLD_SIZE);
+		m_terrainGroup = new TerrainGroup(sm, Terrain::ALIGN_X_Z, MAP_SIZE, WORLD_SIZE);
 		m_terrainGroup->setOrigin(ORIGIN);
 
 		// 	MaterialManager::getSingleton().setDefaultTextureFiltering(TFO_ANISOTROPIC);
@@ -95,6 +97,8 @@ namespace Kratos
 		//m_terrainOption->setUseRayBoxDistanceCalculation(true);
 		//m_terrainOption->getDefaultMaterialGenerator()->setDebugLevel(1);
 		//m_terrainOption->setLightMapSize(512);
+
+		ogreMgr.SetRenderingStyle();
 
 		Ogre::TerrainMaterialGeneratorA::SM2Profile* matProfile = 
 			static_cast<Ogre::TerrainMaterialGeneratorA::SM2Profile*>(m_terrainOption->getDefaultMaterialGenerator()->getActiveProfile());
@@ -130,6 +134,33 @@ namespace Kratos
 
 		m_terrainGroup->freeTemporaryResources();
 		m_pTerrain = m_terrainGroup->getTerrain(0, 0);
+
+		{
+			ShadowParams& params = ogreMgr.GetShadowParams();
+			ogreMgr.GetEffectConfig().bShadow = false;
+			params["FarDistance"]					= "300";
+			params["SplitPadding"]					= "1";
+			params["AdjustFactor"]					= "0.5 0.8 2";
+			params["UseSimpleAdjust"]				= "true";
+			params["CameraLightDirectionThreshold"] = "45";
+			params["ShadowMapSize"]					= "2048 1024 1024";
+			params["SelfShadow"]					= "false";
+			params["RenderBackFace"]				= "true";
+			params["PssmLambda"]					= "0.75";
+			params["LightExtrusionDistance"]		= "10000";
+		}
+
+		{
+			SsaoParams& params = ogreMgr.GetSsaoParams();
+			ogreMgr.GetEffectConfig().bSSAO = false;
+			params["SampleLength"]			= "20";
+			params["OffsetScale"]			= "1";
+			params["DefaultAccessibility"]	= "0.5";
+			params["EdgeHighlight"]			= "1.99";
+		}
+
+		ogreMgr.ApplyShadowParams();
+		ogreMgr.ApplySsaoParams();
 	}
 
 }

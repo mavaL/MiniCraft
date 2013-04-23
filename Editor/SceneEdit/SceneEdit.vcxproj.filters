@@ -314,9 +314,6 @@
     <ClCompile Include="UI\Common\XTPCustomPropertyGridItem.cpp">
       <Filter>UI\Common</Filter>
     </ClCompile>
-    <ClCompile Include="UI\Common\SubclassHelper.cpp">
-      <Filter>UI\Common</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="SceneEdit.rc">

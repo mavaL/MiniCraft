@@ -40,35 +40,10 @@ public:
 	void	SetFXAAEnable(bool bEnable);
 	bool	GetFXAAEnable() const;
 
-	void	SetShadowFarDist(float dist);
-	void	SetShadowSplitPadding(float pad);
-	void	SetShadowOptimalAdjustFactor(int layer, float factor);
-	void	SetShadowUseSimpleOptimalAdjust(bool b);
-	void	SetShadowCameraLightDirectionThreshold(int degree);
-	void	SetShadowMapSize(int layer, int size);
-	void	SetShadowSelfShadow(bool b);
-	void	SetShadowCasterRenderBackFaces(bool b);
-	void	SetShadowPssmLambda(float f);
-	void	SetShadowDirectionalLightExtrusionDistance(float f);
-	void	SetSSAOSampleLength(float f);
-	void	SetSSAOOffsetScale(float f);
-	void	SetSSAOEdgeHighlight(float f);
-	void	SetSSAODefaultAccessibility(float f);
-
-	float	GetShadowFarDist() const;
-	float	GetShadowSplitPadding() const;
-	Ogre::Vector3	GetShadowOptimalAdjustFactor() const;
-	bool	GetShadowUseSimpleOptimalAdjust() const;
-	int		GetShadowCameraLightDirectionThreshold() const;
-	Ogre::Vector3	GetShadowMapSize() const;
-	bool	GetShadowSelfShadow() const;
-	bool	GetShadowCasterRenderBackFaces() const;
-	float	GetShadowPssmLambda() const;
-	float	GetShadowDirectionalLightExtrusionDistance() const;
-	float	GetSSAOSampleLength() const;
-	float	GetSSAOOffsetScale() const;
-	float	GetSSAOEdgeHighlight() const;
-	float	GetSSAODefaultAccessibility() const;
+	void	SetShadowParam(const std::string& name, const std::wstring& value);
+	void	SetSsaoParam(const std::string& name, const std::wstring& value);
+	const std::string& GetShadowParam(const std::string& name) const;
+	const std::string& GetSsaoParam(const std::string& name) const;
 
 	std::vector<std::wstring>	GetAnimationNames() const;
 	void						PlayAnimation(Ogre::Entity* ent, int animIndex, bool bPlayOrStop);
@@ -93,12 +68,6 @@ private:
 	Kratos::EffectController*	_GetEffectController(Ogre::Entity* ent);
 
 private:
-	float			m_pssmLambda;
-	float			m_ssaoSampleLength;
-	float			m_ssaoOffsetScale;
-	float			m_ssaoDefaultAccessibility;
-	float			m_ssaoEdgeHighlight;
-
 	typedef std::unordered_map<std::string, Kratos::EffectController*> EffectTemplate;
 	EffectTemplate		m_effectTemplates;	//所有模型的挂接特效模板.编辑器对它们编辑
 	bool				m_bIsPlayAnim;

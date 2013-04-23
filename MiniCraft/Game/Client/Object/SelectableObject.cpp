@@ -536,7 +536,6 @@ void SelectableObject::CreateRenderInstance()
 {
 	__super::CreateRenderInstance();
 
-	m_pEntity->setQueryFlags(eQueryType_SelectableObject);
 	//Movable对象与逻辑对象绑定,方便取出通信
 	m_pEntity->setUserAny(Ogre::Any(this));
 }

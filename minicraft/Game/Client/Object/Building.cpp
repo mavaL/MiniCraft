@@ -5,6 +5,7 @@
 #include "Faction.h"
 #include "World.h"
 #include "GameDataDef.h"
+#include "PathComponent.h"
 
 IMPL_PARAM_COMMAND_STR(Building, Name)
 IMPL_PARAM_COMMAND(Building, RallyPoint, Vector3)
@@ -61,7 +62,7 @@ void Building::Init( const POS& pos, const ORIENT& orient, const SCALE& scale )
 	World& world = World::GetSingleton();
 	//设置默认集结点
 	m_rallyPoint = pos + Ogre::StringConverter::parseVector3(m_param->params["rallypoint"]);
-	world.ClampPosToNavMesh(m_rallyPoint);
+	PathComponent::ClampPosToNavMesh(m_rallyPoint);
 	world.ClampToTerrain(m_rallyPoint);
 
 	//初始化技能
@@ -82,6 +83,8 @@ void Building::Init( const POS& pos, const ORIENT& orient, const SCALE& scale )
 
 	//明确归属
 	GetAi()->SetFaction(world.GetFaction(race));
+
+	GetEntity()->setQueryFlags(eQueryType_Building);
 }
 
 int Building::GetRace() const

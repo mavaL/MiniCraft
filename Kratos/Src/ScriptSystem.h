@@ -48,6 +48,8 @@ namespace Kratos
 			Luna<T>::userdataType *ud = static_cast<Luna<T>::userdataType*>(lua_newuserdata(m_pLuaState, sizeof(Luna<T>::userdataType)));
 			assert(ud);
 
+			int userdata = lua_gettop(m_pLuaState);
+
 			ud->pT = pObject;  // store pointer to object in userdata
 			luaL_getmetatable(m_pLuaState, T::className);  // lookup metatable in Lua registry
 			lua_setmetatable(m_pLuaState, -2);
@@ -55,6 +57,8 @@ namespace Kratos
 			//拷贝栈顶userdata
 			lua_pushvalue(m_pLuaState, -1);
 			lua_setglobal(m_pLuaState, nameInLua.c_str());
+
+			lua_remove(m_pLuaState, userdata);
 		}
 
 		//绑定C++对象到lua的对象数组(table)中,如table Unit[0] = userdata0, Unit[1] = ...
@@ -72,6 +76,7 @@ namespace Kratos
 
 			//获取对象table
 			lua_getglobal(m_pLuaState, tableName.c_str());
+			
 			//没有则创建
 			if(lua_istable(m_pLuaState, -1) == 0)
 			{
@@ -85,6 +90,10 @@ namespace Kratos
 			lua_pushnumber(m_pLuaState, index);
 			lua_pushvalue(m_pLuaState, userdata);
 			lua_settable(m_pLuaState, table);
+
+			// fix.防止堆栈一直增长 [4/23/2013 mavaL]
+			lua_remove(m_pLuaState, userdata);
+			lua_remove(m_pLuaState, table);
 		}
 
 		template<class T>

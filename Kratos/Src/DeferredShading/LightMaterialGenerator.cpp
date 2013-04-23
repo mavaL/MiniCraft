@@ -205,27 +205,30 @@ namespace Kratos
 
 			///阴影相关参数
 			//视锥切分点
-			Vector4 splitPoints;
-			const PSSMShadowCameraSetup::SplitPointList& splitPointList = 
-				static_cast<PSSMShadowCameraSetup*>(RenderManager.m_pSceneMgr->getShadowCameraSetup().get())->getSplitPoints();
-			for (int i = 0; i < 3; ++i)
+			if (RenderManager.GetEffectConfig().bShadow)
 			{
-				splitPoints[i] = splitPointList[i];
+				Vector4 splitPoints;
+				const PSSMShadowCameraSetup::SplitPointList& splitPointList = 
+					static_cast<PSSMShadowCameraSetup*>(RenderManager.m_pSceneMgr->getShadowCameraSetup().get())->getSplitPoints();
+				for (int i = 0; i < 3; ++i)
+				{
+					splitPoints[i] = splitPointList[i];
+				}
+				params->setNamedConstant("pssmSplitPoints", splitPoints);
+
+				// 			params->setNamedAutoConstant("inverseShadowmapSize0", GpuProgramParameters::ACT_INVERSE_TEXTURE_SIZE, 4);
+				// 			params->setNamedAutoConstant("inverseShadowmapSize1", GpuProgramParameters::ACT_INVERSE_TEXTURE_SIZE, 5);
+				// 			params->setNamedAutoConstant("inverseShadowmapSize2", GpuProgramParameters::ACT_INVERSE_TEXTURE_SIZE, 6);
+
+				//shadow map pssm各视锥的纹理矩阵和深度范围(自动参数)
+				params->setNamedAutoConstant("depthRange0", GpuProgramParameters::ACT_SHADOW_SCENE_DEPTH_RANGE, 0);
+				params->setNamedAutoConstant("depthRange1", GpuProgramParameters::ACT_SHADOW_SCENE_DEPTH_RANGE, 1);
+				params->setNamedAutoConstant("depthRange2", GpuProgramParameters::ACT_SHADOW_SCENE_DEPTH_RANGE, 2);
+
+				params->setNamedAutoConstant("texWorldViewProjMatrix0", GpuProgramParameters::ACT_TEXTURE_WORLDVIEWPROJ_MATRIX, 0);
+				params->setNamedAutoConstant("texWorldViewProjMatrix1", GpuProgramParameters::ACT_TEXTURE_WORLDVIEWPROJ_MATRIX, 1);
+				params->setNamedAutoConstant("texWorldViewProjMatrix2", GpuProgramParameters::ACT_TEXTURE_WORLDVIEWPROJ_MATRIX, 2);
 			}
-			params->setNamedConstant("pssmSplitPoints", splitPoints);
-
-			// 			params->setNamedAutoConstant("inverseShadowmapSize0", GpuProgramParameters::ACT_INVERSE_TEXTURE_SIZE, 4);
-			// 			params->setNamedAutoConstant("inverseShadowmapSize1", GpuProgramParameters::ACT_INVERSE_TEXTURE_SIZE, 5);
-			// 			params->setNamedAutoConstant("inverseShadowmapSize2", GpuProgramParameters::ACT_INVERSE_TEXTURE_SIZE, 6);
-
-			//shadow map pssm各视锥的纹理矩阵和深度范围(自动参数)
-			params->setNamedAutoConstant("depthRange0", GpuProgramParameters::ACT_SHADOW_SCENE_DEPTH_RANGE, 0);
-			params->setNamedAutoConstant("depthRange1", GpuProgramParameters::ACT_SHADOW_SCENE_DEPTH_RANGE, 1);
-			params->setNamedAutoConstant("depthRange2", GpuProgramParameters::ACT_SHADOW_SCENE_DEPTH_RANGE, 2);
-
-			params->setNamedAutoConstant("texWorldViewProjMatrix0", GpuProgramParameters::ACT_TEXTURE_WORLDVIEWPROJ_MATRIX, 0);
-			params->setNamedAutoConstant("texWorldViewProjMatrix1", GpuProgramParameters::ACT_TEXTURE_WORLDVIEWPROJ_MATRIX, 1);
-			params->setNamedAutoConstant("texWorldViewProjMatrix2", GpuProgramParameters::ACT_TEXTURE_WORLDVIEWPROJ_MATRIX, 2);
 		}
 	};
 

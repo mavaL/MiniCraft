@@ -37,6 +37,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ParticleUniverse", "..\..\O
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Codejock.ToolkitPro.Shared", "..\..\Xtreme ToolkitPro v15.2.1\Workspace\ToolkitPro\ToolkitProShared_vc100.vcxproj", "{06739158-FFB0-66BD-4A6E-CD5E37D64486}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Plugin_OctreeSceneManager", "..\..\Ogre_1_8_0\build\PlugIns\OctreeSceneManager\Plugin_OctreeSceneManager.vcxproj", "{18B36B88-E7D2-466D-BDB7-72AD2B9F11DF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug_Static|Win32 = Debug_Static|Win32
@@ -333,6 +335,33 @@ Global
 		{06739158-FFB0-66BD-4A6E-CD5E37D64486}.Unicode Release|Win32.Build.0 = Unicode Release|Win32
 		{06739158-FFB0-66BD-4A6E-CD5E37D64486}.Unicode Release|x64.ActiveCfg = Unicode Release|x64
 		{06739158-FFB0-66BD-4A6E-CD5E37D64486}.Unicode Release|x64.Build.0 = Unicode Release|x64
+		{18B36B88-E7D2-466D-BDB7-72AD2B9F11DF}.Debug_Static|Win32.ActiveCfg = Debug|Win32
+		{18B36B88-E7D2-466D-BDB7-72AD2B9F11DF}.Debug_Static|Win32.Build.0 = Debug|Win32
+		{18B36B88-E7D2-466D-BDB7-72AD2B9F11DF}.Debug_Static|x64.ActiveCfg = Debug|Win32
+		{18B36B88-E7D2-466D-BDB7-72AD2B9F11DF}.Debug|Win32.ActiveCfg = Debug|Win32
+		{18B36B88-E7D2-466D-BDB7-72AD2B9F11DF}.Debug|Win32.Build.0 = Debug|Win32
+		{18B36B88-E7D2-466D-BDB7-72AD2B9F11DF}.Debug|x64.ActiveCfg = Debug|Win32
+		{18B36B88-E7D2-466D-BDB7-72AD2B9F11DF}.MinSizeRel|Win32.ActiveCfg = MinSizeRel|Win32
+		{18B36B88-E7D2-466D-BDB7-72AD2B9F11DF}.MinSizeRel|Win32.Build.0 = MinSizeRel|Win32
+		{18B36B88-E7D2-466D-BDB7-72AD2B9F11DF}.MinSizeRel|x64.ActiveCfg = MinSizeRel|Win32
+		{18B36B88-E7D2-466D-BDB7-72AD2B9F11DF}.Release_Static|Win32.ActiveCfg = Release|Win32
+		{18B36B88-E7D2-466D-BDB7-72AD2B9F11DF}.Release_Static|Win32.Build.0 = Release|Win32
+		{18B36B88-E7D2-466D-BDB7-72AD2B9F11DF}.Release_Static|x64.ActiveCfg = Release|Win32
+		{18B36B88-E7D2-466D-BDB7-72AD2B9F11DF}.Release|Win32.ActiveCfg = Release|Win32
+		{18B36B88-E7D2-466D-BDB7-72AD2B9F11DF}.Release|Win32.Build.0 = Release|Win32
+		{18B36B88-E7D2-466D-BDB7-72AD2B9F11DF}.Release|x64.ActiveCfg = Release|Win32
+		{18B36B88-E7D2-466D-BDB7-72AD2B9F11DF}.ReleaseWithSymbols|Win32.ActiveCfg = Release|Win32
+		{18B36B88-E7D2-466D-BDB7-72AD2B9F11DF}.ReleaseWithSymbols|Win32.Build.0 = Release|Win32
+		{18B36B88-E7D2-466D-BDB7-72AD2B9F11DF}.ReleaseWithSymbols|x64.ActiveCfg = Release|Win32
+		{18B36B88-E7D2-466D-BDB7-72AD2B9F11DF}.RelWithDebInfo|Win32.ActiveCfg = RelWithDebInfo|Win32
+		{18B36B88-E7D2-466D-BDB7-72AD2B9F11DF}.RelWithDebInfo|Win32.Build.0 = RelWithDebInfo|Win32
+		{18B36B88-E7D2-466D-BDB7-72AD2B9F11DF}.RelWithDebInfo|x64.ActiveCfg = RelWithDebInfo|Win32
+		{18B36B88-E7D2-466D-BDB7-72AD2B9F11DF}.Unicode Debug|Win32.ActiveCfg = Debug|Win32
+		{18B36B88-E7D2-466D-BDB7-72AD2B9F11DF}.Unicode Debug|Win32.Build.0 = Debug|Win32
+		{18B36B88-E7D2-466D-BDB7-72AD2B9F11DF}.Unicode Debug|x64.ActiveCfg = Debug|Win32
+		{18B36B88-E7D2-466D-BDB7-72AD2B9F11DF}.Unicode Release|Win32.ActiveCfg = Release|Win32
+		{18B36B88-E7D2-466D-BDB7-72AD2B9F11DF}.Unicode Release|Win32.Build.0 = Release|Win32
+		{18B36B88-E7D2-466D-BDB7-72AD2B9F11DF}.Unicode Release|x64.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

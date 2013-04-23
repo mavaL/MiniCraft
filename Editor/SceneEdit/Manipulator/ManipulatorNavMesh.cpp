@@ -112,7 +112,8 @@ void ManipulatorNavMesh::SaveObj()
 	
 	assert(m_pRecast && m_pInputGeom);
 
-	std::wstring filename = ManipulatorScene::GetSingleton().GenerateSceneFullPath();
+	std::wstring filename = ManipulatorSystem.GenerateSceneFullPath();
+	filename += ManipulatorSystem.GetSceneName() + L"_";
 	filename += L"NavMesh.obj";
 	m_pInputGeom->writeObj(Utility::UnicodeToEngine(filename));
 }
@@ -124,7 +125,8 @@ void ManipulatorNavMesh::SaveNavMesh()
 
 	assert(m_pRecast && m_pInputGeom);
 
-	std::wstring filename = ManipulatorScene::GetSingleton().GenerateSceneFullPath();
+	std::wstring filename = ManipulatorSystem.GenerateSceneFullPath();
+	filename += ManipulatorSystem.GetSceneName() + L"_";
 	filename += L"NavMesh.Bin";
 	try
 	{

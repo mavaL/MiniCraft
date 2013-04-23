@@ -1,15 +1,15 @@
 <?xml version='1.0' encoding='utf-8' ?>
 <Root>
-	<Building race="0" name="CommandCenter" icon="btn-building-terran-commandcenter.dds" meshname="CommandCenter_1.mesh" rallypoint="0 0 -5" flags="1">
+	<Building flags="1" icon="btn-building-terran-commandcenter.dds" meshname="CommandCenter_1.mesh" name="CommandCenter" race="0" rallypoint="0 0 -5">
 		<Ability name="Produce_Scv" slotindex="0"/>
 	</Building>
-	<Building race="0" name="Barracks" icon="btn-building-terran-barracks.dds" meshname="Barracks_0.mesh" rallypoint="0 0 -4" flags="0">
+	<Building flags="0" icon="btn-building-terran-barracks.dds" meshname="Barracks_0.mesh" name="Barracks" race="0" rallypoint="0 0 -4">
 		<Ability name="Produce_Marine" slotindex="0"/>
 	</Building>
-	<Building race="1" name="Hatchery" icon="btn-building-zerg-hatchery.dds" meshname="Hatchery_0.mesh" rallypoint="0 0 -5" flags="1">
+	<Building flags="1" icon="btn-building-zerg-hatchery.dds" meshname="Hatchery_0.mesh" name="Hatchery" race="1" rallypoint="0 0 -5">
 		<Ability name="Produce_Drone" slotindex="0"/>
 	</Building>
-	<Building race="1" name="SpawningPool" icon="btn-building-zerg-spawningpool.dds" meshname="SpawningPool_0.mesh" rallypoint="0 0 -3" flags="0">
+	<Building flags="0" icon="btn-building-zerg-spawningpool.dds" meshname="SpawningPool_0.mesh" name="SpawningPool" race="1" rallypoint="0 0 -3">
 		<Ability name="Produce_Zergling" slotindex="0"/>
 	</Building>
 </Root>

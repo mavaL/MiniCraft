@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<scene formatVersion="0.4">
+	<effect>
+		<shadow AmbientLight="0.3 0.3 0.3 1" EnableShadow="true" AdjustFactor="0.5 0.8 2" CameraLightDirectionThreshold="45" FarDistance="300" LightExtrusionDistance="10000" PssmLambda="0.75" RenderBackFace="true" SelfShadow="false" ShadowMapSize="2048 1024 1024" SplitPadding="1" UseSimpleAdjust="true"/>
+		<ssao EnableSSAO="true" DefaultAccessibility="0.5" EdgeHighlight="1.99" OffsetScale="1" SampleLength="20"/>
+		<sharpen EnableSharpen="false"/>
+		<fxaa EnableFXAA="false"/>
+	</effect>
+	<terrain worldSize="128" mapSize="129" tuningMaxPixelError="8"/>
+	<objects count="2">
+		<entity meshname="Hatchery_0.mesh" isnavmesh="true" isbuilding="true" buildingname="Hatchery" isresource="false" position="-45.4035 7.62939e-006 48.0056" orientation="0.828125 0 -0.560543 0" scale="2 2 2"/>
+		<entity meshname="CommandCenter_1.mesh" isnavmesh="true" isbuilding="true" buildingname="CommandCenter" isresource="false" position="39.4116 0 -39.2862" orientation="0.330964 0 0.943643 0" scale="2 2 2"/>
+	</objects>
+</scene>
+
