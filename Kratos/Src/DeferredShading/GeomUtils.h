@@ -15,8 +15,7 @@ same license as the rest of the engine.
 #ifndef _GEOMUTILS_H
 #define _GEOMUTILS_H
 
-#include "OgreString.h"
-#include "OgreVertexIndexData.h"
+#include "KratosPrerequisites.h"
 
 namespace Kratos
 {

@@ -100,6 +100,12 @@
     <ClInclude Include="Game\Client\AI\ConcreteBehavior.h">
       <Filter>Client\AI</Filter>
     </ClInclude>
+    <ClInclude Include="Game\Client\Component\RagdollComponent.h">
+      <Filter>Client\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Client\BoneGizmo.h">
+      <Filter>Client</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game\Client\BattleState.cpp">
@@ -179,6 +185,12 @@
     </ClCompile>
     <ClCompile Include="Game\Client\AI\ConcreteBehavior.cpp">
       <Filter>Client\AI</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Client\Component\RagdollComponent.cpp">
+      <Filter>Client\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Client\BoneGizmo.cpp">
+      <Filter>Client</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

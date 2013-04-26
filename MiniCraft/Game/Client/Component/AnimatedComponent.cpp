@@ -52,4 +52,18 @@ void AnimatedComponent::Update( float dt )
 	m_pController->Update(dt);
 }
 
+void AnimatedComponent::SetManuallyControlBones()
+{
+	Ogre::Skeleton* pSkel = m_pOwner->GetEntity()->getSkeleton();
+	Ogre::Skeleton::BoneIterator iter = pSkel->getBoneIterator();
+	size_t numBones = pSkel->getNumBones();
+	for(size_t i=0; i<numBones; ++i)
+	{
+		Ogre::Bone* bone = iter.peekNext();
+		bone->setManuallyControlled(true);
+		iter.moveNext();
+	}
+	pSkel->getRootBone()->setManuallyControlled(true);
+}
+
 

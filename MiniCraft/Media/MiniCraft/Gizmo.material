@@ -1,4 +1,3 @@
-//瞎了狗眼,原先没想到可以用自发光来做
 material RedEmissive
 {
 	technique

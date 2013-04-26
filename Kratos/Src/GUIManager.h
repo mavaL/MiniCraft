@@ -2,7 +2,6 @@
 #define GUI_MANAGER_H
 
 #include "Singleton.h"
-#include "CEGUI.h"
 #include "InputManager.h"
 #include <OgrePrerequisites.h>
 

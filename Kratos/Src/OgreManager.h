@@ -2,7 +2,6 @@
 #define OGRE_MANAGER_H
 
 #include "Singleton.h"
-#include "Ogre.h"
 
 namespace Ogre
 {

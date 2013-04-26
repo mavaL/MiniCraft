@@ -12,14 +12,9 @@
 #include "Singleton.h"
 #include "KratosPrerequisites.h"
 #include "GameDefine.h"
-#include <OgreStringVector.h>
 
 namespace Kratos
 {
-	class aiBehaviorTreeTemplate;
-	class aiBehavior;
-	class aiBlackBoard;
-
 	class aiBehaviorTreeTemplateManager : public CSingleton<aiBehaviorTreeTemplateManager>
 	{
 		DECLEAR_SINGLETON(aiBehaviorTreeTemplateManager);

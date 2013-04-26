@@ -17,6 +17,8 @@
 #include "ConcreteBehavior.h"
 #include "BlackBoard.h"
 #include "PathComponent.h"
+#include "RagdollComponent.h"
+#include "PhysicManager.h"
 
 
 SGlobalEnvironment	g_Environment;
@@ -35,6 +37,8 @@ Luna<World>::RegType World::methods[] =
 	method(World, SetGlobalBBParam_Bool),
 	{0,0}
 };
+
+Unit* g_pTestUnit = nullptr;
 
 ////////////////////////////////////////////////////////////////
 World::World()
@@ -76,6 +80,7 @@ void World::Init()
 
 	m_cameraMan = new OgreBites::SdkCameraMan(cam);
 	m_cameraMan->setStyle(OgreBites::CS_FREELOOK);
+	m_cameraMan->setTopSpeed(50);
 
 	//RTSËøËÀÊÓ½Ç
 	cam->setPosition(0, 24, 0);
@@ -113,6 +118,19 @@ void World::Init()
 
 	dynamic_cast<FactionAI*>(m_player[eGameRace_Zerg])->Init();
 	dynamic_cast<FactionAI*>(m_player[eGameRace_Terran])->Init();
+
+	//µØ°å
+	PHYSICMANAGER.CreateGround();
+
+// 	///////////////ÐÐÎªÊ÷²âÊÔ
+// 	Unit* pUnit = static_cast<Unit*>(ObjectManager::GetSingleton().CreateObject(eObjectType_Unit));
+// 	pUnit->setParameter("name", "Scv");
+// 	pUnit->Init();
+// 	pUnit->SetPosition(m_player[eGameRace_Terran]->GetBase()->GetRallyPoint());
+// 	pUnit->AddComponent(eComponentType_Path, new PathComponent(pUnit));
+// 	pUnit->AddComponent(eComponentType_Behevior, new BehaviorComponent(pUnit));
+// 	pUnit->GetAi()->SetCpuControl(true);
+// 	pUnit->GetBehavior()->SetTempalte("Scv");
 
 	//UI for test
 	Ogre::Entity* pEntConsole = m_pRenderSystem->CreateEntityWithTangent("ConsoleTerran_0.mesh", sm);
@@ -459,6 +477,8 @@ int World::SetGlobalBBParam_Bool( lua_State* L )
 	return 0;
 }
 
-
-
-
+void World::StartRagdoll()
+{
+	RagdollComponent* cp = QueryComponent(g_pTestUnit, eComponentType_Ragoll, RagdollComponent);
+	cp->StartRagdoll();
+}

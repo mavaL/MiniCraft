@@ -59,6 +59,9 @@
     <Filter Include="源文件\AI\BehaviorTree">
       <UniqueIdentifier>{02a1383a-d808-45b2-91b9-019f9c7e46d9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="源文件\Physics">
+      <UniqueIdentifier>{3e05b300-dd1e-40a4-b68d-e907ade38423}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\AppState.h">
@@ -256,6 +259,15 @@
     <ClInclude Include="Src\GameDefine.h">
       <Filter>源文件</Filter>
     </ClInclude>
+    <ClInclude Include="Src\PhysicManager.h">
+      <Filter>源文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Physics\Ragdoll.h">
+      <Filter>源文件\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\stdafx.h">
+      <Filter>源文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\AppStateManager.cpp">
@@ -434,6 +446,15 @@
     </ClCompile>
     <ClCompile Include="Src\AI\BehaviorTree\ConditionUnitTest.cpp">
       <Filter>源文件\AI\BehaviorTree</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\PhysicManager.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Physics\Ragdoll.cpp">
+      <Filter>源文件\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\stdafx.cpp">
+      <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "EffectController.h"
 #include "OgreManager.h"
 #include "ParticleEffect.h"

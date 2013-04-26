@@ -99,6 +99,8 @@ public:
 	bool			GetTerrainIntersectPos(const FLOAT2& screenPos, POS& retPt);
 	//获取玩家派系
 	Faction*		GetFaction(eGameRace race) { return m_player[race]; }
+	//test
+	void			StartRagdoll();
 
 	///获取UI组件
 	UiCommandPanel*	GetCommandPanel() { return m_cmdPanel; }

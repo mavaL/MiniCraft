@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "GUIManager.h"
 #include "RendererModules\Ogre\CEGUIOgreRenderer.h"
 #include "OgreManager.h"

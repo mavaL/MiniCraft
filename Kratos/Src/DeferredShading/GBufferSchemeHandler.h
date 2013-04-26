@@ -16,7 +16,7 @@ same license as the rest of the engine.
 #ifndef _GBUFFERSCHEMEHANDLER_H
 #define _GBUFFERSCHEMEHANDLER_H
 
-#include <OgreMaterialManager.h>
+#include "KratosPrerequisites.h"
 #include "GBufferMaterialGenerator.h"
 
 namespace Kratos

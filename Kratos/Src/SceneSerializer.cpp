@@ -1,8 +1,6 @@
+#include "stdafx.h"
 #include "SceneSerializer.h"
 #include "Scene.h"
-#include <Ogre.h>
-#include <Terrain/OgreTerrain.h>
-#include <Terrain/OgreTerrainGroup.h>
 #include "OgreManager.h"
 #include "DeferredShading/TerrainMaterialGeneratorD.h"
 #include "DeferredShading/DeferredShading.h"

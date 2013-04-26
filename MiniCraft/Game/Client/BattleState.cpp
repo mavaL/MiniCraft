@@ -259,8 +259,6 @@ bool CBattleState::OnInputSys_KeyReleased( const OIS::KeyEvent& arg )
 		RenderManager.EnableShadow(!RenderManager.GetEffectConfig().bShadow);
 	else if(arg.key == OIS::KC_F3)
 		RenderManager.EnableSSAO(!RenderManager.GetEffectConfig().bSSAO);
-	else if (World::GetSingleton().IsFreeCameraEnabled())
-		World::GetSingleton().GetCameraMan()->injectKeyUp(arg);
 	else if(arg.key == OIS::KC_F4)
 		RenderManager.EnableFXAA(!RenderManager.GetEffectConfig().bFXAA);
 	else if(arg.key == OIS::KC_F5)
@@ -269,6 +267,11 @@ bool CBattleState::OnInputSys_KeyReleased( const OIS::KeyEvent& arg )
 		Ogre::Profiler::getSingleton().setEnabled(!Ogre::Profiler::getSingleton().getEnabled());
 	else if(arg.key == OIS::KC_F7)
 		Ogre::Profiler::getSingleton().setDisplayMode((Ogre::Profiler::DisplayMode)(int)!Ogre::Profiler::getSingleton().getDisplayMode());
+	else if(arg.key == OIS::KC_R)
+		World::GetSingleton().StartRagdoll();
+
+	if (World::GetSingleton().IsFreeCameraEnabled())
+		World::GetSingleton().GetCameraMan()->injectKeyUp(arg);
 
 	return true;
 }

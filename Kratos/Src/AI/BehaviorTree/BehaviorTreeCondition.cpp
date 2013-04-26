@@ -1,6 +1,5 @@
+#include "stdafx.h"
 #include "BehaviorTreeCondition.h"
-#include <OgreMath.h>
-#include <OgreStringConverter.h>
 #include "BehaviorTree.h"
 #include "BlackBoard.h"
 #include "BehaviorTreeTemplateManager.h"

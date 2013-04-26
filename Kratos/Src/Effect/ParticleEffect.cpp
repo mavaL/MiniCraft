@@ -1,5 +1,5 @@
+#include "stdafx.h"
 #include "ParticleEffect.h"
-#include <ParticleUniverseSystemManager.h>
 #include "OgreManager.h"
 
 using namespace ParticleUniverse;

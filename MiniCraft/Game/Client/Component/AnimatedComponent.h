@@ -27,8 +27,9 @@ public:
 	virtual void	Update(float dt);
 
 public:
-	void PlayAnimation(eAnimation type, bool bLoop);
-	void StopAnimation();
+	void			PlayAnimation(eAnimation type, bool bLoop);
+	void			StopAnimation();
+	void			SetManuallyControlBones();
 
 private:
 	Unit*						m_parent;

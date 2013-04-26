@@ -5,11 +5,6 @@
 #include <boost/bind.hpp>
 #include <boost/signal.hpp>
 
-#include <OISEvents.h>
-#include <OISInputManager.h>
-#include <OISKeyboard.h>
-#include <OISMouse.h>
-
 namespace Kratos
 {
 

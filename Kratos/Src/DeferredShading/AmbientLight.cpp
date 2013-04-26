@@ -13,11 +13,9 @@ same license as the rest of the engine.
 */
 
 
+#include "stdafx.h"
 #include "AmbientLight.h"
 #include "GeomUtils.h"
-#include "OgreMaterialManager.h"
-#include "OgreRoot.h"
-#include "OgreRenderSystem.h"
 
 using namespace Ogre;
 

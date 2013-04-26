@@ -1,8 +1,5 @@
+#include "stdafx.h"
 #include "OgreManager.h"
-#include <Terrain/OgreTerrain.h>
-#include <Terrain/OgreTerrainGroup.h>
-#include <Terrain/OgreTerrainQuadTreeNode.h>
-#include <Terrain/OgreTerrainMaterialGeneratorA.h>
 #include "DeferredShading/DeferredShading.h"
 #include "DeferredShading/TerrainMaterialGeneratorD.h"
 #include "DeferredShading/DLight.h"
@@ -124,6 +121,7 @@ namespace Kratos
 		m_Timer = new Ogre::Timer();
 		m_Timer->reset();
 		mWindow->setActive(true);
+		mWindow->setDeactivateOnFocusChange(false);
 		m_bHasInit = true;
 
 		return true;

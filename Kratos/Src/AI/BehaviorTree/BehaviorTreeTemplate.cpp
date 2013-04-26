@@ -1,9 +1,7 @@
+#include "stdafx.h"
 #include "BehaviorTreeTemplate.h"
 #include "BehaviorTree.h"
 #include "BlackBoard.h"
-#include <rapidxml_utils.hpp>
-#include <rapidxml_print.hpp>
-#include <OgreResourceGroupManager.h>
 #include "ScriptSystem.h"
 
 namespace Kratos

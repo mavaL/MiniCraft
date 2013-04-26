@@ -10,21 +10,9 @@
 #define Scene_h__
 
 #include "KratosPrerequisites.h"
-#include <OgreVector3.h>
-#include <OgreColourValue.h>
-
-namespace Ogre
-{
-	class TerrainGroup;
-	class TerrainGlobalOptions;
-	class Terrain;
-}
 
 namespace Kratos
 {
-
-	class SceneSerializer;
-
 	class Scene
 	{
 		friend class SceneSerializer;

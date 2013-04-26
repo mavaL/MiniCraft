@@ -24,6 +24,7 @@ private:
 	Kratos::CInputManager*		m_inputMgr;
 	Kratos::COgreManager*		m_ogreMgr;
 	Kratos::CGUIManager*		m_guiMgr;
+	Kratos::CPhysicManager*		m_phyMgr;
 };
 
 

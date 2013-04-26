@@ -73,7 +73,6 @@ private:
 	bool				m_bIsPlayAnim;
 	std::string			m_curAnim;
 	std::string			m_curEffect;
-	int					m_effectNameID;
 };
 
 

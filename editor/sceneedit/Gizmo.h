@@ -9,8 +9,6 @@
 #ifndef Gizmo_h__
 #define Gizmo_h__
 
-#include "EditorDefine.h"
-
 //
 //矩形
 //
@@ -65,8 +63,16 @@ public:
 	GizmoAxis();
 	~GizmoAxis();
 
+	enum eAxis
+	{
+		eAxis_X,
+		eAxis_Y,
+		eAxis_Z,
+		eAxis_None
+	};
+
 public:
-	void	Attach(Ogre::SceneNode* pNode);
+	void	Attach(Ogre::Node* pNode);
 	void	Show(bool bShow, bool bMoveOrRotate);
 	void	Reset();
 	void	OnGizmoNodeReset();
@@ -81,7 +87,7 @@ private:
 
 private:
 	Ogre::SceneNode*	m_pObjGizmoNode;
-	Ogre::SceneNode*	m_pAttachNode;
+	Ogre::Node*			m_pAttachNode;
 	Ogre::Entity*		m_pAxisMove[3];		//坐标轴
 	Ogre::Entity*		m_pAxisRotate[3];	//旋转轴
 	Ogre::Plane			m_plane[3];			//辅助平面,用来检测拾取

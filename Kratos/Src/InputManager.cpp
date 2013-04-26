@@ -1,7 +1,6 @@
+#include "stdafx.h"
 #include "InputManager.h"
 #include "OgreManager.h"
-#include <OgreStringConverter.h>
-#include <OgreRenderWindow.h>
 
 namespace Kratos
 {

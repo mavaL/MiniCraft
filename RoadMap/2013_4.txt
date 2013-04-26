@@ -6,6 +6,6 @@
 
 20%
 
-3.Make a branch for physic middleware integreate testing. Havok or PhysX. Anyway, SC2 uses Havok, isn't it ?
+3.Make a branch for physics middleware integreate with Havok and try ragdoll.
 
-70% Ragoll to ogre skinning has problem.
+[100%]		Ragdoll basically finished.

@@ -10,14 +10,9 @@
 #define BehaviorTreeTemplate_h__
 
 #include "KratosPrerequisites.h"
-#include <rapidxml.hpp>
 
 namespace Kratos
 {
-	class aiBehaviorTree;
-	class aiBlackBoard;
-	class aiBehaviorTreeNode;
-
 	class aiBehaviorTreeTemplate
 	{
 	public:

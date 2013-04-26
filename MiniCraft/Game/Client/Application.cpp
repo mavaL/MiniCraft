@@ -6,7 +6,7 @@
 #include "AppStateManager.h"
 #include "ScriptSystem.h"
 #include "BattleState.h"
-
+#include "PhysicManager.h"
 
 
 Applicaton::Applicaton()
@@ -14,6 +14,7 @@ Applicaton::Applicaton()
 ,m_inputMgr(nullptr)
 ,m_ogreMgr(nullptr)
 ,m_guiMgr(nullptr)
+,m_phyMgr(nullptr)
 {
 
 }
@@ -28,12 +29,14 @@ bool Applicaton::Init()
 	m_inputMgr = Kratos::CInputManager::GetSingletonPtr();
 	m_ogreMgr =	Kratos::COgreManager::GetSingletonPtr();
 	m_guiMgr = Kratos::CGUIManager::GetSingletonPtr();
+	m_phyMgr = Kratos::CPhysicManager::GetSingletonPtr();
 
 	CBattleState::create(m_stateMgr, CBattleState::StateName);
 
 	if(	!m_ogreMgr->Init(false)	|| 
 		!m_inputMgr->Init()		||
-		!m_guiMgr->Init()		)
+		!m_guiMgr->Init()		||
+		!m_phyMgr->Init()		)
 		return false;
 
 	SCRIPTNAMAGER.Init();
@@ -62,6 +65,7 @@ void Applicaton::Run()
 
 			//各子系统进行更新
 			m_inputMgr->Capture();
+			m_phyMgr->Update();
 			if(!m_stateMgr->UpdateCurrentState(timeSinceLastFrame))
 				break;
 			if(!m_ogreMgr->Update(timeSinceLastFrame))
@@ -80,6 +84,7 @@ void Applicaton::Run()
 void Applicaton::Shutdown()
 {
 	SCRIPTNAMAGER.Shutdown();
+	m_phyMgr->Shutdown();
 	m_guiMgr->Shutdown();
 	m_stateMgr->shutdown();	
 	m_inputMgr->Shutdown();

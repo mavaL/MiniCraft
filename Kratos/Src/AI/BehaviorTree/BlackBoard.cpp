@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "BlackBoard.h"
 #include "BehaviorTree.h"
 #include "BehaviorTreeTemplateManager.h"

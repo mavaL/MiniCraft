@@ -15,12 +15,11 @@ same license as the rest of the engine.
 #ifndef _DEFERRED_LIGHT_CP_H
 #define _DEFERRED_LIGHT_CP_H
 
-#include "OgreCompositorInstance.h"
-#include "OgreCustomCompositionPass.h"
-
+#include "KratosPrerequisites.h"
 #include "DLight.h"
 #include "MaterialGenerator.h"
 #include "AmbientLight.h"
+#include <OgreCustomCompositionPass.h>
 
 namespace Kratos
 {
