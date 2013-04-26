@@ -87,6 +87,7 @@
     <ClInclude Include="Game\Client\AI\ConcreteBehavior.h" />
     <ClInclude Include="Game\Client\Application.h" />
     <ClInclude Include="Game\Client\BattleState.h" />
+    <ClInclude Include="Game\Client\BoneGizmo.h" />
     <ClInclude Include="Game\Client\Command.h" />
     <ClInclude Include="Game\Client\Component\AIComponent.h" />
     <ClInclude Include="Game\Client\Component\AnimatedComponent.h" />
@@ -116,6 +117,7 @@
     <ClCompile Include="Game\Client\AI\ConcreteBehavior.cpp" />
     <ClCompile Include="Game\Client\Application.cpp" />
     <ClCompile Include="Game\Client\BattleState.cpp" />
+    <ClCompile Include="Game\Client\BoneGizmo.cpp" />
     <ClCompile Include="Game\Client\Command.cpp" />
     <ClCompile Include="Game\Client\Component\AIComponent.cpp" />
     <ClCompile Include="Game\Client\Component\AnimatedComponent.cpp" />

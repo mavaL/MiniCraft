@@ -13,6 +13,7 @@
 #include "KratosPrerequisites.h"
 
 class AnimatedComponent;
+class GizmoAxis;
 
 class RagdollComponent : public Component
 {
@@ -22,12 +23,20 @@ public:
 
 public:
 	virtual void	Update(float dt);
+	void			SetRigFile(const STRING& filename);
 	void			StartRagdoll();
+#ifdef _DEBUG
+	void			ShowSkeleton(bool bShow);
+#endif
 
 private:
 	Kratos::Ragdoll*	m_pRagdoll;
 	bool				m_bStart;
 	AnimatedComponent*	m_animCp;
+#ifdef _DEBUG
+	std::vector<GizmoAxis*>	m_boneGizmos;
+	bool				m_bShowGizmo;
+#endif
 };
 
 #endif // RagdollComponent_h__

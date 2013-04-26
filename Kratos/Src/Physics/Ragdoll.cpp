@@ -38,17 +38,17 @@ namespace Kratos
 		m_pRagdollInstance->addToWorld(hkWorld, true);
 		const hkaSkeleton* ragdollSkel = m_pRagdollInstance->getSkeleton();
 
-		// Locks all translations, except root.
-		hkaSkeletonUtils::lockTranslations(*animationSkeleton, true);
-		// Notice: Only "Triangle Pelvis Setup" should unlock these
-		const char* boneName[] = { "Ragdoll_HavokBipedRig L Thigh", "Ragdoll_HavokBipedRig R Thigh", "Bip01 L Thigh", "Bip01 R Thigh" };
-		const hkaSkeleton* skeleton[] = { ragdollSkel, ragdollSkel, animationSkeleton, animationSkeleton };
-		for ( int i = 0; i < 4; i++ )
-		{
-			const hkInt16 bone = hkaSkeletonUtils::findBoneWithName( *skeleton[ i ], boneName[ i ] );
-			HK_ASSERT3( 0x0ceee644, bone >= 0, "Bone " << boneName << " not found." );
-			const_cast<hkaSkeleton*>(skeleton[ i ])->m_bones[ bone ].m_lockTranslation = false;
-		}
+// 		// Locks all translations, except root.
+// 		hkaSkeletonUtils::lockTranslations(*animationSkeleton, true);
+// 		// Notice: Only "Triangle Pelvis Setup" should unlock these
+// 		const char* boneName[] = { "Ragdoll_HavokBipedRig L Thigh", "Ragdoll_HavokBipedRig R Thigh", "Bip01 L Thigh", "Bip01 R Thigh" };
+// 		const hkaSkeleton* skeleton[] = { ragdollSkel, ragdollSkel, animationSkeleton, animationSkeleton };
+// 		for ( int i = 0; i < 4; i++ )
+// 		{
+// 			const hkInt16 bone = hkaSkeletonUtils::findBoneWithName( *skeleton[ i ], boneName[ i ] );
+// 			HK_ASSERT3( 0x0ceee644, bone >= 0, "Bone " << boneName << " not found." );
+// 			const_cast<hkaSkeleton*>(skeleton[ i ])->m_bones[ bone ].m_lockTranslation = false;
+// 		}
 
 		hkaSkeletonMapper* tempMapper1,*tempMapper2;
 		tempMapper1 = (hkaSkeletonMapper*)(container->findObjectByType(hkaSkeletonMapperClass.getName()));
@@ -80,23 +80,26 @@ namespace Kratos
 	{
 		///同步ragoll的初始化high pose
 		Ogre::Skeleton* pSkel = m_pEntity->getSkeleton();
-		Ogre::Skeleton::BoneIterator iter = pSkel->getBoneIterator();
-		size_t numBones = pSkel->getNumBones();
-		iter = pSkel->getBoneIterator();
-		hkArray<hkQsTransform> initHighPoseArray(numBones + 1);
+		const hkaSkeleton* hkSkeleton = m_pHighPose->getSkeleton();
+		hkArray<hkQsTransform> initHighPoseArray(hkSkeleton->m_bones.getSize());
 
-		for (size_t i=1; i<=numBones; ++i)
-		{
-			Ogre::Bone* bone = iter.peekNext();
-			initHighPoseArray[i].m_scale		= Vec3_Ogre_to_Havok(bone->getScale());
-			initHighPoseArray[i].m_rotation		= Rot_Ogre_to_Havok(bone->getOrientation());
-			initHighPoseArray[i].m_translation	= Vec3_Ogre_to_Havok(bone->getPosition());
-			iter.moveNext();
-		}
 		Ogre::Bone* pRoot = pSkel->getRootBone();
 		initHighPoseArray[0].m_scale		= Vec3_Ogre_to_Havok(pRoot->getScale());
 		initHighPoseArray[0].m_rotation		= Rot_Ogre_to_Havok(pRoot->getOrientation());
 		initHighPoseArray[0].m_translation	= Vec3_Ogre_to_Havok(pRoot->getPosition());
+
+		for (int i = 1;i < hkSkeleton->m_bones.getSize();++i)
+		{
+			const hkaBone& hkBone = hkSkeleton->m_bones[i];
+			const Ogre::String boneName(hkBone.m_name);
+			Ogre::Bone* ogreBone;
+			ogreBone = pSkel->getBone(boneName);
+			assert(ogreBone);
+
+			initHighPoseArray[i].m_scale		= Vec3_Ogre_to_Havok(ogreBone->getScale());
+			initHighPoseArray[i].m_rotation		= Rot_Ogre_to_Havok(ogreBone->getOrientation());
+			initHighPoseArray[i].m_translation	= Vec3_Ogre_to_Havok(ogreBone->getPosition());
+		}
 
 		m_pHighPose->setPoseLocalSpace(initHighPoseArray);
 
@@ -116,6 +119,7 @@ namespace Kratos
 	{
  		//low pose -> high pose 
 		m_pHighPose->setToReferencePose();
+
  		m_pRagdollInstance->getPoseModelSpace(m_pRagdollPose->accessUnsyncedPoseModelSpace().begin(), hkQsTransform::getIdentity());
  		m_pRagdollPose->syncAll();
  		m_pLowToHighMapper->mapPose(*m_pRagdollPose, *m_pHighPose, hkaSkeletonMapper::CURRENT_POSE);
@@ -126,16 +130,10 @@ namespace Kratos
  
  		const hkArray<hkQsTransform>& localSpaceTransformArray = m_pHighPose->getSyncedPoseLocalSpace();
    		const hkQsTransform& transRoot = localSpaceTransformArray[0];
-
-// 		hkQsTransform worldTrans;
-// 		m_pRagdollInstance->getWorldFromBoneTransform(0, worldTrans);
-//   		m_pSceneNode->setScale(Vec3_Havok_to_Ogre(worldTrans.m_scale.getQuad()));
-//   		m_pSceneNode->setOrientation(Rot_Havok_to_Ogre(worldTrans.m_rotation.m_vec.getQuad()));
-//   		m_pSceneNode->setPosition(Vec3_Havok_to_Ogre(worldTrans.m_translation.getQuad()));
  
- 		ogreSkel->getRootBone()->setPosition(Vec3_Havok_to_Ogre(transRoot.m_scale.getQuad()));
- 		ogreSkel->getRootBone()->setOrientation(Rot_Havok_to_Ogre(transRoot.m_rotation.m_vec.getQuad()));
- 		ogreSkel->getRootBone()->setScale(Vec3_Havok_to_Ogre(transRoot.m_translation.getQuad()));
+ 		ogreSkel->getRootBone()->setPosition(Vec3_Havok_to_Ogre(transRoot.m_scale));
+ 		ogreSkel->getRootBone()->setOrientation(Rot_Havok_to_Ogre(transRoot.m_rotation));
+ 		ogreSkel->getRootBone()->setScale(Vec3_Havok_to_Ogre(transRoot.m_translation));
  
  		for (int i = 1;i < hkSkeleton->m_bones.getSize();++i)
  		{
@@ -146,10 +144,63 @@ namespace Kratos
  			assert(ogreBone);
  			const hkQsTransform& trans = localSpaceTransformArray[i];
  
- 			ogreBone->setPosition(Vec3_Havok_to_Ogre(trans.m_translation.getQuad()));
- 			ogreBone->setOrientation(Rot_Havok_to_Ogre(trans.m_rotation.m_vec.getQuad()));
- 			ogreBone->setScale(Vec3_Havok_to_Ogre(trans.m_scale.getQuad()));
+ 			ogreBone->setPosition(Vec3_Havok_to_Ogre(trans.m_translation));
+ 			ogreBone->setOrientation(Rot_Havok_to_Ogre(trans.m_rotation));
+ 			ogreBone->setScale(Vec3_Havok_to_Ogre(trans.m_scale));
  		}
  	}
+
+	void Ragdoll::LogSkeletonData()
+	{
+		Ogre::Skeleton* pSkel = m_pEntity->getSkeleton();
+		pSkel->reset(true);
+		const hkaSkeleton* hkSkeleton = m_pHighPose->getSkeleton();
+		m_pRagdollPose->setToReferencePose();
+		m_pHighPose->setToReferencePose();
+		
+		//debug for打印骨骼变换数据
+		auto& arrayPoseRagdoll = m_pRagdollPose->getSyncedPoseLocalSpace();
+		auto& arrayPoseHigh = m_pHighPose->getSyncedPoseLocalSpace();
+
+		Ogre::LogManager& log = Ogre::LogManager::getSingleton();
+		for (int i = 1;i < hkSkeleton->m_bones.getSize();++i)
+		{
+			{
+				const hkaBone& hkBone = m_pRagdollInstance->getSkeleton()->m_bones[i];
+				const Ogre::String boneName(hkBone.m_name);
+				const hkQsTransform& trans = arrayPoseRagdoll[i];
+				log.logMessage("Ragdoll:");
+				log.logMessage(boneName);
+				log.logMessage(Ogre::StringConverter::toString(Vec3_Havok_to_Ogre(trans.getScale())));
+				log.logMessage(Ogre::StringConverter::toString(Rot_Havok_to_Ogre(trans.getRotation())));
+				log.logMessage(Ogre::StringConverter::toString(Vec3_Havok_to_Ogre(trans.getTranslation())));
+				log.logMessage("\n");
+			}
+
+			const hkaBone& hkBone = hkSkeleton->m_bones[i];
+			const Ogre::String boneName(hkBone.m_name);
+			{
+
+				const hkQsTransform& trans = arrayPoseHigh[i];
+				log.logMessage("High:");
+				log.logMessage(boneName);
+				log.logMessage(Ogre::StringConverter::toString(Vec3_Havok_to_Ogre(trans.getScale())));
+				log.logMessage(Ogre::StringConverter::toString(Rot_Havok_to_Ogre(trans.getRotation())));
+				log.logMessage(Ogre::StringConverter::toString(Vec3_Havok_to_Ogre(trans.getTranslation())));
+				log.logMessage("\n");
+			}
+
+			{
+				Ogre::Bone* ogreBone;
+				ogreBone = pSkel->getBone(boneName);
+				assert(ogreBone);
+				log.logMessage("Ogre:");
+				log.logMessage(Ogre::StringConverter::toString(ogreBone->getScale()));
+				log.logMessage(Ogre::StringConverter::toString(ogreBone->getOrientation()));
+				log.logMessage(Ogre::StringConverter::toString(ogreBone->getPosition()));
+			}
+			log.logMessage("\n\n");
+		}
+	}
 
 }

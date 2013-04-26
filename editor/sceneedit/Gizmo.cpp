@@ -213,7 +213,7 @@ void GizmoAxis::_Init()
 	m_pAxisRotate[2]->setMaterialName("BlueEmissive");
 }
 
-void GizmoAxis::Attach( Ogre::SceneNode* pNode )
+void GizmoAxis::Attach( Ogre::Node* pNode )
 {
 	if (m_pAttachNode)
 	{

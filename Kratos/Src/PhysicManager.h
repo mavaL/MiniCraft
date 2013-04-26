@@ -11,6 +11,9 @@
 
 #include "Singleton.h"
 #include "KratosPrerequisites.h"
+#include <Common/Base/hkBase.h>
+#include <Common/Base/Math/Vector/hkVector4.h>
+#include <Common/Base/Math/Quaternion/hkQuaternion.h>
 
 class hkpWorld;
 class hkVisualDebugger;
@@ -43,10 +46,10 @@ namespace Kratos
 		STRING					m_resPath;
 	};
 
-#define		Vec3_Ogre_to_Havok(vecOgre) std::move(hkVector4(vecOgre.x, vecOgre.y, vecOgre.z))
-#define		Rot_Ogre_to_Havok(rotOgre)	std::move(hkQuaternion(rotOgre.x, rotOgre.y, rotOgre.z, rotOgre.w))
-#define		Vec3_Havok_to_Ogre(vecHk)	std::move(FLOAT3(vecHk.v[0], vecHk.v[1], vecHk.v[2]))
-#define		Rot_Havok_to_Ogre(rotHk)	std::move(ORIENT(rotHk.v[0], rotHk.v[1], rotHk.v[2], rotHk.v[3]))
+hkVector4		Vec3_Ogre_to_Havok(const FLOAT3& vecOgre);
+hkQuaternion	Rot_Ogre_to_Havok(const ORIENT& rotOgre);
+FLOAT3			Vec3_Havok_to_Ogre(const hkVector4& vecHk);	
+ORIENT			Rot_Havok_to_Ogre(const hkQuaternion& rotHk);
 }
 
 #endif // PhysicManager_h__

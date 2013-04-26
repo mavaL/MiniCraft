@@ -13,12 +13,13 @@
 #include "GameDefine.h"
 #include "Command.h"
 
+struct SAbilityData;
 class AiComponent;
 class PathComponent;
 class AnimatedComponent;
 class HarvestComponent;
 class BehaviorComponent;
-struct SAbilityData;
+class RagdollComponent;
 
 ///该类实现来自OgreProcedural库
 class SelectableObject : public RenderableObject
@@ -50,6 +51,7 @@ public:
 	AnimatedComponent*		GetAnim();		
 	HarvestComponent*		GetGather();	
 	BehaviorComponent*		GetBehavior();
+	RagdollComponent*		GetRagdoll();
 
 protected:
 	virtual void	_OnSelected(bool bSelected);
@@ -60,6 +62,7 @@ protected:
 	AnimatedComponent*		m_pAnim;
 	HarvestComponent*		m_pGather;
 	BehaviorComponent*		m_pBehavior;
+	RagdollComponent*		m_pRagdoll;
 	
 private:
 	Ogre::MeshPtr	_CreateSelectionCircleMesh(const Ogre::MeshPtr& objMesh);

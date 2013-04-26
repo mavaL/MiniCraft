@@ -28,6 +28,7 @@ namespace Kratos
 	public:
 		void	StartRagdoll();
 		void	UpdateRagdoll();
+		void	LogSkeletonData();
 
 	private:
 		Ogre::Entity*			m_pEntity;

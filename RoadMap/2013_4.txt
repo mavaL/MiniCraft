@@ -8,4 +8,4 @@
 
 3.Make a branch for physics middleware integreate with Havok and try ragdoll.
 
-[30%]		Ragdoll running has problem and not finish yet.
+[100%]		Ragdoll basically finished.

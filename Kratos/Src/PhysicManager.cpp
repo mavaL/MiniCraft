@@ -123,6 +123,30 @@ namespace Kratos
 		shape->removeReference();
 	}
 
+	ORIENT Rot_Havok_to_Ogre( const hkQuaternion& rotHk )
+	{
+		auto& q = rotHk.m_vec.getQuad();
+		return std::move(ORIENT(q.v[3], q.v[0], q.v[1], q.v[2]));
+	}
+
+	FLOAT3 Vec3_Havok_to_Ogre( const hkVector4& vecHk )
+	{
+		auto& q = vecHk.getQuad();
+		return std::move(FLOAT3(q.v[0], q.v[1], q.v[2]));
+	}
+
+	hkVector4 Vec3_Ogre_to_Havok( const FLOAT3& vecOgre )
+	{
+		return std::move(hkVector4(vecOgre.x, vecOgre.y, vecOgre.z));
+	}
+
+	hkQuaternion Rot_Ogre_to_Havok( const ORIENT& rotOgre )
+	{
+		return std::move(hkQuaternion(rotOgre.x, rotOgre.y, rotOgre.z, rotOgre.w));
+	}
+
 }
+
+
 
 

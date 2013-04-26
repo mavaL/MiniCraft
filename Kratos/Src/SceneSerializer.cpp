@@ -132,7 +132,6 @@ namespace Kratos
 		m_pOwner->m_pTerrain = pTerrainGroup->getTerrain(0, 0);
 		m_pOwner->m_terrainGroup = pTerrainGroup;
 		m_pOwner->m_terrainOption = option;
-		m_pOwner->m_pTerrain->setPosition(POS(500,500,500));
 	}
 
 	void SceneSerializer::_LoadEffect( rapidxml::xml_node<>* node )

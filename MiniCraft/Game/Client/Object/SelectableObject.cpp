@@ -13,6 +13,7 @@
 #include "HarvestComponent.h"
 #include "Faction.h"
 #include "BehaviorComponent.h"
+#include "RagdollComponent.h"
 
 /** This is ogre-procedural's temporary mesh buffer.
  * It stores all the info needed to build an Ogre Mesh, yet is intented to be more flexible, since
@@ -314,6 +315,7 @@ SelectableObject::SelectableObject()
 ,m_pAnim(nullptr)
 ,m_pGather(nullptr)
 ,m_pBehavior(nullptr)
+,m_pRagdoll(nullptr)
 {
 	
 	memset(m_pAbilitySlots, 0, MAX_ABILITY_SLOT * sizeof(SAbilityData*));
@@ -592,6 +594,14 @@ BehaviorComponent* SelectableObject::GetBehavior()
 	return m_pBehavior;
 }
 
+RagdollComponent* SelectableObject::GetRagdoll()
+{
+#ifdef DEBUG
+	QueryComponent(this, eComponentType_Ragoll, RagdollComponent);
+#endif
+	return m_pRagdoll;
+}
+
 void SelectableObject::InitTeamColor(const COLOR& color)
 {
 	//队伍颜色与Renderable绑定
@@ -605,11 +615,12 @@ void SelectableObject::AddComponent( eComponentType type, Component* pCo )
 	Object::AddComponent(type, pCo);
 	switch (type)
 	{
-	case eComponentType_AI:			m_pAi = QueryComponent(this, eComponentType_AI, AiComponent); break;
-	case eComponentType_Path:		m_pPath = QueryComponent(this, eComponentType_Path, PathComponent); break;
-	case eComponentType_Animated:	m_pAnim = QueryComponent(this, eComponentType_Animated, AnimatedComponent); break;
-	case eComponentType_Harvest:	m_pGather = QueryComponent(this, eComponentType_Harvest, HarvestComponent); break;
+	case eComponentType_AI:			m_pAi		= QueryComponent(this, eComponentType_AI, AiComponent); break;
+	case eComponentType_Path:		m_pPath		= QueryComponent(this, eComponentType_Path, PathComponent); break;
+	case eComponentType_Animated:	m_pAnim		= QueryComponent(this, eComponentType_Animated, AnimatedComponent); break;
+	case eComponentType_Harvest:	m_pGather	= QueryComponent(this, eComponentType_Harvest, HarvestComponent); break;
 	case eComponentType_Behevior:	m_pBehavior = QueryComponent(this, eComponentType_Behevior, BehaviorComponent); break;
+	case eComponentType_Ragoll:		m_pRagdoll	= QueryComponent(this, eComponentType_Ragoll, RagdollComponent); break;
 	}
 }
 

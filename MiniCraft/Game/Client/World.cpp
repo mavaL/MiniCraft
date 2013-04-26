@@ -88,6 +88,7 @@ void World::Init()
 
 	m_cameraMan = new OgreBites::SdkCameraMan(cam);
 	m_cameraMan->setStyle(OgreBites::CS_FREELOOK);
+	m_cameraMan->setTopSpeed(50);
 
 	//RTSÀ¯À¿ ”Ω«
 	cam->setPosition(0, 24, 0);
@@ -152,11 +153,11 @@ void World::Init()
 
  	///////////////Ragdoll≤‚ ‘
 	g_pTestUnit = static_cast<Unit*>(ObjectManager::GetSingleton().CreateObject(eObjectType_Unit));
-	g_pTestUnit->setParameter("name", "Zombie");
+	g_pTestUnit->setParameter("name", "Marine");
 	g_pTestUnit->Init();
 	g_pTestUnit->SetPosition(POS(0,0,0));
-	//g_pTestUnit->SetScale(SCALE(5,5,5));
 	g_pTestUnit->AddComponent(eComponentType_Ragoll, new RagdollComponent(g_pTestUnit));
+	g_pTestUnit->GetRagdoll()->SetRigFile("marinebone_Ragdoll.hkt");
 
 	//µÿ∞Â
 	PHYSICMANAGER.CreateGround();
