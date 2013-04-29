@@ -42,7 +42,7 @@ void aiBehaviorMoveToEnemyBase::Execute( Ogre::Any& owner )
 void aiBehaviorMoveToEnemyBase::Update( Ogre::Any& owner, float dt )
 {
 	Unit* pUnit = Ogre::any_cast<Unit*>(owner);
-	pUnit->GetPath()->_UpdatePathFinding(dt);
+	pUnit->GetPath()->UpdatePathFinding(dt);
 }
 
 void aiBehaviorMoveToEnemyBase::Exit( Ogre::Any& owner )
@@ -72,7 +72,7 @@ void aiBehaviorMoveToBase::Execute( Ogre::Any& owner )
 void aiBehaviorMoveToBase::Update( Ogre::Any& owner, float dt )
 {
 	Unit* pUnit = Ogre::any_cast<Unit*>(owner);
-	if(pUnit->GetPath()->_UpdatePathFinding(dt))
+	if(pUnit->GetPath()->UpdatePathFinding(dt))
 		pUnit->GetGather()->SetCurStage(HarvestComponent::eHarvestStage_NearBase);
 }
 
@@ -104,7 +104,7 @@ void aiBehaviorMoveToRes::Execute( Ogre::Any& owner )
 void aiBehaviorMoveToRes::Update( Ogre::Any& owner, float dt )
 {
 	Unit* pUnit = Ogre::any_cast<Unit*>(owner);
-	if(pUnit->GetPath()->_UpdatePathFinding(dt))
+	if(pUnit->GetPath()->UpdatePathFinding(dt))
 		pUnit->GetGather()->SetCurStage(HarvestComponent::eHarvestStage_NearRes);
 }
 
@@ -162,16 +162,46 @@ void aiBehaviorReturnRes::Execute( Ogre::Any& owner )
 void aiBehaviorAttackTarget::Execute( Ogre::Any& owner )
 {
 	Unit* pUnit = Ogre::any_cast<Unit*>(owner);
-	pUnit->GetAnim()->PlayAnimation(eAnimation_Attack, true);
+	pUnit->GetPath()->PausePathFinding(true);
 }
 
 void aiBehaviorAttackTarget::Update( Ogre::Any& owner, float dt )
 {
 	Unit* pUnit = Ogre::any_cast<Unit*>(owner);
+	Unit* target = pUnit->GetAttackTarget();
+	AnimatedComponent* anim = pUnit->GetAnim();
+	
+	if (target)
+	{
+		//³¯ÏòÄ¿±ê
+		POS targetPos = target->GetPosition();
+		targetPos.y = pUnit->GetPosition().y;
+		pUnit->GetSceneNode()->lookAt(targetPos, Ogre::Node::TS_WORLD, FLOAT3::UNIT_Z);
+
+		float fLastAttkTime = pUnit->GetLastAttackPastTime();
+		fLastAttkTime += dt;
+		float cooldown = pUnit->GetAttackInterval();
+
+		pUnit->SetLastAttackPastTime(fLastAttkTime);
+
+		//¹¥»÷ÀäÈ´
+		if (fLastAttkTime >= cooldown)
+		{
+			anim->PlayAnimation(eAnimation_Attack, false);
+
+			target->_OnAttacked(pUnit);
+			pUnit->SetLastAttackPastTime(0);
+		}
+		else if(anim->IsAnimationOver())
+		{
+			anim->PlayAnimation(eAnimation_Idle, true);
+		}
+	}
 }
 
 void aiBehaviorAttackTarget::Exit( Ogre::Any& owner )
 {
 	Unit* pUnit = Ogre::any_cast<Unit*>(owner);
 	pUnit->GetAnim()->StopAnimation();
+	pUnit->GetPath()->PausePathFinding(false);
 }

@@ -339,7 +339,7 @@ namespace Kratos
 #else	//deferred shading
 		RenderManager.m_pDS->setActive(true);
 		Ogre::TerrainGlobalOptions::getSingleton().setDefaultMaterialGenerator(
-			Ogre::TerrainMaterialGeneratorPtr(new Ogre::TerrainMaterialGeneratorD));
+			Ogre::TerrainMaterialGeneratorPtr(new Kratos::TerrainMaterialGeneratorD));
 		TerrainMaterialGeneratorD::SM2Profile* matProfile = static_cast<TerrainMaterialGeneratorD::SM2Profile*>(
 			TerrainGlobalOptions::getSingleton().getDefaultMaterialGenerator()->getActiveProfile());
 		matProfile->setCompositeMapEnabled(false);

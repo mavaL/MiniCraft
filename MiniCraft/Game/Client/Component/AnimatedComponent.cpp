@@ -8,6 +8,7 @@
 AnimatedComponent::AnimatedComponent( SelectableObject* pOwner )
 :Component(pOwner)
 ,m_pController(new Kratos::EffectController(pOwner->GetEntity()))
+,m_curAnim(Ogre::StringUtil::BLANK)
 {
 	m_parent = dynamic_cast<Unit*>(pOwner);
 
@@ -39,12 +40,17 @@ void AnimatedComponent::PlayAnimation( eAnimation type, bool bLoop )
 {
 	const STRING& animName = m_parent->GetUnitData()->m_anims[type];
 
-	m_pController->PlayAnimation(animName, bLoop);
+	if (animName != m_curAnim)
+	{
+		m_pController->PlayAnimation(animName, bLoop);
+		m_curAnim = animName;
+	}
 }
 
 void AnimatedComponent::StopAnimation()
 {
 	m_pController->StopAnimation();
+	m_curAnim = "";
 }
 
 void AnimatedComponent::Update( float dt )
@@ -64,6 +70,11 @@ void AnimatedComponent::SetManuallyControlBones()
 		iter.moveNext();
 	}
 	pSkel->getRootBone()->setManuallyControlled(true);
+}
+
+bool AnimatedComponent::IsAnimationOver()
+{
+	return m_pController->IsEnd();
 }
 
 

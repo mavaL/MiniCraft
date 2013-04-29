@@ -21,25 +21,27 @@ namespace Kratos
 		~Scene() {}
 
 	public:
-		void	New();
+		void	New(const STRING& sceneName);
 		void	Load(const STRING& sceneName, const STRING& sceneGroup, SceneSerializer* pHandler);
 		void	Load(const STRING& fullPath, SceneSerializer* pHandler);
 		void	Save(const STRING& fullPath, SceneSerializer* pHandler);
 		void	Reset();
 
+		const STRING&				GetSceneName() const { return m_sceneName; }
 		Ogre::TerrainGroup*			GetTerrainGroup() { return m_terrainGroup; }
 		Ogre::TerrainGlobalOptions* GetTerrainOption() { return m_terrainOption; }
 		Ogre::Terrain*				GetTerrain() { return m_pTerrain; }
 		size_t						GetTerrainMaxLayer() const { return 5; }
-		const Ogre::Vector3&		GetSunLightDirection() const { return m_sunLightDir; }
-		const Ogre::ColourValue&	GetSunLightDiffuse() const { return m_sunLightDiffuse; }
+		const FLOAT3&				GetSunLightDirection() const { return m_sunLightDir; }
+		const COLOR&				GetSunLightDiffuse() const { return m_sunLightDiffuse; }
 
 	private:
+		STRING						m_sceneName;
 		Ogre::TerrainGroup*			m_terrainGroup;
 		Ogre::TerrainGlobalOptions*	m_terrainOption;
 		Ogre::Terrain*				m_pTerrain;
-		Ogre::Vector3				m_sunLightDir;			//全局光方向
-		Ogre::ColourValue			m_sunLightDiffuse;		//全局光颜色
+		FLOAT3						m_sunLightDir;			//全局光方向
+		COLOR						m_sunLightDiffuse;		//全局光颜色
 	};
 
 }

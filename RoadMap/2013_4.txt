@@ -4,7 +4,7 @@
 
 2. Cpu controlled scene for marines fighting against zerglings.
 
-20%
+100%	Very simple battling...But I'll constantly add new features!
 
 3.Make a branch for physics middleware integreate with Havok and try ragdoll.
 

@@ -109,8 +109,9 @@ namespace Kratos
 		RenderManager.SetRenderingStyle();
 
 		//加载地形数据
+		const STRING dataFilename = m_pOwner->GetSceneName() + "_terrain.dat";
 		pTerrainGroup->setResourceGroup(m_sceneGroup);
-		pTerrainGroup->defineTerrain(0, 0, "terrain.dat");
+		pTerrainGroup->defineTerrain(0, 0, dataFilename);
 		pTerrainGroup->loadTerrain(0, 0);
 		pTerrainGroup->freeTemporaryResources();
 

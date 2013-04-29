@@ -12,11 +12,10 @@
 #include "GameDataDef.h"
 #include "AI/BehaviorTree/BehaviorTreeTemplate.h"
 #include "AI/BehaviorTree/BlackBoard.h"
+#include "ObjectManager.h"
 
 IMPL_PARAM_COMMAND_STR(Unit, Name)
 IMPL_PARAM_COMMAND(Unit, Race, Int)
-IMPL_PARAM_COMMAND(Unit, ProduceTime, Real)
-IMPL_PARAM_COMMAND_STR(Unit, PortraitName)
 
 //**** Define stuff for the Lua Class ****//
 // Define the Lua ClassName
@@ -41,6 +40,9 @@ const STRING Unit::UNIT_TABLE_NAME	=	"UnitTable";
 std::unordered_map<STRING, Ogre::Entity*>			Unit::m_portraitCache;
 std::unordered_map<STRING, Ogre::AnimationState*>	Unit::m_portraitAnimCache;
 
+const float HP_BAR_WIDTH	=	0.6f;
+const float HP_BAR_HEIGHT	=	0.1f;
+
 Unit::Unit()
 :SelectableObject()
 ,m_unitName(Ogre::StringUtil::BLANK)
@@ -49,14 +51,15 @@ Unit::Unit()
 ,m_pHealthBar(nullptr)
 ,m_pScriptSystem(Kratos::ScriptSystem::GetSingletonPtr())
 ,m_attkTargetID(-1)
+,m_fAttkTime(0)
+,m_fCurHP(0)
+,m_fFullHP(0)
 {
 	if(InitParamDict("Unit"))
 	{
 		Ogre::ParamDictionary* dict = getParamDictionary();
 		dict->addParameter(Ogre::ParameterDef("name", "Unit name", Ogre::PT_STRING), &m_sCmdName);
 		dict->addParameter(Ogre::ParameterDef("race", "Race", Ogre::PT_INT), &m_sCmdRace);
-		dict->addParameter(Ogre::ParameterDef("portrait", "Portrait mesh name", Ogre::PT_STRING), &m_sCmdPortraitName);
-		dict->addParameter(Ogre::ParameterDef("timecost", "Time cost to produce this unit", Ogre::PT_REAL), &m_sCmdProduceTime);
 
 		Luna<Unit>::Register(m_pScriptSystem->GetLuaState());
 	}
@@ -86,12 +89,17 @@ void Unit::Init()
 	setParameter("meshname", m_data->params["meshname"]);
 
 	//血条
-// 	m_pHealthBar = RenderManager.m_pSceneMgr->createBillboardSet(2);
-// 	//m_pHealthBar->createBillboard(0,0,0, COLOR::Black)->setDimensions(0.5f, 0.1f);
-// 	m_pHealthBar->setBillboardOrigin(Ogre::BBO_CENTER_LEFT);
-// 	m_pHealthBar->createBillboard(0,0,0.01f, COLOR::Red)->setDimensions(0.5f, 0.1f);
-// 	m_pHealthBar->setMaterialName("HPBar");
-// 	m_pSceneNode->createChildSceneNode(POS(0,1.5f,0))->attachObject(m_pHealthBar);
+	//TODO: 需要instancing!!
+	m_pHealthBar = RenderManager.m_pSceneMgr->createBillboardSet(1);
+	//m_pHealthBar->createBillboard(0,0,0, COLOR::Black)->setDimensions(0.5f, 0.1f);
+	m_pHealthBar->setBillboardOrigin(Ogre::BBO_CENTER);
+	m_pHealthBar->createBillboard(POS::ZERO, COLOR::Green)->setDimensions(HP_BAR_WIDTH, HP_BAR_HEIGHT);
+	m_pHealthBar->setMaterialName("HPBar");
+	m_pHealthBar->setRenderQueueGroup(Ogre::RENDER_QUEUE_OVERLAY);
+	m_pSceneNode->createChildSceneNode(POS(0,1.5f,0))->attachObject(m_pHealthBar);
+
+	m_fFullHP = Ogre::StringConverter::parseReal(m_data->m_battleInfo.params["hp"]);
+	m_fCurHP = m_fFullHP;
 
 	//初始化技能
 	for (int iAbil=0; iAbil<MAX_ABILITY_SLOT; ++iAbil)
@@ -123,10 +131,12 @@ void Unit::Update( float dt )
 	if(m_bSelected)
 		m_portraitAnimCache[m_unitName]->addTime(dt);
 
-	/////测试更新血条
-// 	Ogre::Billboard* bb = m_pHealthBar->getBillboard(0);
-// 	float oldWidth = bb->getOwnWidth();
-// 	bb->setDimensions(oldWidth + dt * 0.02f, 0.1f);
+	//更新血条
+	{
+		float hpBarWidth = (m_fCurHP / m_fFullHP) * HP_BAR_WIDTH;
+		Ogre::Billboard* bb = m_pHealthBar->getBillboard(0);
+		bb->setDimensions(hpBarWidth, HP_BAR_HEIGHT);
+	}
 
 	__super::Update(dt);
 }
@@ -200,6 +210,16 @@ float Unit::GetProduceTime() const
 	return Ogre::StringConverter::parseReal(m_data->params["timecost"]);
 }
 
+float Unit::GetAttackInterval() const
+{
+	return Ogre::StringConverter::parseReal(m_data->m_battleInfo.params["freq"]);
+}
+
+float Unit::GetAttackDamage() const
+{
+	return Ogre::StringConverter::parseReal(m_data->m_battleInfo.params["damage"]);
+}
+
 int Unit::SetBlackboardParamInt( lua_State* L )
 {
 	const STRING paramName = m_pScriptSystem->Get_String(-2);
@@ -263,9 +283,9 @@ int Unit::SetAttackTargetID( lua_State* L )
 
 int Unit::FindNearestEnemy( lua_State* L )
 {
-	///// !! Notice:单位数量多了之后,这里可能存在性能问题
+	//TODO: 轮询效率太低了
 	const POS& origin = GetPosition();
-	const int ALERT_RADIUS = 2;
+	const float ALERT_RADIUS = 2.0f;
 	Ogre::Sphere s(origin, ALERT_RADIUS);
 	std::vector<Ogre::MovableObject*> queryResult;
 	World::GetSingleton().GetSphereSceneQueryResult(s, queryResult, eQueryType_Unit);
@@ -279,7 +299,7 @@ int Unit::FindNearestEnemy( lua_State* L )
 		SelectableObject* obj = Ogre::any_cast<SelectableObject*>(queryResult[i]->getUserAny());
 		bool bAlly = obj->GetAi()->IsAlly(this);
 
-		if(sqDist < nearestDist && !bAlly)
+		if(	sqDist < nearestDist && !bAlly )
 		{
 			findID = obj->GetID();
 			nearestDist = sqDist;
@@ -289,3 +309,26 @@ int Unit::FindNearestEnemy( lua_State* L )
 	m_pScriptSystem->Push_Int(findID);
 	return 1;
 }
+
+Unit* Unit::GetAttackTarget()
+{
+	if(m_attkTargetID == -1)
+		return nullptr;
+	
+	return static_cast<Unit*>(ObjectManager::GetSingleton().GetObject(m_attkTargetID));
+}
+
+void Unit::_OnAttacked( Unit* attcker )
+{
+	m_fCurHP -= attcker->GetAttackDamage();
+
+	//嗝儿屁了
+	if (m_fCurHP <= 0)
+	{
+		RemoveComponent(eComponentType_Behevior);
+		m_pAi->SetCurState(eObjectState_Death);
+		attcker->SetAttackTarget(-1);
+	}
+}
+
+

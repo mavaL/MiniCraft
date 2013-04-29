@@ -50,7 +50,7 @@ void ManipulatorScene::Shutdown()
 
 void ManipulatorScene::SceneNew(const std::wstring& sceneName)
 {
-	m_pCurScene->New();
+	m_pCurScene->New(Utility::UnicodeToEngine(sceneName));
 
 	m_sceneName = sceneName;
 	m_bIsSceneReay = true;

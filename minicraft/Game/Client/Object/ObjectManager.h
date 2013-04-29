@@ -27,6 +27,7 @@ class ObjectManager : public CSingleton<ObjectManager>
 
 public:
 	Object*		CreateObject(eObjectType type);
+	void		DestroyObject(Object* pObject);
 	void		DestroyAll();
 	void		UpdateAll(float dt);
 	Object*		GetObject(int ID) { assert(m_objects[ID]); return m_objects[ID]; }
@@ -34,6 +35,7 @@ public:
 private:
 	FactoryContainer	m_factories;
 	ObjectContainer		m_objects;
+	std::vector<Object*>m_lstToDestroy;
 };
 
 #endif // ObjectManager_h__

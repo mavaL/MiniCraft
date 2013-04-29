@@ -65,8 +65,7 @@ struct SUnitData
 	AnimTable				m_anims;				//该单位所有动画的真实名字.因为各模型的导出动画名字不一定一致
 	typedef HashMap<STRING, std::vector<SEffectData>> EffectDataMap;
 	EffectDataMap			m_effects;				//挂接特效
-	typedef HashMap<STRING, std::vector<SBattleData>> BattleDataMap;
-	BattleDataMap			m_battleInfo;			//战斗数据
+	SBattleData				m_battleInfo;			//战斗数据
 };
 
 //设计基于值对象而不是指针,是因为一旦初始化完毕,在程序退出前,就不会去改变了,

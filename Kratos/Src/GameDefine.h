@@ -49,7 +49,8 @@ enum eAnimation
 	eAnimation_Idle,					//ÐÝÏÐ
 	eAnimation_Move	,					//ÒÆ¶¯
 	eAnimation_Gather,					//²É¼¯
-	eAnimation_Attack					//¹¥»÷
+	eAnimation_Attack,					//¹¥»÷
+	eAnimation_Death					//ËÀÍö
 };
 
 

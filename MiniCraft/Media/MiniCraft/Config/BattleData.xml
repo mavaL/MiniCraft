@@ -1,10 +1,10 @@
 <?xml version='1.0' encoding='utf-8' ?>
 <Root>
   <Unit name="Marine">
-    <Ability name="Attack" type="Missile" range="2" freq="1.5" damage="6"/>
+    <Attack type="Missile" range="2" freq="1.5" damage="6" hp="45"/>
   </Unit>
   <Unit name="Zergling">
-    <Ability name="Attack" type="Melee" freq="1.2" damage="6"/>
+    <Attack type="Melee" freq="1.2" damage="6" hp="35"/>
   </Unit>
 </Root>
 

@@ -20,6 +20,8 @@ namespace Kratos
 
 	void Scene::Load( const STRING& sceneName, const STRING& sceneGroup, SceneSerializer* pHandler )
 	{
+		STRING extname;
+		Ogre::StringUtil::splitBaseFilename(sceneName, m_sceneName, extname);
 		pHandler->LoadScene(sceneName, sceneGroup, this);
 	}
 
@@ -65,8 +67,10 @@ namespace Kratos
 		mgr.m_pSceneMgr->clearScene();
 	}
 
-	void Scene::New()
+	void Scene::New(const STRING& sceneName)
 	{
+		m_sceneName = sceneName;
+
 		COgreManager& ogreMgr = COgreManager::GetSingleton();
 		Ogre::SceneManager* sm = ogreMgr.m_pSceneMgr;
 		//»·¾³¹â

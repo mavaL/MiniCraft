@@ -17,10 +17,6 @@ struct SBuildingData;
 class Building : public SelectableObject
 {
 	DECL_PARAM_COMMAND(Name)
-	DECL_PARAM_COMMAND(RallyPoint)
-	DECL_PARAM_COMMAND(Race)
-	DECL_PARAM_COMMAND(Icon)
-	DECL_PARAM_COMMAND(Flags)
 public:
 	Building();
 	~Building() {}
@@ -35,13 +31,9 @@ public:
 	void			SetName(const STRING& name);
 	const STRING&	GetName() const				{return m_buildingName; } 
 	float			GetCurProgress() const		{ return m_fCurProgress; }
-	void			SetRallyPoint(const POS& pos) { assert(0); /*shouldn't be called!*/ }
 	const POS&		GetRallyPoint() const;
-	void			SetRace(int race)			{ assert(0); /*shouldn't be called!*/ }
 	int				GetRace() const;
-	void			SetIcon(const STRING& icon)	{ assert(0); /*shouldn't be called!*/ }
 	const STRING&	GetIcon() const;
-	void			SetFlags(int flags)			{ assert(0); /*shouldn't be called!*/ }
 	int				GetFlags() const;
 
 private:

@@ -42,7 +42,7 @@ void ActionObjectEdit::OnMouseLButtonDown( const SActionParam& param )
 
 	if (pGizmo->IsActive())
 	{
-		assert(pGizmo->GetActiveAxis() != eAxis_None);
+		assert(pGizmo->GetActiveAxis() != GizmoAxis::eAxis_None);
 		const Ogre::Ray ray = RenderManager.m_pMainCamera->getCameraToViewportRay(param.m_ptRelative.x, param.m_ptRelative.y);
 		if(mode == ManipulatorObject::eEditMode_Move)
 			m_vecAdjust = _ComputeTranslateVector(ray, pGizmo->GetActiveAxis(), false);
@@ -115,9 +115,9 @@ void ActionObjectEdit::OnMouseMove( const SActionParam& param )
 
 			switch (pGizmo->GetActiveAxis())
 			{
-			case eAxis_X: scale.x = axisScale; break;
-			case eAxis_Y: scale.y = axisScale; break;
-			case eAxis_Z: scale.z = axisScale; break;
+			case GizmoAxis::eAxis_X: scale.x = axisScale; break;
+			case GizmoAxis::eAxis_Y: scale.y = axisScale; break;
+			case GizmoAxis::eAxis_Z: scale.z = axisScale; break;
 			}
 			manObject.Scale(curSel, scale, false);
 		}
@@ -129,7 +129,7 @@ void ActionObjectEdit::OnMouseMove( const SActionParam& param )
 	}
 }
 
-const Ogre::Vector3 ActionObjectEdit::_ComputeTranslateVector(const Ogre::Ray& ray, eAxis axis, bool bAxisLocal)
+const Ogre::Vector3 ActionObjectEdit::_ComputeTranslateVector(const Ogre::Ray& ray, GizmoAxis::eAxis axis, bool bAxisLocal)
 {
 	using namespace Ogre;
 
@@ -148,9 +148,9 @@ const Ogre::Vector3 ActionObjectEdit::_ComputeTranslateVector(const Ogre::Ray& r
 	Vector3 vAxis = Vector3::ZERO;
 	switch (axis)
 	{
-	case eAxis_X: { vX = 10000.0f; vAxis = bAxisLocal ? Vector3::UNIT_X : qOrient.xAxis(); } break;
-	case eAxis_Y: { vY = 10000.0f; vAxis = bAxisLocal ? Vector3::UNIT_Y : qOrient.yAxis(); } break;
-	case eAxis_Z: { vZ = 10000.0f; vAxis = bAxisLocal ? Vector3::UNIT_Z : qOrient.zAxis(); } break;
+	case GizmoAxis::eAxis_X: { vX = 10000.0f; vAxis = bAxisLocal ? Vector3::UNIT_X : qOrient.xAxis(); } break;
+	case GizmoAxis::eAxis_Y: { vY = 10000.0f; vAxis = bAxisLocal ? Vector3::UNIT_Y : qOrient.yAxis(); } break;
+	case GizmoAxis::eAxis_Z: { vZ = 10000.0f; vAxis = bAxisLocal ? Vector3::UNIT_Z : qOrient.zAxis(); } break;
 	}
 
 	Plane planeToUse;

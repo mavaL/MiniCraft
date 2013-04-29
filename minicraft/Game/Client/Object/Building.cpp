@@ -8,10 +8,6 @@
 #include "PathComponent.h"
 
 IMPL_PARAM_COMMAND_STR(Building, Name)
-IMPL_PARAM_COMMAND(Building, RallyPoint, Vector3)
-IMPL_PARAM_COMMAND(Building, Race, Int)
-IMPL_PARAM_COMMAND_STR(Building, Icon)
-IMPL_PARAM_COMMAND(Building, Flags, Int)
 
 Building::Building()
 :SelectableObject()
@@ -24,10 +20,6 @@ Building::Building()
 	{
 		Ogre::ParamDictionary* dict = getParamDictionary();
 		dict->addParameter(Ogre::ParameterDef("name", "Building name", Ogre::PT_STRING), &m_sCmdName);
-		dict->addParameter(Ogre::ParameterDef("rallypoint", "Default rally point", Ogre::PT_VECTOR3), &m_sCmdRallyPoint);
-		dict->addParameter(Ogre::ParameterDef("race", "Belong race", Ogre::PT_INT), &m_sCmdRace);
-		dict->addParameter(Ogre::ParameterDef("icon", "UI icon name", Ogre::PT_STRING), &m_sCmdIcon);
-		dict->addParameter(Ogre::ParameterDef("flags", "Property flags", Ogre::PT_INT), &m_sCmdFlags);
 	}
 }
 

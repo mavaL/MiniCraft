@@ -81,20 +81,26 @@ namespace Kratos
 		///同步ragoll的初始化high pose
 		Ogre::Skeleton* pSkel = m_pEntity->getSkeleton();
 		const hkaSkeleton* hkSkeleton = m_pHighPose->getSkeleton();
+		hkaSkeletonUtils::lockTranslations((hkaSkeleton&)*hkSkeleton);
 		hkArray<hkQsTransform> initHighPoseArray(hkSkeleton->m_bones.getSize());
 
-		Ogre::Bone* pRoot = pSkel->getRootBone();
-		initHighPoseArray[0].m_scale		= Vec3_Ogre_to_Havok(pRoot->getScale());
-		initHighPoseArray[0].m_rotation		= Rot_Ogre_to_Havok(pRoot->getOrientation());
-		initHighPoseArray[0].m_translation	= Vec3_Ogre_to_Havok(pRoot->getPosition());
-
-		for (int i = 1;i < hkSkeleton->m_bones.getSize();++i)
+		for (int i = 0;i < hkSkeleton->m_bones.getSize();++i)
 		{
 			const hkaBone& hkBone = hkSkeleton->m_bones[i];
 			const Ogre::String boneName(hkBone.m_name);
-			Ogre::Bone* ogreBone;
-			ogreBone = pSkel->getBone(boneName);
-			assert(ogreBone);
+			Ogre::Bone* ogreBone = nullptr;
+
+			try
+			{
+				ogreBone = pSkel->getBone(boneName);
+			}
+			catch(...)
+			{
+				initHighPoseArray[i].m_scale		= Vec3_Ogre_to_Havok(SCALE::UNIT_SCALE);
+				initHighPoseArray[i].m_rotation		= Rot_Ogre_to_Havok(ORIENT::IDENTITY);
+				initHighPoseArray[i].m_translation	= Vec3_Ogre_to_Havok(POS::ZERO);
+				continue;
+			}
 
 			initHighPoseArray[i].m_scale		= Vec3_Ogre_to_Havok(ogreBone->getScale());
 			initHighPoseArray[i].m_rotation		= Rot_Ogre_to_Havok(ogreBone->getOrientation());
@@ -127,26 +133,27 @@ namespace Kratos
  		//high pose -> ogre skeleton
  		const hkaSkeleton* hkSkeleton = m_pHighPose->getSkeleton();
  		Ogre::Skeleton* ogreSkel = m_pEntity->getSkeleton();
- 
- 		const hkArray<hkQsTransform>& localSpaceTransformArray = m_pHighPose->getSyncedPoseLocalSpace();
-   		const hkQsTransform& transRoot = localSpaceTransformArray[0];
- 
- 		ogreSkel->getRootBone()->setPosition(Vec3_Havok_to_Ogre(transRoot.m_scale));
- 		ogreSkel->getRootBone()->setOrientation(Rot_Havok_to_Ogre(transRoot.m_rotation));
- 		ogreSkel->getRootBone()->setScale(Vec3_Havok_to_Ogre(transRoot.m_translation));
- 
- 		for (int i = 1;i < hkSkeleton->m_bones.getSize();++i)
+ 		hkArray<hkQsTransform>& localSpaceTransformArray = const_cast<hkArray<hkQsTransform>&>(m_pHighPose->getSyncedPoseLocalSpace());
+
+		// 考虑到根骨骼为世界坐标系原点且一直不动,要防止被裁减 [4/28/2013 mavaL]
+		// 0=根骨骼, 1=角色真正根骨骼(pevis或bip01等)
+		m_pSceneNode->setPosition(Vec3_Havok_to_Ogre(localSpaceTransformArray[1].m_translation));
+		localSpaceTransformArray[1].m_translation = hkVector4::getZero();
+
+ 		for (size_t i = 0;i < ogreSkel->getNumBones();++i)
  		{
- 			const hkaBone& hkBone = hkSkeleton->m_bones[i];
- 			const Ogre::String boneName(hkBone.m_name);
- 			Ogre::Bone* ogreBone;
- 			ogreBone = ogreSkel->getBone(boneName);
- 			assert(ogreBone);
- 			const hkQsTransform& trans = localSpaceTransformArray[i];
- 
- 			ogreBone->setPosition(Vec3_Havok_to_Ogre(trans.m_translation));
- 			ogreBone->setOrientation(Rot_Havok_to_Ogre(trans.m_rotation));
- 			ogreBone->setScale(Vec3_Havok_to_Ogre(trans.m_scale));
+			Ogre::Bone* ogreBone = ogreSkel->getBone(i);
+			hkInt16 boneIdx = hkaSkeletonUtils::findBoneWithName(*hkSkeleton, ogreBone->getName().c_str());
+
+			if (boneIdx != -1)
+			{
+				const hkaBone& hkBone = hkSkeleton->m_bones[boneIdx];
+				const hkQsTransform& trans = localSpaceTransformArray[boneIdx];
+
+				ogreBone->setPosition(Vec3_Havok_to_Ogre(trans.m_translation));
+				ogreBone->setOrientation(Rot_Havok_to_Ogre(trans.m_rotation));
+				ogreBone->setScale(Vec3_Havok_to_Ogre(trans.m_scale));
+			}
  		}
  	}
 

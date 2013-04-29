@@ -25,10 +25,11 @@ public:
 public:
 	int					GetID() const { return m_ID; }
 	virtual void		AddComponent(eComponentType type, Component* pCo);
-	Component*			GetComponent(eComponentType type);
-	void				UpdateAllComponent(float dt);
 	virtual eObjectType GetType() const = 0;
 	virtual	void		Update(float dt) {}
+	void				RemoveComponent(eComponentType type);
+	Component*			GetComponent(eComponentType type);
+	void				UpdateAllComponent(float dt);
 
 private:
 	int					m_ID;			//对象唯一标示ID

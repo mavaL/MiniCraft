@@ -91,6 +91,7 @@ void GameDataDefManager::LoadAllData()
 		mapName["Move"] = eAnimation_Move;
 		mapName["Gather"] = eAnimation_Gather;
 		mapName["Attack"] = eAnimation_Attack;
+		mapName["Death"] = eAnimation_Death;
 
 		rapidxml::xml_node<>* pAnimNode = pNode->first_node("AnimationSet")->first_node("Animation");
 		while(pAnimNode)
@@ -153,6 +154,29 @@ void GameDataDefManager::LoadAllData()
 
 			pAnimNode = pAnimNode->next_sibling();
 		}
+		pUnitNode = pUnitNode->next_sibling();
+	}
+
+	free(szData);
+	XMLDoc.clear();
+
+	///加载单位作战数据
+	stream = Ogre::ResourceGroupManager::getSingleton().openResource("BattleData.xml", "Config");
+	szData = strdup(stream->getAsString().c_str());
+
+	XMLDoc.parse<0>(szData);
+	pUnitNode = XMLDoc.first_node("Root")->first_node("Unit");
+	//per unit
+	while(pUnitNode)
+	{
+		const char* szName = pUnitNode->first_attribute("name")->value();
+		SUnitData& unitData = m_unitData[szName];
+
+		rapidxml::xml_node<>* pAttkNode = pUnitNode->first_node("Attack");
+		SBattleData data;
+		LoadStringInterface(data.params, pAttkNode);
+		unitData.m_battleInfo = data;
+		
 		pUnitNode = pUnitNode->next_sibling();
 	}
 
@@ -265,18 +289,14 @@ void GameDataDefManager::SaveAllData()
 
 void LoadStringInterface( Ogre::NameValuePairList& params, rapidxml::xml_node<>* node )
 {
-	while(node)
+	auto attr = node->first_attribute();
+	while(attr)
 	{
-		auto attr = node->first_attribute();
-		while(attr)
-		{
-			char* name = attr->name();
-			char* value = attr->value();
-			params.insert(std::make_pair(name, value));
-			attr = attr->next_attribute();
-		}
- 		node = node->next_sibling();
-	}	
+		char* name = attr->name();
+		char* value = attr->value();
+		params.insert(std::make_pair(name, value));
+		attr = attr->next_attribute();
+	}
 }
 
 void SaveStringInterface( Ogre::StringInterface* si, Ogre::NameValuePairList& params )

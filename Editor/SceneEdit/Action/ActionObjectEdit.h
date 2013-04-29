@@ -12,8 +12,7 @@
 
 
 #include "ActionBase.h"
-#include "EditorDefine.h"
-
+#include "Gizmo.h"
 
 class ActionObjectEdit : public ActionBase
 {
@@ -35,7 +34,7 @@ private:
 	Ogre::Any		m_oldValue;
 
 	//³éÈ¡×ÔOgitor
-	const Ogre::Vector3	_ComputeTranslateVector(const Ogre::Ray& ray, eAxis axis, bool bAxisLocal);
+	const Ogre::Vector3	_ComputeTranslateVector(const Ogre::Ray& ray, GizmoAxis::eAxis axis, bool bAxisLocal);
 };
 
 

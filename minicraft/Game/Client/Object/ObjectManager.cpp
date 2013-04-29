@@ -53,4 +53,21 @@ void ObjectManager::UpdateAll( float dt )
 		pObj->UpdateAllComponent(dt);
 		pObj->Update(dt);
 	}
+
+	for (size_t i=0; i<m_lstToDestroy.size(); ++i)
+	{
+		Object* obj = m_lstToDestroy[i];
+		m_objects.erase(obj->GetID());
+
+		auto iterFactory = m_factories.find(obj->GetType());
+		ObjectFactory* pFactory = iterFactory->second;
+		pFactory->DestroyInstance(obj);
+	}
+	m_lstToDestroy.clear();
+}
+
+void ObjectManager::DestroyObject( Object* pObject )
+{
+	//不直接销毁,集中在每帧update后销毁
+	m_lstToDestroy.push_back(pObject);
 }

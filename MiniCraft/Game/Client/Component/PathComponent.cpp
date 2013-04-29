@@ -124,7 +124,7 @@ void PathComponent::SetDestPos( const POS& destPos )
 	m_destPos = adjustPos;
 }
 
-bool PathComponent::_UpdatePathFinding( float dt )
+bool PathComponent::UpdatePathFinding( float dt )
 {
 	POS curPos = GetAgentPos();
 	World::GetSingleton().ClampToTerrain(curPos);
@@ -170,6 +170,11 @@ bool PathComponent::ClampPosToNavMesh( POS& wPos )
 	bool ret = m_pRecast->findNearestPointOnNavmesh(wPos, wPos);
 	assert(ret);
 	return ret;
+}
+
+void PathComponent::PausePathFinding(bool bPause)
+{
+	m_pAgent->active = !bPause;
 }
 
 

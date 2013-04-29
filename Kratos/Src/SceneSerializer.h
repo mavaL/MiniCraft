@@ -10,14 +10,10 @@
 #ifndef SceneSerializer_h__
 #define SceneSerializer_h__
 
-<<<<<<< HEAD
 #include "KratosPrerequisites.h"
 #include <rapidxml.hpp>       
 #include <rapidxml_utils.hpp>
 #include <rapidxml_print.hpp>
-=======
-#include <OgrePrerequisites.h>
->>>>>>> Havok
 
 namespace Kratos
 {

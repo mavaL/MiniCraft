@@ -12,14 +12,13 @@
 #include "PortraitPanel.h"
 #include "AIFaction.h"
 #include "Resource.h"
-#include "BehaviorTreeTemplateManager.h"
 #include "Building.h"
-#include "ConcreteBehavior.h"
+#include "BehaviorTreeTemplateManager.h"
 #include "BlackBoard.h"
 #include "PathComponent.h"
 #include "RagdollComponent.h"
 #include "PhysicManager.h"
-
+#include "BehaviorComponent.h"
 
 SGlobalEnvironment	g_Environment;
 
@@ -37,8 +36,6 @@ Luna<World>::RegType World::methods[] =
 	method(World, SetGlobalBBParam_Bool),
 	{0,0}
 };
-
-Unit* g_pTestUnit = nullptr;
 
 ////////////////////////////////////////////////////////////////
 World::World()
@@ -90,15 +87,7 @@ void World::Init()
 	GameDataDefManager::GetSingleton().LoadAllData();
 
 	//初始化行为库
-	Kratos::aiBehaviorTreeTemplateManager& btMgr = Kratos::aiBehaviorTreeTemplateManager::GetSingleton();
-	btMgr.AddBehavior("Idle", new aiBehaviorIdle);
-	btMgr.AddBehavior("MoveToEnemyBase", new aiBehaviorMoveToEnemyBase);
-	btMgr.AddBehavior("MoveToBase", new aiBehaviorMoveToBase);
-	btMgr.AddBehavior("MoveToRes", new aiBehaviorMoveToRes);
-	btMgr.AddBehavior("GatherRes", new aiBehaviorGathering);
-	btMgr.AddBehavior("RetriveRes", new aiBehaviorRetriveRes);
-	btMgr.AddBehavior("ReturnRes", new aiBehaviorReturnRes);
-	btMgr.AddBehavior("AttackTarget", new aiBehaviorAttackTarget);
+	BehaviorComponent::InitBehaviors();
 
 	//测试两个AI
 	m_player[eGameRace_Terran] = new FactionAI(eGameRace_Terran);
@@ -118,19 +107,6 @@ void World::Init()
 
 	dynamic_cast<FactionAI*>(m_player[eGameRace_Zerg])->Init();
 	dynamic_cast<FactionAI*>(m_player[eGameRace_Terran])->Init();
-
-	//地板
-	PHYSICMANAGER.CreateGround();
-
-// 	///////////////行为树测试
-// 	Unit* pUnit = static_cast<Unit*>(ObjectManager::GetSingleton().CreateObject(eObjectType_Unit));
-// 	pUnit->setParameter("name", "Scv");
-// 	pUnit->Init();
-// 	pUnit->SetPosition(m_player[eGameRace_Terran]->GetBase()->GetRallyPoint());
-// 	pUnit->AddComponent(eComponentType_Path, new PathComponent(pUnit));
-// 	pUnit->AddComponent(eComponentType_Behevior, new BehaviorComponent(pUnit));
-// 	pUnit->GetAi()->SetCpuControl(true);
-// 	pUnit->GetBehavior()->SetTempalte("Scv");
 
 	//UI for test
 	Ogre::Entity* pEntConsole = m_pRenderSystem->CreateEntityWithTangent("ConsoleTerran_0.mesh", sm);
@@ -475,10 +451,4 @@ int World::SetGlobalBBParam_Bool( lua_State* L )
 	Kratos::aiBehaviorTreeTemplateManager::GetSingleton().GetGlobalBB(race)->SetParam(paramName, value);
 
 	return 0;
-}
-
-void World::StartRagdoll()
-{
-	RagdollComponent* cp = QueryComponent(g_pTestUnit, eComponentType_Ragoll, RagdollComponent);
-	cp->StartRagdoll();
 }

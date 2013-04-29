@@ -8,6 +8,7 @@
 #include "SelectableObject.h"
 #include "Unit.h"
 #include "ScriptSystem.h"
+#include "ConcreteBehavior.h"
 
 BehaviorComponent::BehaviorComponent( SelectableObject* pOwner )
 :Component(pOwner)
@@ -21,6 +22,19 @@ BehaviorComponent::BehaviorComponent( SelectableObject* pOwner )
 BehaviorComponent::~BehaviorComponent()
 {
 	SAFE_DELETE(m_pOwnBB);
+}
+
+void BehaviorComponent::InitBehaviors()
+{
+	Kratos::aiBehaviorTreeTemplateManager& btMgr = Kratos::aiBehaviorTreeTemplateManager::GetSingleton();
+	btMgr.AddBehavior("Idle", new aiBehaviorIdle);
+	btMgr.AddBehavior("MoveToEnemyBase", new aiBehaviorMoveToEnemyBase);
+	btMgr.AddBehavior("MoveToBase", new aiBehaviorMoveToBase);
+	btMgr.AddBehavior("MoveToRes", new aiBehaviorMoveToRes);
+	btMgr.AddBehavior("GatherRes", new aiBehaviorGathering);
+	btMgr.AddBehavior("RetriveRes", new aiBehaviorRetriveRes);
+	btMgr.AddBehavior("ReturnRes", new aiBehaviorReturnRes);
+	btMgr.AddBehavior("AttackTarget", new aiBehaviorAttackTarget);
 }
 
 void BehaviorComponent::SetTemplate( const STRING& name )

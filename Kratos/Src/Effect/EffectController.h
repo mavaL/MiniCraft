@@ -34,15 +34,17 @@ namespace Kratos
 		void					StopAnimation();
 		Ogre::AnimationState*	GetAnimState()	{ return m_anim; }
 		//更新该控制器
-		void			Update(float dt);
+		void					Update(float dt);
+		bool					IsEnd() { return m_bEnd; }
 		//编辑器用
-		void			_SetParent(Ogre::Entity* ent);
+		void					_SetParent(Ogre::Entity* ent);
 		const EffectContainer&	_GetEffects() const { return m_effects; }
 
 	private:
 		Ogre::Entity*			m_parent;
 		EffectContainer			m_effects;
 		Ogre::AnimationState*	m_anim;			//当前播放动画
+		bool					m_bEnd;
 	};
 
 }

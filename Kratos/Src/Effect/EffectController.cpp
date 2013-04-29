@@ -10,6 +10,7 @@ namespace Kratos
 	EffectController::EffectController( Ogre::Entity* parent )
 	:m_parent(parent)
 	,m_anim(nullptr)
+	,m_bEnd(false)
 	{
 
 	}
@@ -83,6 +84,8 @@ namespace Kratos
 				effect->Start();
 			}
 		}
+
+		m_bEnd = false;
 	}
 
 	void EffectController::StopAnimation()
@@ -102,28 +105,32 @@ namespace Kratos
 			m_anim->setEnabled(false);
 			m_anim = nullptr;
 		}
+
+		m_bEnd = true;
 	}
 
 	void EffectController::Update( float dt )
 	{
-		if (m_anim)
+		if(!m_anim)
+			return;
+
+		//更新动画
+		static float fLastTimePos = m_anim->getTimePosition();
+		m_anim->addTime(dt);
+
+		if(m_anim->hasEnded())
 		{
-			//更新动画
-			static float fLastTimePos = m_anim->getTimePosition();
-			m_anim->addTime(dt);
-
-			if(m_anim->hasEnded())
-				m_anim = nullptr;
-
+			StopAnimation();
+			m_anim = nullptr;
+		}
+		else
+		{
 			bool bLooped = false;
 			float fCurTimePos = m_anim->getTimePosition();
+			//hack a little..
+			//说明动画已经循环了一次
 			if(fCurTimePos < fLastTimePos)
-			{
-				//hack a little..
-				//说明动画已经循环了一次
-				assert(m_anim->getLoop());
 				bLooped = true;
-			}
 			fLastTimePos = fCurTimePos;
 
 			//更新特效

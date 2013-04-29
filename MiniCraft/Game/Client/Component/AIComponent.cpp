@@ -17,7 +17,6 @@ AiComponent::AiComponent(SelectableObject* pOwner)
 ,m_curState(eObjectState_Idle)
 ,m_parallelState(nullptr)
 ,m_player(nullptr)
-,m_attkTarget(nullptr)
 ,m_bCpuControl(false)
 {
 	m_states.push_back(new StateIdle);
@@ -27,6 +26,7 @@ AiComponent::AiComponent(SelectableObject* pOwner)
 	m_states.push_back(new StateStop);
 	m_states.push_back(new StateGather);
 	m_states.push_back(new StateAttack);
+	m_states.push_back(new StateDeath);
 }
 
 AiComponent::~AiComponent()
@@ -68,13 +68,13 @@ void AiComponent::SetCurState(eObjectState state)
 
 void AiComponent::Update( float dt )
 {
-	if(m_bCpuControl)
-		return;
-
-	m_states[m_curState]->Update(dt, m_pOwner);
-	//更新并行状态
-	if(m_parallelState) 
-		m_parallelState->Update(dt, m_pOwner);
+	if(!m_bCpuControl)
+	{
+		m_states[m_curState]->Update(dt, m_pOwner);
+		//更新并行状态
+		if(m_parallelState) 
+			m_parallelState->Update(dt, m_pOwner);
+	}
 }
 
 void AiComponent::_OnCommandFinished()
@@ -126,7 +126,7 @@ void AiComponent::GiveCommand( const OIS::MouseEvent& arg, OIS::MouseButtonID id
 			{
 				assert(m_pOwner->HasAbility(eCommandType_Attack));
 				//设定攻击目标
-				m_pOwner->GetAi()->SetAttackTarget(pHitObj);
+				dynamic_cast<Unit*>(m_pOwner)->SetAttackTarget(pHitObj->GetID());
 
 				if(m_bCpuControl)
 				{

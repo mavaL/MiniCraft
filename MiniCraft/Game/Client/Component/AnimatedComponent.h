@@ -30,10 +30,12 @@ public:
 	void			PlayAnimation(eAnimation type, bool bLoop);
 	void			StopAnimation();
 	void			SetManuallyControlBones();
+	bool			IsAnimationOver();
 
 private:
 	Unit*						m_parent;
 	Kratos::EffectController*	m_pController;
+	STRING						m_curAnim;
 };
 
 #endif // AnimatedComponent_h__

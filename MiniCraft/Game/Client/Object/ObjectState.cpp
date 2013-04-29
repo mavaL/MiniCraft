@@ -42,7 +42,7 @@ void StateMove::Enter( SelectableObject* pOwner )
 
 void StateMove::Update( float dt, SelectableObject* pOwner )
 {
-	if(pOwner->GetPath()->_UpdatePathFinding(dt))
+	if(pOwner->GetPath()->UpdatePathFinding(dt))
 	{
 		//已到达目的地,进入空闲状态
 		pOwner->GetAi()->SetCurState(eObjectState_Idle);
@@ -245,4 +245,23 @@ void StateGather::Exit( SelectableObject* pOwner )
 	pOwner->GetGather()->SetCurStage(HarvestComponent::eHarvestStage_None);
 	//恢复单位间阻挡
 	pOwner->GetPath()->EnableObstcleAvoidance(true);
+}
+
+void StateDeath::Enter( SelectableObject* pOwner )
+{
+	pOwner->GetAnim()->PlayAnimation(eAnimation_Death, false);
+	//使得该单位不会再被选中
+	pOwner->GetEntity()->setQueryFlags(0);
+	pOwner->GetAi()->SetCpuControl(false);
+}
+
+void StateDeath::Update( float dt, SelectableObject* pOwner )
+{
+	if(pOwner->GetAnim()->IsAnimationOver())
+		Exit(pOwner);
+}
+
+void StateDeath::Exit( SelectableObject* pOwner )
+{
+	ObjectManager::GetSingleton().DestroyObject(pOwner);
 }

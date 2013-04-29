@@ -52,7 +52,7 @@ void HarvestComponent::Update( float dt )
 			StateMove tmpState;
 			tmpState.Enter(m_pOwner);
 		}
-		else if (path->_UpdatePathFinding(dt))
+		else if (path->UpdatePathFinding(dt))
 		{
 			//到达目的点
 			m_pOwner->GetAnim()->PlayAnimation(eAnimation_Gather, true);
@@ -90,7 +90,7 @@ void HarvestComponent::Update( float dt )
 			StateMove tmpState;
 			tmpState.Enter(m_pOwner);
 		}
-		else if(path->_UpdatePathFinding(dt))	//到达目的点
+		else if(path->UpdatePathFinding(dt))	//到达目的点
 		{
 			//返还资源
 			player->AddMineral(m_pTarget->GetGatherOnceNum());

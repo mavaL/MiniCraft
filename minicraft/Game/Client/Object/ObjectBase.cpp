@@ -35,6 +35,13 @@ void Object::UpdateAllComponent( float dt )
 		iter->second->Update(dt);
 }
 
+void Object::RemoveComponent( eComponentType type )
+{
+	auto iter = m_components.find(type);
+	assert(iter != m_components.end() && "There is no component of this type in this object!");
+	m_components.erase(iter);
+}
+
 ///////////////////////////////////////////////////////////////////////
 IMPL_PARAM_COMMAND_STR(RenderableObject, MeshName)
 

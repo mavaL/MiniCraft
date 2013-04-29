@@ -267,8 +267,6 @@ bool CBattleState::OnInputSys_KeyReleased( const OIS::KeyEvent& arg )
 		Ogre::Profiler::getSingleton().setEnabled(!Ogre::Profiler::getSingleton().getEnabled());
 	else if(arg.key == OIS::KC_F7)
 		Ogre::Profiler::getSingleton().setDisplayMode((Ogre::Profiler::DisplayMode)(int)!Ogre::Profiler::getSingleton().getDisplayMode());
-	else if(arg.key == OIS::KC_R)
-		World::GetSingleton().StartRagdoll();
 
 	if (World::GetSingleton().IsFreeCameraEnabled())
 		World::GetSingleton().GetCameraMan()->injectKeyUp(arg);

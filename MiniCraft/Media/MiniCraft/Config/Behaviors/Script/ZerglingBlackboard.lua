@@ -12,6 +12,7 @@ function BBUpdate_Zergling(unitID)
 	end
 	
 	obj:SetBlackboardParamInt("AttackTargetID", curTarget)
+	obj:SetAttackTargetID(curTarget)
 end
 
 

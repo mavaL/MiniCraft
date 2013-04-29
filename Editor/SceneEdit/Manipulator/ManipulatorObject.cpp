@@ -217,9 +217,9 @@ void ManipulatorObject::Rotate( Ogre::Entity* ent, float radian, bool bOp )
 
 	switch (m_pGizmoAixs->GetActiveAxis())
 	{
-	case eAxis_X: ent->getParentSceneNode()->pitch(Ogre::Radian(radian)); break;
-	case eAxis_Y: ent->getParentSceneNode()->yaw(Ogre::Radian(radian)); break;
-	case eAxis_Z: ent->getParentSceneNode()->roll(Ogre::Radian(radian)); break;
+	case GizmoAxis::eAxis_X: ent->getParentSceneNode()->pitch(Ogre::Radian(radian)); break;
+	case GizmoAxis::eAxis_Y: ent->getParentSceneNode()->yaw(Ogre::Radian(radian)); break;
+	case GizmoAxis::eAxis_Z: ent->getParentSceneNode()->roll(Ogre::Radian(radian)); break;
 	}
 
 	//回调事件

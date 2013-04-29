@@ -22,6 +22,7 @@ public:
 
 public:
 	virtual void			Update(float dt);
+	static void				InitBehaviors();
 	//设置该单位要应用的行为树模板
 	void					SetTemplate(const STRING& name);
 	Kratos::aiBlackBoard*	GetBlackboard() { return m_pOwnBB; }
