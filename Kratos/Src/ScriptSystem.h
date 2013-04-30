@@ -91,9 +91,8 @@ namespace Kratos
 			lua_pushvalue(m_pLuaState, userdata);
 			lua_settable(m_pLuaState, table);
 
-			// fix.防止堆栈一直增长 [4/23/2013 mavaL]
-			lua_remove(m_pLuaState, userdata);
 			lua_remove(m_pLuaState, table);
+			lua_remove(m_pLuaState, userdata);
 		}
 
 		template<class T>

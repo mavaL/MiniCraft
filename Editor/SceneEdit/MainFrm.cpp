@@ -13,6 +13,7 @@
 #include "UI/EffectPropertyPane.h"
 #include "UI/ParticlePropertyPane.h"
 #include "UI/DLightPropertyPane.h"
+#include "UI/EntityEffectPropertyPane.h"
 #include "UI/BehaviorTreeEditor/BehaviorTreeEditorDlg.h"
 
 // CMainFrame
@@ -100,6 +101,7 @@ CMainFrame::CMainFrame()
 ,m_propertyEffect(new PropertyPaneEffect)
 ,m_propertyParticle(new PropertyPaneParticle)
 ,m_propertyDLight(new PropertyPaneDLight)
+,m_propertyEntityEffct(new PropertyPaneEntityEffect)
 ,m_paneObject(NULL)
 ,m_paneEffect(NULL)
 ,m_paneAttachment(NULL)
@@ -113,7 +115,10 @@ CMainFrame::CMainFrame()
 	static_assert(IDC_Terrain_Splat_Layer1 == IDC_Terrain_Splat_Layer0 + 1 && IDC_Terrain_Splat_Layer2 == IDC_Terrain_Splat_Layer1 + 1
 		&& IDC_Terrain_Splat_Layer3 == IDC_Terrain_Splat_Layer2 + 1 && IDC_Terrain_Splat_Layer4 == IDC_Terrain_Splat_Layer3 + 1,
 		"Invalid ID sequence!");
-	static_assert(IDC_Effect_AddDLight == IDC_Effect_AddParticle + 1, "Invalid ID sequence!");
+
+	//ID顺序与eAttachEffect枚举值一致!
+	static_assert(IDC_Effect_AddDLight == IDC_Effect_AddEntityEffect + 1 && 
+		IDC_Effect_AddEntityEffect == IDC_Effect_AddParticle + 1, "Invalid ID sequence!");
 }
 
 CMainFrame::~CMainFrame()
@@ -124,6 +129,7 @@ CMainFrame::~CMainFrame()
 	SAFE_DELETE(m_propertyEffect);
 	SAFE_DELETE(m_propertyParticle);
 	SAFE_DELETE(m_propertyDLight);
+	SAFE_DELETE(m_propertyEntityEffct);
 	SAFE_DELETE(m_dlgBTEditor);
 	SAFE_DELETE(m_dlgBuildingData);
 }
@@ -355,6 +361,7 @@ bool CMainFrame::_OnCreateRibbon()
 	//RibbonAnimation - GroupEffect - AddEffect
 	CXTPControlPopup* pAddBtn = dynamic_cast<CXTPControlPopup*>(pGroup->Add(xtpControlSplitButtonPopup, IDC_Effect_Add));
 	pAddBtn->GetCommandBar()->GetControls()->Add(xtpControlButton, IDC_Effect_AddParticle);
+	pAddBtn->GetCommandBar()->GetControls()->Add(xtpControlButton, IDC_Effect_AddEntityEffect);
 	pAddBtn->GetCommandBar()->GetControls()->Add(xtpControlButton, IDC_Effect_AddDLight);
 
 	//RibbonAnimation - GroupEffect - EffectRemove
@@ -559,12 +566,14 @@ bool CMainFrame::CreateEditorMainUI()
 	m_propertyEffect->Create(L"STATIC", NULL, WS_CHILD|WS_VISIBLE|WS_CLIPCHILDREN|WS_CLIPSIBLINGS, CXTPEmptyRect(), this, IDR_Pane_EffectProperty);
 	m_propertyParticle->Create(L"STATIC", NULL, WS_CHILD|WS_VISIBLE|WS_CLIPCHILDREN|WS_CLIPSIBLINGS, CXTPEmptyRect(), this, IDR_Pane_Attachment);
 	m_propertyDLight->Create(L"STATIC", NULL, WS_CHILD|WS_VISIBLE|WS_CLIPCHILDREN|WS_CLIPSIBLINGS, CXTPEmptyRect(), this, IDR_Pane_Attachment);
+	m_propertyEntityEffct->Create(L"STATIC", NULL, WS_CHILD|WS_VISIBLE|WS_CLIPCHILDREN|WS_CLIPSIBLINGS, CXTPEmptyRect(), this, IDR_Pane_Attachment);
 
 	m_propertyTerrain->m_wndPropertyGrid.SetTheme(xtpGridThemeVisualStudio2010);
 	m_propertyObject->m_wndPropertyGrid.SetTheme(xtpGridThemeVisualStudio2010);
 	m_propertyEffect->m_wndPropertyGrid.SetTheme(xtpGridThemeVisualStudio2010);
 	m_propertyParticle->m_wndPropertyGrid.SetTheme(xtpGridThemeVisualStudio2010);
 	m_propertyDLight->m_wndPropertyGrid.SetTheme(xtpGridThemeVisualStudio2010);
+	m_propertyEntityEffct->m_wndPropertyGrid.SetTheme(xtpGridThemeVisualStudio2010);
 
 	m_dlgBTEditor = new DialogBehaviorTreeEditor(this);
 
@@ -605,6 +614,7 @@ void CMainFrame::OnSceneClose()
 	m_propertyEffect->EnableMutableProperty(FALSE);
 	m_propertyParticle->EnableMutableProperty(FALSE);
 	m_propertyDLight->EnableMutableProperty(FALSE);
+	m_propertyEntityEffct->EnableMutableProperty(FALSE);
 }
 
 void CMainFrame::OnUpdateUI_TerrainBrushSize1( CCmdUI* pCmdUI )
@@ -924,7 +934,10 @@ void CMainFrame::OnObjectSetSelection( Ogre::Entity* pObject )
 
 		ManipulatorObject& manObject = ManipulatorSystem.GetObject();
 		ManipulatorEffect& manEffect = ManipulatorSystem.GetEffect();
-		const auto vecNames = manEffect.GetAnimationNames();
+
+		const std::string meshname = manObject.GetSelection()->getMesh()->getName();
+		const auto vecNames = manEffect.GetMeshAnimNames(meshname);
+
 		//动画列表
 		m_animList->ResetContent();
 		for(size_t i=0; i<vecNames.size(); ++i)
@@ -1102,6 +1115,7 @@ void CMainFrame::OnAttachEffectSelectChange( NMHDR* pNMHDR, LRESULT* pResult )
 	{
 		m_effectList->GetLBText(curSel, effectName);
 		const std::string name = Utility::UnicodeToEngine(effectName);
+		ManipulatorSystem.GetEffect().OnAttachEffectSelChange(name);
 		_OnAttachmentPaneChange(TRUE, FALSE);
 		m_paneAttachment->Select();
 	}
@@ -1200,6 +1214,8 @@ void CMainFrame::_OnAttachmentPaneChange(BOOL bEnable, BOOL bRefresh)
 	if(type == 0)
 		m_paneAttachment->Attach(m_propertyParticle);
 	else if(type == 1)
+		m_paneAttachment->Attach(m_propertyEntityEffct);
+	else if(type == 2)
 		m_paneAttachment->Attach(m_propertyDLight);
 	else
 		assert(0);

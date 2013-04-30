@@ -268,6 +268,9 @@
     <ClInclude Include="Src\stdafx.h">
       <Filter>源文件</Filter>
     </ClInclude>
+    <ClInclude Include="Src\Effect\EntityEffect.h">
+      <Filter>源文件\Effect</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\AppStateManager.cpp">
@@ -455,6 +458,9 @@
     </ClCompile>
     <ClCompile Include="Src\stdafx.cpp">
       <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Effect\EntityEffect.cpp">
+      <Filter>源文件\Effect</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -3,6 +3,7 @@
 #include "OgreManager.h"
 #include "ParticleEffect.h"
 #include "DeferredLightEffect.h"
+#include "EntityEffect.h"
 
 namespace Kratos
 {
@@ -31,8 +32,10 @@ namespace Kratos
 		AttachEffectBase* newEffect = nullptr;
 		switch (type)
 		{
-		case eAttachEffect_Particle: newEffect = new ParticleEffect(m_parent); break;
-		case eAttachEffect_DLight: newEffect = new DLightEffect(m_parent); break;
+		case eAttachEffect_Particle:	newEffect = new ParticleEffect(m_parent); break;
+		case eAttachEffect_DLight:		newEffect = new DLightEffect(m_parent); break;
+		case eAttachEffect_Entity:		newEffect = new EntityEffect(m_parent); break;
+		default: assert(0);
 		}
 
 		m_effects[animName].push_back(newEffect);
@@ -115,7 +118,7 @@ namespace Kratos
 			return;
 
 		//更新动画
-		static float fLastTimePos = m_anim->getTimePosition();
+		float fLastTimePos = m_anim->getTimePosition();
 		m_anim->addTime(dt);
 
 		if(m_anim->hasEnded())
@@ -131,7 +134,6 @@ namespace Kratos
 			//说明动画已经循环了一次
 			if(fCurTimePos < fLastTimePos)
 				bLooped = true;
-			fLastTimePos = fCurTimePos;
 
 			//更新特效
 			auto iter = m_effects.find(m_anim->getAnimationName());

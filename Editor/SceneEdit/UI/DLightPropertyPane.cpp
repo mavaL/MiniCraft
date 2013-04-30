@@ -11,7 +11,14 @@ bool PropertyPaneDLight::_OnCreate()
 	CXTPPropertyGridItem* pCategory = m_wndPropertyGrid.AddCategory(L"Deferred Light");
 	PROPERTY_REG(pCategory,			, L"Light Type"		, L""	, propLightType		);
 	pCategory->Expand();
-	m_mapItem[propLightType]->SetFlags(xtpGridItemHasComboButton);
+
+	{
+		m_mapItem[propLightType]->SetFlags(xtpGridItemHasComboButton);
+		CXTPPropertyGridItemConstraints* pList = m_mapItem[propLightType]->GetConstraints();
+		pList->RemoveAll();
+		pList->AddConstraint(L"Point");
+		pList->AddConstraint(L"Spot");
+	}
 
 	//µã¹â
 	pCategory = m_wndPropertyGrid.AddCategory(L"Point Light");
@@ -35,12 +42,12 @@ void PropertyPaneDLight::_SetProperty( int nID )
 
 	ManipulatorEffect& manEffect = ManipulatorSystem.GetEffect();
 	CXTPPropertyGridItem* pItem = m_mapItem[nID];
+	const std::string val = Utility::UnicodeToEngine(pItem->GetValue());
 
 	switch (nID)
 	{
-	case propLightType:	manEffect.SetEffectParam("lighttype", Utility::UnicodeToEngine(pItem->GetValue())); break;
-
-	case propPointLightRadius:	manEffect.SetEffectParam("radius", Utility::UnicodeToEngine(pItem->GetValue())); break;
+	case propLightType:	manEffect.SetEffectParam("lighttype", val); break;
+	case propPointLightRadius:	manEffect.SetEffectParam("radius", val); break;
 
 	case propAttenConstant:
 	case propAttenLinear:
@@ -72,11 +79,6 @@ void PropertyPaneDLight::_UpdateProperty( int id )
 	{
 	case propLightType:
 		{
-			CXTPPropertyGridItemConstraints* pList = m_mapItem[propLightType]->GetConstraints();
-			pList->RemoveAll();
-			pList->AddConstraint(L"Point");
-			pList->AddConstraint(L"Spot");
-
 			int type = Ogre::StringConverter::parseInt(manEffect.GetEffectParam("lighttype"));
 			if(type == 0)
 				strNewValue = "Point";

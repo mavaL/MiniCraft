@@ -130,6 +130,7 @@
     <ClInclude Include="Src\Effect\DeferredLightEffect.h" />
     <ClInclude Include="Src\Effect\EffectBase.h" />
     <ClInclude Include="Src\Effect\EffectController.h" />
+    <ClInclude Include="Src\Effect\EntityEffect.h" />
     <ClInclude Include="Src\Effect\ParticleEffect.h" />
     <ClInclude Include="Src\GameDefine.h" />
     <ClInclude Include="Src\GUIManager.h" />
@@ -282,6 +283,7 @@
     <ClCompile Include="Src\Effect\DeferredLightEffect.cpp" />
     <ClCompile Include="Src\Effect\EffectBase.cpp" />
     <ClCompile Include="Src\Effect\EffectController.cpp" />
+    <ClCompile Include="Src\Effect\EntityEffect.cpp" />
     <ClCompile Include="Src\Effect\ParticleEffect.cpp" />
     <ClCompile Include="Src\GUIManager.cpp" />
     <ClCompile Include="Src\InputManager.cpp" />

@@ -9,6 +9,7 @@ class PropertyPaneObject;
 class PropertyPaneEffect;
 class PropertyPaneParticle;
 class PropertyPaneDLight;
+class PropertyPaneEntityEffect;
 class DialogBehaviorTreeEditor;
 class DialogGameDataBuilding;
 
@@ -138,6 +139,7 @@ private:
 	PropertyPaneEffect*		m_propertyEffect;		//特效属性
 	PropertyPaneParticle*	m_propertyParticle;		//挂接粒子属性
 	PropertyPaneDLight*		m_propertyDLight;		//挂接延迟光属性
+	PropertyPaneEntityEffect* m_propertyEntityEffct; //挂接模型属性
 
 	DialogGameDataBuilding*	m_dlgBuildingData;
 	DialogBehaviorTreeEditor* m_dlgBTEditor;

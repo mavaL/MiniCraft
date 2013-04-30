@@ -45,7 +45,7 @@ public:
 	const std::string& GetShadowParam(const std::string& name) const;
 	const std::string& GetSsaoParam(const std::string& name) const;
 
-	std::vector<std::wstring>	GetAnimationNames() const;
+	std::vector<std::wstring>	GetMeshAnimNames(const std::string& meshname) const;
 	void						PlayAnimation(Ogre::Entity* ent, int animIndex, bool bPlayOrStop);
 	const std::string			GetCurAnimationName();
 	void						OnAnimSelectChange(const std::string& anim);
@@ -63,6 +63,7 @@ public:
 	//设置/获取挂接特效属性
 	void						SetEffectParam(const std::string& param, const std::string& value);
 	const std::string			GetEffectParam(const std::string& param);
+	std::vector<std::wstring>	GetAttachEffectMeshNames();
 
 private:
 	Kratos::EffectController*	_GetEffectController(Ogre::Entity* ent);

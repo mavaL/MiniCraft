@@ -192,6 +192,9 @@
     <ClInclude Include="UI\Common\SubclassHelper.h">
       <Filter>UI\Common</Filter>
     </ClInclude>
+    <ClInclude Include="UI\EntityEffectPropertyPane.h">
+      <Filter>UI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SceneEdit.cpp">
@@ -313,6 +316,9 @@
     </ClCompile>
     <ClCompile Include="UI\Common\XTPCustomPropertyGridItem.cpp">
       <Filter>UI\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\EntityEffectPropertyPane.cpp">
+      <Filter>UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

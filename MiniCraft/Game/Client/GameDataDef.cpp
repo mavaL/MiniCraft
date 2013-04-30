@@ -93,13 +93,17 @@ void GameDataDefManager::LoadAllData()
 		mapName["Attack"] = eAnimation_Attack;
 		mapName["Death"] = eAnimation_Death;
 
-		rapidxml::xml_node<>* pAnimNode = pNode->first_node("AnimationSet")->first_node("Animation");
-		while(pAnimNode)
+		rapidxml::xml_node<>* pAnimSetNode = pNode->first_node("AnimationSet");
+		if (pAnimSetNode)
 		{
-			const char* szAnimType = pAnimNode->first_attribute("type")->value();
-			const char* szAnimName = pAnimNode->first_attribute("name")->value();
-			data.m_anims.insert(std::make_pair(mapName[szAnimType], szAnimName));
-			pAnimNode = pAnimNode->next_sibling();
+			rapidxml::xml_node<>* pAnimNode = pAnimSetNode->first_node("Animation");
+			while(pAnimNode)
+			{
+				const char* szAnimType = pAnimNode->first_attribute("type")->value();
+				const char* szAnimName = pAnimNode->first_attribute("name")->value();
+				data.m_anims.insert(std::make_pair(mapName[szAnimType], szAnimName));
+				pAnimNode = pAnimNode->next_sibling();
+			}
 		}
 
 		//¼¼ÄÜ

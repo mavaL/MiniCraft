@@ -97,7 +97,7 @@ void World::Init()
 	m_player[eGameRace_Terran]->SetTeamColor(COLOR::Blue);
 	m_player[eGameRace_Zerg]->SetTeamColor(COLOR::Red);
 
-	const STRING sceneName("BattleAI.Scene");
+	const STRING sceneName("MyStarCraft.Scene");
 	//≥ı ºªØRecastø‚
 	PathComponent::InitRecastLib(sceneName);
 

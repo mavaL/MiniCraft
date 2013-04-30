@@ -157,15 +157,15 @@ std::vector<std::wstring> ManipulatorEffect::GetParticleTmpNames() const
 	return std::move(ret);
 }
 
-std::vector<std::wstring> ManipulatorEffect::GetAnimationNames() const
+std::vector<std::wstring> ManipulatorEffect::GetMeshAnimNames( const std::string& meshname ) const
 {
-	Ogre::Entity* pEntity = ManipulatorSystem.GetObject().GetSelection();
-	assert(pEntity);
+	Ogre::MeshManager::getSingleton().load(meshname, Ogre::ResourceGroupManager::AUTODETECT_RESOURCE_GROUP_NAME);
+	Ogre::MeshPtr pMesh = Ogre::MeshManager::getSingleton().getByName(meshname);
 	std::vector<std::wstring> vecRet;
-	Ogre::Skeleton* pSkeleton = pEntity->getSkeleton();
+	const Ogre::SkeletonPtr& pSkeleton = pMesh->getSkeleton();
 
 	//没有可用动画
-	if(!pSkeleton || pSkeleton->getNumAnimations()==0)
+	if(!pSkeleton.get() || pSkeleton->getNumAnimations()==0)
 		return std::move(vecRet);
 
 	for(size_t i=0; i<pSkeleton->getNumAnimations(); ++i)
@@ -253,8 +253,12 @@ void ManipulatorEffect::OnFrameMove( float dt )
 	Ogre::Entity* ent = ManipulatorSystem.GetObject().GetSelection();
 	if (ent && ent->hasSkeleton())
 	{
-		Kratos::EffectController* controller = m_effectTemplates[ent->getMesh()->getName()];
-		controller->Update(dt);
+		auto iter = m_effectTemplates.find(ent->getMesh()->getName());
+		if (iter != m_effectTemplates.end())
+		{
+			Kratos::EffectController* controller = iter->second;
+			controller->Update(dt);
+		}
 	}
 }
 
@@ -383,6 +387,22 @@ void ManipulatorEffect::OnSceneClose()
 	for(auto iter=m_effectTemplates.begin(); iter!=m_effectTemplates.end(); ++iter)
 		delete iter->second;
 	m_effectTemplates.clear();
+}
+
+std::vector<std::wstring> ManipulatorEffect::GetAttachEffectMeshNames()
+{
+	std::vector<std::wstring> ret;
+
+	Ogre::FileInfoListPtr fileinfo = Ogre::ResourceGroupManager::getSingleton().findResourceFileInfo(
+		"Effect", "*.mesh");
+
+	for(auto iter=fileinfo->begin(); iter!=fileinfo->end(); ++iter)
+	{
+		const Ogre::FileInfo& info = *iter;
+		ret.push_back(Utility::EngineToUnicode(info.basename));
+	}
+
+	return std::move(ret);
 }
 
 

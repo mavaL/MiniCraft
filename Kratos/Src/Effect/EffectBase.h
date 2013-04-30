@@ -16,6 +16,7 @@ namespace Kratos
 	enum eAttachEffect
 	{
 		eAttachEffect_Particle,
+		eAttachEffect_Entity,
 		eAttachEffect_DLight
 	};
 
