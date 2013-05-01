@@ -40,6 +40,8 @@
 #include "rapidxml_utils.hpp"
 #include "rapidxml_print.hpp"
 
+#include "EventCallbackBase.h"
+
 #include <Windows.h>
 
 

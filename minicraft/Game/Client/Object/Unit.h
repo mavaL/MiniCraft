@@ -12,12 +12,14 @@
 
 #include "SelectableObject.h"
 #include "ScriptSystem.h"
-
+#include "EventCallback.h"
 
 struct lua_State;
 struct SUnitData;
 
-class Unit : public SelectableObject
+class Unit 
+	: public SelectableObject
+	, public Kratos::EventCallbackManager<UnitEventCallback>
 {
 	DECL_PARAM_COMMAND(Name)
 	DECL_PARAM_COMMAND(Race)
@@ -30,6 +32,10 @@ public:
 	static Luna<Unit>::RegType methods[];
 
 	const static STRING UNIT_TABLE_NAME;
+
+	////////////////////////////////////////////////////////////////////////
+	///回调事件
+	virtual	void	OnUnitDeath(Unit* pUnit);
 
 public:
 	virtual eObjectType GetType() const { return eObjectType_Unit; }
@@ -53,7 +59,7 @@ public:
 	void			StopAction();
 	void			SetStopTime(float fTime) { m_fStopTime = fTime; }
 	float			GetStopTime() const	{ return m_fStopTime; }
-	void			SetAttackTarget(int ID) { m_attkTargetID = ID; }
+	void			SetAttackTarget(int ID);
 	Unit*			GetAttackTarget();
 	float			GetLastAttackPastTime() { return m_fAttkTime; }
 	void			SetLastAttackPastTime(float time) { m_fAttkTime = time; }

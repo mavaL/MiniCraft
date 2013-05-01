@@ -70,6 +70,7 @@ Unit::Unit()
 
 Unit::~Unit()
 {
+	SetAttackTarget(-1);
 	DestroyRenderInstance();
 }
 
@@ -277,8 +278,29 @@ int Unit::GetAttackTargetID( lua_State* L )
 
 int Unit::SetAttackTargetID( lua_State* L )
 {
-	m_attkTargetID = m_pScriptSystem->Get_Int(-1);
+	int id = m_pScriptSystem->Get_Int(-1);
+	SetAttackTarget(id);
+
 	return 0;
+}
+
+void Unit::SetAttackTarget( int ID )
+{
+	//取消回调
+	if (m_attkTargetID != -1)
+	{
+		Unit* oldTarget = dynamic_cast<Unit*>(ObjectManager::GetSingleton().GetObject(m_attkTargetID));
+		oldTarget->RemoveCallback(this);
+	}
+
+	//设置回调
+	if (ID != -1)
+	{
+		Unit* newTarget = dynamic_cast<Unit*>(ObjectManager::GetSingleton().GetObject(ID));
+		newTarget->AddCallback(this);
+	}
+
+	m_attkTargetID = ID;
 }
 
 int Unit::FindNearestEnemy( lua_State* L )
@@ -298,6 +320,7 @@ int Unit::FindNearestEnemy( lua_State* L )
 		float sqDist = queryResult[i]->getParentNode()->_getDerivedPosition().squaredDistance(origin);
 		SelectableObject* obj = Ogre::any_cast<SelectableObject*>(queryResult[i]->getUserAny());
 		bool bAlly = obj->GetAi()->IsAlly(this);
+		Unit* pUnit = dynamic_cast<Unit*>(obj);
 
 		if(	sqDist < nearestDist && !bAlly )
 		{
@@ -327,8 +350,22 @@ void Unit::_OnAttacked( Unit* attcker )
 	{
 		RemoveComponent(eComponentType_Behevior);
 		m_pAi->SetCurState(eObjectState_Death);
-		attcker->SetAttackTarget(-1);
+
+		//不再攻击别人
+		SetAttackTarget(-1);
+
+		//通知别人也不再攻击自己...
+		Excute([&](UnitEventCallback* listener){ listener->OnUnitDeath(this); });
+		//Notice:在回调处理中不能调RemoveCallback,会破坏遍历过程,所以回调之后再调
+		RemoveAllCallbacks();
 	}
 }
+
+void Unit::OnUnitDeath(Unit* pUnit)
+{
+	m_attkTargetID = -1;
+}
+
+
 
 

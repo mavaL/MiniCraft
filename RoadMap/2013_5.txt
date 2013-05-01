@@ -1,0 +1,7 @@
+1. Game start menu and loading screen.
+
+2. Study and implement steering behaviors with Recast and Detour libraries (May be it doesn't support 
+all of them, then I am on my own.. Anyway, We need flocking, aggregating and so on, to make units behavior
+more reliable).Search "steering behaviors" on youtube to see more interesting videos.
+
+3. Continue to write units battling logic. If goes all right, introducing more kinds of unit.

@@ -50,6 +50,8 @@
 using Ogre::String;
 using Ogre::Vector3;
 
+#include "EventCallbackBase.h"
+
 
 #ifndef _AFX_NO_OLE_SUPPORT
 #include <afxdtctl.h>           // MFC 对 Internet Explorer 4 公共控件的支持

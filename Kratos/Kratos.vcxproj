@@ -132,6 +132,7 @@
     <ClInclude Include="Src\Effect\EffectController.h" />
     <ClInclude Include="Src\Effect\EntityEffect.h" />
     <ClInclude Include="Src\Effect\ParticleEffect.h" />
+    <ClInclude Include="Src\EventCallbackBase.h" />
     <ClInclude Include="Src\GameDefine.h" />
     <ClInclude Include="Src\GUIManager.h" />
     <ClInclude Include="Src\InputManager.h" />

@@ -13,7 +13,10 @@ class PropertyPaneEntityEffect;
 class DialogBehaviorTreeEditor;
 class DialogGameDataBuilding;
 
-class CMainFrame : public CXTPFrameWnd, public ManipulatorSceneEventCallback, public ManipulatorObjectEventCallback
+class CMainFrame 
+	: public CXTPFrameWnd
+	, public ManipulatorSceneEventCallback
+	, public ManipulatorObjectEventCallback
 {
 	
 public:

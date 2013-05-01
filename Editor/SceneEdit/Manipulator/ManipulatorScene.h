@@ -23,7 +23,7 @@
 
 class ManipulatorScene : 
 	public CSingleton<ManipulatorScene>, 
-	public ManipulatorCallbackManager<ManipulatorSceneEventCallback>,
+	public Kratos::EventCallbackManager<ManipulatorSceneEventCallback>,
 	private Kratos::SceneSerializer
 {
 	ManipulatorScene();

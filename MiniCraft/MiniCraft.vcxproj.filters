@@ -106,6 +106,9 @@
     <ClInclude Include="Game\Client\BoneGizmo.h">
       <Filter>Client</Filter>
     </ClInclude>
+    <ClInclude Include="Game\Client\EventCallback.h">
+      <Filter>Client</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game\Client\BattleState.cpp">

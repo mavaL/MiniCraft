@@ -32,7 +32,9 @@ struct SObjectInfo
 
 typedef std::unordered_map<Ogre::Entity*, SObjectInfo*> ObjectContainer;
 
-class ManipulatorObject : public ManipulatorSceneEventCallback, public ManipulatorCallbackManager<ManipulatorObjectEventCallback>
+class ManipulatorObject 
+	: public ManipulatorSceneEventCallback
+	, public Kratos::EventCallbackManager<ManipulatorObjectEventCallback>
 {
 public:
 	enum eEditMode

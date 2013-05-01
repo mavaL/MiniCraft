@@ -96,6 +96,7 @@
     <ClInclude Include="Game\Client\Component\HarvestComponent.h" />
     <ClInclude Include="Game\Client\Component\PathComponent.h" />
     <ClInclude Include="Game\Client\Component\RagdollComponent.h" />
+    <ClInclude Include="Game\Client\EventCallback.h" />
     <ClInclude Include="Game\Client\Faction.h" />
     <ClInclude Include="Game\Client\GameDataDef.h" />
     <ClInclude Include="Game\Client\Object\Building.h" />
