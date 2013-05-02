@@ -9,7 +9,7 @@
 #include "Building.h"
 #include "Resource.h"
 #include "AIComponent.h"
-
+#include "GUIManager.h"
 
 std::string CBattleState::StateName = "BattleState";
 
@@ -52,6 +52,8 @@ void CBattleState::enter()
 	inputMgr.BindMousePressed(boost::bind(&CBattleState::OnInputSys_MousePressed, this, _1, _2));
 	inputMgr.BindMouseRelease(boost::bind(&CBattleState::OnInputSys_MouseReleased, this, _1, _2));
 	inputMgr.BindMouseMove(boost::bind(&CBattleState::OnInputSys_MouseMove, this, _1));
+
+	GUIMANAGER.SetCursorMode(Kratos::eCursorMode_Normal);
 
 	m_bQuit = false;
 }

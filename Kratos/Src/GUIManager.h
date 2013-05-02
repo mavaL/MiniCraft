@@ -3,12 +3,7 @@
 
 #include "Singleton.h"
 #include "InputManager.h"
-#include <OgrePrerequisites.h>
-
-namespace CEGUI
-{
-	class OgreRenderer;
-}
+#include "KratosPrerequisites.h"
 
 namespace Kratos
 {
@@ -45,9 +40,6 @@ namespace Kratos
 	private:
 		CEGUI::OgreRenderer*	m_pRenderer;
 		CEGUI::System*			m_pSystem;
-
-		//Hook进渲染事件,绘制自定义数据
-		bool overlayHandler(const CEGUI::EventArgs& args);
 
 		//挂接输入系统鼠标事件
 		bool OnInputSys_MousePressed(const OIS::MouseEvent &arg, OIS::MouseButtonID id);

@@ -41,10 +41,15 @@ void FactionAI::Init()
 			pUnit->GetBehavior()->SetTemplate(unitName);
 
 			rallyPos.x -= 1;
+
+			if(m_race == eGameRace_Zerg)
+				return;
 		}
 		rallyPos.x = m_base->GetRallyPoint().x;
 		rallyPos.z -= 1;
 	}
+
+
 }
 
 void FactionAI::Update( float dt )

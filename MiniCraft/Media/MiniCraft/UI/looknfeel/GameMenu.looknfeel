@@ -1,0 +1,105 @@
+<?xml version="1.0" ?>
+
+<!--
+    GameMenu.looknfeel by Lukas E. Meindl
+
+    This looknfeel was created for the GameMenu Demo
+-->
+
+<Falagard>
+
+    
+    <WidgetLook name="GameMenu/Editbox">
+        <PropertyDefinition redrawOnWrite="true" initialValue="FFFFFFFF" type="ColourRect" name="NormalTextColour"/>
+        <PropertyDefinition redrawOnWrite="true" initialValue="FF000000" type="ColourRect" name="SelectedTextColour"/>
+        <PropertyDefinition redrawOnWrite="true" initialValue="FFB6D142" type="ColourRect" name="ActiveSelectionColour"/>
+        <PropertyDefinition redrawOnWrite="true" initialValue="FF808080" type="ColourRect" name="InactiveSelectionColour"/>
+        <Property name="MouseCursorImage" value="set:GameMenuImages image:MouseTextBar"/>
+        <NamedArea name="TextArea">
+            <Area>
+                <Dim type="LeftEdge">
+                    <ImageDim imageset="GameMenuImages" image="EditboxLeft" dimension="Width"/>
+                </Dim>
+                <Dim type="TopEdge">
+                    <ImageDim imageset="GameMenuImages" image="EditboxTop" dimension="Height"/>
+                </Dim>
+                <Dim type="RightEdge">
+                    <OperatorDim op="Subtract">
+                        <UnifiedDim scale="1" type="RightEdge"/>
+                        <ImageDim imageset="GameMenuImages" image="EditboxRight" dimension="Width"/>
+                    </OperatorDim>
+                </Dim>
+                <Dim type="BottomEdge">
+                    <OperatorDim op="Subtract">
+                        <UnifiedDim scale="1" type="BottomEdge"/>
+                        <ImageDim imageset="GameMenuImages" image="EditboxBot" dimension="Height"/>
+                    </OperatorDim>
+                </Dim>
+            </Area>
+        </NamedArea>
+        <ImagerySection name="container_normal">
+            <FrameComponent>
+                <Image type="TopLeftCorner" imageset="GameMenuImages" image="EditboxLeftTop"/>
+                <Image type="TopRightCorner" imageset="GameMenuImages" image="EditboxRightTop"/>
+                <Image type="BottomLeftCorner" imageset="GameMenuImages" image="EditboxLeftBot"/>
+                <Image type="BottomRightCorner" imageset="GameMenuImages" image="EditboxRightBot"/>
+                <Image type="LeftEdge" imageset="GameMenuImages" image="EditboxLeft"/>
+                <Image type="RightEdge" imageset="GameMenuImages" image="EditboxRight"/>
+                <Image type="TopEdge" imageset="GameMenuImages" image="EditboxTop"/>
+                <Image type="BottomEdge" imageset="GameMenuImages" image="EditboxBot"/>
+                <Image type="Background" imageset="GameMenuImages" image="EditboxMid"/>
+            </FrameComponent>
+        </ImagerySection>
+        <ImagerySection name="selection">
+            <ImageryComponent>
+                <Image imageset="GameMenuImages" image="GenericBrush"/>
+                <VertFormat type="Stretched"/>
+                <HorzFormat type="Stretched"/>
+            </ImageryComponent>
+        </ImagerySection>
+        <ImagerySection name="Caret">
+            <ImageryComponent>
+                <Area>
+                    <Dim type="Width">
+                        <AbsoluteDim value="3"/>
+                    </Dim>
+                </Area>
+                <Image imageset="GameMenuImages" image="GenericBrush"/>
+                <VertFormat type="Stretched"/>
+                <HorzFormat type="Stretched"/>
+            </ImageryComponent>
+        </ImagerySection>
+        <StateImagery name="Enabled">
+            <Layer>
+                <Section section="container_normal"/>
+            </Layer>
+        </StateImagery>
+        <StateImagery name="ReadOnly">
+            <Layer>
+                <Section section="container_normal"/>
+            </Layer>
+        </StateImagery>
+        <StateImagery name="Disabled">
+            <Layer>
+                <Section section="container_normal">
+                    <Colours topLeft="FF7F7F7F" bottomLeft="FF7F7F7F" topRight="FF7F7F7F" bottomRight="FF7F7F7F"/>
+                </Section>
+            </Layer>
+        </StateImagery>
+        <StateImagery name="ActiveSelection">
+            <Layer>
+                <Section section="selection">
+                    <ColourProperty name="ActiveSelectionColour"/>
+                </Section>
+            </Layer>
+        </StateImagery>
+        <StateImagery name="InactiveSelection">
+            <Layer>
+                <Section section="selection">
+                    <ColourProperty name="InactiveSelectionColour"/>
+                </Section>
+            </Layer>
+        </StateImagery>
+    </WidgetLook>
+    
+</Falagard>

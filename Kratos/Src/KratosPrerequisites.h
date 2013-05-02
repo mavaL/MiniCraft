@@ -35,6 +35,13 @@ namespace Kratos
 	class Ragdoll;
 }
 
+namespace CEGUI
+{
+	class System;
+	class Window;
+	class OgreRenderer;
+}
+
 ///×¢²áOgreStringInterface
 #define DECL_PARAM_COMMAND(name)						\
 class Cmd##name : public Ogre::ParamCommand				\

@@ -29,17 +29,15 @@ namespace Kratos
 			return false;
 
 		m_pSystem = &System::getSingleton();
-		CEGUI::Imageset::setDefaultResourceGroup("Imagesets");
-		CEGUI::Font::setDefaultResourceGroup("Fonts");
-		CEGUI::Scheme::setDefaultResourceGroup("Schemes");
-		CEGUI::WidgetLookManager::setDefaultResourceGroup("LookNFeel");
-		CEGUI::WindowManager::setDefaultResourceGroup("Layouts");
-		CEGUI::SchemeManager::getSingleton().create("TaharezLook.scheme");
 
-		//创建默认鼠标图标
-		SetCursorMode(eCursorMode_Normal);
+		// set the default resource groups to be used
+		Imageset::setDefaultResourceGroup("Imagesets");
+		Font::setDefaultResourceGroup("Fonts");
+		Scheme::setDefaultResourceGroup("Schemes");
+		WidgetLookManager::setDefaultResourceGroup("LookNFeel");
+		WindowManager::setDefaultResourceGroup("Layouts");
+		AnimationManager::setDefaultResourceGroup("Animation");
 
-		//日志输入细节设置高点
 		//DefaultLogger::getSingleton().setLoggingLevel(Informative);
 
 		//挂接鼠标输入事件,注册处理顺序都为1,即为每次都先进行处理
@@ -47,12 +45,6 @@ namespace Kratos
 		InputMgr.BindMousePressed(boost::bind(&CGUIManager::OnInputSys_MousePressed, this, _1, _2), eInputEventPriority_GUI);
 		InputMgr.BindMouseRelease(boost::bind(&CGUIManager::OnInputSys_MouseReleased, this, _1, _2), eInputEventPriority_GUI);
 		InputMgr.BindMouseMove(boost::bind(&CGUIManager::OnInputSys_MouseMove, this, _1), eInputEventPriority_GUI);
-
-		// subscribe handler to render overlay items
-		m_pRenderer->getDefaultRenderingRoot().subscribeEvent(CEGUI::RenderingSurface::EventRenderQueueStarted,
-			CEGUI::Event::Subscriber(&CGUIManager::overlayHandler, this));
-
-		m_pRenderer->getDefaultRenderingRoot().clearGeometry(CEGUI::RQ_OVERLAY);
 
 		return true;
 	}
@@ -70,32 +62,6 @@ namespace Kratos
 			m_pRenderer = NULL;
 			m_pSystem = NULL;
 		}
-	}
-
-	bool CGUIManager::overlayHandler( const CEGUI::EventArgs& args )
-	{
-		// 	if (static_cast<const RenderQueueEventArgs&>(args).queueID != RQ_OVERLAY)
-		// 		return false;
-		// 
-		// 	CEGUI::Font* fnt = CEGUI::System::getSingleton().getDefaultFont();
-		// 	if (fnt && m_CarInfo != "")
-		// 	{
-		// 		//暂时把FPS信息一起在这里显示
-		// 		const Ogre::RenderTarget::FrameStats& RenderInfo = RenderManager.GetProfileInfo();
-		// 		static String LastFPS, AverageFPS, TriangleCount, BatchCount;
-		// 		LastFPS = String("    LastFPS:") + PropertyHelper::floatToString(RenderInfo.lastFPS);
-		// 		AverageFPS = String(" AvergeFPS:") + PropertyHelper::floatToString(RenderInfo.avgFPS);
-		// 		TriangleCount = String(" TriangleCount:") + PropertyHelper::uintToString(RenderInfo.triangleCount);
-		// 		BatchCount = String("  BatchCount:") + PropertyHelper::uintToString(RenderInfo.batchCount);
-		// 
-		// 		m_CarInfo += LastFPS + AverageFPS + TriangleCount + BatchCount;
-		// 
-		// 		m_pGeometryBuffer->reset();
-		// 		fnt->drawText(*m_pGeometryBuffer, m_CarInfo, CEGUI::Vector2(0, 0), 0, colour(0xFFFFFFFF));
-		// 		m_pGeometryBuffer->draw();
-		// 	}
-
-		return true;
 	}
 
 	void CGUIManager::ShowCursor( bool bEnable )

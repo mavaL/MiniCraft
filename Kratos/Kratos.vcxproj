@@ -49,7 +49,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>.\Src;.\Dependency\Havok\Include;.\Dependency\rapidxml;.\Dependency\Lua5_1_4\src;.\Dependency\CEGUI\include;.\Dependency\boost;.\Dependency\OgreRecast\Include;.\Dependency\OIS\include;.\Dependency\Ogre\include;.\Dependency\Ogre\include\ParticleUniverse;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\Src;.\Dependency\Havok\Include;.\Dependency\rapidxml;.\Dependency\Lua5_1_4\src;F:\MiniCraft\Kratos\Dependency\CEGUI\Include;.\Dependency\boost;.\Dependency\OgreRecast\Include;.\Dependency\OIS\include;.\Dependency\Ogre\include;.\Dependency\Ogre\include\ParticleUniverse;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TreatWarningAsError>false</TreatWarningAsError>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <AdditionalOptions>/Zm173 %(AdditionalOptions)</AdditionalOptions>

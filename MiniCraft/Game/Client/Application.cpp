@@ -5,9 +5,9 @@
 #include "GUIManager.h"
 #include "AppStateManager.h"
 #include "ScriptSystem.h"
-#include "BattleState.h"
+#include "GameProcedure/BattleState.h"
 #include "PhysicManager.h"
-
+#include "GameProcedure/LoginState.h"
 
 Applicaton::Applicaton()
 :m_stateMgr(nullptr)
@@ -31,13 +31,14 @@ bool Applicaton::Init()
 	m_guiMgr = Kratos::CGUIManager::GetSingletonPtr();
 	m_phyMgr = Kratos::CPhysicManager::GetSingletonPtr();
 
-	CBattleState::create(m_stateMgr, CBattleState::StateName);
-
 	if(	!m_ogreMgr->Init(false)	|| 
 		!m_inputMgr->Init()		||
 		!m_guiMgr->Init()		||
 		!m_phyMgr->Init()		)
 		return false;
+
+	CBattleState::create(m_stateMgr, CBattleState::StateName);
+	LoginState::create(m_stateMgr, LoginState::StateName);
 
 	SCRIPTNAMAGER.Init();
 
@@ -46,8 +47,7 @@ bool Applicaton::Init()
 
 void Applicaton::Run()
 {
-	//½øÈëÓÎÏ·
-	m_stateMgr->changeAppState(m_stateMgr->findByName(CBattleState::StateName));
+	m_stateMgr->changeAppState(m_stateMgr->findByName(LoginState::StateName));
 
 	float timeSinceLastFrame = 1;
 	int startTime = 0;

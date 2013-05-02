@@ -1,27 +1,16 @@
+/********************************************************************
+	filename	BattleState.h
+	author:		maval
+
+	purpose:	游戏进行中状态
+*********************************************************************/
+
 #ifndef BATTLE_STATE_H
 #define BATTLE_STATE_H
 
 #include "AppState.h"
 #include "InputManager.h"
-
-
-namespace Ogre
-{
-	class Camera;
-	class SceneManager;
-	class Entity;
-}
-
-class OgreRecast;
-class OgreDetourTileCache;
-class OgreDetourCrowd;
-class Unit;
-class CommandBase;
-
-
-/************************************************************************/
-/*							游戏进行状态类                                */
-/************************************************************************/
+#include "KratosPrerequisites.h"
 
 class CBattleState : public Kratos::CAppState
 {

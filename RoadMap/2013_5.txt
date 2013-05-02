@@ -5,3 +5,5 @@ all of them, then I am on my own.. Anyway, We need flocking, aggregating and so 
 more reliable).Search "steering behaviors" on youtube to see more interesting videos.
 
 3. Continue to write units battling logic. If goes all right, introducing more kinds of unit.
+
+4.Fog of War!

@@ -1,0 +1,9 @@
+<?xml version="1.0" ?>
+<GUIScheme Name="Generic">
+	<LookNFeel Filename="Generic.looknfeel" />
+	<WindowRendererSet Filename="CEGUIFalagardWRBase" />
+	<FalagardMapping WindowType="Generic/Label" TargetType="DefaultWindow" Renderer="Falagard/Default" LookNFeel="Generic/Label" />
+	<FalagardMapping WindowType="Generic/Image" TargetType="DefaultWindow" Renderer="Falagard/Default" LookNFeel="Generic/Image" />
+	<FalagardMapping WindowType="Generic/ImageButton" TargetType="CEGUI/PushButton" Renderer="Falagard/Button" LookNFeel="Generic/ImageButton" />
+    
+</GUIScheme>
