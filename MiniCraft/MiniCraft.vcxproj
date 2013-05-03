@@ -50,7 +50,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\Kratos\Src\AI\BehaviorTree;..\Kratos\Src;..\Kratos\Dependency\Havok\Include;..\Kratos\Dependency\rapidxml;..\Kratos\Dependency\Lua5_1_4\src;F:\MiniCraft\Kratos\Dependency\CEGUI\Include;..\Kratos\Dependency\boost;..\Kratos\Dependency\OgreRecast\Include;..\Kratos\Dependency\OIS\include;..\Kratos\Dependency\Ogre\include;..\Kratos\Dependency\Ogre\include\ParticleUniverse;.\Game;.\Game\Client\UI;.\Game\Client;.\Game\Core;.\Game\Client\Object;.\Game\Client\AI;.\Game\Client\Component;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Kratos\Src\AI\BehaviorTree;..\Kratos\Src;..\Kratos\Dependency\Havok\Include;..\Kratos\Dependency\rapidxml;..\Kratos\Dependency\Lua5_1_4\src;..\Kratos\Dependency\CEGUI\Include;..\Kratos\Dependency\boost;..\Kratos\Dependency\OgreRecast\Include;..\Kratos\Dependency\OIS\include;..\Kratos\Dependency\Ogre\include;..\Kratos\Dependency\Ogre\include\ParticleUniverse;.\Game;.\Game\Client\UI;.\Game\Client;.\Game\Core;.\Game\Client\Object;.\Game\Client\AI;.\Game\Client\Component;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <AdditionalOptions>/Zm163 %(AdditionalOptions)</AdditionalOptions>
       <PreprocessorDefinitions>WIN32;_WINDOWS;HK_DEBUG;HK_FULLDEBUG;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>

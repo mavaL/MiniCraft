@@ -123,12 +123,12 @@
             <Property Name="UnifiedAreaRect" Value="{{0,0},{0,0},{1,0},{1,0}}" />
             <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
             <Property Name="MousePassThroughEnabled" Value="True" />
-          <Window Type="TaharezLook/Editbox" Name="LoginEditbox" >
+          <Window Type="GameMenu/Editbox" Name="LoginEditbox" >
             <Property Name="UnifiedAreaRect" Value="{{0.828906,0},{0.154167,0},{0.928906,0},{0.179167,0}}" />
             <Property Name="Font" Value="Jura-10" />
             <Property Name="MouseCursorImage" Value="" />
           </Window>
-          <Window Type="TaharezLook/Editbox" Name="PasswordEditbox" >
+          <Window Type="GameMenu/Editbox" Name="PasswordEditbox" >
             <Property Name="UnifiedAreaRect" Value="{{0.849219,0},{0.202778,0},{0.949219,0},{0.227778,0}}" />
             <Property Name="Font" Value="Jura-10" />
             <Property Name="MouseCursorImage" Value="" />
@@ -848,12 +848,12 @@
                     </Window>
                 </Window>
             </Window>
-            <Window Type="DefaultWindow" Name="LeftArrowUnifiedAreaRect" >
+            <Window Type="DefaultWindow" Name="LeftArrowArea" >
                 <Property Name="UnifiedAreaRect" Value="{{0.345,0},{0.806,0},{0.395,0},{0.866,0}}" />
                 <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
                 <Property Name="AlwaysOnTop" Value="True" />
             </Window>
-            <Window Type="DefaultWindow" Name="RightArrowUnifiedAreaRect" >
+            <Window Type="DefaultWindow" Name="RightArrowArea" >
                 <Property Name="UnifiedAreaRect" Value="{{0.605,0},{0.806,0},{0.655,0},{0.866,0}}" />
                 <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
                 <Property Name="AlwaysOnTop" Value="True" />

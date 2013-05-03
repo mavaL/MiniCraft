@@ -10,7 +10,6 @@
 #define LoginState_h__
 
 #include "AppState.h"
-#include "InputManager.h"
 #include "KratosPrerequisites.h"
 
 class LoginState : public Kratos::CAppState
@@ -28,17 +27,48 @@ public:
 	static STRING StateName;
 
 private:
-// 	bool OnInputSys_MousePressed(const OIS::MouseEvent& arg, OIS::MouseButtonID id);
-// 	bool OnInputSys_MouseReleased(const OIS::MouseEvent& arg, OIS::MouseButtonID id);
-// 	bool OnInputSys_MouseMove(const OIS::MouseEvent& arg);
-// 	bool OnInputSys_KeyPressed(const OIS::KeyEvent& arg);
-// 	bool OnInputSys_KeyReleased(const OIS::KeyEvent& arg);
-
-	void		_setupWindows();
+	void		_SetupWindows();
+	void		_SetupAnimations();
 	void		_SetupNaviArrowWindows();
 	void		_SetupButtonClickHandlers();
 	void		_SetupNaviIconAnimationEventHandlers();
 	void		_SetupInnerButtonsSubOptionsLabels();
+	void		_SetupPopupLinesAnimations();
+	void		_SetupSelectionIconAnimations();
+
+	void		_ResetAnimations();
+	void		_StartEntranceAnimations();
+	void		_MakeAllSelectionIconsInvisible();
+	void		_StopStartPopupLinesAnimations();
+
+	void		_UpdateIntroText();
+	void		_UpdateLoginWelcomeText();
+	void		_UpdateLoginStartButtonText();
+	void		_DisableInteractivePlanetElements();
+	void		_DisableNavigationBarElements();
+	void		_EnableInteractivePlanetElements();
+	void		_EnableNavigationBarElements();
+
+	bool		handleLoginAcceptButtonClicked(const CEGUI::EventArgs& args);
+	bool		handleInnerPartStartClickAreaClick(const CEGUI::EventArgs& args);
+	bool		handleCheckIfNaviIconAnimationNeedsChange(const CEGUI::EventArgs& args);
+	bool		handleNaviSelectionIconAnimStart(const CEGUI::EventArgs& args);
+
+	bool		handleMouseEntersLeftArrowArea(const CEGUI::EventArgs& args);
+	bool		handleMouseLeavesLeftArrowArea(const CEGUI::EventArgs& args);
+	bool		handleMouseEntersRightArrowArea(const CEGUI::EventArgs& args);
+	bool		handleMouseLeavesRightArrowArea(const CEGUI::EventArgs& args);
+
+	bool		handleStartPopupLinesSaveDisplay(const CEGUI::EventArgs& args);
+	bool		handleStartPopupLinesLoadDisplay(const CEGUI::EventArgs& args);
+	bool		handleStartPopupLinesCharactersDisplay(const CEGUI::EventArgs& args);
+	bool		handleStartPopupLinesOptionsDisplay(const CEGUI::EventArgs& args);
+	bool		handleStartPopupLinesQuitDisplay(const CEGUI::EventArgs& args);
+
+	bool		handleInnerButtonsLabelEntered(const CEGUI::EventArgs& args);
+
+	CEGUI::Window* getIconWindowFromLabel(CEGUI::Window* window);
+	bool		handleInnerButtonsLabelLeft(const CEGUI::EventArgs& args);
 
 	enum WriteFocus
 	{
@@ -48,7 +78,12 @@ private:
 		WF_Count
 	};
 
+	static const float s_firstStartDelay;
+	static const float s_secondStartDelay;
+	static const float s_loginDisplayStartDelay;
+
 private:
+	CEGUI::WindowManager&	m_windowMgr;
 	CEGUI::Window* d_root;
 
 	float d_timeSinceStart;

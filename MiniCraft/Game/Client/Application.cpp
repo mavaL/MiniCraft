@@ -49,7 +49,7 @@ void Applicaton::Run()
 {
 	m_stateMgr->changeAppState(m_stateMgr->findByName(LoginState::StateName));
 
-	float timeSinceLastFrame = 1;
+	static float timeSinceLastFrame = 0;
 	int startTime = 0;
 	//游戏主循环
 	while(true)
@@ -66,10 +66,14 @@ void Applicaton::Run()
 			//各子系统进行更新
 			m_inputMgr->Capture();
 			m_phyMgr->Update();
+
 			if(!m_stateMgr->UpdateCurrentState(timeSinceLastFrame))
 				break;
+
 			if(!m_ogreMgr->Update(timeSinceLastFrame))
 				break;
+
+			m_guiMgr->Update(timeSinceLastFrame);
 
 			timeSinceLastFrame = static_cast<float>(m_ogreMgr->GetTimer()->getMillisecondsCPU() - startTime);
 			timeSinceLastFrame /= 1000.0f;

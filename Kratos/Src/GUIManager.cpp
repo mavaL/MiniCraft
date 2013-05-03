@@ -45,8 +45,15 @@ namespace Kratos
 		InputMgr.BindMousePressed(boost::bind(&CGUIManager::OnInputSys_MousePressed, this, _1, _2), eInputEventPriority_GUI);
 		InputMgr.BindMouseRelease(boost::bind(&CGUIManager::OnInputSys_MouseReleased, this, _1, _2), eInputEventPriority_GUI);
 		InputMgr.BindMouseMove(boost::bind(&CGUIManager::OnInputSys_MouseMove, this, _1), eInputEventPriority_GUI);
+		InputMgr.BindKeyPressed(boost::bind(&CGUIManager::OnInputSys_KeyPressed, this, _1), eInputEventPriority_GUI);
+		InputMgr.BindKeyReleased(boost::bind(&CGUIManager::OnInputSys_KeyReleased, this, _1), eInputEventPriority_GUI);
 
 		return true;
+	}
+
+	void CGUIManager::Update( float dt )
+	{
+		m_pSystem->injectTimePulse(dt);
 	}
 
 	void CGUIManager::Shutdown()
@@ -55,6 +62,8 @@ namespace Kratos
 		InputMgr.UnbindMouseMove(eInputEventPriority_GUI);
 		InputMgr.UnbindMousePressed(eInputEventPriority_GUI);
 		InputMgr.UnbindMouseRelease(eInputEventPriority_GUI);
+		InputMgr.UnbindKeyPressed(eInputEventPriority_GUI);
+		InputMgr.UnbindKeyReleased(eInputEventPriority_GUI);
 
 		if (m_pRenderer)
 		{
@@ -104,6 +113,19 @@ namespace Kratos
 	bool CGUIManager::OnInputSys_MouseMove( const OIS::MouseEvent &arg )
 	{
 		return m_pSystem->injectMouseMove(static_cast<float>(arg.state.X.rel), static_cast<float>(arg.state.Y.rel));
+	}
+
+	bool CGUIManager::OnInputSys_KeyPressed( const OIS::KeyEvent& arg )
+	{
+		m_pSystem->injectKeyDown(static_cast<CEGUI::Key::Scan>(arg.key));
+		m_pSystem->injectChar(arg.text);
+
+		return true;
+	}
+
+	bool CGUIManager::OnInputSys_KeyReleased( const OIS::KeyEvent& arg )
+	{
+		return m_pSystem->injectKeyUp(arg.key);
 	}
 
 	CEGUI::Window* CGUIManager::LoadWindowLayout( const Ogre::String& name )

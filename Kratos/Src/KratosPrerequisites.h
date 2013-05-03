@@ -2,6 +2,7 @@
 #define KratosPrerequisites_h__
 
 #include <OgrePrerequisites.h>
+#include <CEGUIForwardRefs.h>
 
 typedef Ogre::Vector3		POS;
 typedef Ogre::Quaternion	ORIENT;
@@ -33,13 +34,6 @@ namespace Kratos
 	class aiBlackBoard;
 	class aiBehavior;
 	class Ragdoll;
-}
-
-namespace CEGUI
-{
-	class System;
-	class Window;
-	class OgreRenderer;
 }
 
 ///×¢²áOgreStringInterface

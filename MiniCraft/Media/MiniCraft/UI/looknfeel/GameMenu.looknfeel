@@ -14,7 +14,7 @@
         <PropertyDefinition redrawOnWrite="true" initialValue="FF000000" type="ColourRect" name="SelectedTextColour"/>
         <PropertyDefinition redrawOnWrite="true" initialValue="FFB6D142" type="ColourRect" name="ActiveSelectionColour"/>
         <PropertyDefinition redrawOnWrite="true" initialValue="FF808080" type="ColourRect" name="InactiveSelectionColour"/>
-        <Property name="MouseCursorImage" value="set:GameMenuImages image:MouseTextBar"/>
+        <Property name="MouseCursorImage" value="set:TaharezLook image:MouseTextBar"/>
         <NamedArea name="TextArea">
             <Area>
                 <Dim type="LeftEdge">
@@ -39,6 +39,20 @@
         </NamedArea>
         <ImagerySection name="container_normal">
             <FrameComponent>
+                <Area>
+                  <Dim type="LeftEdge" >
+                    <AbsoluteDim value="0" />
+                  </Dim>
+                  <Dim type="TopEdge" >
+                    <AbsoluteDim value="0" />
+                  </Dim>
+                  <Dim type="Width" >
+                    <UnifiedDim scale="1" type="Width" />
+                  </Dim>
+                  <Dim type="Height" >
+                    <UnifiedDim scale="1" type="Height" />
+                  </Dim>
+                </Area>
                 <Image type="TopLeftCorner" imageset="GameMenuImages" image="EditboxLeftTop"/>
                 <Image type="TopRightCorner" imageset="GameMenuImages" image="EditboxRightTop"/>
                 <Image type="BottomLeftCorner" imageset="GameMenuImages" image="EditboxLeftBot"/>
@@ -52,17 +66,40 @@
         </ImagerySection>
         <ImagerySection name="selection">
             <ImageryComponent>
+                <Area>
+                  <Dim type="LeftEdge" >
+                    <AbsoluteDim value="0" />
+                  </Dim>
+                  <Dim type="TopEdge" >
+                    <AbsoluteDim value="0" />
+                  </Dim>
+                  <Dim type="RightEdge" >
+                    <UnifiedDim scale="1.0" type="RightEdge" />
+                  </Dim>
+                  <Dim type="BottomEdge" >
+                    <UnifiedDim scale="1.0" type="BottomEdge" />
+                  </Dim>
+                </Area>
                 <Image imageset="GameMenuImages" image="GenericBrush"/>
                 <VertFormat type="Stretched"/>
                 <HorzFormat type="Stretched"/>
             </ImageryComponent>
         </ImagerySection>
-        <ImagerySection name="Caret">
+        <ImagerySection name="Carat">
             <ImageryComponent>
                 <Area>
-                    <Dim type="Width">
-                        <AbsoluteDim value="3"/>
-                    </Dim>
+                  <Dim type="LeftEdge" >
+                    <AbsoluteDim value="0" />
+                  </Dim>
+                  <Dim type="TopEdge" >
+                    <AbsoluteDim value="0" />
+                  </Dim>
+                  <Dim type="Width" >
+                    <AbsoluteDim value="3"/>
+                  </Dim>
+                  <Dim type="BottomEdge" >
+                    <UnifiedDim scale="1.0" type="BottomEdge" />
+                  </Dim>
                 </Area>
                 <Image imageset="GameMenuImages" image="GenericBrush"/>
                 <VertFormat type="Stretched"/>
