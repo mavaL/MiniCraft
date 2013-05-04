@@ -16,26 +16,20 @@
         <PropertyDefinition redrawOnWrite="true" initialValue="FF808080" type="ColourRect" name="InactiveSelectionColour"/>
         <Property name="MouseCursorImage" value="set:TaharezLook image:MouseTextBar"/>
         <NamedArea name="TextArea">
-            <Area>
-                <Dim type="LeftEdge">
-                    <ImageDim imageset="GameMenuImages" image="EditboxLeft" dimension="Width"/>
-                </Dim>
-                <Dim type="TopEdge">
-                    <ImageDim imageset="GameMenuImages" image="EditboxTop" dimension="Height"/>
-                </Dim>
-                <Dim type="RightEdge">
-                    <OperatorDim op="Subtract">
-                        <UnifiedDim scale="1" type="RightEdge"/>
-                        <ImageDim imageset="GameMenuImages" image="EditboxRight" dimension="Width"/>
-                    </OperatorDim>
-                </Dim>
-                <Dim type="BottomEdge">
-                    <OperatorDim op="Subtract">
-                        <UnifiedDim scale="1" type="BottomEdge"/>
-                        <ImageDim imageset="GameMenuImages" image="EditboxBot" dimension="Height"/>
-                    </OperatorDim>
-                </Dim>
-            </Area>
+          <Area>
+            <Dim type="LeftEdge" >
+              <AbsoluteDim value="5" />
+            </Dim>
+            <Dim type="TopEdge" >
+              <AbsoluteDim value="5" />
+            </Dim>
+            <Dim type="RightEdge" >
+              <UnifiedDim scale="1.0" offset="-5" type="RightEdge" />
+            </Dim>
+            <Dim type="BottomEdge" >
+              <UnifiedDim scale="1.0" offset="-5" type="BottomEdge" />
+            </Dim>
+          </Area>
         </NamedArea>
         <ImagerySection name="container_normal">
             <FrameComponent>

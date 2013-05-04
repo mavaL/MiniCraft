@@ -83,6 +83,7 @@ class GameDataDefManager : public CSingleton<GameDataDefManager>
 
 public:
 	void	LoadAllData();
+	void	UnloadAllData();
 	void	SaveAllData();
 
 public:

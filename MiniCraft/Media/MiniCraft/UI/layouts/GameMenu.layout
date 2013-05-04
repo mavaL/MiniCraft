@@ -205,19 +205,19 @@
                 <Property Name="VerticalAlignment" Value="Centre" />
                 <Property Name="HorizontalAlignment" Value="Centre" />
             </Window>
-            <Window Type="Generic/Image" Name="PopupLinesSave" >
+            <Window Type="Generic/Image" Name="PopupLinesEnter" >
                 <Property Name="UnifiedAreaRect" Value="{{-0.571211,0},{0.166632,0},{-0.271211,0},{0.259514,0}}" />
-                <Property Name="Image" Value="set:GameMenuImages image:PopupLinesSave" />
+                <Property Name="Image" Value="set:GameMenuImages image:PopupLinesEnter" />
                 <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
                 <Property Name="UnifiedMinSize" Value="{{0,0},{0.0928819,0}}" />
                 <Property Name="HorzFormatting" Value="RightAligned" />
                 <Property Name="VertFormatting" Value="BottomAligned" />
                 <Property Name="HorizontalAlignment" Value="Right" />
                 <Property Name="AutoRenderingSurface" Value="True" />
-                <Window Type="Generic/Label" Name="LabelSave" >
+                <Window Type="Generic/Label" Name="LabelEnter" >
                     <Property Name="UnifiedAreaRect" Value="{{-0.0338542,0},{0.462687,0},{0.229167,0},{0.761194,0}}" />
                     <Property Name="Font" Value="Jura-10" />
-                    <Property Name="Text" Value="Save" />
+                    <Property Name="Text" Value="Enter" />
                     <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
                     <Property Name="NormalTextColour" Value="FF0094FF" />
                     <Property Name="DisabledTextColour" Value="FF0094FF" />
@@ -226,7 +226,7 @@
             </Window>
             <Window Type="Generic/Image" Name="PopupLinesLoad" >
                 <Property Name="UnifiedAreaRect" Value="{{-0.601876,0},{0.203784,0},{-0.301876,0},{0.29684,0}}" />
-                <Property Name="Image" Value="set:GameMenuImages image:PopupLinesSave" />
+                <Property Name="Image" Value="set:GameMenuImages image:PopupLinesEnter" />
                 <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
                 <Property Name="UnifiedMinSize" Value="{{0,0},{0.0930555,0}}" />
                 <Property Name="HorzFormatting" Value="RightAligned" />
@@ -392,16 +392,16 @@
                     <Property Name="HorizontalAlignment" Value="Right" />
                 </Window>
             </Window>
-            <Window Type="Generic/Image" Name="ButtonSave" >
+            <Window Type="Generic/Image" Name="ButtonEnter" >
                 <Property Name="UnifiedAreaRect" Value="{{-0.0640627,0},{-0.227084,0},{-0.0380627,0},{-0.175084,0}}" />
-                <Property Name="Image" Value="set:GameMenuImages image:ButtonSaveIcon" />
+                <Property Name="Image" Value="set:GameMenuImages image:ButtonEnterIcon" />
                 <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
                 <Property Name="AspectMode" Value="Shrink" />
                 <Property Name="PixelAligned" Value="False" />
                 <Property Name="VerticalAlignment" Value="Centre" />
                 <Property Name="HorizontalAlignment" Value="Centre" />
             </Window>
-            <Window Type="Generic/Image" Name="SaveSelectionIcon" >
+            <Window Type="Generic/Image" Name="EnterSelectionIcon" >
                 <Property Name="UnifiedAreaRect" Value="{{-0.157813,0},{0.218056,0},{-0.135938,0},{0.256944,0}}" />
                 <Property Name="Image" Value="set:GameMenuImages image:DotOuter" />
                 <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
@@ -409,8 +409,7 @@
                 <Property Name="VertFormatting" Value="TopAligned" />
                 <Property Name="HorizontalAlignment" Value="Centre" />
                 <Property Name="AutoRenderingSurface" Value="True" />
-                <Property Name="MousePassThroughEnabled" Value="True" />
-                <Window Type="Generic/Image" Name="SaveImage3" >
+                <Window Type="Generic/Image" Name="EnterImage3" >
                     <Property Name="UnifiedAreaRect" Value="{{0,0},{0,0},{1,0},{1,0}}" />
                     <Property Name="Image" Value="set:GameMenuImages image:DotDot" />
                     <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
@@ -418,7 +417,7 @@
                     <Property Name="VertFormatting" Value="BottomAligned" />
                     <Property Name="MousePassThroughEnabled" Value="True" />
                 </Window>
-                <Window Type="Generic/Image" Name="SaveImage1" >
+                <Window Type="Generic/Image" Name="EnterImage1" >
                     <Property Name="UnifiedAreaRect" Value="{{0,0},{0,0},{1,0},{1,0}}" />
                     <Property Name="Image" Value="set:GameMenuImages image:DotInner" />
                     <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
@@ -426,7 +425,7 @@
                     <Property Name="VertFormatting" Value="BottomAligned" />
                     <Property Name="MousePassThroughEnabled" Value="True" />
                 </Window>
-                <Window Type="Generic/Image" Name="SaveImage2" >
+                <Window Type="Generic/Image" Name="EnterImage2" >
                     <Property Name="UnifiedAreaRect" Value="{{0,0},{0,0},{1,0},{1,0}}" />
                     <Property Name="Image" Value="set:GameMenuImages image:DotInnest" />
                     <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
@@ -715,7 +714,6 @@
                 <Property Name="VertFormatting" Value="TopAligned" />
                 <Property Name="HorizontalAlignment" Value="Centre" />
                 <Property Name="AutoRenderingSurface" Value="True" />
-                <Property Name="MousePassThroughEnabled" Value="True" />
                 <Window Type="Generic/Image" Name="YesImage3" >
                     <Property Name="UnifiedAreaRect" Value="{{0,0},{0,0},{1,0},{1,0}}" />
                     <Property Name="Image" Value="set:GameMenuImages image:DotDot" />

@@ -16,7 +16,7 @@
     <Image Height="46" Name="ButtonLoadIcon" Width="46" XPos="1913" YPos="282" />
     <Image Height="46" Name="ButtonCharactersIcon" Width="46" XPos="1859" YPos="282" />
     <Image Height="36" Name="ButtonQuitIcon" Width="36" XPos="1758" YPos="287" />
-    <Image Height="46" Name="ButtonSaveIcon" Width="46" XPos="1803" YPos="282" />
+    <Image Height="46" Name="ButtonEnterIcon" Width="46" XPos="1803" YPos="282" />
     <Image Height="26" Name="BotBarLeftArrow" Width="33" XPos="1535" YPos="763" />
     <Image Height="26" Name="BotBarRightArrow" Width="33" XPos="1968" YPos="763" />
     <Image Height="22" Name="EditboxLeft" Width="4" XPos="1784" YPos="208" />
@@ -38,7 +38,7 @@
     <Image Height="28" Name="DotDot" Width="28" XPos="1846" YPos="358" />
     <Image Height="28" Name="DotInnest" Width="28" XPos="1817" YPos="358" />
     <Image Height="129" Name="PopupLinesOptions" Width="224" XPos="761" YPos="773" />
-    <Image Height="16" Name="PopupLinesSave" Width="103" XPos="343" YPos="723" />
+    <Image Height="16" Name="PopupLinesEnter" Width="103" XPos="343" YPos="723" />
     <Image Height="24" Name="PopupLinesLoad" Width="115" XPos="283" YPos="773" />
     <Image Height="249" Name="PopupLinesCharacter" Width="262" XPos="89" YPos="800" />
     <Image Height="101" Name="PopupLinesQuit" Width="219" XPos="711" YPos="1066" />

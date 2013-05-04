@@ -8,6 +8,7 @@
 #include "GameProcedure/BattleState.h"
 #include "PhysicManager.h"
 #include "GameProcedure/LoginState.h"
+#include "GameProcedure/LoadingState.h"
 
 Applicaton::Applicaton()
 :m_stateMgr(nullptr)
@@ -39,6 +40,7 @@ bool Applicaton::Init()
 
 	CBattleState::create(m_stateMgr, CBattleState::StateName);
 	LoginState::create(m_stateMgr, LoginState::StateName);
+	LoadingState::create(m_stateMgr, LoadingState::StateName);
 
 	SCRIPTNAMAGER.Init();
 
@@ -47,7 +49,7 @@ bool Applicaton::Init()
 
 void Applicaton::Run()
 {
-	m_stateMgr->changeAppState(m_stateMgr->findByName(LoginState::StateName));
+	m_stateMgr->changeAppState(m_stateMgr->findByName(LoadingState::StateName));
 
 	static float timeSinceLastFrame = 0;
 	int startTime = 0;
@@ -87,10 +89,10 @@ void Applicaton::Run()
 
 void Applicaton::Shutdown()
 {
+	m_stateMgr->shutdown();	
 	SCRIPTNAMAGER.Shutdown();
 	m_phyMgr->Shutdown();
 	m_guiMgr->Shutdown();
-	m_stateMgr->shutdown();	
 	m_inputMgr->Shutdown();
 	m_ogreMgr->Shutdown();
 }

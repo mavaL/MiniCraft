@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "LoginState.h"
+#include "BattleState.h"
 #include "GUIManager.h"
 
 #define _USE_MATH_DEFINES
@@ -19,16 +20,17 @@ LoginState::LoginState()
 	schemeMgr.create("GameMenu.scheme");
 	schemeMgr.create("Generic.scheme");
 	schemeMgr.create("TaharezLook.scheme");
+
+	CEGUI::FontManager::getSingleton().create("DejaVuSans-12.font");
+	CEGUI::FontManager::getSingleton().create("Jura-13.font");
 }
 
 void LoginState::enter()
 {
-	CEGUI::FontManager::getSingleton().create("DejaVuSans-12.font");
-	CEGUI::Font& defaultFont = CEGUI::FontManager::getSingleton().create("Jura-13.font");
-	CEGUI::System::getSingleton().setDefaultFont(&defaultFont);
+	CEGUI::System::getSingleton().setDefaultFont("Jura-13");
 
 	d_root = GUIMANAGER.LoadWindowLayout("GameMenu.layout");
-	CEGUI::System::getSingleton().setGUISheet(d_root);
+	GUIMANAGER.SetGUISheet(d_root);
 
 	_SetupWindows();
 	_SetupAnimations();
@@ -60,7 +62,7 @@ void LoginState::enter()
 	d_topBarLabel->setText("");
 	d_botBarLabel->setText("");
 
-	m_windowMgr.getWindow("PopupLinesSave")->setVisible(false);
+	m_windowMgr.getWindow("PopupLinesEnter")->setVisible(false);
 	m_windowMgr.getWindow("PopupLinesLoad")->setVisible(false);
 	m_windowMgr.getWindow("PopupLinesCharacters")->setVisible(false);
 	m_windowMgr.getWindow("PopupLinesQuit")->setVisible(false);
@@ -78,15 +80,67 @@ void LoginState::enter()
 	_MakeAllSelectionIconsInvisible();
 
 	GUIMANAGER.SetCursorMode(Kratos::eCursorMode_Normal);
+
+	m_bQuit = false;
 }
 
 void LoginState::exit()
 {
+	GUIMANAGER.SetGUISheet(nullptr);
+	GUIMANAGER.UnloadWindowLayout(d_root);
+	d_root = nullptr;
 
+	d_topBarAnimInst->stop();
+	d_botBarAnimInst->stop();
+	d_insideBlendInAnimInst->stop();
+	d_insideImage3RotateInInst->stop();
+	d_insideImage4RotateInInst->stop();
+	d_insideImageRingsContainerSizeInInst->stop();
+
+	d_buttonFadeInAnimInst1->stop();
+	d_buttonFadeInAnimInst2->stop();
+	d_buttonFadeInAnimInst3->stop();
+	d_buttonFadeInAnimInst4->stop();
+	d_buttonFadeInAnimInst5->stop();
+
+	d_loginContainerMoveInInst->stop();
+	d_loginContainerMoveOutInst->stop();
+	d_naviButtonLeftMoveInInst->stop();
+	d_naviButtonRightMoveInInst->stop();
+	d_naviBotMoveInInst->stop();
+	d_startButtonBlendInAnimInst->stop();
+	d_navigationLabelBlendInAnimInst->stop();
+	d_navigationLabelPartialBlendOutInst->stop();
+
+	d_naviPartialBlendOutInst->stop();
+	d_naviBlendInInst->stop();
+	d_centerButtonsPartialBlendOutInst->stop();
+	d_centerButtonsBlendInInst->stop();
+
+	d_botBarLabelBlendOutInst->stop();
+
+	d_popupLinesEnterAnimInst->stop();
+	d_popupLinesLoadAnimInst->stop();
+	d_popupLinesCharactersAnimInst->stop();
+	d_popupLinesOptionsAnimInst->stop();
+	d_popupLinesQuitAnimInst->stop();
+	
+	CEGUI::AnimationManager& animMgr = CEGUI::AnimationManager::getSingleton();
+	for (size_t i=0; i<animMgr.getNumAnimations();/* ++i*/)
+	{
+		CEGUI::Animation* anim = animMgr.getAnimationAtIdx(i);
+		animMgr.destroyAnimation(anim);
+	}
 }
 
 void LoginState::update( float timeSinceLastFrame )
 {
+	if(m_bQuit)
+	{
+		m_pParent->shutdown();
+		return;
+	}
+
 	d_timeSinceStart += timeSinceLastFrame;
 
 	_UpdateIntroText();
@@ -149,8 +203,10 @@ void LoginState::_SetupNaviArrowWindows()
 
 void LoginState::_SetupButtonClickHandlers()
 {
-	CEGUI::Window* buttonSave = m_windowMgr.getWindow("ButtonSave");
-	buttonSave->subscribeEvent(CEGUI::Window::EventMouseClick, CEGUI::Event::Subscriber(&LoginState::handleStartPopupLinesSaveDisplay, this));
+	CEGUI::Window* buttonEnter = m_windowMgr.getWindow("ButtonEnter");
+	buttonEnter->subscribeEvent(CEGUI::Window::EventMouseClick, CEGUI::Event::Subscriber(&LoginState::handleStartPopupLinesEnterDisplay, this));
+	CEGUI::Window* btnEnterYes = m_windowMgr.getWindow("EnterSelectionIcon");
+	btnEnterYes->subscribeEvent(CEGUI::Window::EventMouseClick, CEGUI::Event::Subscriber(&LoginState::handleBtnEnterYesClicked, this));
 	CEGUI::Window* buttonLoad = m_windowMgr.getWindow("ButtonLoad");
 	buttonLoad->subscribeEvent(CEGUI::Window::EventMouseClick, CEGUI::Event::Subscriber(&LoginState::handleStartPopupLinesLoadDisplay, this));
 	CEGUI::Window* buttonCharacters = m_windowMgr.getWindow("ButtonCharacters");
@@ -158,7 +214,8 @@ void LoginState::_SetupButtonClickHandlers()
 	CEGUI::Window* buttonOptions = m_windowMgr.getWindow("ButtonOptions");
 	buttonOptions->subscribeEvent(CEGUI::Window::EventMouseClick, CEGUI::Event::Subscriber(&LoginState::handleStartPopupLinesOptionsDisplay, this));
 	CEGUI::Window* buttonQuit = m_windowMgr.getWindow("ButtonQuit");
-	buttonQuit->subscribeEvent(CEGUI::Window::EventMouseClick, CEGUI::Event::Subscriber(&LoginState::handleStartPopupLinesQuitDisplay, this));
+	buttonQuit->subscribeEvent(CEGUI::Window::EventMouseClick, CEGUI::Event::Subscriber(&LoginState::handleStartPopupLinesQuitDisplay, this));	CEGUI::Window* btnQuitYes = m_windowMgr.getWindow("YesSelectionIcon");
+	btnQuitYes->subscribeEvent(CEGUI::Window::EventMouseClick, CEGUI::Event::Subscriber(&LoginState::handleBtnQuitYesClicked, this));
 }
 
 void LoginState::_SetupNaviIconAnimationEventHandlers()
@@ -188,7 +245,7 @@ void LoginState::_SetupInnerButtonsSubOptionsLabels()
 	label = m_windowMgr.getWindow("LabelLoad");
 	label->subscribeEvent(CEGUI::Window::EventMouseEntersArea, CEGUI::Event::Subscriber(&LoginState::handleInnerButtonsLabelEntered, this));
 	label->subscribeEvent(CEGUI::Window::EventMouseLeavesArea, CEGUI::Event::Subscriber(&LoginState::handleInnerButtonsLabelLeft, this));
-	label = m_windowMgr.getWindow("LabelSave");
+	label = m_windowMgr.getWindow("LabelEnter");
 	label->subscribeEvent(CEGUI::Window::EventMouseEntersArea, CEGUI::Event::Subscriber(&LoginState::handleInnerButtonsLabelEntered, this));
 	label->subscribeEvent(CEGUI::Window::EventMouseLeavesArea, CEGUI::Event::Subscriber(&LoginState::handleInnerButtonsLabelLeft, this));
 	label = m_windowMgr.getWindow("LabelName2");
@@ -276,7 +333,7 @@ void LoginState::_SetupAnimations()
 	window = m_windowMgr.getWindow("ButtonLoad");
 	d_buttonFadeInAnimInst2->setTargetWindow(window);
 	d_buttonFadeInAnimInst3 = animMgr.instantiateAnimation(buttonFadeInAnim);
-	window = m_windowMgr.getWindow("ButtonSave");
+	window = m_windowMgr.getWindow("ButtonEnter");
 	d_buttonFadeInAnimInst3->setTargetWindow(window);
 	d_buttonFadeInAnimInst4 = animMgr.instantiateAnimation(buttonFadeInAnim);
 	window = m_windowMgr.getWindow("ButtonCharacters");
@@ -417,7 +474,7 @@ void LoginState::_StartEntranceAnimations()
 
 void LoginState::_MakeAllSelectionIconsInvisible()
 {
-	m_windowMgr.getWindow("SaveSelectionIcon")->setVisible(false);
+	m_windowMgr.getWindow("EnterSelectionIcon")->setVisible(false);
 	m_windowMgr.getWindow("NoSelectionIcon")->setVisible(false);
 	m_windowMgr.getWindow("SelectSelectionIcon")->setVisible(false);
 	m_windowMgr.getWindow("YesSelectionIcon")->setVisible(false);
@@ -436,9 +493,9 @@ void LoginState::_SetupPopupLinesAnimations()
 	CEGUI::AnimationManager& animMgr = CEGUI::AnimationManager::getSingleton();
 
 	CEGUI::Animation* sizeGrowth = animMgr.getAnimation("SizeGrowth");
-	window = m_windowMgr.getWindow("PopupLinesSave");
-	d_popupLinesSaveAnimInst = animMgr.instantiateAnimation(sizeGrowth);
-	d_popupLinesSaveAnimInst->setTarget(window);
+	window = m_windowMgr.getWindow("PopupLinesEnter");
+	d_popupLinesEnterAnimInst = animMgr.instantiateAnimation(sizeGrowth);
+	d_popupLinesEnterAnimInst->setTarget(window);
 	window = m_windowMgr.getWindow("PopupLinesLoad");
 	d_popupLinesLoadAnimInst = animMgr.instantiateAnimation(sizeGrowth);
 	d_popupLinesLoadAnimInst->setTarget(window);
@@ -467,7 +524,7 @@ void LoginState::_SetupSelectionIconAnimations()
 	iconAnimInst->setTargetWindow(window);
 	iconAnimInst = animMgr.instantiateAnimation(iconAnimationStop);
 	iconAnimInst->setTargetWindow(window);
-	window = m_windowMgr.getWindow("SaveSelectionIcon");
+	window = m_windowMgr.getWindow("EnterSelectionIcon");
 	iconAnimInst = animMgr.instantiateAnimation(iconAnimationLoop);
 	iconAnimInst->setTargetWindow(window);
 	iconAnimInst = animMgr.instantiateAnimation(iconAnimationStop);
@@ -487,7 +544,7 @@ void LoginState::_SetupSelectionIconAnimations()
 	iconAnimInst->setTargetWindow(window);
 	iconAnimInst = animMgr.instantiateAnimation(iconAnimationStop);
 	iconAnimInst->setTargetWindow(window);
-	window = m_windowMgr.getWindow("SaveSelectionIcon");
+	window = m_windowMgr.getWindow("EnterSelectionIcon");
 	iconAnimInst = animMgr.instantiateAnimation(iconAnimationLoop);
 	iconAnimInst->setTargetWindow(window);
 	iconAnimInst = animMgr.instantiateAnimation(iconAnimationStop);
@@ -771,16 +828,16 @@ bool LoginState::handleMouseLeavesRightArrowArea( const CEGUI::EventArgs& args )
 	return false;
 }
 
-bool LoginState::handleStartPopupLinesSaveDisplay( const CEGUI::EventArgs& args )
+bool LoginState::handleStartPopupLinesEnterDisplay( const CEGUI::EventArgs& args )
 {
 	if(!d_startButtonClicked)
 		return false;
 
 	_MakeAllSelectionIconsInvisible();
 	_StopStartPopupLinesAnimations();
-	d_popupLinesSaveAnimInst->start();
+	d_popupLinesEnterAnimInst->start();
 
-	m_windowMgr.getWindow("SaveSelectionIcon")->setVisible(true);
+	m_windowMgr.getWindow("EnterSelectionIcon")->setVisible(true);
 
 	return false;
 }
@@ -835,9 +892,6 @@ bool LoginState::handleStartPopupLinesOptionsDisplay( const CEGUI::EventArgs& ar
 
 bool LoginState::handleStartPopupLinesQuitDisplay( const CEGUI::EventArgs& args )
 {
-	if(!d_startButtonClicked)
-		return false;
-
 	_MakeAllSelectionIconsInvisible();
 	_StopStartPopupLinesAnimations();
 	d_popupLinesQuitAnimInst->start();
@@ -891,9 +945,9 @@ void LoginState::_StopStartPopupLinesAnimations()
 	d_popupLinesLoadAnimInst->setPosition(d_popupLinesLoadAnimInst->getDefinition()->getDuration());
 	d_popupLinesLoadAnimInst->apply();
 	d_popupLinesLoadAnimInst->pause();
-	d_popupLinesSaveAnimInst->setPosition(d_popupLinesSaveAnimInst->getDefinition()->getDuration());
-	d_popupLinesSaveAnimInst->apply();
-	d_popupLinesSaveAnimInst->pause();
+	d_popupLinesEnterAnimInst->setPosition(d_popupLinesEnterAnimInst->getDefinition()->getDuration());
+	d_popupLinesEnterAnimInst->apply();
+	d_popupLinesEnterAnimInst->pause();
 	d_popupLinesQuitAnimInst->setPosition(d_popupLinesQuitAnimInst->getDefinition()->getDuration());
 	d_popupLinesQuitAnimInst->apply();
 	d_popupLinesQuitAnimInst->pause();
@@ -901,9 +955,22 @@ void LoginState::_StopStartPopupLinesAnimations()
 	d_popupLinesOptionsAnimInst->apply();
 	d_popupLinesOptionsAnimInst->pause();
 
-	m_windowMgr.getWindow("PopupLinesSave")->setVisible(false);
+	m_windowMgr.getWindow("PopupLinesEnter")->setVisible(false);
 	m_windowMgr.getWindow("PopupLinesLoad")->setVisible(false);
 	m_windowMgr.getWindow("PopupLinesCharacters")->setVisible(false);
 	m_windowMgr.getWindow("PopupLinesOptions")->setVisible(false);
 	m_windowMgr.getWindow("PopupLinesQuit")->setVisible(false);
+}
+
+bool LoginState::handleBtnQuitYesClicked( const CEGUI::EventArgs& args )
+{
+	m_bQuit = true;
+	return false;
+}
+
+bool LoginState::handleBtnEnterYesClicked( const CEGUI::EventArgs& args )
+{
+	//Ω¯»Î”Œœ∑
+	changeAppState(findByName(CBattleState::StateName));
+	return false;
 }

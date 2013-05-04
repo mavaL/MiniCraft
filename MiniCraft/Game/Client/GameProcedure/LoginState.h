@@ -53,13 +53,15 @@ private:
 	bool		handleInnerPartStartClickAreaClick(const CEGUI::EventArgs& args);
 	bool		handleCheckIfNaviIconAnimationNeedsChange(const CEGUI::EventArgs& args);
 	bool		handleNaviSelectionIconAnimStart(const CEGUI::EventArgs& args);
+	bool		handleBtnQuitYesClicked(const CEGUI::EventArgs& args);
+	bool		handleBtnEnterYesClicked(const CEGUI::EventArgs& args);
 
 	bool		handleMouseEntersLeftArrowArea(const CEGUI::EventArgs& args);
 	bool		handleMouseLeavesLeftArrowArea(const CEGUI::EventArgs& args);
 	bool		handleMouseEntersRightArrowArea(const CEGUI::EventArgs& args);
 	bool		handleMouseLeavesRightArrowArea(const CEGUI::EventArgs& args);
 
-	bool		handleStartPopupLinesSaveDisplay(const CEGUI::EventArgs& args);
+	bool		handleStartPopupLinesEnterDisplay(const CEGUI::EventArgs& args);
 	bool		handleStartPopupLinesLoadDisplay(const CEGUI::EventArgs& args);
 	bool		handleStartPopupLinesCharactersDisplay(const CEGUI::EventArgs& args);
 	bool		handleStartPopupLinesOptionsDisplay(const CEGUI::EventArgs& args);
@@ -83,6 +85,7 @@ private:
 	static const float s_loginDisplayStartDelay;
 
 private:
+	bool			m_bQuit;
 	CEGUI::WindowManager&	m_windowMgr;
 	CEGUI::Window* d_root;
 
@@ -130,7 +133,7 @@ private:
 
 	CEGUI::AnimationInstance* d_botBarLabelBlendOutInst;
 
-	CEGUI::AnimationInstance* d_popupLinesSaveAnimInst;
+	CEGUI::AnimationInstance* d_popupLinesEnterAnimInst;
 	CEGUI::AnimationInstance* d_popupLinesLoadAnimInst;
 	CEGUI::AnimationInstance* d_popupLinesCharactersAnimInst;
 	CEGUI::AnimationInstance* d_popupLinesOptionsAnimInst;

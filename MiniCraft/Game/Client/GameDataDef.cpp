@@ -291,6 +291,15 @@ void GameDataDefManager::SaveAllData()
 	
 }
 
+void GameDataDefManager::UnloadAllData()
+{
+	m_buildingData.clear();
+	m_abilityData.clear();
+	m_unitData.clear();
+
+	Kratos::aiBehaviorTreeTemplateManager::GetSingleton().UnloadAll();
+}
+
 void LoadStringInterface( Ogre::NameValuePairList& params, rapidxml::xml_node<>* node )
 {
 	auto attr = node->first_attribute();

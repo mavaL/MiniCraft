@@ -117,10 +117,10 @@ namespace Kratos
 
 	bool CGUIManager::OnInputSys_KeyPressed( const OIS::KeyEvent& arg )
 	{
-		m_pSystem->injectKeyDown(static_cast<CEGUI::Key::Scan>(arg.key));
-		m_pSystem->injectChar(arg.text);
+		bool ret1 = m_pSystem->injectKeyDown(static_cast<CEGUI::Key::Scan>(arg.key));
+		bool ret2 = m_pSystem->injectChar(arg.text);
 
-		return true;
+		return ret1 || ret2;
 	}
 
 	bool CGUIManager::OnInputSys_KeyReleased( const OIS::KeyEvent& arg )

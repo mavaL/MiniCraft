@@ -2,6 +2,7 @@
 #include "GameDefine.h"
 #include <SdkCameraMan.h>
 #include "BattleState.h"
+#include "LoginState.h"
 #include "OgreManager.h"
 #include "Unit.h"
 #include "Command.h"
@@ -84,7 +85,7 @@ void CBattleState::update(float timeSinceLastFrame)
 {
 	if(m_bQuit)
 	{
-		m_pParent->shutdown();
+		changeAppState(findByName(LoginState::StateName));
 		return;
 	}
 

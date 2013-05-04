@@ -9,10 +9,7 @@
 #ifndef InfoPanel_h__
 #define InfoPanel_h__
 
-namespace CEGUI
-{
-	class Window;
-}
+#include "KratosPrerequisites.h"
 
 class SelectableObject;
 
@@ -34,6 +31,7 @@ public:
 
 private:
 	CEGUI::Window*		m_pLayout;
+	CEGUI::ProgressBar*	m_pProgressBar;
 	SelectableObject*	m_pActiveObject;
 };
 

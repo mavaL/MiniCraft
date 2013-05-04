@@ -106,6 +106,8 @@ public:
 	UiPortraitPanel* GetPortraitPanel() { return m_portraitPanel; }
 
 private:
+	void			_InitUIConsole();
+
 	Kratos::ScriptSystem*		m_pScriptSystem;
 	Kratos::COgreManager*		m_pRenderSystem;
 

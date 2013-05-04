@@ -85,5 +85,5 @@ bool UiCommandPanel::CEGUI_OnCommandBtnClicked( const CEGUI::EventArgs& e )
 		m_pActiveObj->GetAi()->GiveCommand(Command(pData->m_type, m_pActiveObj), pData->m_param == FORCE_EXECUTE);
 	}
 
-	return true;
+	return false;
 }

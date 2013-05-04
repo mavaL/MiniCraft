@@ -115,6 +115,9 @@
     <ClInclude Include="Game\Client\GameProcedure\LoginState.h">
       <Filter>Client\GameProcedure</Filter>
     </ClInclude>
+    <ClInclude Include="Game\Client\GameProcedure\LoadingState.h">
+      <Filter>Client\GameProcedure</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game\Client\World.cpp">
@@ -202,6 +205,9 @@
       <Filter>Client\GameProcedure</Filter>
     </ClCompile>
     <ClCompile Include="Game\Client\GameProcedure\LoginState.cpp">
+      <Filter>Client\GameProcedure</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Client\GameProcedure\LoadingState.cpp">
       <Filter>Client\GameProcedure</Filter>
     </ClCompile>
   </ItemGroup>

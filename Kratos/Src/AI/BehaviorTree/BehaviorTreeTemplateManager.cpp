@@ -13,17 +13,7 @@ namespace Kratos
 
 	aiBehaviorTreeTemplateManager::~aiBehaviorTreeTemplateManager()
 	{
-		for(auto iter=m_bts.begin(); iter!=m_bts.end(); ++iter)
-			delete iter->second;
-		m_bts.clear();
-
-		for(auto iter=m_behaviorLib.begin(); iter!=m_behaviorLib.end(); ++iter)
-			delete iter->second;
-		m_behaviorLib.clear();
-
-		for(auto iter=m_globalBBs.begin(); iter!=m_globalBBs.end(); ++iter)
-			delete iter->second;
-		m_globalBBs.clear();
+		UnloadAll();
 	}
 
 	void aiBehaviorTreeTemplateManager::LoadAll()
@@ -99,6 +89,21 @@ namespace Kratos
 	{
 		assert(behav);
 		m_behaviorLib.insert(std::make_pair(name, behav));
+	}
+
+	void aiBehaviorTreeTemplateManager::UnloadAll()
+	{
+		for(auto iter=m_bts.begin(); iter!=m_bts.end(); ++iter)
+			delete iter->second;
+		m_bts.clear();
+
+		for(auto iter=m_behaviorLib.begin(); iter!=m_behaviorLib.end(); ++iter)
+			delete iter->second;
+		m_behaviorLib.clear();
+
+		for(auto iter=m_globalBBs.begin(); iter!=m_globalBBs.end(); ++iter)
+			delete iter->second;
+		m_globalBBs.clear();
 	}
 
 	Ogre::StringVector aiBehaviorTreeTemplateManager::GetAllTemplateNames() const

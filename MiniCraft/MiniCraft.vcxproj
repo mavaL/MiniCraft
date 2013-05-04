@@ -99,6 +99,7 @@
     <ClInclude Include="Game\Client\Faction.h" />
     <ClInclude Include="Game\Client\GameDataDef.h" />
     <ClInclude Include="Game\Client\GameProcedure\BattleState.h" />
+    <ClInclude Include="Game\Client\GameProcedure\LoadingState.h" />
     <ClInclude Include="Game\Client\GameProcedure\LoginState.h" />
     <ClInclude Include="Game\Client\Object\Building.h" />
     <ClInclude Include="Game\Client\Object\ObjectBase.h" />
@@ -129,6 +130,7 @@
     <ClCompile Include="Game\Client\Faction.cpp" />
     <ClCompile Include="Game\Client\GameDataDef.cpp" />
     <ClCompile Include="Game\Client\GameProcedure\BattleState.cpp" />
+    <ClCompile Include="Game\Client\GameProcedure\LoadingState.cpp" />
     <ClCompile Include="Game\Client\GameProcedure\LoginState.cpp" />
     <ClCompile Include="Game\Client\MiniCraft.cpp" />
     <ClCompile Include="Game\Client\Object\Building.cpp" />
