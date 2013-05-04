@@ -108,7 +108,13 @@ void World::Init()
 	dynamic_cast<FactionAI*>(m_player[eGameRace_Zerg])->Init();
 	dynamic_cast<FactionAI*>(m_player[eGameRace_Terran])->Init();
 
-	//UI for test
+	_InitUIConsole();
+}
+
+void World::_InitUIConsole()
+{
+	Ogre::SceneManager* sm = m_pRenderSystem->m_pSceneMgr;
+	//Ó²±àÂëµÄ..
 	Ogre::Entity* pEntConsole = m_pRenderSystem->CreateEntityWithTangent("ConsoleTerran_0.mesh", sm);
 	pEntConsole->setRenderQueueGroup(Ogre::RENDER_QUEUE_WORLD_GEOMETRY_2);
 	pEntConsole->setCastShadows(false);
@@ -154,13 +160,13 @@ void World::Init()
 
 void World::Shutdown()
 {
-	SAFE_DELETE(m_pTestScene);
+	ObjectManager::GetSingleton().DestroyAll();
 
 	SAFE_DELETE(m_player[eGameRace_Terran]);
 	SAFE_DELETE(m_player[eGameRace_Zerg]);
 
-	ObjectManager::GetSingleton().DestroyAll();
 	PathComponent::DestroyRecastLib();
+	GameDataDefManager::GetSingleton().UnloadAllData();
 	SAFE_DELETE(m_cameraMan);
 
 	m_pRenderSystem->m_pSceneMgr->destroyQuery(m_pSceneQuery);
@@ -179,6 +185,9 @@ void World::Shutdown()
 	m_cmdPanel->Destroy();
 	m_infoPanel->Destroy();
 	m_portraitPanel->Destroy();
+
+	m_pTestScene->Reset();
+	SAFE_DELETE(m_pTestScene);
 }
 
 void World::Update(float dt)

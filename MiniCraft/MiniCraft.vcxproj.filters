@@ -20,11 +20,11 @@
     <Filter Include="Client\Component">
       <UniqueIdentifier>{253d82a1-f205-487e-9774-88b95e8683d2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Client\GameProcedure">
+      <UniqueIdentifier>{cd0c00b7-4b2b-4367-94c4-b5fb729ab873}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Game\Client\BattleState.h">
-      <Filter>Client</Filter>
-    </ClInclude>
     <ClInclude Include="Game\Client\World.h">
       <Filter>Client</Filter>
     </ClInclude>
@@ -109,11 +109,17 @@
     <ClInclude Include="Game\Client\EventCallback.h">
       <Filter>Client</Filter>
     </ClInclude>
+    <ClInclude Include="Game\Client\GameProcedure\BattleState.h">
+      <Filter>Client\GameProcedure</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Client\GameProcedure\LoginState.h">
+      <Filter>Client\GameProcedure</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Client\GameProcedure\LoadingState.h">
+      <Filter>Client\GameProcedure</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Game\Client\BattleState.cpp">
-      <Filter>Client</Filter>
-    </ClCompile>
     <ClCompile Include="Game\Client\World.cpp">
       <Filter>Client</Filter>
     </ClCompile>
@@ -194,6 +200,15 @@
     </ClCompile>
     <ClCompile Include="Game\Client\BoneGizmo.cpp">
       <Filter>Client</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Client\GameProcedure\BattleState.cpp">
+      <Filter>Client\GameProcedure</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Client\GameProcedure\LoginState.cpp">
+      <Filter>Client\GameProcedure</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Client\GameProcedure\LoadingState.cpp">
+      <Filter>Client\GameProcedure</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

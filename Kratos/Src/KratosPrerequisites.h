@@ -2,6 +2,7 @@
 #define KratosPrerequisites_h__
 
 #include <OgrePrerequisites.h>
+#include <CEGUIForwardRefs.h>
 
 typedef Ogre::Vector3		POS;
 typedef Ogre::Quaternion	ORIENT;

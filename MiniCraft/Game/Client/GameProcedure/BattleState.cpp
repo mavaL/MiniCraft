@@ -2,6 +2,7 @@
 #include "GameDefine.h"
 #include <SdkCameraMan.h>
 #include "BattleState.h"
+#include "LoginState.h"
 #include "OgreManager.h"
 #include "Unit.h"
 #include "Command.h"
@@ -9,7 +10,7 @@
 #include "Building.h"
 #include "Resource.h"
 #include "AIComponent.h"
-
+#include "GUIManager.h"
 
 std::string CBattleState::StateName = "BattleState";
 
@@ -53,6 +54,8 @@ void CBattleState::enter()
 	inputMgr.BindMouseRelease(boost::bind(&CBattleState::OnInputSys_MouseReleased, this, _1, _2));
 	inputMgr.BindMouseMove(boost::bind(&CBattleState::OnInputSys_MouseMove, this, _1));
 
+	GUIMANAGER.SetCursorMode(Kratos::eCursorMode_Normal);
+
 	m_bQuit = false;
 }
 
@@ -82,7 +85,7 @@ void CBattleState::update(float timeSinceLastFrame)
 {
 	if(m_bQuit)
 	{
-		m_pParent->shutdown();
+		changeAppState(findByName(LoginState::StateName));
 		return;
 	}
 

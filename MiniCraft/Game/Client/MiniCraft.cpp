@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "AppStateManager.h"
-#include "BattleState.h"
 #include "Application.h"
 
 

@@ -5,9 +5,10 @@
 #include "GUIManager.h"
 #include "AppStateManager.h"
 #include "ScriptSystem.h"
-#include "BattleState.h"
+#include "GameProcedure/BattleState.h"
 #include "PhysicManager.h"
-
+#include "GameProcedure/LoginState.h"
+#include "GameProcedure/LoadingState.h"
 
 Applicaton::Applicaton()
 :m_stateMgr(nullptr)
@@ -31,13 +32,15 @@ bool Applicaton::Init()
 	m_guiMgr = Kratos::CGUIManager::GetSingletonPtr();
 	m_phyMgr = Kratos::CPhysicManager::GetSingletonPtr();
 
-	CBattleState::create(m_stateMgr, CBattleState::StateName);
-
 	if(	!m_ogreMgr->Init(false)	|| 
 		!m_inputMgr->Init()		||
 		!m_guiMgr->Init()		||
 		!m_phyMgr->Init()		)
 		return false;
+
+	CBattleState::create(m_stateMgr, CBattleState::StateName);
+	LoginState::create(m_stateMgr, LoginState::StateName);
+	LoadingState::create(m_stateMgr, LoadingState::StateName);
 
 	SCRIPTNAMAGER.Init();
 
@@ -46,10 +49,9 @@ bool Applicaton::Init()
 
 void Applicaton::Run()
 {
-	//进入游戏
-	m_stateMgr->changeAppState(m_stateMgr->findByName(CBattleState::StateName));
+	m_stateMgr->changeAppState(m_stateMgr->findByName(LoadingState::StateName));
 
-	float timeSinceLastFrame = 1;
+	static float timeSinceLastFrame = 0;
 	int startTime = 0;
 	//游戏主循环
 	while(true)
@@ -66,10 +68,14 @@ void Applicaton::Run()
 			//各子系统进行更新
 			m_inputMgr->Capture();
 			m_phyMgr->Update();
+
 			if(!m_stateMgr->UpdateCurrentState(timeSinceLastFrame))
 				break;
+
 			if(!m_ogreMgr->Update(timeSinceLastFrame))
 				break;
+
+			m_guiMgr->Update(timeSinceLastFrame);
 
 			timeSinceLastFrame = static_cast<float>(m_ogreMgr->GetTimer()->getMillisecondsCPU() - startTime);
 			timeSinceLastFrame /= 1000.0f;
@@ -83,10 +89,10 @@ void Applicaton::Run()
 
 void Applicaton::Shutdown()
 {
+	m_stateMgr->shutdown();	
 	SCRIPTNAMAGER.Shutdown();
 	m_phyMgr->Shutdown();
 	m_guiMgr->Shutdown();
-	m_stateMgr->shutdown();	
 	m_inputMgr->Shutdown();
 	m_ogreMgr->Shutdown();
 }

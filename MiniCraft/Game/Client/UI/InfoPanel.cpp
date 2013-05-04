@@ -11,6 +11,7 @@ using namespace CEGUI;
 UiInfoPanel::UiInfoPanel()
 :m_pLayout(nullptr)
 ,m_pActiveObject(nullptr)
+,m_pProgressBar(nullptr)
 {
 
 }
@@ -19,6 +20,7 @@ void UiInfoPanel::Init()
 {
 	m_pLayout = GUIMANAGER.LoadWindowLayout("InfoPanel.layout");
 	assert(m_pLayout);
+	m_pProgressBar = static_cast<CEGUI::ProgressBar*>(m_pLayout->getChild("InfoPanel/ProgressBar"));
 	ShowInfoIcon(false);
 	ShowProgressQueue(false);
 }
@@ -27,6 +29,7 @@ void UiInfoPanel::Destroy()
 {
 	GUIMANAGER.UnloadWindowLayout(m_pLayout);
 	m_pLayout = nullptr;
+	m_pProgressBar = nullptr;
 }
 
 void UiInfoPanel::ShowInfoIcon( bool bShow, const std::string& imgSetName, const std::string& imgName )
@@ -42,12 +45,12 @@ void UiInfoPanel::ShowInfoIcon( bool bShow, const std::string& imgSetName, const
 
 void UiInfoPanel::ShowProgressQueue( bool bShow )
 {
-	m_pLayout->getChild("InfoPanel/ProgressBar")->setVisible(bShow);
+	m_pProgressBar->setVisible(bShow);
 }
 
 void UiInfoPanel::SetProgress( float fPercent )
 {
-	m_pLayout->getChild("InfoPanel/ProgressBar")->setProperty("CurrentProgress", Ogre::StringConverter::toString(fPercent));
+	m_pProgressBar->setProgress(fPercent);
 }
 
 void UiInfoPanel::SetVisible( bool bVisible )

@@ -19,7 +19,8 @@
 	<Imageset Filename="CursorTargetAllied.imageset" />
 	<Imageset Filename="CursorTargetEnemy.imageset" />
 	<Imageset Filename="CursorTargetInvalid.imageset" />
-	<Font Filename="DejaVuSans-10.font" />
+  <Imageset Filename="SpaceBackground.imageset" />
+  <Font Filename="DejaVuSans-10.font" />
 	<LookNFeel Filename="TaharezLook.looknfeel" />
 	<WindowRendererSet Filename="CEGUIFalagardWRBase" />
 	<FalagardMapping WindowType="TaharezLook/Button"      TargetType="CEGUI/PushButton"  Renderer="Falagard/Button"       LookNFeel="TaharezLook/Button" />

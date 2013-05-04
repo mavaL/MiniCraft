@@ -83,6 +83,8 @@ namespace Kratos
 			params["parentWindowHandle"] = StringConverter::toString((unsigned int)hwndParent);
 			params["vsync"] = "true";
 			mWindow = mRoot->createRenderWindow("MainWindow", width, height, false, &params);
+
+			Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 		}
 		else
 		{
@@ -102,17 +104,13 @@ namespace Kratos
 			(Ogre::Real)m_pViewport->getActualWidth()/(Ogre::Real)m_pViewport->getActualHeight());
 
 		Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);
-		Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
+		
 		//Set initial mouse clipping size
 		windowResized(mWindow);
 		Ogre::WindowEventUtilities::addWindowEventListener(mWindow, this);
 
 		m_pDS = new DeferredShadingSystem(m_pViewport, m_pSceneMgr, m_pMainCamera);
-		m_pDS->initialize();
-		m_pDS->setActive(false);
 		mLightMaterialGenerator = new LightMaterialGenerator;
-
-		ResetEffect();
 
 		PSSMShadowCameraSetup* pssmSetup = new PSSMShadowCameraSetup;
 		mPSSMSetup.bind(pssmSetup);
