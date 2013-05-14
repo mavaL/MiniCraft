@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "Scene.h"
+#include "GameDefine.h"
 #include "SceneSerializer.h"
 #include "OgreManager.h"
 
@@ -12,8 +13,9 @@ namespace Kratos
 		:m_pTerrain(nullptr)
 		,m_terrainGroup(nullptr)
 		,m_terrainOption(nullptr)
-		,m_sunLightDir(Ogre::Vector3(-0.8f, -1.0f, 0.4f))
-		,m_sunLightDiffuse(Ogre::ColourValue::White)
+		,m_sunLightDir(FLOAT3(-0.8f, -1.0f, 0.4f))
+		,m_sunLightDiffuse(COLOR::White)
+		,m_ambient(COLOR::White)
 	{
 		m_sunLightDir.normalise();
 	}
@@ -74,7 +76,7 @@ namespace Kratos
 		COgreManager& ogreMgr = COgreManager::GetSingleton();
 		Ogre::SceneManager* sm = ogreMgr.m_pSceneMgr;
 		//环境光
-		sm->setAmbientLight(Ogre::ColourValue::White);
+		sm->setAmbientLight(m_ambient);
 
 		//全局光
 		ogreMgr.CreateSunLight(m_sunLightDir, m_sunLightDiffuse);
@@ -90,12 +92,13 @@ namespace Kratos
 		// 	MaterialManager::getSingleton().setDefaultTextureFiltering(TFO_ANISOTROPIC);
 		// 	MaterialManager::getSingleton().setDefaultAnisotropy(7);
 
-		//全局光
 		m_terrainOption->setMaxPixelError(8);
-		m_terrainOption->setCompositeMapDistance(3000);
+		//m_terrainOption->setCompositeMapDistance(3000);
 		//m_terrainOption->setUseRayBoxDistanceCalculation(true);
 		//m_terrainOption->getDefaultMaterialGenerator()->setDebugLevel(1);
 		//m_terrainOption->setLightMapSize(512);
+		m_terrainOption->setVisibilityFlags(eRenderType_Terrain);
+		m_terrainOption->setQueryFlags(eQueryType_Terrain);
 
 		ogreMgr.SetRenderingStyle();
 

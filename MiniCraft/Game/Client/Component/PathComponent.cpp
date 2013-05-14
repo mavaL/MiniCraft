@@ -172,9 +172,9 @@ bool PathComponent::ClampPosToNavMesh( POS& wPos )
 	return ret;
 }
 
-void PathComponent::PausePathFinding(bool bPause)
+void PathComponent::StopAgent()
 {
-	m_pAgent->active = !bPause;
+	m_pDetour->stopAgent(m_agentID);
 }
 
 

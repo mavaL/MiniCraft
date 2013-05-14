@@ -21,12 +21,23 @@ enum eObjectType
 	eObjectType_Resource
 };
 
+//渲染类型控制
+enum eRenderType
+{
+	eRenderType_Default		=	0xffffffff,
+	eRenderType_Terrain		=	1<<0,
+	eRenderType_Resource	=	1<<1,
+	eRenderType_Unit		=	1<<2,
+	eRenderType_Building	=	1<<3,
+	eRenderType_UI			=	1<<4
+};
+
 //场景查询类型
 enum eQueryType
 {
 	eQueryType_All				=	0xffffffff,
 	eQueryType_Default			=	1<<0,
-	eQueryType_WorldGeometry	=	1<<1,
+	eQueryType_Terrain			=	1<<1,
 	eQueryType_Unit				=	1<<2,
 	eQueryType_Resource			=	1<<3,
 	eQueryType_Building			=	1<<4,

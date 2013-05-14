@@ -7,7 +7,7 @@ material marine
 		{
 			texture_unit diffusemap
 			{
-				texture marine_diffuse.dds
+				texture marine_diffuse_blood.dds
 				filtering linear linear linear
 			}
 			texture_unit normalmap
@@ -17,7 +17,7 @@ material marine
 			}
 			texture_unit specularmap
 			{
-				texture marine_specular.dds
+				texture marine_specular_blood.dds
 				filtering linear linear linear
 			}
 		}

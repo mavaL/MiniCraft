@@ -56,6 +56,7 @@ material HPBar
 	{
 		pass
 		{
+			scene_blend add
 			lighting off
 			diffuse 0 1 0 1
 		}

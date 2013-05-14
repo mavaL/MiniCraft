@@ -17,7 +17,7 @@ public:
 		return &instance;
 	}
 
-	static T& GetSingleton() { return *GetSingletonPtr(); }
+	inline static T& GetSingleton() { return *GetSingletonPtr(); }
 
 
 protected:

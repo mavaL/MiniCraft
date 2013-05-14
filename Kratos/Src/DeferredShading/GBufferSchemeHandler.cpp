@@ -23,6 +23,7 @@ namespace Kratos
 	const String GBufferSchemeHandler::NORMAL_MAP_PATTERN = "normal";
 	const String SPECULAR_MAP_PATTERN = "specularmap";
 	const String EMISSIVE_MAP_PATTERN = "emissivemap";
+	const String DECAL_MAP_PATTERN = "decalmap";
 
 	//检测到材质名含有Unit子串
 	const String TEAM_COLOR_PATTERN = "Unit";
@@ -182,6 +183,33 @@ namespace Kratos
 		return hasEmi;
 	}
 
+	bool GBufferSchemeHandler::checkDecalMap(
+		TextureUnitState* tus, GBufferSchemeHandler::PassProperties& props)
+	{
+		bool hasDecal = false;
+		Ogre::String lowerCaseAlias = tus->getTextureNameAlias();
+		Ogre::StringUtil::toLowerCase(lowerCaseAlias);
+		if (lowerCaseAlias.find(DECAL_MAP_PATTERN) != Ogre::String::npos)
+		{
+			hasDecal = true;
+		}
+
+		if (hasDecal)
+		{
+			if (props.decalMap == 0)
+			{
+				props.decalMap = tus;
+			}
+			else
+			{
+				OGRE_EXCEPT(Exception::ERR_DUPLICATE_ITEM,
+					"Multiple decal map patterns matches",
+					"GBufferSchemeHandler::inspectPass");
+			}
+		}
+		return hasDecal;
+	}
+
 	GBufferSchemeHandler::PassProperties GBufferSchemeHandler::inspectPass(
 		Pass* pass, unsigned short lodIndex, const Renderable* rend)
 	{
@@ -201,9 +229,10 @@ namespace Kratos
 		for (unsigned short i=0; i<pass->getNumTextureUnitStates(); i++) 
 		{
 			TextureUnitState* tus = pass->getTextureUnitState(i);
-			if (!checkNormalMap(tus, props) && 
+			if (!checkNormalMap(tus, props)	&& 
 				!checkSpecularMap(tus, props) && 
-				!checkEmissiveMap(tus, props))
+				!checkEmissiveMap(tus, props) &&
+				!checkDecalMap(tus, props))
 			{
 				props.regularTextures.push_back(tus);
 			}
@@ -231,37 +260,39 @@ namespace Kratos
 	MaterialGenerator::Perm GBufferSchemeHandler::getPermutation(const PassProperties& props)
 	{
 		MaterialGenerator::Perm perm = 0;
+		bool bMap = props.normalMap != 0 || props.specularMap != 0 || props.emissiveMap != 0;
 		switch (props.regularTextures.size())
 		{
 		case 0:
 			perm |= GBufferMaterialGenerator::GBP_NO_TEXTURES;
-
-			if (props.normalMap != 0 || props.specularMap != 0 || props.emissiveMap != 0)
-			{
-				perm |= GBufferMaterialGenerator::GBP_ONE_TEXCOORD;
-			}
-			else
-			{
-				perm |= GBufferMaterialGenerator::GBP_NO_TEXCOORDS;
-			}
 			break;
 		case 1:
 			perm |= GBufferMaterialGenerator::GBP_ONE_TEXTURE;
-			perm |= GBufferMaterialGenerator::GBP_ONE_TEXCOORD;
 			break;
 		case 2:
 			perm |= GBufferMaterialGenerator::GBP_TWO_TEXTURES;
-			//TODO : When do we use two texcoords?
-			perm |= GBufferMaterialGenerator::GBP_ONE_TEXCOORD;
 			break;
 		case 3:
 			perm |= GBufferMaterialGenerator::GBP_THREE_TEXTURES;
-			perm |= GBufferMaterialGenerator::GBP_ONE_TEXCOORD;
 			break;
 		default:
 			OGRE_EXCEPT(Exception::ERR_NOT_IMPLEMENTED,
 				"Can not generate G-Buffer materials for '>3 regular-texture' objects",
 				"GBufferSchemeHandler::inspectPass");
+		}
+
+		//多少层纹理坐标
+		int texUv = 0;
+		if(!props.regularTextures.empty() || bMap) texUv++;
+		//第二层纹理坐标用于decal map
+		if(props.decalMap != 0) texUv++;
+
+		switch (texUv)
+		{
+		case 0: perm |= GBufferMaterialGenerator::GBP_NO_TEXCOORDS; break;
+		case 1: perm |= GBufferMaterialGenerator::GBP_ONE_TEXCOORD; break;
+		case 2: perm |= GBufferMaterialGenerator::GBP_TWO_TEXCOORDS; break;
+		default: assert(0);
 		}
 
 		if (props.isSkinned)
@@ -284,10 +315,16 @@ namespace Kratos
 			perm |= GBufferMaterialGenerator::GBP_EMISSIVE_MAP;
 		}
 
+		if (props.decalMap != 0)
+		{
+			perm |= GBufferMaterialGenerator::GBP_DECAL_MAP;
+		}
+
 		if (props.hasDiffuseColour)
 		{
 			perm |= GBufferMaterialGenerator::GBP_HAS_DIFFUSE_COLOUR;
 		}
+
 		return perm;
 	}
 
@@ -309,6 +346,11 @@ namespace Kratos
 		if (props.emissiveMap != 0)
 		{
 			*(gBufferPass->getTextureUnitState(texUnitIndex)) = *(props.emissiveMap);
+			texUnitIndex++;
+		}
+		if (props.decalMap != 0)
+		{
+			*(gBufferPass->getTextureUnitState(texUnitIndex)) = *(props.decalMap);
 			texUnitIndex++;
 		}
 		for (size_t i=0; i<props.regularTextures.size(); i++)

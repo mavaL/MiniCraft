@@ -51,7 +51,7 @@ namespace Kratos
 			GBP_TWO_TEXCOORDS =			0x00000200,
 			GBP_TEXCOORD_MASK =			0x00000700,
 
-			//Do we have a normal map
+			//法线贴图
 			GBP_NORMAL_MAP =			0x00000800,
 
 			//高光Color+SpecularPower纹理
@@ -59,6 +59,9 @@ namespace Kratos
 
 			//自发光图
 			GBP_EMISSIVE_MAP	=		0x00000040,
+
+			//贴花纹理
+			GBP_DECAL_MAP		=		0x00000080,
 
 			//Are we skinned?
 			GBP_SKINNED =				0x00010000,

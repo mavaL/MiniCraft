@@ -118,6 +118,9 @@
     <ClInclude Include="Game\Client\GameProcedure\LoadingState.h">
       <Filter>Client\GameProcedure</Filter>
     </ClInclude>
+    <ClInclude Include="Game\Client\UI\MinimapPanel.h">
+      <Filter>Client\UI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game\Client\World.cpp">
@@ -209,6 +212,9 @@
     </ClCompile>
     <ClCompile Include="Game\Client\GameProcedure\LoadingState.cpp">
       <Filter>Client\GameProcedure</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Client\UI\MinimapPanel.cpp">
+      <Filter>Client\UI</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

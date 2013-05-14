@@ -185,6 +185,12 @@ namespace Kratos
 		{
 			ss << "	uniform sampler sEmisMap : register(s" << samplerNum++ << ")," << std::endl;
 		}
+		// decal map [5/14/2013 mavaL]
+		if (permutation & GBufferMaterialGenerator::GBP_DECAL_MAP)
+		{
+			ss << "	uniform sampler sDecalMap : register(s" << samplerNum++ << ")," << std::endl;
+		}
+
 		Ogre::uint32 numTextures = permutation & GBufferMaterialGenerator::GBP_TEXTURE_MASK;
 		for (Ogre::uint32 i=0; i<numTextures; i++) {
 			ss << "	uniform sampler sTex" << i << " : register(s" << samplerNum++ << ")," << std::endl;
@@ -223,9 +229,15 @@ namespace Kratos
 			ss << "	oColor0.rgb = cDiffuseColour.rgb;" << std::endl;
 		}
 
+		//¶ÓÎéÑÕÉ«
 		if (permutation & GBufferMaterialGenerator::GBP_TEAM_COLOR_Mask)
-		{
 			ss << "	oColor0 = oColor0 * oColor0.a + TeamColor * (1 - oColor0.a);" << std::endl;
+
+		// decal map [5/14/2013 mavaL]
+		if (permutation & GBufferMaterialGenerator::GBP_DECAL_MAP)
+		{
+			ss << "	float4 texDecal = tex2D(sDecalMap, iUV1);" << std::endl;
+			ss << "	oColor0 += texDecal.a;" << std::endl;
 		}
 
 		ss << "	oColor0.a = materialID;" << std::endl;
@@ -310,9 +322,9 @@ namespace Kratos
 #endif
 
 		if (permutation & GBufferMaterialGenerator::GBP_TEAM_COLOR_RED)
-			params->setNamedConstant("TeamColor", Ogre::ColourValue::Red);
+			params->setNamedConstant("TeamColor", COLOR(180.0f/255, 20.0f/255, 30.0f/255));
 		else if (permutation & GBufferMaterialGenerator::GBP_TEAM_COLOR_Blue)
-			params->setNamedConstant("TeamColor", Ogre::ColourValue::Blue);
+			params->setNamedConstant("TeamColor", COLOR::Blue);
 
 		ptrProgram->load();
 		return Ogre::GpuProgramPtr(ptrProgram);
@@ -327,18 +339,16 @@ namespace Kratos
 		Ogre::Pass* pass = matPtr->getTechnique(0)->getPass(0);
 		pass->setName(mBaseName + "Pass_" + Ogre::StringConverter::toString(permutation));
 		pass->setLightingEnabled(false);
+
 		if (permutation & GBufferMaterialGenerator::GBP_NORMAL_MAP)
-		{
 			pass->createTextureUnitState();
-		}
 		if (permutation & GBufferMaterialGenerator::GBP_SPECULAR_MAP)
-		{
 			pass->createTextureUnitState();
-		}
 		if (permutation & GBufferMaterialGenerator::GBP_EMISSIVE_MAP)
-		{
 			pass->createTextureUnitState();
-		}
+		if (permutation & GBufferMaterialGenerator::GBP_DECAL_MAP)
+			pass->createTextureUnitState();
+
 		Ogre::uint32 numTextures = permutation & GBufferMaterialGenerator::GBP_TEXTURE_MASK;
 		for (Ogre::uint32 i=0; i<numTextures; i++)
 		{

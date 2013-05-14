@@ -34,7 +34,7 @@ public:
 public:
 	virtual void	Update(float dt) {}
 	bool			UpdatePathFinding(float dt);
-	void			PausePathFinding(bool bPause);
+	void			StopAgent();
 	POS				GetRandomPositionOnNavmesh();
 	//进行寻路.bJustTry为true则只是尝试目标点是否可寻路
 	bool			FindPath(POS& destPos, bool bJustTry);

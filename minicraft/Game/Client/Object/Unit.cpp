@@ -117,14 +117,15 @@ void Unit::Init()
 		}
 	}
 
-	if(GetEntity()->hasSkeleton())
+	if(m_pEntity->hasSkeleton())
 		AddComponent(eComponentType_Animated, new AnimatedComponent(this));
 
 	AddComponent(eComponentType_AI, new AiComponent(this));
 	eGameRace race = (eGameRace)GetRace();
 	GetAi()->SetFaction(World::GetSingleton().GetFaction(race));
 
-	GetEntity()->setQueryFlags(eQueryType_Unit);
+	m_pEntity->setQueryFlags(eQueryType_Unit);
+	m_pEntity->setVisibilityFlags(eRenderType_Unit);
 }
 
 void Unit::Update( float dt )

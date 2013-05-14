@@ -46,13 +46,15 @@ namespace Kratos
 		//You might need to expand this class to support more options
 		struct PassProperties 
 		{
-			PassProperties() : isDeferred(true), normalMap(0), specularMap(0), emissiveMap(0), isSkinned(false) {}
+			PassProperties() : isDeferred(true), normalMap(0), specularMap(0), 
+				emissiveMap(0), isSkinned(false), decalMap(0) {}
 
 			bool isDeferred;
 			Ogre::vector<Ogre::TextureUnitState*>::type regularTextures;
 			Ogre::TextureUnitState* normalMap;
 			Ogre::TextureUnitState* specularMap;
 			Ogre::TextureUnitState* emissiveMap;
+			Ogre::TextureUnitState*	decalMap;
 			bool isSkinned;
 			bool hasDiffuseColour;
 
@@ -74,6 +76,7 @@ namespace Kratos
 		bool checkNormalMap(Ogre::TextureUnitState* tus, PassProperties& props);
 		bool checkSpecularMap(Ogre::TextureUnitState* tus, PassProperties& props);
 		bool checkEmissiveMap(Ogre::TextureUnitState* tus, PassProperties& props);
+		bool checkDecalMap(Ogre::TextureUnitState* tus, PassProperties& props);
 	};
 }
 

@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "LoadingState.h"
 #include "LoginState.h"
+#include "BattleState.h"
 #include "GUIManager.h"
 #include "OgreManager.h"
 #include "DeferredShading/DeferredShading.h"
@@ -35,7 +36,7 @@ void LoadingState::enter()
 	RenderManager.m_pDS->initialize();
 	RenderManager.m_pDS->setActive(false);
 
-	changeAppState(findByName(LoginState::StateName));
+	changeAppState(findByName(CBattleState::StateName));
 }
 
 void LoadingState::exit()

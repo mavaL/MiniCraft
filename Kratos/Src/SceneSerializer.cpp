@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "SceneSerializer.h"
 #include "Scene.h"
+#include "GameDefine.h"
 #include "OgreManager.h"
 #include "DeferredShading/TerrainMaterialGeneratorD.h"
 #include "DeferredShading/DeferredShading.h"
@@ -102,6 +103,8 @@ namespace Kratos
 		int maxPixelError = StringConverter::parseInt(node->first_attribute("tuningMaxPixelError")->value());
 
 		option->setMaxPixelError((Ogre::Real)maxPixelError);
+		option->setVisibilityFlags(eRenderType_Terrain);
+		option->setQueryFlags(eQueryType_Terrain);
 
 		TerrainGroup* pTerrainGroup = new TerrainGroup(sm, Terrain::ALIGN_X_Z, mapSize, worldSize);
 		pTerrainGroup->setOrigin(Vector3::ZERO);
@@ -134,7 +137,8 @@ namespace Kratos
 
 			//»·¾³¹â
 			const String strAmbient = shadowNode->first_attribute("AmbientLight")->value();
-			sm->setAmbientLight(Ogre::StringConverter::parseColourValue(strAmbient));
+			m_pOwner->m_ambient = Ogre::StringConverter::parseColourValue(strAmbient);
+			sm->setAmbientLight(m_pOwner->m_ambient);
 
 			ogreMgr.GetEffectConfig().bShadow = Ogre::StringConverter::parseBool(shadowNode->first_attribute("EnableShadow")->value());
 

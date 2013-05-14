@@ -43,7 +43,6 @@ namespace Kratos
 		mActive = false;
 
 		mCurrentMode = DSM_SHOWLIT;
-		setActive(true);
 	}
 
 	DeferredShadingSystem::~DeferredShadingSystem()

@@ -14,6 +14,7 @@ class Faction;
 class UiCommandPanel;
 class UiInfoPanel;
 class UiPortraitPanel;
+class UiMinimapPanel;
 
 //常用成员全局环境
 struct SGlobalEnvironment 
@@ -104,6 +105,7 @@ public:
 	UiCommandPanel*	GetCommandPanel() { return m_cmdPanel; }
 	UiInfoPanel*	GetInfoPanel()	{ return m_infoPanel; }
 	UiPortraitPanel* GetPortraitPanel() { return m_portraitPanel; }
+	UiMinimapPanel*	GetMinimapPanel()	{ return m_minimapPanel; }
 
 private:
 	void			_InitUIConsole();
@@ -131,6 +133,7 @@ private:
 	UiCommandPanel*				m_cmdPanel;
 	UiInfoPanel*				m_infoPanel;
 	UiPortraitPanel*			m_portraitPanel;
+	UiMinimapPanel*				m_minimapPanel;
 
 	Faction*					m_player[eGameRace_Count];
 	Kratos::Scene*				m_pTestScene;

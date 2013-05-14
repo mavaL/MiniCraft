@@ -52,6 +52,8 @@ void GizmoRectangle::InitRenderable(float w, float h)
 	(const_cast<Ogre::AxisAlignedBox&>(getBoundingBox())).setInfinite();
 
 	setMaterial("BaseWhiteNoLighting");
+	
+	setRenderQueueGroup(RENDER_QUEUE_OVERLAY);
 }
 
 void GizmoRectangle::getWorldTransforms( Matrix4* xform ) const
@@ -196,21 +198,18 @@ GizmoAxis::~GizmoAxis()
 
 void GizmoAxis::_Init()
 {
+	STRING matNames[3] = { "RedEmissive", "GreenEmissive", "BlueEmissive" };
+
 	for (int i=0; i<3; ++i)
 	{
 		m_pAxisMove[i] = RenderManager.m_pSceneMgr->createEntity("Arrow1m.mesh");
 		m_pAxisRotate[i] = RenderManager.m_pSceneMgr->createEntity("RotationRing.mesh");
 		m_pAxisMove[i]->setRenderQueueGroup(Ogre::RENDER_QUEUE_OVERLAY);
 		m_pAxisRotate[i]->setRenderQueueGroup(Ogre::RENDER_QUEUE_OVERLAY);
+
+		m_pAxisMove[i]->setMaterialName(matNames[i]);
+		m_pAxisRotate[i]->setMaterialName(matNames[i]);
 	}
-
-	m_pAxisMove[0]->setMaterialName("RedEmissive");
-	m_pAxisMove[1]->setMaterialName("GreenEmissive");
-	m_pAxisMove[2]->setMaterialName("BlueEmissive");
-
-	m_pAxisRotate[0]->setMaterialName("RedEmissive");
-	m_pAxisRotate[1]->setMaterialName("GreenEmissive");
-	m_pAxisRotate[2]->setMaterialName("BlueEmissive");
 }
 
 void GizmoAxis::Attach( Ogre::Node* pNode )

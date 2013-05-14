@@ -112,6 +112,7 @@
     <ClInclude Include="Game\Client\stdafx.h" />
     <ClInclude Include="Game\Client\UI\CommandPanel.h" />
     <ClInclude Include="Game\Client\UI\InfoPanel.h" />
+    <ClInclude Include="Game\Client\UI\MinimapPanel.h" />
     <ClInclude Include="Game\Client\UI\PortraitPanel.h" />
     <ClInclude Include="Game\Client\World.h" />
   </ItemGroup>
@@ -146,6 +147,7 @@
     </ClCompile>
     <ClCompile Include="Game\Client\UI\CommandPanel.cpp" />
     <ClCompile Include="Game\Client\UI\InfoPanel.cpp" />
+    <ClCompile Include="Game\Client\UI\MinimapPanel.cpp" />
     <ClCompile Include="Game\Client\UI\PortraitPanel.cpp" />
     <ClCompile Include="Game\Client\World.cpp" />
   </ItemGroup>

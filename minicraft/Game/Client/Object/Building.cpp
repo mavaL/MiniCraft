@@ -76,7 +76,8 @@ void Building::Init( const POS& pos, const ORIENT& orient, const SCALE& scale )
 	//Ã÷È·¹éÊô
 	GetAi()->SetFaction(world.GetFaction(race));
 
-	GetEntity()->setQueryFlags(eQueryType_Building);
+	m_pEntity->setQueryFlags(eQueryType_Building);
+	m_pEntity->setVisibilityFlags(eRenderType_Building);
 }
 
 int Building::GetRace() const

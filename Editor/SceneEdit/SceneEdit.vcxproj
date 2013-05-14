@@ -56,7 +56,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>./UI/Common;./;../../Kratos/Src;../../Kratos/Dependency/rapidxml;../../Kratos/Dependency\Lua5_1_4\src;../../Kratos/Dependency/OIS/include;../../Kratos/Dependency/Ogre/include;../../Kratos/Dependency/Ogre/include/ParticleUniverse;../../Kratos/Dependency/Ogre/include/Terrain;../../Kratos/Dependency/OgreRecast/include;../Dependency/XTP/Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./UI/Common;./;../../Kratos/Src;../../Kratos/Dependency/CEGUI/include;../../Kratos/Dependency/rapidxml;../../Kratos/Dependency\Lua5_1_4\src;../../Kratos/Dependency/OIS/include;../../Kratos/Dependency/Ogre/include;../../Kratos/Dependency/Ogre/include/ParticleUniverse;../../Kratos/Dependency/Ogre/include/Terrain;../../Kratos/Dependency/OgreRecast/include;../Dependency/XTP/Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/Zm300 %(AdditionalOptions)</AdditionalOptions>
       <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
       <TreatWarningAsError>false</TreatWarningAsError>

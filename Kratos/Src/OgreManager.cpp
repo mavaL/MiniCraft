@@ -110,11 +110,15 @@ namespace Kratos
 		Ogre::WindowEventUtilities::addWindowEventListener(mWindow, this);
 
 		m_pDS = new DeferredShadingSystem(m_pViewport, m_pSceneMgr, m_pMainCamera);
+		if(bEditor)
+			m_pDS->initialize();
 		mLightMaterialGenerator = new LightMaterialGenerator;
 
 		PSSMShadowCameraSetup* pssmSetup = new PSSMShadowCameraSetup;
 		mPSSMSetup.bind(pssmSetup);
 		m_pSceneMgr->setShadowCameraSetup(mPSSMSetup);
+
+		m_pSceneMgr->getRenderQueue()->getQueueGroup(RENDER_QUEUE_OVERLAY)->setShadowsEnabled(false);
 
 		m_Timer = new Ogre::Timer();
 		m_Timer->reset();

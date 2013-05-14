@@ -21,6 +21,9 @@ namespace Kratos
 	class Scene;
 	class SceneSerializer;
 	class EffectController;
+	class DLight;
+	class DeferredShadingSystem;
+	class MaterialGenerator;
 	class ParticleEffect;
 	class CAppStateManager;
 	class CInputManager;

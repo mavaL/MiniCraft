@@ -34,6 +34,7 @@ namespace Kratos
 		size_t						GetTerrainMaxLayer() const { return 5; }
 		const FLOAT3&				GetSunLightDirection() const { return m_sunLightDir; }
 		const COLOR&				GetSunLightDiffuse() const { return m_sunLightDiffuse; }
+		const COLOR&				GetAmbient() const	{ return m_ambient; }
 
 	private:
 		STRING						m_sceneName;
@@ -42,6 +43,7 @@ namespace Kratos
 		Ogre::Terrain*				m_pTerrain;
 		FLOAT3						m_sunLightDir;			//全局光方向
 		COLOR						m_sunLightDiffuse;		//全局光颜色
+		COLOR						m_ambient;
 	};
 
 }

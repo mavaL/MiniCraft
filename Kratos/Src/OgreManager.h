@@ -2,18 +2,10 @@
 #define OGRE_MANAGER_H
 
 #include "Singleton.h"
-
-namespace Ogre
-{
-	class PSSMShadowCameraSetup;
-}
+#include "KratosPrerequisites.h"
 
 namespace Kratos
 {
-	class DeferredShadingSystem;
-	class DLight;
-	class MaterialGenerator;
-
 	//后处理效果配置
 	struct SEffectConfig 
 	{
@@ -43,7 +35,9 @@ namespace Kratos
 					OGRE图形模块封装类
 	-------------------------------------------------*/
 
-	class COgreManager : public Ogre::WindowEventListener, public CSingleton<COgreManager>
+	class COgreManager 
+		: public Ogre::WindowEventListener
+		, public CSingleton<COgreManager>
 	{
 		DECLEAR_SINGLETON(COgreManager);
 		COgreManager(void);
@@ -116,7 +110,7 @@ namespace Kratos
 
 		DLight*				m_pSunLight;
 		DeferredLightList	m_dLightList;
-		MaterialGenerator* mLightMaterialGenerator;		//The material generator for the light geometry
+		MaterialGenerator*	mLightMaterialGenerator;		//The material generator for the light geometry
 	};
 
 }

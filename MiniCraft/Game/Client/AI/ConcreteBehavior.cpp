@@ -162,7 +162,7 @@ void aiBehaviorReturnRes::Execute( Ogre::Any& owner )
 void aiBehaviorAttackTarget::Execute( Ogre::Any& owner )
 {
 	Unit* pUnit = Ogre::any_cast<Unit*>(owner);
-	pUnit->GetPath()->PausePathFinding(true);
+	pUnit->GetPath()->StopAgent();
 }
 
 void aiBehaviorAttackTarget::Update( Ogre::Any& owner, float dt )
@@ -203,5 +203,4 @@ void aiBehaviorAttackTarget::Exit( Ogre::Any& owner )
 {
 	Unit* pUnit = Ogre::any_cast<Unit*>(owner);
 	pUnit->GetAnim()->StopAnimation();
-	pUnit->GetPath()->PausePathFinding(false);
 }

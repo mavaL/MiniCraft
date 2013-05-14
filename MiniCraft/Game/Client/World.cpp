@@ -8,6 +8,7 @@
 #include "GameDataDef.h"
 #include "CommandPanel.h"
 #include "InfoPanel.h"
+#include "MinimapPanel.h"
 #include "Scene.h"
 #include "PortraitPanel.h"
 #include "AIFaction.h"
@@ -47,6 +48,7 @@ World::World()
 ,m_cmdPanel(new UiCommandPanel)
 ,m_infoPanel(new UiInfoPanel)
 ,m_portraitPanel(new UiPortraitPanel)
+,m_minimapPanel(new UiMinimapPanel)
 ,m_pScriptSystem(Kratos::ScriptSystem::GetSingletonPtr())
 ,m_pRenderSystem(Kratos::COgreManager::GetSingletonPtr())
 {
@@ -59,6 +61,7 @@ World::~World()
 	SAFE_DELETE(m_cmdPanel);
 	SAFE_DELETE(m_infoPanel);
 	SAFE_DELETE(m_portraitPanel);
+	SAFE_DELETE(m_minimapPanel);
 }
 
 void World::Init()
@@ -73,7 +76,10 @@ void World::Init()
 	m_pRaySceneQuery->setSortByDistance(true);
 	m_pSphereSceneQuery = sm->createSphereQuery(Sphere());
 
-	Ogre::MovableObject::setDefaultQueryFlags(eQueryType_Default);
+	MovableObject::setDefaultQueryFlags(eQueryType_Default);
+	MovableObject::setDefaultVisibilityFlags(eRenderType_Default);
+	sm->setVisibilityMask(eRenderType_Default);
+	m_pRenderSystem->m_pViewport->setVisibilityMask(eRenderType_Default);
 
 	m_cameraMan = new OgreBites::SdkCameraMan(cam);
 	m_cameraMan->setStyle(OgreBites::CS_FREELOOK);
@@ -97,7 +103,7 @@ void World::Init()
 	m_player[eGameRace_Terran]->SetTeamColor(COLOR::Blue);
 	m_player[eGameRace_Zerg]->SetTeamColor(COLOR::Red);
 
-	const STRING sceneName("BattleAI.Scene");
+	const STRING sceneName("MyStarCraft.Scene");
 	//³õÊ¼»¯Recast¿â
 	PathComponent::InitRecastLib(sceneName);
 
@@ -118,6 +124,7 @@ void World::_InitUIConsole()
 	Ogre::Entity* pEntConsole = m_pRenderSystem->CreateEntityWithTangent("ConsoleTerran_0.mesh", sm);
 	pEntConsole->setRenderQueueGroup(Ogre::RENDER_QUEUE_WORLD_GEOMETRY_2);
 	pEntConsole->setCastShadows(false);
+	pEntConsole->setVisibilityFlags(eRenderType_UI);
 	m_pUISceneNode1 = sm->getRootSceneNode()->createChildSceneNode("UIConsoleNode");
 	m_pUISceneNode1->attachObject(pEntConsole);
 	m_pConsoleAnim1 = pEntConsole->getAnimationState("Birth");
@@ -127,6 +134,7 @@ void World::_InitUIConsole()
 	pEntConsole = m_pRenderSystem->CreateEntityWithTangent("ConsoleTerran_1.mesh", sm);
 	pEntConsole->setRenderQueueGroup(Ogre::RENDER_QUEUE_WORLD_GEOMETRY_2);
 	pEntConsole->setCastShadows(false);
+	pEntConsole->setVisibilityFlags(eRenderType_UI);
 	m_pUISceneNode2 = m_pUISceneNode1->createChildSceneNode("InfoPanelNode");
 	m_pUISceneNode2->attachObject(pEntConsole);
 	m_pConsoleAnim2 = pEntConsole->getAnimationState("Birth");
@@ -136,6 +144,7 @@ void World::_InitUIConsole()
 	pEntConsole = m_pRenderSystem->CreateEntityWithTangent("ConsoleTerran_2.mesh", sm);
 	pEntConsole->setRenderQueueGroup(Ogre::RENDER_QUEUE_WORLD_GEOMETRY_2);
 	pEntConsole->setCastShadows(false);
+	pEntConsole->setVisibilityFlags(eRenderType_UI);
 	m_pUISceneNode3 = m_pUISceneNode1->createChildSceneNode("CmdPanelNode");
 	m_pUISceneNode3->attachObject(pEntConsole);
 	(const_cast<Ogre::AxisAlignedBox&>(pEntConsole->getMesh()->getBounds())).setInfinite();
@@ -143,6 +152,7 @@ void World::_InitUIConsole()
 	pEntConsole = m_pRenderSystem->CreateEntityWithTangent("ConsoleProtoss_6.mesh", sm);
 	pEntConsole->setRenderQueueGroup(Ogre::RENDER_QUEUE_WORLD_GEOMETRY_2);
 	pEntConsole->setCastShadows(false);
+	pEntConsole->setVisibilityFlags(eRenderType_UI);
 	m_pUISceneNode4 = m_pUISceneNode1->createChildSceneNode("PortraitPanelNode");
 	m_pUISceneNode4->attachObject(pEntConsole);
 	(const_cast<Ogre::AxisAlignedBox&>(pEntConsole->getMesh()->getBounds())).setInfinite();
@@ -150,12 +160,16 @@ void World::_InitUIConsole()
 	m_cmdPanel->Init();
 	m_infoPanel->Init();
 	m_portraitPanel->Init();
+	m_minimapPanel->Init();
 
 	CEGUI::WindowManager& wndMgr = CEGUI::WindowManager::getSingleton();
 	CEGUI::Window* pRoot = wndMgr.getWindow("Root");
 	assert(pRoot);
 	GUIMANAGER.SetGUISheet(pRoot);
 	pRoot->addChildWindow(wndMgr.getWindow("InfoPanelFrame"));
+	pRoot->addChildWindow(wndMgr.getWindow("MinimapFrame"));
+
+	//m_minimapPanel->GenerateMinimap(m_pTestScene);
 }
 
 void World::Shutdown()
@@ -185,6 +199,7 @@ void World::Shutdown()
 	m_cmdPanel->Destroy();
 	m_infoPanel->Destroy();
 	m_portraitPanel->Destroy();
+	m_minimapPanel->Destroy();
 
 	m_pTestScene->Reset();
 	SAFE_DELETE(m_pTestScene);
@@ -205,6 +220,7 @@ void World::Update(float dt)
 
 	m_infoPanel->Update();
 	m_portraitPanel->Update();
+	m_minimapPanel->Update();
 }
 
 void World::EnableFreeCamera( bool bEnable )
@@ -400,6 +416,7 @@ void World::_LoadObjects( rapidxml::xml_node<>* node )
 				pRes->SetOrientation(orient);
 				pRes->SetScale(scale);
 				pRes->GetEntity()->setQueryFlags(eQueryType_Resource);
+				pRes->GetEntity()->setVisibilityFlags(eRenderType_Resource);
 			}
 		}
 		else
