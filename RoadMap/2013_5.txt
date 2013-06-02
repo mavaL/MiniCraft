@@ -6,6 +6,16 @@
 all of them, then I am on my own.. Anyway, We need flocking, aggregating and so on, to make units behavior
 more reliable).Search "steering behaviors" on youtube to see more interesting videos.
 
+[0%]
+
 3. Continue to write units battling logic. If goes alright, introducing more kinds of unit.
 
+[0%]
+
 4.Fog of War!
+
+[0%]
+
+Summarise: I left my current job this month and were looking for new job. Really little work done for this month. Anyway, I want to join next suitable company as soon as possible :D
+
+BTW: I think I should be focus on one area and keep research it, namely graphical rendering. Intelligent decision, right? :P

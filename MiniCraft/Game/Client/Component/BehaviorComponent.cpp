@@ -71,4 +71,11 @@ void BehaviorComponent::Update( float dt )
 	m_pCurBehavior->Update(any, dt);
 }
 
+void BehaviorComponent::UpdateBehaviors()
+{
+	//更新行为树全局黑板
+	SCRIPTNAMAGER.Call("GlobalBBUpdate_Terran");
+	SCRIPTNAMAGER.Call("GlobalBBUpdate_Zerg");
+}
+
 

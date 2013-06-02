@@ -207,9 +207,7 @@ void World::Shutdown()
 
 void World::Update(float dt)
 {
-	//更新行为树全局黑板
-	m_pScriptSystem->Call("GlobalBBUpdate_Terran");
-	m_pScriptSystem->Call("GlobalBBUpdate_Zerg");
+	BehaviorComponent::UpdateBehaviors();
 
 	m_player[eGameRace_Terran]->Update(dt);
 	m_player[eGameRace_Zerg]->Update(dt);

@@ -49,7 +49,6 @@
       <Animation type="Move" name="Walk"/>
     </AnimationSet>
   </Unit>
-
   <Unit name="Marauder" timecost="5" meshname="Marauder_0.mesh" race="0" portrait="MarinePortrait_1.mesh">
     <AnimationSet>
       <Animation type="Move" name="Walk"/>
