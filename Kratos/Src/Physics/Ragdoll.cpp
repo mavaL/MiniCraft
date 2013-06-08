@@ -6,6 +6,8 @@
 #include <Animation/Ragdoll/Utils/hkaRagdollUtils.h>
 #include <Animation/Ragdoll/Instance/hkaRagdollInstance.h>
 
+#if USE_PHYSICS	==	1
+
 namespace Kratos
 {
 	Ragdoll::Ragdoll( Ogre::Entity* pEnt, Ogre::SceneNode* pNode, const STRING& rigFilename )
@@ -211,3 +213,5 @@ namespace Kratos
 	}
 
 }
+
+#endif

@@ -4,6 +4,8 @@
 #include <OgrePrerequisites.h>
 #include <CEGUIForwardRefs.h>
 
+#define USE_PHYSICS		0
+
 typedef Ogre::Vector3		POS;
 typedef Ogre::Quaternion	ORIENT;
 typedef	Ogre::Vector3		SCALE;

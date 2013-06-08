@@ -61,7 +61,14 @@ namespace Kratos
 			ss << "	float3 iTangent : TANGENT0," << std::endl;
 		}
 
-		//TODO : Skinning inputs
+		if(permutation & GBufferMaterialGenerator::GBP_SKINNED)
+		{
+			ss << "	float4 blendIdx : BLENDINDICES," << std::endl;
+			ss << "	float4 blendWgt : BLENDWEIGHT," << std::endl;
+			//50骨骼应该够了
+			ss << "	uniform float3x4   worldMatrix3x4Array[50]," << std::endl;
+		}
+		
 		ss << std::endl;
 
 
@@ -83,18 +90,48 @@ namespace Kratos
 		{
 			ss << "	out float2 oUV" << i << " : TEXCOORD" << texCoordNum++ << ',' << std::endl;
 		}
-
 		ss << std::endl;
 
-		ss << "	uniform float4x4 cWorldViewProj," << std::endl;
+		if(permutation & GBufferMaterialGenerator::GBP_SKINNED)
+		{
+			ss << "	uniform float4x4 cViewProj," << std::endl;
+			ss << "	uniform float4x4 cView," << std::endl;
+		}
+		else
+		{
+			ss << "	uniform float4x4 cWorldViewProj," << std::endl;
+		}
+		
 		ss << "	uniform float4x4 cWorldView" << std::endl;
-
+		
 		ss << "	)" << std::endl;
-
-
 		ss << "{" << std::endl;
-		ss << "	oPosition = mul(cWorldViewProj, iPosition);" << std::endl;
-		ss << "	oNormal = mul(cWorldView, float4(iNormal,0)).xyz;" << std::endl;
+
+		if(permutation & GBufferMaterialGenerator::GBP_SKINNED)
+		{
+			//硬件蒙皮
+			ss << "	float4 blendPos = float4(0,0,0,0);" << std::endl;
+			ss << "	float3 norm = float3(0,0,0);" << std::endl;
+
+			ss << "	for (int i = 0; i < 4; ++i)" << std::endl;
+			ss << "	{" << std::endl;
+			//加这个判断是因为,看这里:http://www.ogre3d.org/forums/viewtopic.php?t=12839&f=4#p491169
+			ss << "		if(i==3 && blendWgt[i]==1)" << std::endl;
+			ss << "			break;" << std::endl;
+			ss << "		blendPos += float4(mul(worldMatrix3x4Array[blendIdx[i]], iPosition).xyz, 1.0) * blendWgt[i];" << std::endl;
+			ss << "		norm += mul((float3x3)worldMatrix3x4Array[blendIdx[i]], iNormal) * blendWgt[i];" << std::endl;
+			ss << "	}" << std::endl;
+
+			ss << "	oPosition = mul(cViewProj, blendPos);" << std::endl;
+			ss << "	oNormal = normalize(norm);" << std::endl;
+			ss << "	oNormal = mul(cView, float4(oNormal,0)).xyz;" << std::endl;
+		}
+		else
+		{
+			ss << "	oPosition = mul(cWorldViewProj, iPosition);" << std::endl;
+			ss << "	oNormal = mul(cWorldView, float4(iNormal,0)).xyz;" << std::endl;
+		}
+
 		if (permutation & GBufferMaterialGenerator::GBP_NORMAL_MAP)
 		{
 			ss << "	oTangent = mul(cWorldView, float4(iTangent,0)).xyz;" << std::endl;
@@ -126,11 +163,23 @@ namespace Kratos
 			"cg", Ogre::GPT_VERTEX_PROGRAM);
 		ptrProgram->setSource(programSource);
 		ptrProgram->setParameter("entry_point","ToGBufferVP");
-		ptrProgram->setParameter("profiles","vs_1_1 arbvp1");
+		ptrProgram->setParameter("profiles","vs_3_0 arbvp1");
 
 		const Ogre::GpuProgramParametersSharedPtr& params = ptrProgram->getDefaultParameters();
-		params->setNamedAutoConstant("cWorldViewProj", Ogre::GpuProgramParameters::ACT_WORLDVIEWPROJ_MATRIX);
 		params->setNamedAutoConstant("cWorldView", Ogre::GpuProgramParameters::ACT_WORLDVIEW_MATRIX);
+
+		if(permutation & GBufferMaterialGenerator::GBP_SKINNED)
+		{
+			ptrProgram->setSkeletalAnimationIncluded(true);
+			params->setNamedAutoConstant("worldMatrix3x4Array", Ogre::GpuProgramParameters::ACT_WORLD_MATRIX_ARRAY_3x4);
+			params->setNamedAutoConstant("cViewProj",			Ogre::GpuProgramParameters::ACT_VIEWPROJ_MATRIX);
+			params->setNamedAutoConstant("cView",				Ogre::GpuProgramParameters::ACT_VIEW_MATRIX);
+		}
+		else
+		{
+			params->setNamedAutoConstant("cWorldViewProj", Ogre::GpuProgramParameters::ACT_WORLDVIEWPROJ_MATRIX);
+		}
+		
 		ptrProgram->load();
 
 		return Ogre::GpuProgramPtr(ptrProgram);

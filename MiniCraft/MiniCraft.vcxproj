@@ -24,7 +24,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <WholeProgramOptimization>false</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
@@ -60,7 +60,7 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>.\Build\Bin\$(Configuration);..\Kratos\Dependency\Lua5_1_4\lib;..\Kratos\Dependency\CEGUI\lib\debug;..\Kratos\Dependency\Havok\Lib\debug_dll;..\Kratos\Dependency\boost\Lib;..\Kratos\Dependency\OIS\Lib\$(Configuration);..\Kratos\Dependency\Ogre\Lib\$(Configuration)\opt;..\Kratos\Dependency\Ogre\Lib\$(Configuration)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>OgreMain_d.lib;ParticleUniverse_d.lib;OIS_d.lib;OgreTerrain_d.lib;CEGUIBase_d.lib;CEGUIOgreRenderer_d.lib;lua51.lib;Kratos_d.lib;hkpConstraint.lib;hkpConstraintSolver.lib;hkpUtilities.lib;hkpVehicle.lib;hkpDynamics.lib;hkpCollide.lib;hkpInternal.lib;hkaInternal.lib;hkaAnimation.lib;hkaRagdoll.lib;hkInternal.lib;hkGeometryUtilities.lib;hkVisualize.lib;hkSerialize.lib;hkCompat.lib;hkSceneData.lib;hkBase.lib;hkcdCollide.lib;hkcdInternal.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>OgreMain_d.lib;ParticleUniverse_d.lib;OIS_d.lib;OgreTerrain_d.lib;CEGUIBase_d.lib;CEGUIOgreRenderer_d.lib;lua51.lib;Kratos_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>
       </IgnoreSpecificDefaultLibraries>
     </Link>
@@ -71,7 +71,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>..\Kratos\Src;..\Kratos\Dependency\rapidxml;..\Kratos\Dependency\Lua5_1_4\src;..\Kratos\Dependency\CEGUI\include;..\Kratos\Dependency\boost;..\Kratos\Dependency\OgreRecast\Include;..\Kratos\Dependency\OIS\include;..\Kratos\Dependency\Ogre\include\ParticleUniverse;..\Kratos\Dependency\Ogre\include;.\Game;.\Game\Client\UI;.\Game\Client;.\Game\Core;.\Game\Client\Object;.\Game\Client\AI;.\Game\Client\Component;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Kratos\Src;..\Kratos\Src\AI\BehaviorTree;..\Kratos\Dependency\rapidxml;..\Kratos\Dependency\Havok\Include;..\Kratos\Dependency\Lua5_1_4\src;..\Kratos\Dependency\CEGUI\include;..\Kratos\Dependency\boost;..\Kratos\Dependency\OgreRecast\Include;..\Kratos\Dependency\OIS\include;..\Kratos\Dependency\Ogre\include\ParticleUniverse;..\Kratos\Dependency\Ogre\include;.\Game;.\Game\Client\UI;.\Game\Client;.\Game\Core;.\Game\Client\Object;.\Game\Client\AI;.\Game\Client\Component;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_NDEBUG;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
@@ -80,6 +80,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>.\Build\Bin\$(Configuration);..\Kratos\Dependency\Lua5_1_4\lib;..\Kratos\Dependency\CEGUI\lib\$(Configuration);..\Kratos\Dependency\boost\Lib;..\Kratos\Dependency\OIS\Lib\$(Configuration);..\Kratos\Dependency\Ogre\Lib\$(Configuration)\opt;..\Kratos\Dependency\Ogre\Lib\$(Configuration)</AdditionalLibraryDirectories>
       <AdditionalDependencies>OgreMain.lib;ParticleUniverse.lib;OIS.lib;OgreTerrain.lib;CEGUIBase.lib;CEGUIOgreRenderer.lib;lua51.lib;Kratos.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <EnableUAC>false</EnableUAC>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>

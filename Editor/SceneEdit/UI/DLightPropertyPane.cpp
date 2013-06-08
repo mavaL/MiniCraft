@@ -42,12 +42,11 @@ void PropertyPaneDLight::_SetProperty( int nID )
 
 	ManipulatorEffect& manEffect = ManipulatorSystem.GetEffect();
 	CXTPPropertyGridItem* pItem = m_mapItem[nID];
-	const std::string val = Utility::UnicodeToEngine(pItem->GetValue());
 
 	switch (nID)
 	{
-	case propLightType:	manEffect.SetEffectParam("lighttype", val); break;
-	case propPointLightRadius:	manEffect.SetEffectParam("radius", val); break;
+	case propLightType:	manEffect.SetEffectParam("lighttype", Utility::UnicodeToEngine(pItem->GetValue())); break;
+	case propPointLightRadius:	manEffect.SetEffectParam("radius", Utility::UnicodeToEngine(pItem->GetValue())); break;
 
 	case propAttenConstant:
 	case propAttenLinear:

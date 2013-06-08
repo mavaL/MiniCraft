@@ -30,12 +30,17 @@ bool Applicaton::Init()
 	m_inputMgr = Kratos::CInputManager::GetSingletonPtr();
 	m_ogreMgr =	Kratos::COgreManager::GetSingletonPtr();
 	m_guiMgr = Kratos::CGUIManager::GetSingletonPtr();
+#if USE_PHYSICS == 1
 	m_phyMgr = Kratos::CPhysicManager::GetSingletonPtr();
+#endif
 
 	if(	!m_ogreMgr->Init(false)	|| 
 		!m_inputMgr->Init()		||
-		!m_guiMgr->Init()		||
-		!m_phyMgr->Init()		)
+		!m_guiMgr->Init()
+#if USE_PHYSICS == 1
+		|| !m_phyMgr->Init()
+#endif
+		)
 		return false;
 
 	CBattleState::create(m_stateMgr, CBattleState::StateName);
@@ -67,7 +72,9 @@ void Applicaton::Run()
 
 			//各子系统进行更新
 			m_inputMgr->Capture();
+#if USE_PHYSICS == 1
 			m_phyMgr->Update();
+#endif
 
 			if(!m_stateMgr->UpdateCurrentState(timeSinceLastFrame))
 				break;
@@ -91,7 +98,9 @@ void Applicaton::Shutdown()
 {
 	m_stateMgr->shutdown();	
 	SCRIPTNAMAGER.Shutdown();
+#if USE_PHYSICS == 1
 	m_phyMgr->Shutdown();
+#endif
 	m_guiMgr->Shutdown();
 	m_inputMgr->Shutdown();
 	m_ogreMgr->Shutdown();

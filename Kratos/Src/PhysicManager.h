@@ -9,6 +9,8 @@
 #ifndef PhysicManager_h__
 #define PhysicManager_h__
 
+#if USE_PHYSICS == 1
+
 #include "Singleton.h"
 #include "KratosPrerequisites.h"
 #include <Common/Base/hkBase.h>
@@ -51,5 +53,7 @@ hkQuaternion	Rot_Ogre_to_Havok(const ORIENT& rotOgre);
 FLOAT3			Vec3_Havok_to_Ogre(const hkVector4& vecHk);	
 ORIENT			Rot_Havok_to_Ogre(const hkQuaternion& rotHk);
 }
+
+#endif
 
 #endif // PhysicManager_h__

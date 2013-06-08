@@ -41,9 +41,11 @@ bool Application::Update()
 
 void Application::Shutdown()
 {
-	SceneClose();
-	ManipulatorSystem.Shutdown();
-	RenderManager.Shutdown();
+	if(SceneClose())
+	{
+		ManipulatorSystem.Shutdown();
+		RenderManager.Shutdown();
+	}
 }
 
 void Application::SceneNew()

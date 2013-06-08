@@ -63,6 +63,7 @@ namespace Kratos
 		bool IsInit() { return m_bIsInit; }
 		//捕获输入设备
 		void Capture();
+		OIS::Mouse*	GetMouse()	{ return mMouse; }
 
 		//挂接鼠标点击事件,第二个参数是调用顺序,默认是放到最后
 		void BindMouseMove(const MouseMoveHandler& handler, eInputEventPriority priority=eInputEventPriority_default);

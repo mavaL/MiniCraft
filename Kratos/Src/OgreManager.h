@@ -4,6 +4,11 @@
 #include "Singleton.h"
 #include "KratosPrerequisites.h"
 
+namespace OgreBites
+{
+	class SdkTrayManager;
+}
+
 namespace Kratos
 {
 	//后处理效果配置
@@ -62,6 +67,7 @@ namespace Kratos
 		void			GetMainWndHandle(unsigned long& hwnd);
 		Ogre::PSSMShadowCameraSetup*	GetShadowCameraSetup() { return (Ogre::PSSMShadowCameraSetup*)mPSSMSetup.get(); }
 		void			SetRenderingStyle();
+		void			ToggleShowFrameStats();
 		//创建RT
 		Ogre::TexturePtr	CreateRT(const Ogre::String& name, int w, int h, Ogre::PixelFormat format);
 		//创建Entity,带tangent vector
@@ -97,6 +103,7 @@ namespace Kratos
 	private:
 		void windowResized(Ogre::RenderWindow* rw);
 		void windowClosed(Ogre::RenderWindow* rw);
+		bool checkHardwareSupport();
 
 	private:
 		bool				m_bHasInit;
@@ -111,6 +118,8 @@ namespace Kratos
 		DLight*				m_pSunLight;
 		DeferredLightList	m_dLightList;
 		MaterialGenerator*	mLightMaterialGenerator;		//The material generator for the light geometry
+
+		OgreBites::SdkTrayManager*	m_trayMgr;
 	};
 
 }

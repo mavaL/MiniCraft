@@ -2,6 +2,8 @@
 #include "PhysicManager.h"
 #include "OgreManager.h"
 
+#if USE_PHYSICS == 1
+
 #include <Common/Base/System/Init/PlatformInit.cxx>
 #include <Common/Base/keycode.cxx>
 
@@ -146,6 +148,8 @@ namespace Kratos
 	}
 
 }
+
+#endif
 
 
 

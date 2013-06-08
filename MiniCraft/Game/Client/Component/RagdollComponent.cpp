@@ -8,6 +8,8 @@
 #include "BoneGizmo.h"
 #endif
 
+#if USE_PHYSICS	==	1
+
 RagdollComponent::RagdollComponent( SelectableObject* pOwner )
 :Component(pOwner)
 ,m_bStart(false)
@@ -79,5 +81,7 @@ void RagdollComponent::ShowSkeleton( bool bShow )
 	for(size_t i=0; i<m_boneGizmos.size(); ++i)
 		m_boneGizmos[i]->Show(bShow);
 }
+
+#endif
 
 #endif

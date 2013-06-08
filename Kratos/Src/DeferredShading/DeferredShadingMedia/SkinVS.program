@@ -1,0 +1,8 @@
+vertex_program HardwareSkinningFourWeights cg
+{
+   source HW_Skin.cg
+   entry_point hardwareSkinningFourWeights_vp
+   profiles vs_3_0 arbvp1
+   includes_skeletal_animation true
+}
+

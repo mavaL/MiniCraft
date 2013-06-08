@@ -9,6 +9,8 @@
 #ifndef Ragdoll_h__
 #define Ragdoll_h__
 
+#if USE_PHYSICS	==	1
+
 #include "Singleton.h"
 #include "KratosPrerequisites.h"
 
@@ -42,5 +44,7 @@ namespace Kratos
 	};
 
 }
+
+#endif
 
 #endif // Ragdoll_h__

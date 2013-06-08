@@ -254,22 +254,20 @@ bool CBattleState::OnInputSys_KeyPressed( const OIS::KeyEvent& arg )
 
 bool CBattleState::OnInputSys_KeyReleased( const OIS::KeyEvent& arg )
 {
-	if(arg.key == OIS::KC_ESCAPE)
-		m_bQuit = true;
-	else if(arg.key == OIS::KC_F1)
-		World::GetSingleton().EnableFreeCamera(!World::GetSingleton().IsFreeCameraEnabled());
-	else if(arg.key == OIS::KC_F2)
-		RenderManager.EnableShadow(!RenderManager.GetEffectConfig().bShadow);
-	else if(arg.key == OIS::KC_F3)
-		RenderManager.EnableSSAO(!RenderManager.GetEffectConfig().bSSAO);
-	else if(arg.key == OIS::KC_F4)
-		RenderManager.EnableFXAA(!RenderManager.GetEffectConfig().bFXAA);
-	else if(arg.key == OIS::KC_F5)
-		RenderManager.EnableSharpen(!RenderManager.GetEffectConfig().bSharpen);
-	else if(arg.key == OIS::KC_F6)
-		Ogre::Profiler::getSingleton().setEnabled(!Ogre::Profiler::getSingleton().getEnabled());
-	else if(arg.key == OIS::KC_F7)
-		Ogre::Profiler::getSingleton().setDisplayMode((Ogre::Profiler::DisplayMode)(int)!Ogre::Profiler::getSingleton().getDisplayMode());
+	Kratos::COgreManager& renderMgr = RenderManager;
+
+	switch (arg.key)
+	{
+	case OIS::KC_ESCAPE: m_bQuit = true; break;
+	case OIS::KC_F1: World::GetSingleton().EnableFreeCamera(!World::GetSingleton().IsFreeCameraEnabled()); break;
+	case OIS::KC_F2: renderMgr.EnableShadow(!renderMgr.GetEffectConfig().bShadow); break;
+	case OIS::KC_F3: renderMgr.EnableSSAO(!renderMgr.GetEffectConfig().bSSAO); break;
+	case OIS::KC_F4: renderMgr.EnableFXAA(!renderMgr.GetEffectConfig().bFXAA); break;
+	case OIS::KC_F5: renderMgr.EnableSharpen(!renderMgr.GetEffectConfig().bSharpen); break;
+	case OIS::KC_F6: Ogre::Profiler::getSingleton().setEnabled(!Ogre::Profiler::getSingleton().getEnabled()); break;
+	case OIS::KC_F7: Ogre::Profiler::getSingleton().setDisplayMode((Ogre::Profiler::DisplayMode)(int)!Ogre::Profiler::getSingleton().getDisplayMode()); break;
+	case OIS::KC_H: renderMgr.ToggleShowFrameStats(); break;
+	}
 
 	if (World::GetSingleton().IsFreeCameraEnabled())
 		World::GetSingleton().GetCameraMan()->injectKeyUp(arg);

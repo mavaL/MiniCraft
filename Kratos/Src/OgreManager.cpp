@@ -5,6 +5,8 @@
 #include "DeferredShading/DLight.h"
 #include "DeferredShading/LightMaterialGenerator.h"
 #include "Effect/DeferredLightEffect.h"
+#include "InputManager.h"
+#include <SdkTrays.h>
 
 using namespace Ogre;
 
@@ -25,11 +27,33 @@ namespace Kratos
 	,m_sharpen(nullptr)
 	,mLightMaterialGenerator(nullptr)
 	,m_pSunLight(nullptr)
+	,m_trayMgr(nullptr)
 	{
 	}
 
 	COgreManager::~COgreManager(void)
 	{
+	}
+
+	bool COgreManager::checkHardwareSupport()
+	{
+		const RenderSystemCapabilities* caps = mRoot->getRenderSystem()->getCapabilities();
+
+		if (!caps->hasCapability(RSC_VERTEX_PROGRAM) || !caps->hasCapability(RSC_FRAGMENT_PROGRAM))
+		{
+			OGRE_EXCEPT(Exception::ERR_NOT_IMPLEMENTED, "Your graphics card does not support vertex and "
+				"fragment programs, so you cannot run this game. Sorry!",
+				"COgreManager::checkHardwareSupport");
+		}
+
+		if (!GpuProgramManager::getSingleton().isSyntaxSupported("ps_2_0") &&
+			!GpuProgramManager::getSingleton().isSyntaxSupported("ps_3_0") )
+		{
+			OGRE_EXCEPT(Exception::ERR_NOT_IMPLEMENTED, "Your card does not support the shader model needed, "
+				"so you cannot run this game. Sorry!", "COgreManager::checkHardwareSupport");
+		}
+
+		return true;
 	}
 
 	bool COgreManager::Init(bool bEditor, HWND externalHwnd, HWND hwndParent,int width, int height)
@@ -94,6 +118,9 @@ namespace Kratos
 				return false;
 		}
 
+		if(!checkHardwareSupport())
+			return false;
+
 		m_pSceneMgr = mRoot->createSceneManager(ST_GENERIC, "DefaultSceneMgr");
 		m_pMainCamera = m_pSceneMgr->createCamera("MainCamera");
 		m_pMainCamera->setNearClipDistance(1);
@@ -151,6 +178,7 @@ namespace Kratos
 
 	void COgreManager::Shutdown()
 	{
+		SAFE_DELETE(m_trayMgr);
 		SAFE_DELETE(mLightMaterialGenerator);
 		SAFE_DELETE(m_pDS);
 
@@ -170,6 +198,13 @@ namespace Kratos
 			return false;
 
 		mRoot->renderOneFrame(dt);
+
+		if(m_trayMgr)
+		{
+			FrameEvent evt;
+			evt.timeSinceLastFrame = dt;
+			m_trayMgr->frameRenderingQueued(evt);
+		}
 
 		return true;
 	}
@@ -389,6 +424,19 @@ namespace Kratos
 
 		ResetEffect();
 		RenderManager.EnableSSAO(m_effectCfg.bSSAO);
+	}
+
+	void COgreManager::ToggleShowFrameStats()
+	{
+		if(!m_trayMgr)
+		{
+			m_trayMgr = new OgreBites::SdkTrayManager("OverlayMgr", mWindow, INPUTMANAGER.GetMouse());
+			m_trayMgr->hideCursor();
+		}
+
+		bool bShow = !m_trayMgr->areFrameStatsVisible();
+		if(bShow) m_trayMgr->showFrameStats(OgreBites::TL_BOTTOMLEFT);
+		else	m_trayMgr->hideFrameStats();
 	}
 
 }
