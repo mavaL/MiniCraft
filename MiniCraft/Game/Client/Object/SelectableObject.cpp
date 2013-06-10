@@ -605,6 +605,7 @@ void SelectableObject::InitTeamColor(const COLOR& color)
 {
 	//队伍颜色与Renderable绑定
 	size_t num = m_pEntity->getNumSubEntities();
+	assert(num);
 	for (size_t i=0; i<num; ++i)
 		m_pEntity->getSubEntity(i)->setUserAny(Ogre::Any(color));
 }

@@ -31,6 +31,7 @@ public:
 public:
 	virtual void	AddComponent(eComponentType type, Component* pCo);
 	virtual void	CreateRenderInstance();
+	virtual void	InitTeamColor(const COLOR& color);
 	//当前命令完成,接到通知
 	virtual void	_OnCommandFinished(eCommandType cmd);
 
@@ -38,7 +39,6 @@ public:
 	//!!在Ogre Root销毁前必须调用
 	static void		ReleaseMeshCache();
 
-	void			InitTeamColor(const COLOR& color);
 	void			SetSelected(bool bSelected);
 	bool			GetSelected() const { return m_bSelected; }
 	void			SetAbility(int slotIndex, const SAbilityData* pData);

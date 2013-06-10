@@ -77,4 +77,9 @@ bool AnimatedComponent::IsAnimationOver()
 	return m_pController->IsEnd();
 }
 
+void AnimatedComponent::SetAnimTimePosition( float t )
+{
+	m_pController->GetAnimState()->setTimePosition(t);
+}
+
 

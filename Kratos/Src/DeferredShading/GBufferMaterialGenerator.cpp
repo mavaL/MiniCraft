@@ -51,9 +51,25 @@ namespace Kratos
 		ss << "	float3 iNormal   : NORMAL," << std::endl;
 
 		Ogre::uint32 numTexCoords = (permutation & GBufferMaterialGenerator::GBP_TEXCOORD_MASK) >> 8;
-		for (Ogre::uint32 i=0; i<numTexCoords; i++) 
+		Ogre::uint32 iTexCoord = 0;
+		for (; iTexCoord<numTexCoords; iTexCoord++) 
 		{
-			ss << "	float2 iUV" << i << " : TEXCOORD" << i << ',' << std::endl;
+			ss << "	float2 iUV" << iTexCoord << " : TEXCOORD" << iTexCoord << ',' << std::endl;
+		}
+
+		//Input for instancing
+		int nWeights = (permutation & GBufferMaterialGenerator::GBP_INSTANCING_WEIGHT_MASK) >> 20;
+		if(nWeights != 0)
+		{
+			ss << " uniform sampler2D matrixTexture : register(s3)," << std::endl;
+			for (int i=0; i<nWeights; ++i) 
+			{
+				ss << "	float4 m03_offset" << i << " : TEXCOORD" << iTexCoord++ << ',' << std::endl;
+			}
+			ss << "	float2 mOffset : TEXCOORD" << iTexCoord++ << ',' << std::endl;
+			ss << "	float4 worldMatrix0 : TEXCOORD" << iTexCoord++ << ',' << std::endl;
+			ss << "	float4 worldMatrix1 : TEXCOORD" << iTexCoord++ << ',' << std::endl;
+			ss << "	float4 worldMatrix2 : TEXCOORD" << iTexCoord++ << ',' << std::endl;
 		}
 
 		if (permutation & GBufferMaterialGenerator::GBP_NORMAL_MAP)
@@ -63,15 +79,17 @@ namespace Kratos
 
 		if(permutation & GBufferMaterialGenerator::GBP_SKINNED)
 		{
-			ss << "	float4 blendIdx : BLENDINDICES," << std::endl;
 			ss << "	float4 blendWgt : BLENDWEIGHT," << std::endl;
-			//50骨骼应该够了
-			ss << "	uniform float3x4   worldMatrix3x4Array[50]," << std::endl;
+
+			//No instancing
+			if(nWeights == 0)
+			{
+				ss << "	float4 blendIdx : BLENDINDICES," << std::endl;
+				//50骨骼应该够了
+				ss << "	uniform float3x4   worldMatrix3x4Array[50]," << std::endl;
+			}
 		}
-		
 		ss << std::endl;
-
-
 
 		ss << "	out float4 oPosition : POSITION," << std::endl;
 #ifdef WRITE_LINEAR_DEPTH
@@ -109,18 +127,53 @@ namespace Kratos
 
 		if(permutation & GBufferMaterialGenerator::GBP_SKINNED)
 		{
-			//硬件蒙皮
+			///硬件蒙皮
 			ss << "	float4 blendPos = float4(0,0,0,0);" << std::endl;
 			ss << "	float3 norm = float3(0,0,0);" << std::endl;
 
-			ss << "	for (int i = 0; i < 4; ++i)" << std::endl;
-			ss << "	{" << std::endl;
-			//加这个判断是因为,看这里:http://www.ogre3d.org/forums/viewtopic.php?t=12839&f=4#p491169
-			ss << "		if(i==3 && blendWgt[i]==1)" << std::endl;
-			ss << "			break;" << std::endl;
-			ss << "		blendPos += float4(mul(worldMatrix3x4Array[blendIdx[i]], iPosition).xyz, 1.0) * blendWgt[i];" << std::endl;
-			ss << "		norm += mul((float3x3)worldMatrix3x4Array[blendIdx[i]], iNormal) * blendWgt[i];" << std::endl;
-			ss << "	}" << std::endl;
+			if(nWeights == 0)
+			{
+				///No instancing
+				ss << "	for (int i = 0; i < 4; ++i)" << std::endl;
+				ss << "	{" << std::endl;
+				//加这个判断是因为,看这里:http://www.ogre3d.org/forums/viewtopic.php?t=12839&f=4#p491169
+				ss << "		if(i==3 && blendWgt[i]==1)" << std::endl;
+				ss << "			break;" << std::endl;
+				ss << "		blendPos += float4(mul(worldMatrix3x4Array[blendIdx[i]], iPosition).xyz, 1.0) * blendWgt[i];" << std::endl;
+				ss << "		norm += mul((float3x3)worldMatrix3x4Array[blendIdx[i]], iNormal) * blendWgt[i];" << std::endl;
+				ss << "	}" << std::endl;
+			}
+			else
+			{
+				///Instancing
+				ss << "	float4x4 m03_offset;" << std::endl;
+				switch (nWeights)
+				{
+				case 4: ss << "	m03_offset[3] = m03_offset3;" << std::endl;
+				case 3: ss << "	m03_offset[2] = m03_offset2;" << std::endl;
+				case 2: ss << "	m03_offset[1] = m03_offset1;" << std::endl;
+				case 1: ss << "	m03_offset[0] = m03_offset0;" << std::endl;
+				}
+
+				ss << "	for (int iWeight=0; iWeight<" << nWeights << "; ++iWeight)" << std::endl;
+				ss << "	{" << std::endl;
+				ss << "		float3x4 boneMatrix;" << std::endl;
+				ss << "		boneMatrix[0] = tex2D( matrixTexture, m03_offset[iWeight].xw + mOffset );" << std::endl;
+				ss << "		boneMatrix[1] = tex2D( matrixTexture, m03_offset[iWeight].yw + mOffset );" << std::endl;
+				ss << "		boneMatrix[2] = tex2D( matrixTexture, m03_offset[iWeight].zw + mOffset );" << std::endl;
+
+				ss << "		blendPos += float4(mul( boneMatrix, iPosition ).xyz, 1.0f) * blendWgt[iWeight];" << std::endl;
+				ss << "		norm += mul( (float3x3)(boneMatrix), iNormal ) * blendWgt[iWeight];" << std::endl;
+				ss << "	}" << std::endl;
+
+				ss << "	float3x4 worldCompMatrix;" << std::endl;
+				ss << "	worldCompMatrix[0] = worldMatrix0;" << std::endl;
+				ss << "	worldCompMatrix[1] = worldMatrix1;" << std::endl;
+				ss << "	worldCompMatrix[2] = worldMatrix2;" << std::endl;
+
+				ss << "	blendPos =  float4( mul( worldCompMatrix, blendPos ).xyz, 1.0f );" << std::endl;
+				ss << "	norm = mul( (float3x3)(worldCompMatrix), norm );" << std::endl;
+			}
 
 			ss << "	oPosition = mul(cViewProj, blendPos);" << std::endl;
 			ss << "	oNormal = normalize(norm);" << std::endl;
@@ -171,9 +224,18 @@ namespace Kratos
 		if(permutation & GBufferMaterialGenerator::GBP_SKINNED)
 		{
 			ptrProgram->setSkeletalAnimationIncluded(true);
-			params->setNamedAutoConstant("worldMatrix3x4Array", Ogre::GpuProgramParameters::ACT_WORLD_MATRIX_ARRAY_3x4);
 			params->setNamedAutoConstant("cViewProj",			Ogre::GpuProgramParameters::ACT_VIEWPROJ_MATRIX);
 			params->setNamedAutoConstant("cView",				Ogre::GpuProgramParameters::ACT_VIEW_MATRIX);
+
+			//VTF
+			if(nWeights != 0)
+			{
+				ptrProgram->setVertexTextureFetchRequired(true);
+			}
+			else
+			{
+				params->setNamedAutoConstant("worldMatrix3x4Array", Ogre::GpuProgramParameters::ACT_WORLD_MATRIX_ARRAY_3x4);
+			}
 		}
 		else
 		{

@@ -29,6 +29,7 @@ public:
 public:
 	void			PlayAnimation(eAnimation type, bool bLoop);
 	void			StopAnimation();
+	void			SetAnimTimePosition(float t);
 	void			SetManuallyControlBones();
 	bool			IsAnimationOver();
 

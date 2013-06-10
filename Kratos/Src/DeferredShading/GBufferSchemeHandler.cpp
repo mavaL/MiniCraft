@@ -25,8 +25,8 @@ namespace Kratos
 	const String EMISSIVE_MAP_PATTERN = "emissivemap";
 	const String DECAL_MAP_PATTERN = "decalmap";
 
-	//检测到材质名含有Unit子串
-	const String TEAM_COLOR_PATTERN = "Unit";
+	const String UNIT_PATTERN = "Unit";
+	const String BUILDING_PATTERN = "Building";
 
 	Technique* GBufferSchemeHandler::handleSchemeNotFound(unsigned short schemeIndex, 
 		const String& schemeName, Material* originalMaterial, unsigned short lodIndex, 
@@ -62,7 +62,9 @@ namespace Kratos
 			Pass* newPass = gBufferTech->createPass();
 			MaterialGenerator::Perm perm = getPermutation(props);
 
-			if (originalTechnique->getName().find(TEAM_COLOR_PATTERN) != Ogre::String::npos)
+			bool bIsUnit = originalTechnique->getName().find(UNIT_PATTERN) != Ogre::String::npos;
+			bool bIsBuilding = originalTechnique->getName().find(BUILDING_PATTERN) != Ogre::String::npos;
+			if (bIsUnit || bIsBuilding)
 			{
 				const Ogre::Any& any = rend->getUserAny();
 				if (any.isEmpty())
@@ -78,6 +80,23 @@ namespace Kratos
 						perm |= GBufferMaterialGenerator::GBP_TEAM_COLOR_RED;
 					else if(teamColor == Ogre::ColourValue::Blue)
 						perm |= GBufferMaterialGenerator::GBP_TEAM_COLOR_Blue;
+				}
+
+				// Unit进行instancing [6/9/2013 mavaL]
+				if(bIsUnit && RenderManager.m_bSupportVTF)
+				{
+					InstanceBatch* batch = (InstanceBatch*)dynamic_cast<const InstanceBatch*>(rend);
+					const VertexElement* veWeights = batch->_getMeshRef()->getSubMesh(0)->vertexData->vertexDeclaration->findElementBySemantic( VES_BLEND_WEIGHTS );
+					int nWeight = veWeights->getSize() / sizeof(float);
+
+					switch (nWeight)
+					{
+					case 1: perm |= GBufferMaterialGenerator::GBP_INSTANCING_ONE_WEIGHT; break;
+					case 2: perm |= GBufferMaterialGenerator::GBP_INSTANCING_TWO_WEIGHT; break;
+					case 3: perm |= GBufferMaterialGenerator::GBP_INSTANCING_THREE_WEIGHT; break;
+					case 4: perm |= GBufferMaterialGenerator::GBP_INSTANCING_FOUR_WEIGHT; break;
+					default: assert(0);
+					}
 				}
 			}
 

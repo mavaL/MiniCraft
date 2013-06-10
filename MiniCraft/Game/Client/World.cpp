@@ -21,6 +21,10 @@
 #include "PhysicManager.h"
 #include "BehaviorComponent.h"
 
+#include "Unit.h"
+#include "AIComponent.h"
+#include "AnimatedComponent.h"
+
 SGlobalEnvironment	g_Environment;
 
 //**** Define stuff for the Lua Class ****//

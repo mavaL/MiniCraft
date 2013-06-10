@@ -69,12 +69,13 @@ namespace Kratos
 		void			SetRenderingStyle();
 		void			ToggleShowFrameStats();
 		//创建RT
-		Ogre::TexturePtr	CreateRT(const Ogre::String& name, int w, int h, Ogre::PixelFormat format);
+		Ogre::TexturePtr	CreateRT(const STRING& name, int w, int h, Ogre::PixelFormat format);
 		//创建Entity,带tangent vector
-		Ogre::Entity*		CreateEntityWithTangent(const Ogre::String& meshname, Ogre::SceneManager* sm);
+		Ogre::Entity*		CreateEntityWithTangent(const STRING& meshname, Ogre::SceneManager* sm);
+		void				BuildTangentOfMesh(const STRING& meshname);
 
 		//创建太阳光主光
-		void				CreateSunLight(const Ogre::Vector3& direction, const Ogre::ColourValue& diffuse);
+		void				CreateSunLight(const FLOAT3& direction, const COLOR& diffuse);
 		void				DestroySunLight();
 		//0=点光,1=聚光
 		DLight*				CreateDLight(int type);
@@ -99,10 +100,12 @@ namespace Kratos
 		Ogre::Camera*		m_pMainCamera;
 		DeferredShadingSystem*	m_pDS;
 		Ogre::ShadowCameraSetupPtr mPSSMSetup;
+		bool				m_bSupportVTF;	//显卡是否支持vertex texture fetch
 
 	private:
 		void windowResized(Ogre::RenderWindow* rw);
 		void windowClosed(Ogre::RenderWindow* rw);
+		void updateFrameStats();
 		bool checkHardwareSupport();
 
 	private:

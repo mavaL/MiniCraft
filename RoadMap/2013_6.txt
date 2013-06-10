@@ -1,1 +1,3 @@
 Find some rendering work to do. Not decide what exactly to do yet...
+
+1. Ogre's RTSS seems quit interestring and powerful! I am looking into it.

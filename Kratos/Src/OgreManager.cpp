@@ -28,6 +28,7 @@ namespace Kratos
 	,mLightMaterialGenerator(nullptr)
 	,m_pSunLight(nullptr)
 	,m_trayMgr(nullptr)
+	,m_bSupportVTF(false)
 	{
 	}
 
@@ -52,6 +53,11 @@ namespace Kratos
 			OGRE_EXCEPT(Exception::ERR_NOT_IMPLEMENTED, "Your card does not support the shader model needed, "
 				"so you cannot run this game. Sorry!", "COgreManager::checkHardwareSupport");
 		}
+
+		m_bSupportVTF = caps->hasCapability(RSC_VERTEX_TEXTURE_FETCH);
+		//DX9级别的动画instancing没意义,直接屏蔽..
+		//性能评测见performance.doc
+		m_bSupportVTF = false;
 
 		return true;
 	}
@@ -199,6 +205,8 @@ namespace Kratos
 
 		mRoot->renderOneFrame(dt);
 
+		updateFrameStats();		
+
 		if(m_trayMgr)
 		{
 			FrameEvent evt;
@@ -207,6 +215,21 @@ namespace Kratos
 		}
 
 		return true;
+	}
+
+	void COgreManager::updateFrameStats()
+	{
+		RenderTarget::FrameStats& stats = const_cast<RenderTarget::FrameStats&>(mWindow->getStatistics());
+		stats.batchCount = 0;
+		stats.triangleCount = 0;
+
+		auto iter = mRoot->getRenderSystem()->getRenderTargetIterator();
+		while(iter.hasMoreElements())
+		{
+			RenderTarget* rt = iter.getNext();
+			stats.batchCount += rt->getBatchCount();
+			stats.triangleCount += rt->getTriangleCount();
+		}
 	}
 
 	bool COgreManager::IsMainWndClosed()
@@ -272,7 +295,7 @@ namespace Kratos
 		EnableFXAA(m_effectCfg.bFXAA);
 	}
 
-	Ogre::TexturePtr COgreManager::CreateRT(const Ogre::String& name, int w, int h, Ogre::PixelFormat format)
+	Ogre::TexturePtr COgreManager::CreateRT(const STRING& name, int w, int h, Ogre::PixelFormat format)
 	{
 		return TextureManager::getSingleton().createManual( name, ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, 
 			TEX_TYPE_2D, w, h, 0, format , TU_RENDERTARGET );
@@ -309,14 +332,18 @@ namespace Kratos
 		}//end_if(m_Root..
 	}
 
-	Ogre::Entity* COgreManager::CreateEntityWithTangent( const Ogre::String& meshname, Ogre::SceneManager* sm )
+	Ogre::Entity* COgreManager::CreateEntityWithTangent( const STRING& meshname, Ogre::SceneManager* sm )
+	{
+		BuildTangentOfMesh(meshname);
+		return sm->createEntity(meshname);
+	}
+
+	void COgreManager::BuildTangentOfMesh( const STRING& meshname )
 	{
 		MeshPtr mesh = MeshManager::getSingleton().load(meshname, ResourceGroupManager::AUTODETECT_RESOURCE_GROUP_NAME);
 		unsigned short src, dest;
 		if (!mesh->suggestTangentVectorBuildParams(VES_TANGENT, src, dest))
 			mesh->buildTangentVectors(VES_TANGENT, src, dest);
-
-		return sm->createEntity(mesh);
 	}
 
 	DLight* COgreManager::CreateDLight( int dlType )
@@ -438,7 +465,6 @@ namespace Kratos
 		if(bShow) m_trayMgr->showFrameStats(OgreBites::TL_BOTTOMLEFT);
 		else	m_trayMgr->hideFrameStats();
 	}
-
 }
 
 
