@@ -59,7 +59,7 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>.\Build\Bin\$(Configuration);..\Kratos\Dependency\Lua5_1_4\lib;..\Kratos\Dependency\CEGUI\lib\debug;..\Kratos\Dependency\Havok\Lib\debug_dll;..\Kratos\Dependency\boost\Lib;..\Kratos\Dependency\OIS\Lib\$(Configuration);..\Kratos\Dependency\Ogre\Lib\$(Configuration)\opt;..\Kratos\Dependency\Ogre\Lib\$(Configuration)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>.\Build\Bin\$(Configuration);..\Kratos\Dependency\Lua5_1_4\lib;..\Kratos\Dependency\boost\Lib;..\Kratos\Dependency\CEGUI\lib\debug;..\Kratos\Dependency\Havok\Lib\debug_dll;..\Kratos\Dependency\OIS\Lib\$(Configuration);..\Kratos\Dependency\Ogre\Lib\$(Configuration)\opt;..\Kratos\Dependency\Ogre\Lib\$(Configuration)</AdditionalLibraryDirectories>
       <AdditionalDependencies>OgreMain_d.lib;ParticleUniverse_d.lib;OIS_d.lib;OgreTerrain_d.lib;CEGUIBase_d.lib;CEGUIOgreRenderer_d.lib;lua51.lib;Kratos_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>
       </IgnoreSpecificDefaultLibraries>

@@ -64,8 +64,8 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)\..\MiniCraft\Build\Bin\$(Configuration);..\Dependency\XTP\lib\$(Configuration);..\..\Kratos\Dependency\Lua5_1_4\lib;..\..\Kratos\Dependency\OIS\lib\$(Configuration);..\..\Kratos\Dependency\Ogre\lib\$(Configuration)\opt;..\..\Kratos\Dependency\Ogre\lib\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>UxTheme.lib;lua51.lib;OgreMain_d.lib;OgreTerrain_d.lib;ParticleUniverse_d.lib;Kratos_d.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)\..\MiniCraft\Build\Bin\$(Configuration);..\Dependency\XTP\lib\$(Configuration);..\..\Kratos\Dependency\boost\Lib;..\..\Kratos\Dependency\Lua5_1_4\lib;..\..\Kratos\Dependency\OIS\lib\$(Configuration);..\..\Kratos\Dependency\Ogre\lib\$(Configuration)\opt;..\..\Kratos\Dependency\Ogre\lib\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>UxTheme.lib;lua51.lib;OIS_d.lib;OgreMain_d.lib;OgreTerrain_d.lib;ParticleUniverse_d.lib;Kratos_d.lib</AdditionalDependencies>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>

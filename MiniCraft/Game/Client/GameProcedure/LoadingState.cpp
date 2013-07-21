@@ -36,7 +36,7 @@ void LoadingState::enter()
 	RenderManager.m_pDS->initialize();
 	RenderManager.m_pDS->setActive(false);
 
-	changeAppState(findByName(CBattleState::StateName));
+	changeAppState(findByName(LoginState::StateName));
 }
 
 void LoadingState::exit()
