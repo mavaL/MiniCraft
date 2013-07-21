@@ -10,82 +10,65 @@ material MT_Console
 		{
             depth_check off
 
- 			//ambient 0.698039 0.698039 0.698039 1
- 			//diffuse 0.698039 0.698039 0.698039 1
- 			//specular 0.898039 0.898039 0.898039 1 20
+ 			texture_unit
+			{
+				texture_alias	diffusemap
+				filtering linear linear linear
+			}
+
+			texture_unit 
+			{
+				texture_alias	normalmap
+				filtering point point point
+			}
+
+			texture_unit 
+			{
+				texture_alias	specularmap
+				filtering linear linear linear
+			}
+
+			texture_unit 
+			{
+				texture_alias	emissivemap
+				filtering linear linear linear
+			}
 		}
 	}
 }
 
 material Console_Terrain : MT_Console
 {
-	receive_shadows false
+	set_texture_alias diffusemap consoleterran_diff.dds
+	set_texture_alias normalmap consoleterran_nm.dds
+	set_texture_alias specularmap consoleterran_spec.dds
+	set_texture_alias emissivemap consoleterran_emiss.dds
+	
 	technique
 	{
 		pass
 		{
-			texture_unit diffusemap
-			{
-				texture consoleterran_diff.dds
-				filtering linear linear linear
-			}
-			texture_unit normalmap
-			{
-				texture consoleterran_nm.dds
-				filtering point point point
-			}
-			texture_unit specularmap
-			{
-				texture consoleterran_spec.dds
-				filtering linear linear linear
-			}
-			texture_unit emissivemap
-			{
-				texture consoleterran_emiss.dds
-				filtering linear linear linear
-			}
+			vertex_program_ref HardwareSkinningFourWeights {}
 		}
 	}
 }
 
 material Console_Protoss : MT_Console
 {
-	receive_shadows false
-	technique
-	{
-		pass
-		{
-			texture_unit diffusemap
-			{
-				texture consoleprotoss_diff.dds
-				filtering linear linear linear
-			}
-			texture_unit normalmap
-			{
-				texture consoleprotoss_nm.dds
-				filtering point point point
-			}
-			texture_unit specularmap
-			{
-				texture consoleprotoss_spec.dds
-				filtering linear linear linear
-			}
-			texture_unit emissivemap
-			{
-				texture consoleprotoss_emiss.dds
-				filtering linear linear linear
-			}
-		}
-	}
+	set_texture_alias diffusemap consoleprotoss_diff.dds
+	set_texture_alias normalmap consoleprotoss_nm.dds
+	set_texture_alias specularmap consoleprotoss_spec.dds
+	set_texture_alias emissivemap consoleprotoss_emiss.dds
 }
 
-material ConsoleBlack : MT_Console
+material ConsoleBlack
 {
 	receive_shadows false
 	technique
 	{
 		pass
 		{
+			depth_check off
 			emissive 0 0 0 0
 			ambient 0 0 0 0
  			diffuse 0 0 0 0
@@ -101,6 +84,7 @@ vertex_program Portrait_VS cg
     source portrait.cg
     entry_point VS
     profiles vs_2_x arbvp1
+	includes_skeletal_animation true
 
     default_params
     {

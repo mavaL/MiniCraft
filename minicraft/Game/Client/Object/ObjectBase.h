@@ -51,13 +51,14 @@ public:
 
 public:
 	virtual void	CreateRenderInstance();	
+	virtual void	DestroyRenderInstance();
 	///NO VIRTUAL!!
 	bool			InitParamDict(const STRING& name);
 
 public:
 	void			SetMeshName(const STRING& meshname);
 	const STRING&	GetMeshName() const { return m_meshname; }
-	void			DestroyRenderInstance();
+	
 	bool			IsRenderableReady() const { return m_bRenderableReady; }
 	void			SetPosition(const POS& pos);
 	void			SetOrientation(const ORIENT& orient);
@@ -65,8 +66,9 @@ public:
 	const POS&		GetPosition() const;
 	const ORIENT&	GetOrientation() const;
 	const SCALE&	GetScale() const;
+
 	Ogre::Entity*	GetEntity() { return m_pEntity; }
-	Ogre::SceneNode* GetSceneNode() { return m_pSceneNode; }
+	Ogre::SceneNode*GetSceneNode() { return m_pSceneNode; }
 
 protected:
 	Ogre::Entity*		m_pEntity;

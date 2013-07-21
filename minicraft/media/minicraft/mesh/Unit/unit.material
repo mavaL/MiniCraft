@@ -5,6 +5,8 @@ material marine
 	{
 		pass
 		{
+			vertex_program_ref HardwareSkinningFourWeights {}
+
 			texture_unit diffusemap
 			{
 				texture marine_diffuse_blood.dds
@@ -20,6 +22,11 @@ material marine
 				texture marine_specular_blood.dds
 				filtering linear linear linear
 			}
+			texture_unit InstancingVTF
+			{
+				binding_type	vertex
+				filtering		none
+			}
 		}
 	}
 }
@@ -31,6 +38,8 @@ material scv
 	{
 		pass
 		{
+			vertex_program_ref HardwareSkinningFourWeights {}
+
 			texture_unit diffusemap
 			{
 				texture SCV_Diffuse.dds
@@ -52,6 +61,11 @@ material scv
 				texture scv_emissive.dds
 				filtering linear linear linear
 			}
+			texture_unit InstancingVTF
+			{
+				binding_type	vertex
+				filtering		none
+			}
 		}
 	}
 }
@@ -63,6 +77,8 @@ material drone
 	{
 		pass
 		{
+			vertex_program_ref HardwareSkinningFourWeights {}
+
 			texture_unit diffusemap
 			{
 				texture Drone_Diffuse.dds
@@ -83,6 +99,11 @@ material drone
 				texture drone_emissive.dds
 				filtering linear linear linear
 			}
+			texture_unit InstancingVTF
+			{
+				binding_type	vertex
+				filtering		none
+			}
 		}
 	}
 }
@@ -94,6 +115,8 @@ material zergling
 	{
 		pass
 		{
+			vertex_program_ref HardwareSkinningFourWeights {}
+
 			texture_unit diffusemap
 			{
 				texture zergling_diffuse.dds
@@ -114,6 +137,11 @@ material zergling
 				texture zergling_emissive.dds
 				filtering linear linear linear
 			}
+			texture_unit InstancingVTF
+			{
+				binding_type	vertex
+				filtering		none
+			}
 		}
 	}
 }
@@ -121,7 +149,7 @@ material zergling
 material Barracks
 {
 	receive_shadows false
-	technique Unit
+	technique Building
 	{
 		pass
 		{
@@ -147,12 +175,22 @@ material Barracks
 			}
 		}
 	}
+
+	technique
+	{
+		scheme  TestDepth
+		pass
+		{
+			vertex_program_ref VS_Depth {}
+			fragment_program_ref PS_Depth {}
+		}
+	}
 }
 
 material CommandCenter
 {
 	receive_shadows false
-	technique Unit
+	technique Building
 	{
 		pass
 		{
@@ -178,12 +216,22 @@ material CommandCenter
 			}
 		}
 	}
+
+	technique
+	{
+		scheme  TestDepth
+		pass
+		{
+			vertex_program_ref VS_Depth {}
+			fragment_program_ref PS_Depth {}
+		}
+	}
 }
 
 material sc2material
 {
 	receive_shadows false
-	technique Unit
+	technique Building
 	{
 		pass
 		{
@@ -209,12 +257,22 @@ material sc2material
 			}
 		}
 	}
+
+	technique
+	{
+		scheme  TestDepth
+		pass
+		{
+			vertex_program_ref VS_Depth {}
+			fragment_program_ref PS_Depth {}
+		}
+	}
 }
 
 material hatchery
 {
 	receive_shadows false
-	technique Unit
+	technique Building
 	{
 		pass
 		{
@@ -238,6 +296,16 @@ material hatchery
 				texture hatchery_emissive.dds
 				filtering linear linear linear
 			}
+		}
+	}
+
+	technique
+	{
+		scheme  TestDepth
+		pass
+		{
+			vertex_program_ref VS_Depth {}
+			fragment_program_ref PS_Depth {}
 		}
 	}
 }

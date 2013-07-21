@@ -11,6 +11,7 @@
 
 #include "Singleton.h"
 #include "GameDefine.h"
+#include "KratosPrerequisites.h"
 
 class Object;
 class Faction;
@@ -31,11 +32,14 @@ public:
 	void		DestroyAll();
 	void		UpdateAll(float dt);
 	Object*		GetObject(int ID) { assert(m_objects[ID]); return m_objects[ID]; }
+	Ogre::InstanceManager*	GetInstanceManager()	{ return m_unitInstMgr; }
 
 private:
 	FactoryContainer	m_factories;
 	ObjectContainer		m_objects;
 	std::vector<Object*>m_lstToDestroy;
+
+	Ogre::InstanceManager*	m_unitInstMgr;	//unit instancing
 };
 
 #endif // ObjectManager_h__

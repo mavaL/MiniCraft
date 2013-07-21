@@ -40,6 +40,9 @@ public:
 public:
 	virtual eObjectType GetType() const { return eObjectType_Unit; }
 	virtual void	Update(float dt);
+	virtual void	CreateRenderInstance();
+	virtual void	DestroyRenderInstance();
+	virtual void	InitTeamColor(const COLOR& color);
 	virtual void	_OnCommandFinished(eCommandType cmd);
 	void			_OnAttacked(Unit* attcker);
 
@@ -53,6 +56,7 @@ public:
 	float			GetProduceTime() const;
 	float			GetAttackInterval() const;
 	float			GetAttackDamage() const;
+	void			SetShowHpBar(bool bShow);
 
 	SUnitData*		GetUnitData() { return m_data; }
 	Ogre::Entity*	GetPortrait(Ogre::SceneManager* sm, Ogre::Light* light);

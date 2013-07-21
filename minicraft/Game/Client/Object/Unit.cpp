@@ -9,10 +9,11 @@
 #include "AnimatedComponent.h"
 #include "BehaviorComponent.h"
 #include "OgreManager.h"
+#include "ObjectManager.h"
 #include "GameDataDef.h"
 #include "AI/BehaviorTree/BehaviorTreeTemplate.h"
 #include "AI/BehaviorTree/BlackBoard.h"
-#include "ObjectManager.h"
+
 
 IMPL_PARAM_COMMAND_STR(Unit, Name)
 IMPL_PARAM_COMMAND(Unit, Race, Int)
@@ -128,17 +129,80 @@ void Unit::Init()
 	m_pEntity->setVisibilityFlags(eRenderType_Unit);
 }
 
+void Unit::CreateRenderInstance()
+{
+	if(RenderManager.m_bSupportVTF)
+	{
+		assert(!m_meshname.empty());
+		DestroyRenderInstance();
+
+		Kratos::COgreManager& renderMgr = RenderManager;
+
+		renderMgr.BuildTangentOfMesh(m_meshname);
+
+		Ogre::MeshPtr mesh = Ogre::MeshManager::getSingleton().getByName(m_meshname);
+		const STRING& matName = mesh->getSubMesh(0)->getMaterialName();
+
+		m_pEntity = ObjectManager::GetSingleton().GetInstanceManager()->createInstancedEntity(matName);
+
+		m_pSceneNode = renderMgr.m_pSceneMgr->getRootSceneNode()->createChildSceneNode();
+		m_pSceneNode->attachObject(m_pEntity);
+
+		m_bRenderableReady = true;
+	}
+	else
+	{
+		__super::CreateRenderInstance();
+	}
+}
+
+void Unit::DestroyRenderInstance()
+{
+	if(RenderManager.m_bSupportVTF)
+	{
+		if (m_pSceneNode)
+		{
+			RenderManager.m_pSceneMgr->destroySceneNode(m_pSceneNode);
+			m_pSceneNode = nullptr;
+		}
+		if (m_pEntity)
+		{
+			RenderManager.m_pSceneMgr->destroyInstancedEntity(static_cast<Ogre::InstancedEntity*>(m_pEntity));
+			m_pEntity = nullptr;
+		}
+
+		m_bRenderableReady = false;
+	}
+	else
+	{
+		__super::DestroyRenderInstance();
+	}
+}
+
+void Unit::InitTeamColor( const COLOR& color )
+{
+	if(RenderManager.m_bSupportVTF)
+	{
+		//队伍颜色与Renderable绑定
+		Ogre::InstancedEntity* ent = static_cast<Ogre::InstancedEntity*>(m_pEntity);
+		Ogre::Renderable* rend = ent->_getOwner();
+		rend->setUserAny(Ogre::Any(color));
+	}
+	else
+	{
+		__super::InitTeamColor(color);
+	}
+}
+
 void Unit::Update( float dt )
 {
 	if(m_bSelected)
 		m_portraitAnimCache[m_unitName]->addTime(dt);
 
 	//更新血条
-	{
-		float hpBarWidth = (m_fCurHP / m_fFullHP) * HP_BAR_WIDTH;
-		Ogre::Billboard* bb = m_pHealthBar->getBillboard(0);
-		bb->setDimensions(hpBarWidth, HP_BAR_HEIGHT);
-	}
+	float hpBarWidth = (m_fCurHP / m_fFullHP) * HP_BAR_WIDTH;
+	Ogre::Billboard* bb = m_pHealthBar->getBillboard(0);
+	bb->setDimensions(hpBarWidth, HP_BAR_HEIGHT);
 
 	__super::Update(dt);
 }
@@ -366,6 +430,14 @@ void Unit::OnUnitDeath(Unit* pUnit)
 {
 	m_attkTargetID = -1;
 }
+
+void Unit::SetShowHpBar( bool bShow )
+{
+	if(m_pHealthBar)
+		m_pHealthBar->setVisible(bShow);
+}
+
+
 
 
 
