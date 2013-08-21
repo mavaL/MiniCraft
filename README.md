@@ -1,4 +1,4 @@
-Minicraft and the game editor along with it are my little project with respects to Bilzzard's StartCraft2.
+Minicraft and the game editor along with it are my little project salute Bilzzard's StartCraft2.
 I love it, I love diablo3, I love WarCraft3, and you ?
 
 Control:
