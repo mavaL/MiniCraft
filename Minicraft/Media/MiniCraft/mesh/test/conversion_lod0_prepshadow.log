@@ -1,0 +1,2901 @@
+11:45:09: Edge Data
+11:45:09: ---------
+11:45:09: Triangle 0 = {indexSet=0, vertexSet=0, v0=0, v1=1, v2=2}
+11:45:09: Triangle 1 = {indexSet=0, vertexSet=0, v0=0, v1=2, v2=3}
+11:45:09: Triangle 2 = {indexSet=0, vertexSet=0, v0=4, v1=5, v2=6}
+11:45:09: Triangle 3 = {indexSet=0, vertexSet=0, v0=4, v1=6, v2=7}
+11:45:09: Triangle 4 = {indexSet=0, vertexSet=0, v0=8, v1=9, v2=10}
+11:45:09: Triangle 5 = {indexSet=0, vertexSet=0, v0=8, v1=10, v2=11}
+11:45:09: Triangle 6 = {indexSet=0, vertexSet=0, v0=12, v1=13, v2=14}
+11:45:09: Triangle 7 = {indexSet=0, vertexSet=0, v0=12, v1=14, v2=15}
+11:45:09: Triangle 8 = {indexSet=0, vertexSet=0, v0=16, v1=17, v2=18}
+11:45:09: Triangle 9 = {indexSet=0, vertexSet=0, v0=16, v1=18, v2=19}
+11:45:09: Triangle 10 = {indexSet=0, vertexSet=0, v0=20, v1=21, v2=22}
+11:45:09: Triangle 11 = {indexSet=0, vertexSet=0, v0=20, v1=22, v2=23}
+11:45:09: Triangle 12 = {indexSet=0, vertexSet=0, v0=24, v1=25, v2=26}
+11:45:09: Triangle 13 = {indexSet=0, vertexSet=0, v0=24, v1=26, v2=27}
+11:45:09: Triangle 14 = {indexSet=0, vertexSet=0, v0=28, v1=29, v2=30}
+11:45:09: Triangle 15 = {indexSet=0, vertexSet=0, v0=28, v1=30, v2=31}
+11:45:09: Triangle 16 = {indexSet=0, vertexSet=0, v0=32, v1=33, v2=34}
+11:45:09: Triangle 17 = {indexSet=0, vertexSet=0, v0=32, v1=34, v2=35}
+11:45:09: Triangle 18 = {indexSet=0, vertexSet=0, v0=36, v1=37, v2=38}
+11:45:09: Triangle 19 = {indexSet=0, vertexSet=0, v0=36, v1=38, v2=39}
+11:45:09: Triangle 20 = {indexSet=0, vertexSet=0, v0=40, v1=41, v2=42}
+11:45:09: Triangle 21 = {indexSet=0, vertexSet=0, v0=40, v1=42, v2=43}
+11:45:09: Triangle 22 = {indexSet=0, vertexSet=0, v0=44, v1=45, v2=46}
+11:45:09: Triangle 23 = {indexSet=0, vertexSet=0, v0=44, v1=46, v2=47}
+11:45:09: Triangle 24 = {indexSet=0, vertexSet=0, v0=48, v1=49, v2=50}
+11:45:09: Triangle 25 = {indexSet=0, vertexSet=0, v0=48, v1=50, v2=51}
+11:45:09: Triangle 26 = {indexSet=0, vertexSet=0, v0=52, v1=53, v2=54}
+11:45:09: Triangle 27 = {indexSet=0, vertexSet=0, v0=52, v1=54, v2=55}
+11:45:09: Triangle 28 = {indexSet=0, vertexSet=0, v0=56, v1=57, v2=58}
+11:45:09: Triangle 29 = {indexSet=0, vertexSet=0, v0=56, v1=58, v2=59}
+11:45:09: Triangle 30 = {indexSet=0, vertexSet=0, v0=60, v1=61, v2=62}
+11:45:09: Triangle 31 = {indexSet=0, vertexSet=0, v0=60, v1=62, v2=63}
+11:45:09: Triangle 32 = {indexSet=0, vertexSet=0, v0=64, v1=65, v2=66}
+11:45:09: Triangle 33 = {indexSet=0, vertexSet=0, v0=64, v1=66, v2=67}
+11:45:09: Triangle 34 = {indexSet=0, vertexSet=0, v0=68, v1=69, v2=70}
+11:45:09: Triangle 35 = {indexSet=0, vertexSet=0, v0=71, v1=72, v2=73}
+11:45:09: Triangle 36 = {indexSet=0, vertexSet=0, v0=73, v1=74, v2=71}
+11:45:09: Triangle 37 = {indexSet=0, vertexSet=0, v0=68, v1=74, v2=73}
+11:45:09: Triangle 38 = {indexSet=0, vertexSet=0, v0=68, v1=75, v2=74}
+11:45:09: Triangle 39 = {indexSet=0, vertexSet=0, v0=76, v1=70, v2=77}
+11:45:09: Triangle 40 = {indexSet=0, vertexSet=0, v0=70, v1=75, v2=68}
+11:45:09: Triangle 41 = {indexSet=0, vertexSet=0, v0=70, v1=78, v2=75}
+11:45:09: Triangle 42 = {indexSet=0, vertexSet=0, v0=79, v1=70, v2=76}
+11:45:09: Triangle 43 = {indexSet=0, vertexSet=0, v0=79, v1=78, v2=70}
+11:45:09: Triangle 44 = {indexSet=0, vertexSet=0, v0=79, v1=71, v2=78}
+11:45:09: Triangle 45 = {indexSet=0, vertexSet=0, v0=80, v1=71, v2=79}
+11:45:09: Triangle 46 = {indexSet=0, vertexSet=0, v0=80, v1=72, v2=71}
+11:45:09: Triangle 47 = {indexSet=0, vertexSet=0, v0=81, v1=72, v2=80}
+11:45:09: Triangle 48 = {indexSet=0, vertexSet=0, v0=81, v1=82, v2=72}
+11:45:09: Triangle 49 = {indexSet=0, vertexSet=0, v0=76, v1=82, v2=81}
+11:45:09: Triangle 50 = {indexSet=0, vertexSet=0, v0=77, v1=82, v2=76}
+11:45:09: Triangle 51 = {indexSet=0, vertexSet=0, v0=77, v1=83, v2=82}
+11:45:09: Triangle 52 = {indexSet=0, vertexSet=0, v0=84, v1=83, v2=77}
+11:45:09: Triangle 53 = {indexSet=0, vertexSet=0, v0=84, v1=68, v2=83}
+11:45:09: Triangle 54 = {indexSet=0, vertexSet=0, v0=84, v1=69, v2=68}
+11:45:09: Triangle 55 = {indexSet=0, vertexSet=0, v0=85, v1=86, v2=87}
+11:45:09: Triangle 56 = {indexSet=0, vertexSet=0, v0=88, v1=89, v2=90}
+11:45:09: Triangle 57 = {indexSet=0, vertexSet=0, v0=89, v1=88, v2=91}
+11:45:09: Triangle 58 = {indexSet=0, vertexSet=0, v0=85, v1=89, v2=91}
+11:45:09: Triangle 59 = {indexSet=0, vertexSet=0, v0=85, v1=91, v2=92}
+11:45:09: Triangle 60 = {indexSet=0, vertexSet=0, v0=93, v1=94, v2=86}
+11:45:09: Triangle 61 = {indexSet=0, vertexSet=0, v0=86, v1=85, v2=92}
+11:45:09: Triangle 62 = {indexSet=0, vertexSet=0, v0=86, v1=92, v2=95}
+11:45:09: Triangle 63 = {indexSet=0, vertexSet=0, v0=96, v1=93, v2=86}
+11:45:09: Triangle 64 = {indexSet=0, vertexSet=0, v0=96, v1=86, v2=95}
+11:45:09: Triangle 65 = {indexSet=0, vertexSet=0, v0=96, v1=95, v2=88}
+11:45:09: Triangle 66 = {indexSet=0, vertexSet=0, v0=97, v1=96, v2=88}
+11:45:09: Triangle 67 = {indexSet=0, vertexSet=0, v0=97, v1=88, v2=90}
+11:45:09: Triangle 68 = {indexSet=0, vertexSet=0, v0=98, v1=97, v2=90}
+11:45:09: Triangle 69 = {indexSet=0, vertexSet=0, v0=98, v1=90, v2=99}
+11:45:09: Triangle 70 = {indexSet=0, vertexSet=0, v0=93, v1=98, v2=99}
+11:45:09: Triangle 71 = {indexSet=0, vertexSet=0, v0=94, v1=93, v2=99}
+11:45:09: Triangle 72 = {indexSet=0, vertexSet=0, v0=94, v1=99, v2=100}
+11:45:09: Triangle 73 = {indexSet=0, vertexSet=0, v0=101, v1=94, v2=100}
+11:45:09: Triangle 74 = {indexSet=0, vertexSet=0, v0=101, v1=100, v2=85}
+11:45:09: Triangle 75 = {indexSet=0, vertexSet=0, v0=101, v1=85, v2=87}
+11:45:09: Triangle 76 = {indexSet=0, vertexSet=0, v0=102, v1=103, v2=104}
+11:45:09: Triangle 77 = {indexSet=0, vertexSet=0, v0=102, v1=104, v2=105}
+11:45:09: Triangle 78 = {indexSet=0, vertexSet=0, v0=106, v1=107, v2=108}
+11:45:09: Triangle 79 = {indexSet=0, vertexSet=0, v0=106, v1=108, v2=109}
+11:45:09: Triangle 80 = {indexSet=0, vertexSet=0, v0=110, v1=111, v2=112}
+11:45:09: Triangle 81 = {indexSet=0, vertexSet=0, v0=110, v1=112, v2=113}
+11:45:09: Triangle 82 = {indexSet=0, vertexSet=0, v0=114, v1=115, v2=116}
+11:45:09: Triangle 83 = {indexSet=0, vertexSet=0, v0=114, v1=116, v2=117}
+11:45:09: Triangle 84 = {indexSet=0, vertexSet=0, v0=118, v1=119, v2=120}
+11:45:09: Triangle 85 = {indexSet=0, vertexSet=0, v0=118, v1=120, v2=121}
+11:45:09: Triangle 86 = {indexSet=0, vertexSet=0, v0=122, v1=123, v2=124}
+11:45:09: Triangle 87 = {indexSet=0, vertexSet=0, v0=122, v1=124, v2=125}
+11:45:09: Triangle 88 = {indexSet=0, vertexSet=0, v0=126, v1=127, v2=128}
+11:45:09: Triangle 89 = {indexSet=0, vertexSet=0, v0=126, v1=128, v2=129}
+11:45:09: Triangle 90 = {indexSet=0, vertexSet=0, v0=130, v1=131, v2=132}
+11:45:09: Triangle 91 = {indexSet=0, vertexSet=0, v0=130, v1=132, v2=133}
+11:45:09: Triangle 92 = {indexSet=0, vertexSet=0, v0=134, v1=135, v2=136}
+11:45:09: Triangle 93 = {indexSet=0, vertexSet=0, v0=137, v1=135, v2=134}
+11:45:09: Triangle 94 = {indexSet=0, vertexSet=0, v0=138, v1=135, v2=137}
+11:45:09: Triangle 95 = {indexSet=0, vertexSet=0, v0=138, v1=139, v2=135}
+11:45:09: Triangle 96 = {indexSet=0, vertexSet=0, v0=140, v1=139, v2=138}
+11:45:09: Triangle 97 = {indexSet=0, vertexSet=0, v0=140, v1=141, v2=139}
+11:45:09: Triangle 98 = {indexSet=0, vertexSet=0, v0=142, v1=143, v2=144}
+11:45:09: Triangle 99 = {indexSet=0, vertexSet=0, v0=145, v1=142, v2=144}
+11:45:09: Triangle 100 = {indexSet=0, vertexSet=0, v0=146, v1=145, v2=144}
+11:45:09: Triangle 101 = {indexSet=0, vertexSet=0, v0=146, v1=144, v2=147}
+11:45:09: Triangle 102 = {indexSet=0, vertexSet=0, v0=148, v1=146, v2=147}
+11:45:09: Triangle 103 = {indexSet=0, vertexSet=0, v0=148, v1=147, v2=149}
+11:45:09: Triangle 104 = {indexSet=0, vertexSet=0, v0=150, v1=151, v2=152}
+11:45:09: Triangle 105 = {indexSet=0, vertexSet=0, v0=150, v1=152, v2=153}
+11:45:09: Triangle 106 = {indexSet=0, vertexSet=0, v0=154, v1=155, v2=156}
+11:45:09: Triangle 107 = {indexSet=0, vertexSet=0, v0=154, v1=156, v2=157}
+11:45:09: Triangle 108 = {indexSet=0, vertexSet=0, v0=158, v1=159, v2=160}
+11:45:09: Triangle 109 = {indexSet=0, vertexSet=0, v0=158, v1=160, v2=161}
+11:45:09: Triangle 110 = {indexSet=0, vertexSet=0, v0=162, v1=163, v2=164}
+11:45:09: Triangle 111 = {indexSet=0, vertexSet=0, v0=162, v1=164, v2=165}
+11:45:09: Triangle 112 = {indexSet=0, vertexSet=0, v0=166, v1=167, v2=168}
+11:45:09: Triangle 113 = {indexSet=0, vertexSet=0, v0=166, v1=168, v2=169}
+11:45:09: Triangle 114 = {indexSet=0, vertexSet=0, v0=170, v1=171, v2=172}
+11:45:09: Triangle 115 = {indexSet=0, vertexSet=0, v0=170, v1=172, v2=173}
+11:45:09: Triangle 116 = {indexSet=0, vertexSet=0, v0=174, v1=175, v2=176}
+11:45:09: Triangle 117 = {indexSet=0, vertexSet=0, v0=174, v1=176, v2=177}
+11:45:09: Triangle 118 = {indexSet=0, vertexSet=0, v0=178, v1=179, v2=180}
+11:45:09: Triangle 119 = {indexSet=0, vertexSet=0, v0=178, v1=180, v2=181}
+11:45:09: Triangle 120 = {indexSet=0, vertexSet=0, v0=182, v1=183, v2=184}
+11:45:09: Triangle 121 = {indexSet=0, vertexSet=0, v0=182, v1=184, v2=185}
+11:45:09: Triangle 122 = {indexSet=0, vertexSet=0, v0=186, v1=187, v2=188}
+11:45:09: Triangle 123 = {indexSet=0, vertexSet=0, v0=186, v1=188, v2=189}
+11:45:09: Triangle 124 = {indexSet=0, vertexSet=0, v0=190, v1=191, v2=192}
+11:45:09: Triangle 125 = {indexSet=0, vertexSet=0, v0=190, v1=192, v2=193}
+11:45:09: Triangle 126 = {indexSet=0, vertexSet=0, v0=194, v1=195, v2=196}
+11:45:09: Triangle 127 = {indexSet=0, vertexSet=0, v0=194, v1=196, v2=197}
+11:45:09: Triangle 128 = {indexSet=0, vertexSet=0, v0=198, v1=199, v2=200}
+11:45:09: Triangle 129 = {indexSet=0, vertexSet=0, v0=198, v1=200, v2=201}
+11:45:09: Triangle 130 = {indexSet=0, vertexSet=0, v0=202, v1=203, v2=204}
+11:45:09: Triangle 131 = {indexSet=0, vertexSet=0, v0=202, v1=204, v2=205}
+11:45:09: Triangle 132 = {indexSet=0, vertexSet=0, v0=206, v1=207, v2=208}
+11:45:09: Triangle 133 = {indexSet=0, vertexSet=0, v0=206, v1=208, v2=209}
+11:45:09: Triangle 134 = {indexSet=0, vertexSet=0, v0=210, v1=211, v2=212}
+11:45:09: Triangle 135 = {indexSet=0, vertexSet=0, v0=210, v1=212, v2=213}
+11:45:09: Triangle 136 = {indexSet=0, vertexSet=0, v0=214, v1=215, v2=216}
+11:45:09: Triangle 137 = {indexSet=0, vertexSet=0, v0=214, v1=216, v2=217}
+11:45:09: Triangle 138 = {indexSet=0, vertexSet=0, v0=218, v1=219, v2=220}
+11:45:09: Triangle 139 = {indexSet=0, vertexSet=0, v0=218, v1=220, v2=221}
+11:45:09: Triangle 140 = {indexSet=0, vertexSet=0, v0=222, v1=223, v2=224}
+11:45:09: Triangle 141 = {indexSet=0, vertexSet=0, v0=222, v1=224, v2=225}
+11:45:09: Triangle 142 = {indexSet=0, vertexSet=0, v0=226, v1=227, v2=228}
+11:45:09: Triangle 143 = {indexSet=0, vertexSet=0, v0=226, v1=228, v2=229}
+11:45:09: Triangle 144 = {indexSet=0, vertexSet=0, v0=230, v1=231, v2=232}
+11:45:09: Triangle 145 = {indexSet=0, vertexSet=0, v0=230, v1=232, v2=233}
+11:45:09: Triangle 146 = {indexSet=0, vertexSet=0, v0=234, v1=235, v2=236}
+11:45:09: Triangle 147 = {indexSet=0, vertexSet=0, v0=236, v1=237, v2=234}
+11:45:09: Triangle 148 = {indexSet=0, vertexSet=0, v0=238, v1=239, v2=240}
+11:45:09: Triangle 149 = {indexSet=0, vertexSet=0, v0=240, v1=241, v2=238}
+11:45:09: Triangle 150 = {indexSet=0, vertexSet=0, v0=242, v1=243, v2=237}
+11:45:09: Triangle 151 = {indexSet=0, vertexSet=0, v0=244, v1=245, v2=239}
+11:45:09: Triangle 152 = {indexSet=0, vertexSet=0, v0=242, v1=245, v2=244}
+11:45:09: Triangle 153 = {indexSet=0, vertexSet=0, v0=242, v1=246, v2=245}
+11:45:09: Triangle 154 = {indexSet=0, vertexSet=0, v0=237, v1=246, v2=242}
+11:45:09: Triangle 155 = {indexSet=0, vertexSet=0, v0=237, v1=240, v2=246}
+11:45:09: Triangle 156 = {indexSet=0, vertexSet=0, v0=237, v1=241, v2=240}
+11:45:09: Triangle 157 = {indexSet=0, vertexSet=0, v0=237, v1=247, v2=241}
+11:45:09: Triangle 158 = {indexSet=0, vertexSet=0, v0=236, v1=247, v2=237}
+11:45:09: Triangle 159 = {indexSet=0, vertexSet=0, v0=236, v1=248, v2=247}
+11:45:09: Triangle 160 = {indexSet=0, vertexSet=0, v0=238, v1=244, v2=239}
+11:45:09: Triangle 161 = {indexSet=0, vertexSet=0, v0=238, v1=249, v2=244}
+11:45:09: Triangle 162 = {indexSet=0, vertexSet=0, v0=248, v1=249, v2=238}
+11:45:09: Triangle 163 = {indexSet=0, vertexSet=0, v0=236, v1=249, v2=248}
+11:45:09: Triangle 164 = {indexSet=0, vertexSet=0, v0=250, v1=249, v2=236}
+11:45:09: Triangle 165 = {indexSet=0, vertexSet=0, v0=250, v1=251, v2=249}
+11:45:09: Triangle 166 = {indexSet=0, vertexSet=0, v0=252, v1=251, v2=250}
+11:45:09: Triangle 167 = {indexSet=0, vertexSet=0, v0=234, v1=252, v2=235}
+11:45:09: Triangle 168 = {indexSet=0, vertexSet=0, v0=234, v1=251, v2=252}
+11:45:09: Triangle 169 = {indexSet=0, vertexSet=0, v0=234, v1=253, v2=251}
+11:45:09: Triangle 170 = {indexSet=0, vertexSet=0, v0=254, v1=253, v2=234}
+11:45:09: Triangle 171 = {indexSet=0, vertexSet=0, v0=254, v1=242, v2=253}
+11:45:09: Triangle 172 = {indexSet=0, vertexSet=0, v0=254, v1=243, v2=242}
+11:45:09: Triangle 173 = {indexSet=0, vertexSet=0, v0=255, v1=256, v2=257}
+11:45:09: Triangle 174 = {indexSet=0, vertexSet=0, v0=256, v1=255, v2=258}
+11:45:09: Triangle 175 = {indexSet=0, vertexSet=0, v0=259, v1=260, v2=261}
+11:45:09: Triangle 176 = {indexSet=0, vertexSet=0, v0=260, v1=259, v2=262}
+11:45:09: Triangle 177 = {indexSet=0, vertexSet=0, v0=263, v1=258, v2=264}
+11:45:09: Triangle 178 = {indexSet=0, vertexSet=0, v0=265, v1=261, v2=266}
+11:45:09: Triangle 179 = {indexSet=0, vertexSet=0, v0=263, v1=265, v2=266}
+11:45:09: Triangle 180 = {indexSet=0, vertexSet=0, v0=263, v1=266, v2=267}
+11:45:09: Triangle 181 = {indexSet=0, vertexSet=0, v0=258, v1=263, v2=267}
+11:45:09: Triangle 182 = {indexSet=0, vertexSet=0, v0=258, v1=267, v2=260}
+11:45:09: Triangle 183 = {indexSet=0, vertexSet=0, v0=258, v1=260, v2=262}
+11:45:09: Triangle 184 = {indexSet=0, vertexSet=0, v0=258, v1=262, v2=268}
+11:45:09: Triangle 185 = {indexSet=0, vertexSet=0, v0=256, v1=258, v2=268}
+11:45:09: Triangle 186 = {indexSet=0, vertexSet=0, v0=256, v1=268, v2=269}
+11:45:09: Triangle 187 = {indexSet=0, vertexSet=0, v0=259, v1=261, v2=265}
+11:45:09: Triangle 188 = {indexSet=0, vertexSet=0, v0=259, v1=265, v2=270}
+11:45:09: Triangle 189 = {indexSet=0, vertexSet=0, v0=269, v1=259, v2=270}
+11:45:09: Triangle 190 = {indexSet=0, vertexSet=0, v0=256, v1=269, v2=270}
+11:45:09: Triangle 191 = {indexSet=0, vertexSet=0, v0=271, v1=256, v2=270}
+11:45:09: Triangle 192 = {indexSet=0, vertexSet=0, v0=271, v1=270, v2=272}
+11:45:09: Triangle 193 = {indexSet=0, vertexSet=0, v0=273, v1=271, v2=272}
+11:45:09: Triangle 194 = {indexSet=0, vertexSet=0, v0=255, v1=257, v2=273}
+11:45:09: Triangle 195 = {indexSet=0, vertexSet=0, v0=255, v1=273, v2=272}
+11:45:09: Triangle 196 = {indexSet=0, vertexSet=0, v0=255, v1=272, v2=274}
+11:45:09: Triangle 197 = {indexSet=0, vertexSet=0, v0=275, v1=255, v2=274}
+11:45:09: Triangle 198 = {indexSet=0, vertexSet=0, v0=275, v1=274, v2=263}
+11:45:09: Triangle 199 = {indexSet=0, vertexSet=0, v0=275, v1=263, v2=264}
+11:45:09: Triangle 200 = {indexSet=0, vertexSet=0, v0=276, v1=277, v2=278}
+11:45:09: Triangle 201 = {indexSet=0, vertexSet=0, v0=276, v1=278, v2=279}
+11:45:09: Triangle 202 = {indexSet=0, vertexSet=0, v0=280, v1=281, v2=282}
+11:45:09: Triangle 203 = {indexSet=0, vertexSet=0, v0=280, v1=282, v2=283}
+11:45:09: Triangle 204 = {indexSet=0, vertexSet=0, v0=284, v1=285, v2=286}
+11:45:09: Triangle 205 = {indexSet=0, vertexSet=0, v0=284, v1=286, v2=287}
+11:45:09: Triangle 206 = {indexSet=0, vertexSet=0, v0=288, v1=289, v2=290}
+11:45:09: Triangle 207 = {indexSet=0, vertexSet=0, v0=288, v1=290, v2=291}
+11:45:09: Triangle 208 = {indexSet=0, vertexSet=0, v0=292, v1=293, v2=294}
+11:45:09: Triangle 209 = {indexSet=0, vertexSet=0, v0=292, v1=294, v2=295}
+11:45:09: Triangle 210 = {indexSet=0, vertexSet=0, v0=296, v1=297, v2=298}
+11:45:09: Triangle 211 = {indexSet=0, vertexSet=0, v0=296, v1=298, v2=299}
+11:45:09: Triangle 212 = {indexSet=0, vertexSet=0, v0=300, v1=301, v2=302}
+11:45:09: Triangle 213 = {indexSet=0, vertexSet=0, v0=300, v1=302, v2=303}
+11:45:09: Triangle 214 = {indexSet=0, vertexSet=0, v0=304, v1=305, v2=306}
+11:45:09: Triangle 215 = {indexSet=0, vertexSet=0, v0=304, v1=306, v2=307}
+11:45:09: Triangle 216 = {indexSet=0, vertexSet=0, v0=308, v1=309, v2=310}
+11:45:09: Triangle 217 = {indexSet=0, vertexSet=0, v0=308, v1=310, v2=311}
+11:45:09: Triangle 218 = {indexSet=0, vertexSet=0, v0=312, v1=313, v2=314}
+11:45:09: Triangle 219 = {indexSet=0, vertexSet=0, v0=312, v1=314, v2=315}
+11:45:09: Triangle 220 = {indexSet=0, vertexSet=0, v0=316, v1=317, v2=318}
+11:45:09: Triangle 221 = {indexSet=0, vertexSet=0, v0=316, v1=318, v2=319}
+11:45:09: Triangle 222 = {indexSet=0, vertexSet=0, v0=320, v1=321, v2=322}
+11:45:09: Triangle 223 = {indexSet=0, vertexSet=0, v0=320, v1=322, v2=323}
+11:45:09: Triangle 224 = {indexSet=0, vertexSet=0, v0=324, v1=325, v2=326}
+11:45:09: Triangle 225 = {indexSet=0, vertexSet=0, v0=324, v1=327, v2=325}
+11:45:09: Triangle 226 = {indexSet=0, vertexSet=0, v0=328, v1=327, v2=324}
+11:45:09: Triangle 227 = {indexSet=0, vertexSet=0, v0=328, v1=329, v2=327}
+11:45:09: Triangle 228 = {indexSet=0, vertexSet=0, v0=330, v1=329, v2=328}
+11:45:09: Triangle 229 = {indexSet=0, vertexSet=0, v0=330, v1=331, v2=329}
+11:45:09: Triangle 230 = {indexSet=0, vertexSet=0, v0=330, v1=332, v2=331}
+11:45:09: Triangle 231 = {indexSet=0, vertexSet=0, v0=330, v1=333, v2=332}
+11:45:09: Triangle 232 = {indexSet=0, vertexSet=0, v0=326, v1=333, v2=330}
+11:45:09: Triangle 233 = {indexSet=0, vertexSet=0, v0=326, v1=334, v2=333}
+11:45:09: Triangle 234 = {indexSet=0, vertexSet=0, v0=325, v1=334, v2=326}
+11:45:09: Triangle 235 = {indexSet=0, vertexSet=0, v0=325, v1=335, v2=334}
+11:45:09: Triangle 236 = {indexSet=0, vertexSet=0, v0=331, v1=335, v2=325}
+11:45:09: Triangle 237 = {indexSet=0, vertexSet=0, v0=331, v1=332, v2=335}
+11:45:09: Triangle 238 = {indexSet=0, vertexSet=0, v0=336, v1=337, v2=338}
+11:45:09: Triangle 239 = {indexSet=0, vertexSet=0, v0=336, v1=338, v2=339}
+11:45:09: Triangle 240 = {indexSet=0, vertexSet=0, v0=340, v1=336, v2=339}
+11:45:09: Triangle 241 = {indexSet=0, vertexSet=0, v0=340, v1=339, v2=341}
+11:45:09: Triangle 242 = {indexSet=0, vertexSet=0, v0=342, v1=340, v2=341}
+11:45:09: Triangle 243 = {indexSet=0, vertexSet=0, v0=342, v1=341, v2=343}
+11:45:09: Triangle 244 = {indexSet=0, vertexSet=0, v0=342, v1=343, v2=344}
+11:45:09: Triangle 245 = {indexSet=0, vertexSet=0, v0=342, v1=344, v2=345}
+11:45:09: Triangle 246 = {indexSet=0, vertexSet=0, v0=337, v1=342, v2=345}
+11:45:09: Triangle 247 = {indexSet=0, vertexSet=0, v0=337, v1=345, v2=346}
+11:45:09: Triangle 248 = {indexSet=0, vertexSet=0, v0=338, v1=337, v2=346}
+11:45:09: Triangle 249 = {indexSet=0, vertexSet=0, v0=338, v1=346, v2=347}
+11:45:09: Triangle 250 = {indexSet=0, vertexSet=0, v0=343, v1=338, v2=347}
+11:45:09: Triangle 251 = {indexSet=0, vertexSet=0, v0=343, v1=347, v2=344}
+11:45:09: Edge Group vertexSet=0
+11:45:09: Edge 0 = {
+  tri0=0, 
+  tri1=37, 
+  v0=0, 
+  v1=1, 
+  degenerate=false 
+}
+11:45:09: Edge 1 = {
+  tri0=0, 
+  tri1=3, 
+  v0=1, 
+  v1=2, 
+  degenerate=false 
+}
+11:45:09: Edge 2 = {
+  tri0=0, 
+  tri1=1, 
+  v0=2, 
+  v1=0, 
+  degenerate=false 
+}
+11:45:09: Edge 3 = {
+  tri0=1, 
+  tri1=58, 
+  v0=2, 
+  v1=3, 
+  degenerate=false 
+}
+11:45:09: Edge 4 = {
+  tri0=1, 
+  tri1=8, 
+  v0=3, 
+  v1=0, 
+  degenerate=false 
+}
+11:45:09: Edge 5 = {
+  tri0=2, 
+  tri1=35, 
+  v0=4, 
+  v1=5, 
+  degenerate=false 
+}
+11:45:09: Edge 6 = {
+  tri0=2, 
+  tri1=5, 
+  v0=5, 
+  v1=6, 
+  degenerate=false 
+}
+11:45:09: Edge 7 = {
+  tri0=2, 
+  tri1=3, 
+  v0=6, 
+  v1=4, 
+  degenerate=false 
+}
+11:45:09: Edge 8 = {
+  tri0=3, 
+  tri1=56, 
+  v0=6, 
+  v1=7, 
+  degenerate=false 
+}
+11:45:09: Edge 9 = {
+  tri0=4, 
+  tri1=48, 
+  v0=8, 
+  v1=9, 
+  degenerate=false 
+}
+11:45:09: Edge 10 = {
+  tri0=4, 
+  tri1=7, 
+  v0=9, 
+  v1=10, 
+  degenerate=false 
+}
+11:45:09: Edge 11 = {
+  tri0=4, 
+  tri1=5, 
+  v0=10, 
+  v1=8, 
+  degenerate=false 
+}
+11:45:09: Edge 12 = {
+  tri0=5, 
+  tri1=69, 
+  v0=10, 
+  v1=11, 
+  degenerate=false 
+}
+11:45:09: Edge 13 = {
+  tri0=6, 
+  tri1=51, 
+  v0=12, 
+  v1=13, 
+  degenerate=false 
+}
+11:45:09: Edge 14 = {
+  tri0=6, 
+  tri1=9, 
+  v0=13, 
+  v1=14, 
+  degenerate=false 
+}
+11:45:09: Edge 15 = {
+  tri0=6, 
+  tri1=7, 
+  v0=14, 
+  v1=12, 
+  degenerate=false 
+}
+11:45:09: Edge 16 = {
+  tri0=7, 
+  tri1=72, 
+  v0=14, 
+  v1=15, 
+  degenerate=false 
+}
+11:45:09: Edge 17 = {
+  tri0=8, 
+  tri1=53, 
+  v0=16, 
+  v1=17, 
+  degenerate=false 
+}
+11:45:09: Edge 18 = {
+  tri0=8, 
+  tri1=9, 
+  v0=18, 
+  v1=16, 
+  degenerate=false 
+}
+11:45:09: Edge 19 = {
+  tri0=9, 
+  tri1=74, 
+  v0=18, 
+  v1=19, 
+  degenerate=false 
+}
+11:45:09: Edge 20 = {
+  tri0=10, 
+  tri1=34, 
+  v0=20, 
+  v1=21, 
+  degenerate=false 
+}
+11:45:09: Edge 21 = {
+  tri0=10, 
+  tri1=13, 
+  v0=21, 
+  v1=22, 
+  degenerate=false 
+}
+11:45:09: Edge 22 = {
+  tri0=10, 
+  tri1=11, 
+  v0=22, 
+  v1=20, 
+  degenerate=false 
+}
+11:45:09: Edge 23 = {
+  tri0=11, 
+  tri1=55, 
+  v0=22, 
+  v1=23, 
+  degenerate=false 
+}
+11:45:09: Edge 24 = {
+  tri0=11, 
+  tri1=16, 
+  v0=23, 
+  v1=20, 
+  degenerate=false 
+}
+11:45:09: Edge 25 = {
+  tri0=12, 
+  tri1=54, 
+  v0=24, 
+  v1=25, 
+  degenerate=false 
+}
+11:45:09: Edge 26 = {
+  tri0=12, 
+  tri1=15, 
+  v0=25, 
+  v1=26, 
+  degenerate=false 
+}
+11:45:09: Edge 27 = {
+  tri0=12, 
+  tri1=13, 
+  v0=26, 
+  v1=24, 
+  degenerate=false 
+}
+11:45:09: Edge 28 = {
+  tri0=13, 
+  tri1=75, 
+  v0=26, 
+  v1=27, 
+  degenerate=false 
+}
+11:45:09: Edge 29 = {
+  tri0=14, 
+  tri1=52, 
+  v0=28, 
+  v1=29, 
+  degenerate=false 
+}
+11:45:09: Edge 30 = {
+  tri0=14, 
+  tri1=17, 
+  v0=29, 
+  v1=30, 
+  degenerate=false 
+}
+11:45:09: Edge 31 = {
+  tri0=14, 
+  tri1=15, 
+  v0=30, 
+  v1=28, 
+  degenerate=false 
+}
+11:45:09: Edge 32 = {
+  tri0=15, 
+  tri1=73, 
+  v0=30, 
+  v1=31, 
+  degenerate=false 
+}
+11:45:09: Edge 33 = {
+  tri0=16, 
+  tri1=39, 
+  v0=32, 
+  v1=33, 
+  degenerate=false 
+}
+11:45:09: Edge 34 = {
+  tri0=16, 
+  tri1=17, 
+  v0=34, 
+  v1=32, 
+  degenerate=false 
+}
+11:45:09: Edge 35 = {
+  tri0=17, 
+  tri1=60, 
+  v0=34, 
+  v1=35, 
+  degenerate=false 
+}
+11:45:09: Edge 36 = {
+  tri0=18, 
+  tri1=36, 
+  v0=36, 
+  v1=37, 
+  degenerate=false 
+}
+11:45:09: Edge 37 = {
+  tri0=18, 
+  tri1=21, 
+  v0=37, 
+  v1=38, 
+  degenerate=false 
+}
+11:45:09: Edge 38 = {
+  tri0=18, 
+  tri1=19, 
+  v0=38, 
+  v1=36, 
+  degenerate=false 
+}
+11:45:09: Edge 39 = {
+  tri0=19, 
+  tri1=57, 
+  v0=38, 
+  v1=39, 
+  degenerate=false 
+}
+11:45:09: Edge 40 = {
+  tri0=19, 
+  tri1=24, 
+  v0=39, 
+  v1=36, 
+  degenerate=false 
+}
+11:45:09: Edge 41 = {
+  tri0=20, 
+  tri1=38, 
+  v0=40, 
+  v1=41, 
+  degenerate=false 
+}
+11:45:09: Edge 42 = {
+  tri0=20, 
+  tri1=23, 
+  v0=41, 
+  v1=42, 
+  degenerate=false 
+}
+11:45:09: Edge 43 = {
+  tri0=20, 
+  tri1=21, 
+  v0=42, 
+  v1=40, 
+  degenerate=false 
+}
+11:45:09: Edge 44 = {
+  tri0=21, 
+  tri1=59, 
+  v0=42, 
+  v1=43, 
+  degenerate=false 
+}
+11:45:09: Edge 45 = {
+  tri0=22, 
+  tri1=41, 
+  v0=44, 
+  v1=45, 
+  degenerate=false 
+}
+11:45:09: Edge 46 = {
+  tri0=22, 
+  tri1=25, 
+  v0=45, 
+  v1=46, 
+  degenerate=false 
+}
+11:45:09: Edge 47 = {
+  tri0=22, 
+  tri1=23, 
+  v0=46, 
+  v1=44, 
+  degenerate=false 
+}
+11:45:09: Edge 48 = {
+  tri0=23, 
+  tri1=62, 
+  v0=46, 
+  v1=47, 
+  degenerate=false 
+}
+11:45:09: Edge 49 = {
+  tri0=24, 
+  tri1=44, 
+  v0=48, 
+  v1=49, 
+  degenerate=false 
+}
+11:45:09: Edge 50 = {
+  tri0=24, 
+  tri1=25, 
+  v0=50, 
+  v1=48, 
+  degenerate=false 
+}
+11:45:09: Edge 51 = {
+  tri0=25, 
+  tri1=65, 
+  v0=50, 
+  v1=51, 
+  degenerate=false 
+}
+11:45:09: Edge 52 = {
+  tri0=26, 
+  tri1=47, 
+  v0=52, 
+  v1=53, 
+  degenerate=false 
+}
+11:45:09: Edge 53 = {
+  tri0=26, 
+  tri1=29, 
+  v0=53, 
+  v1=54, 
+  degenerate=false 
+}
+11:45:09: Edge 54 = {
+  tri0=26, 
+  tri1=27, 
+  v0=54, 
+  v1=52, 
+  degenerate=false 
+}
+11:45:09: Edge 55 = {
+  tri0=27, 
+  tri1=68, 
+  v0=54, 
+  v1=55, 
+  degenerate=false 
+}
+11:45:09: Edge 56 = {
+  tri0=27, 
+  tri1=32, 
+  v0=55, 
+  v1=52, 
+  degenerate=false 
+}
+11:45:09: Edge 57 = {
+  tri0=28, 
+  tri1=45, 
+  v0=56, 
+  v1=57, 
+  degenerate=false 
+}
+11:45:09: Edge 58 = {
+  tri0=28, 
+  tri1=31, 
+  v0=57, 
+  v1=58, 
+  degenerate=false 
+}
+11:45:09: Edge 59 = {
+  tri0=28, 
+  tri1=29, 
+  v0=58, 
+  v1=56, 
+  degenerate=false 
+}
+11:45:09: Edge 60 = {
+  tri0=29, 
+  tri1=66, 
+  v0=58, 
+  v1=59, 
+  degenerate=false 
+}
+11:45:09: Edge 61 = {
+  tri0=30, 
+  tri1=42, 
+  v0=60, 
+  v1=61, 
+  degenerate=false 
+}
+11:45:09: Edge 62 = {
+  tri0=30, 
+  tri1=33, 
+  v0=61, 
+  v1=62, 
+  degenerate=false 
+}
+11:45:09: Edge 63 = {
+  tri0=30, 
+  tri1=31, 
+  v0=62, 
+  v1=60, 
+  degenerate=false 
+}
+11:45:09: Edge 64 = {
+  tri0=31, 
+  tri1=63, 
+  v0=62, 
+  v1=63, 
+  degenerate=false 
+}
+11:45:09: Edge 65 = {
+  tri0=32, 
+  tri1=49, 
+  v0=64, 
+  v1=65, 
+  degenerate=false 
+}
+11:45:09: Edge 66 = {
+  tri0=32, 
+  tri1=33, 
+  v0=66, 
+  v1=64, 
+  degenerate=false 
+}
+11:45:09: Edge 67 = {
+  tri0=33, 
+  tri1=70, 
+  v0=66, 
+  v1=67, 
+  degenerate=false 
+}
+11:45:09: Edge 68 = {
+  tri0=34, 
+  tri1=54, 
+  v0=68, 
+  v1=69, 
+  degenerate=false 
+}
+11:45:09: Edge 69 = {
+  tri0=34, 
+  tri1=40, 
+  v0=70, 
+  v1=68, 
+  degenerate=false 
+}
+11:45:09: Edge 70 = {
+  tri0=35, 
+  tri1=46, 
+  v0=71, 
+  v1=72, 
+  degenerate=false 
+}
+11:45:09: Edge 71 = {
+  tri0=35, 
+  tri1=36, 
+  v0=73, 
+  v1=71, 
+  degenerate=false 
+}
+11:45:09: Edge 72 = {
+  tri0=36, 
+  tri1=37, 
+  v0=73, 
+  v1=74, 
+  degenerate=false 
+}
+11:45:09: Edge 73 = {
+  tri0=37, 
+  tri1=38, 
+  v0=68, 
+  v1=74, 
+  degenerate=false 
+}
+11:45:09: Edge 74 = {
+  tri0=38, 
+  tri1=40, 
+  v0=68, 
+  v1=75, 
+  degenerate=false 
+}
+11:45:09: Edge 75 = {
+  tri0=39, 
+  tri1=42, 
+  v0=76, 
+  v1=70, 
+  degenerate=false 
+}
+11:45:09: Edge 76 = {
+  tri0=39, 
+  tri1=50, 
+  v0=77, 
+  v1=76, 
+  degenerate=false 
+}
+11:45:09: Edge 77 = {
+  tri0=40, 
+  tri1=41, 
+  v0=70, 
+  v1=75, 
+  degenerate=false 
+}
+11:45:09: Edge 78 = {
+  tri0=41, 
+  tri1=43, 
+  v0=70, 
+  v1=78, 
+  degenerate=false 
+}
+11:45:09: Edge 79 = {
+  tri0=42, 
+  tri1=43, 
+  v0=79, 
+  v1=70, 
+  degenerate=false 
+}
+11:45:09: Edge 80 = {
+  tri0=43, 
+  tri1=44, 
+  v0=79, 
+  v1=78, 
+  degenerate=false 
+}
+11:45:09: Edge 81 = {
+  tri0=44, 
+  tri1=45, 
+  v0=79, 
+  v1=71, 
+  degenerate=false 
+}
+11:45:09: Edge 82 = {
+  tri0=45, 
+  tri1=46, 
+  v0=80, 
+  v1=71, 
+  degenerate=false 
+}
+11:45:09: Edge 83 = {
+  tri0=46, 
+  tri1=47, 
+  v0=80, 
+  v1=72, 
+  degenerate=false 
+}
+11:45:09: Edge 84 = {
+  tri0=47, 
+  tri1=48, 
+  v0=81, 
+  v1=72, 
+  degenerate=false 
+}
+11:45:09: Edge 85 = {
+  tri0=48, 
+  tri1=49, 
+  v0=81, 
+  v1=82, 
+  degenerate=false 
+}
+11:45:09: Edge 86 = {
+  tri0=49, 
+  tri1=50, 
+  v0=76, 
+  v1=82, 
+  degenerate=false 
+}
+11:45:09: Edge 87 = {
+  tri0=50, 
+  tri1=51, 
+  v0=77, 
+  v1=82, 
+  degenerate=false 
+}
+11:45:09: Edge 88 = {
+  tri0=51, 
+  tri1=52, 
+  v0=77, 
+  v1=83, 
+  degenerate=false 
+}
+11:45:09: Edge 89 = {
+  tri0=52, 
+  tri1=53, 
+  v0=84, 
+  v1=83, 
+  degenerate=false 
+}
+11:45:09: Edge 90 = {
+  tri0=53, 
+  tri1=54, 
+  v0=84, 
+  v1=68, 
+  degenerate=false 
+}
+11:45:09: Edge 91 = {
+  tri0=55, 
+  tri1=61, 
+  v0=85, 
+  v1=86, 
+  degenerate=false 
+}
+11:45:09: Edge 92 = {
+  tri0=55, 
+  tri1=75, 
+  v0=87, 
+  v1=85, 
+  degenerate=false 
+}
+11:45:09: Edge 93 = {
+  tri0=56, 
+  tri1=57, 
+  v0=88, 
+  v1=89, 
+  degenerate=false 
+}
+11:45:09: Edge 94 = {
+  tri0=56, 
+  tri1=67, 
+  v0=90, 
+  v1=88, 
+  degenerate=false 
+}
+11:45:09: Edge 95 = {
+  tri0=57, 
+  tri1=58, 
+  v0=91, 
+  v1=89, 
+  degenerate=false 
+}
+11:45:09: Edge 96 = {
+  tri0=58, 
+  tri1=59, 
+  v0=91, 
+  v1=85, 
+  degenerate=false 
+}
+11:45:09: Edge 97 = {
+  tri0=59, 
+  tri1=61, 
+  v0=92, 
+  v1=85, 
+  degenerate=false 
+}
+11:45:09: Edge 98 = {
+  tri0=60, 
+  tri1=71, 
+  v0=93, 
+  v1=94, 
+  degenerate=false 
+}
+11:45:09: Edge 99 = {
+  tri0=60, 
+  tri1=63, 
+  v0=86, 
+  v1=93, 
+  degenerate=false 
+}
+11:45:09: Edge 100 = {
+  tri0=61, 
+  tri1=62, 
+  v0=92, 
+  v1=86, 
+  degenerate=false 
+}
+11:45:09: Edge 101 = {
+  tri0=62, 
+  tri1=64, 
+  v0=95, 
+  v1=86, 
+  degenerate=false 
+}
+11:45:09: Edge 102 = {
+  tri0=63, 
+  tri1=64, 
+  v0=86, 
+  v1=96, 
+  degenerate=false 
+}
+11:45:09: Edge 103 = {
+  tri0=64, 
+  tri1=65, 
+  v0=95, 
+  v1=96, 
+  degenerate=false 
+}
+11:45:09: Edge 104 = {
+  tri0=65, 
+  tri1=66, 
+  v0=88, 
+  v1=96, 
+  degenerate=false 
+}
+11:45:09: Edge 105 = {
+  tri0=66, 
+  tri1=67, 
+  v0=88, 
+  v1=97, 
+  degenerate=false 
+}
+11:45:09: Edge 106 = {
+  tri0=67, 
+  tri1=68, 
+  v0=90, 
+  v1=97, 
+  degenerate=false 
+}
+11:45:09: Edge 107 = {
+  tri0=68, 
+  tri1=69, 
+  v0=90, 
+  v1=98, 
+  degenerate=false 
+}
+11:45:09: Edge 108 = {
+  tri0=69, 
+  tri1=70, 
+  v0=99, 
+  v1=98, 
+  degenerate=false 
+}
+11:45:09: Edge 109 = {
+  tri0=70, 
+  tri1=71, 
+  v0=99, 
+  v1=93, 
+  degenerate=false 
+}
+11:45:09: Edge 110 = {
+  tri0=71, 
+  tri1=72, 
+  v0=99, 
+  v1=94, 
+  degenerate=false 
+}
+11:45:09: Edge 111 = {
+  tri0=72, 
+  tri1=73, 
+  v0=100, 
+  v1=94, 
+  degenerate=false 
+}
+11:45:09: Edge 112 = {
+  tri0=73, 
+  tri1=74, 
+  v0=100, 
+  v1=101, 
+  degenerate=false 
+}
+11:45:09: Edge 113 = {
+  tri0=74, 
+  tri1=75, 
+  v0=85, 
+  v1=101, 
+  degenerate=false 
+}
+11:45:09: Edge 114 = {
+  tri0=76, 
+  tri1=95, 
+  v0=102, 
+  v1=103, 
+  degenerate=false 
+}
+11:45:09: Edge 115 = {
+  tri0=76, 
+  tri1=79, 
+  v0=103, 
+  v1=104, 
+  degenerate=false 
+}
+11:45:09: Edge 116 = {
+  tri0=76, 
+  tri1=77, 
+  v0=104, 
+  v1=102, 
+  degenerate=false 
+}
+11:45:09: Edge 117 = {
+  tri0=77, 
+  tri1=101, 
+  v0=104, 
+  v1=105, 
+  degenerate=false 
+}
+11:45:09: Edge 118 = {
+  tri0=77, 
+  tri1=90, 
+  v0=105, 
+  v1=102, 
+  degenerate=false 
+}
+11:45:09: Edge 119 = {
+  tri0=78, 
+  tri1=97, 
+  v0=106, 
+  v1=107, 
+  degenerate=false 
+}
+11:45:09: Edge 120 = {
+  tri0=78, 
+  tri1=81, 
+  v0=107, 
+  v1=108, 
+  degenerate=false 
+}
+11:45:09: Edge 121 = {
+  tri0=78, 
+  tri1=79, 
+  v0=108, 
+  v1=106, 
+  degenerate=false 
+}
+11:45:09: Edge 122 = {
+  tri0=79, 
+  tri1=103, 
+  v0=108, 
+  v1=109, 
+  degenerate=false 
+}
+11:45:09: Edge 123 = {
+  tri0=80, 
+  tri1=97, 
+  v0=110, 
+  v1=111, 
+  degenerate=false 
+}
+11:45:09: Edge 124 = {
+  tri0=80, 
+  tri1=83, 
+  v0=111, 
+  v1=112, 
+  degenerate=false 
+}
+11:45:09: Edge 125 = {
+  tri0=80, 
+  tri1=81, 
+  v0=112, 
+  v1=110, 
+  degenerate=false 
+}
+11:45:09: Edge 126 = {
+  tri0=81, 
+  tri1=103, 
+  v0=112, 
+  v1=113, 
+  degenerate=false 
+}
+11:45:09: Edge 127 = {
+  tri0=82, 
+  tri1=96, 
+  v0=114, 
+  v1=115, 
+  degenerate=false 
+}
+11:45:09: Edge 128 = {
+  tri0=82, 
+  tri1=85, 
+  v0=115, 
+  v1=116, 
+  degenerate=false 
+}
+11:45:09: Edge 129 = {
+  tri0=82, 
+  tri1=83, 
+  v0=116, 
+  v1=114, 
+  degenerate=false 
+}
+11:45:09: Edge 130 = {
+  tri0=83, 
+  tri1=102, 
+  v0=116, 
+  v1=117, 
+  degenerate=false 
+}
+11:45:09: Edge 131 = {
+  tri0=84, 
+  tri1=94, 
+  v0=118, 
+  v1=119, 
+  degenerate=false 
+}
+11:45:09: Edge 132 = {
+  tri0=84, 
+  tri1=87, 
+  v0=119, 
+  v1=120, 
+  degenerate=false 
+}
+11:45:09: Edge 133 = {
+  tri0=84, 
+  tri1=85, 
+  v0=120, 
+  v1=118, 
+  degenerate=false 
+}
+11:45:09: Edge 134 = {
+  tri0=85, 
+  tri1=100, 
+  v0=120, 
+  v1=121, 
+  degenerate=false 
+}
+11:45:09: Edge 135 = {
+  tri0=86, 
+  tri1=93, 
+  v0=122, 
+  v1=123, 
+  degenerate=false 
+}
+11:45:09: Edge 136 = {
+  tri0=86, 
+  tri1=89, 
+  v0=123, 
+  v1=124, 
+  degenerate=false 
+}
+11:45:09: Edge 137 = {
+  tri0=86, 
+  tri1=87, 
+  v0=124, 
+  v1=122, 
+  degenerate=false 
+}
+11:45:09: Edge 138 = {
+  tri0=87, 
+  tri1=99, 
+  v0=124, 
+  v1=125, 
+  degenerate=false 
+}
+11:45:09: Edge 139 = {
+  tri0=88, 
+  tri1=92, 
+  v0=126, 
+  v1=127, 
+  degenerate=false 
+}
+11:45:09: Edge 140 = {
+  tri0=88, 
+  tri1=91, 
+  v0=127, 
+  v1=128, 
+  degenerate=false 
+}
+11:45:09: Edge 141 = {
+  tri0=88, 
+  tri1=89, 
+  v0=128, 
+  v1=126, 
+  degenerate=false 
+}
+11:45:09: Edge 142 = {
+  tri0=89, 
+  tri1=98, 
+  v0=128, 
+  v1=129, 
+  degenerate=false 
+}
+11:45:09: Edge 143 = {
+  tri0=90, 
+  tri1=92, 
+  v0=130, 
+  v1=131, 
+  degenerate=false 
+}
+11:45:09: Edge 144 = {
+  tri0=90, 
+  tri1=91, 
+  v0=132, 
+  v1=130, 
+  degenerate=false 
+}
+11:45:09: Edge 145 = {
+  tri0=91, 
+  tri1=98, 
+  v0=132, 
+  v1=133, 
+  degenerate=false 
+}
+11:45:09: Edge 146 = {
+  tri0=92, 
+  tri1=93, 
+  v0=134, 
+  v1=135, 
+  degenerate=false 
+}
+11:45:09: Edge 147 = {
+  tri0=93, 
+  tri1=94, 
+  v0=137, 
+  v1=135, 
+  degenerate=false 
+}
+11:45:09: Edge 148 = {
+  tri0=94, 
+  tri1=95, 
+  v0=138, 
+  v1=135, 
+  degenerate=false 
+}
+11:45:09: Edge 149 = {
+  tri0=95, 
+  tri1=96, 
+  v0=138, 
+  v1=139, 
+  degenerate=false 
+}
+11:45:09: Edge 150 = {
+  tri0=96, 
+  tri1=97, 
+  v0=140, 
+  v1=139, 
+  degenerate=false 
+}
+11:45:09: Edge 151 = {
+  tri0=98, 
+  tri1=99, 
+  v0=144, 
+  v1=142, 
+  degenerate=false 
+}
+11:45:09: Edge 152 = {
+  tri0=99, 
+  tri1=100, 
+  v0=144, 
+  v1=145, 
+  degenerate=false 
+}
+11:45:09: Edge 153 = {
+  tri0=100, 
+  tri1=101, 
+  v0=144, 
+  v1=146, 
+  degenerate=false 
+}
+11:45:09: Edge 154 = {
+  tri0=101, 
+  tri1=102, 
+  v0=147, 
+  v1=146, 
+  degenerate=false 
+}
+11:45:09: Edge 155 = {
+  tri0=102, 
+  tri1=103, 
+  v0=147, 
+  v1=148, 
+  degenerate=false 
+}
+11:45:09: Edge 156 = {
+  tri0=104, 
+  tri1=152, 
+  v0=150, 
+  v1=151, 
+  degenerate=false 
+}
+11:45:09: Edge 157 = {
+  tri0=104, 
+  tri1=107, 
+  v0=151, 
+  v1=152, 
+  degenerate=false 
+}
+11:45:09: Edge 158 = {
+  tri0=104, 
+  tri1=105, 
+  v0=152, 
+  v1=150, 
+  degenerate=false 
+}
+11:45:09: Edge 159 = {
+  tri0=105, 
+  tri1=179, 
+  v0=152, 
+  v1=153, 
+  degenerate=false 
+}
+11:45:09: Edge 160 = {
+  tri0=105, 
+  tri1=112, 
+  v0=153, 
+  v1=150, 
+  degenerate=false 
+}
+11:45:09: Edge 161 = {
+  tri0=106, 
+  tri1=161, 
+  v0=154, 
+  v1=155, 
+  degenerate=false 
+}
+11:45:09: Edge 162 = {
+  tri0=106, 
+  tri1=109, 
+  v0=155, 
+  v1=156, 
+  degenerate=false 
+}
+11:45:09: Edge 163 = {
+  tri0=106, 
+  tri1=107, 
+  v0=156, 
+  v1=154, 
+  degenerate=false 
+}
+11:45:09: Edge 164 = {
+  tri0=107, 
+  tri1=188, 
+  v0=156, 
+  v1=157, 
+  degenerate=false 
+}
+11:45:09: Edge 165 = {
+  tri0=108, 
+  tri1=165, 
+  v0=158, 
+  v1=159, 
+  degenerate=false 
+}
+11:45:09: Edge 166 = {
+  tri0=108, 
+  tri1=111, 
+  v0=159, 
+  v1=160, 
+  degenerate=false 
+}
+11:45:09: Edge 167 = {
+  tri0=108, 
+  tri1=109, 
+  v0=160, 
+  v1=158, 
+  degenerate=false 
+}
+11:45:09: Edge 168 = {
+  tri0=109, 
+  tri1=192, 
+  v0=160, 
+  v1=161, 
+  degenerate=false 
+}
+11:45:09: Edge 169 = {
+  tri0=110, 
+  tri1=169, 
+  v0=162, 
+  v1=163, 
+  degenerate=false 
+}
+11:45:09: Edge 170 = {
+  tri0=110, 
+  tri1=113, 
+  v0=163, 
+  v1=164, 
+  degenerate=false 
+}
+11:45:09: Edge 171 = {
+  tri0=110, 
+  tri1=111, 
+  v0=164, 
+  v1=162, 
+  degenerate=false 
+}
+11:45:09: Edge 172 = {
+  tri0=111, 
+  tri1=196, 
+  v0=164, 
+  v1=165, 
+  degenerate=false 
+}
+11:45:09: Edge 173 = {
+  tri0=112, 
+  tri1=171, 
+  v0=166, 
+  v1=167, 
+  degenerate=false 
+}
+11:45:09: Edge 174 = {
+  tri0=112, 
+  tri1=113, 
+  v0=168, 
+  v1=166, 
+  degenerate=false 
+}
+11:45:09: Edge 175 = {
+  tri0=113, 
+  tri1=198, 
+  v0=168, 
+  v1=169, 
+  degenerate=false 
+}
+11:45:09: Edge 176 = {
+  tri0=114, 
+  tri1=150, 
+  v0=170, 
+  v1=171, 
+  degenerate=false 
+}
+11:45:09: Edge 177 = {
+  tri0=114, 
+  tri1=117, 
+  v0=171, 
+  v1=172, 
+  degenerate=false 
+}
+11:45:09: Edge 178 = {
+  tri0=114, 
+  tri1=115, 
+  v0=172, 
+  v1=170, 
+  degenerate=false 
+}
+11:45:09: Edge 179 = {
+  tri0=115, 
+  tri1=177, 
+  v0=172, 
+  v1=173, 
+  degenerate=false 
+}
+11:45:09: Edge 180 = {
+  tri0=115, 
+  tri1=120, 
+  v0=173, 
+  v1=170, 
+  degenerate=false 
+}
+11:45:09: Edge 181 = {
+  tri0=116, 
+  tri1=172, 
+  v0=174, 
+  v1=175, 
+  degenerate=false 
+}
+11:45:09: Edge 182 = {
+  tri0=116, 
+  tri1=119, 
+  v0=175, 
+  v1=176, 
+  degenerate=false 
+}
+11:45:09: Edge 183 = {
+  tri0=116, 
+  tri1=117, 
+  v0=176, 
+  v1=174, 
+  degenerate=false 
+}
+11:45:09: Edge 184 = {
+  tri0=117, 
+  tri1=199, 
+  v0=176, 
+  v1=177, 
+  degenerate=false 
+}
+11:45:09: Edge 185 = {
+  tri0=118, 
+  tri1=170, 
+  v0=178, 
+  v1=179, 
+  degenerate=false 
+}
+11:45:09: Edge 186 = {
+  tri0=118, 
+  tri1=121, 
+  v0=179, 
+  v1=180, 
+  degenerate=false 
+}
+11:45:09: Edge 187 = {
+  tri0=118, 
+  tri1=119, 
+  v0=180, 
+  v1=178, 
+  degenerate=false 
+}
+11:45:09: Edge 188 = {
+  tri0=119, 
+  tri1=197, 
+  v0=180, 
+  v1=181, 
+  degenerate=false 
+}
+11:45:09: Edge 189 = {
+  tri0=120, 
+  tri1=147, 
+  v0=182, 
+  v1=183, 
+  degenerate=false 
+}
+11:45:09: Edge 190 = {
+  tri0=120, 
+  tri1=121, 
+  v0=184, 
+  v1=182, 
+  degenerate=false 
+}
+11:45:09: Edge 191 = {
+  tri0=121, 
+  tri1=174, 
+  v0=184, 
+  v1=185, 
+  degenerate=false 
+}
+11:45:09: Edge 192 = {
+  tri0=122, 
+  tri1=151, 
+  v0=186, 
+  v1=187, 
+  degenerate=false 
+}
+11:45:09: Edge 193 = {
+  tri0=122, 
+  tri1=125, 
+  v0=187, 
+  v1=188, 
+  degenerate=false 
+}
+11:45:09: Edge 194 = {
+  tri0=122, 
+  tri1=123, 
+  v0=188, 
+  v1=186, 
+  degenerate=false 
+}
+11:45:09: Edge 195 = {
+  tri0=123, 
+  tri1=178, 
+  v0=188, 
+  v1=189, 
+  degenerate=false 
+}
+11:45:09: Edge 196 = {
+  tri0=123, 
+  tri1=128, 
+  v0=189, 
+  v1=186, 
+  degenerate=false 
+}
+11:45:09: Edge 197 = {
+  tri0=124, 
+  tri1=153, 
+  v0=190, 
+  v1=191, 
+  degenerate=false 
+}
+11:45:09: Edge 198 = {
+  tri0=124, 
+  tri1=127, 
+  v0=191, 
+  v1=192, 
+  degenerate=false 
+}
+11:45:09: Edge 199 = {
+  tri0=124, 
+  tri1=125, 
+  v0=192, 
+  v1=190, 
+  degenerate=false 
+}
+11:45:09: Edge 200 = {
+  tri0=125, 
+  tri1=180, 
+  v0=192, 
+  v1=193, 
+  degenerate=false 
+}
+11:45:09: Edge 201 = {
+  tri0=126, 
+  tri1=155, 
+  v0=194, 
+  v1=195, 
+  degenerate=false 
+}
+11:45:09: Edge 202 = {
+  tri0=126, 
+  tri1=129, 
+  v0=195, 
+  v1=196, 
+  degenerate=false 
+}
+11:45:09: Edge 203 = {
+  tri0=126, 
+  tri1=127, 
+  v0=196, 
+  v1=194, 
+  degenerate=false 
+}
+11:45:09: Edge 204 = {
+  tri0=127, 
+  tri1=182, 
+  v0=196, 
+  v1=197, 
+  degenerate=false 
+}
+11:45:09: Edge 205 = {
+  tri0=128, 
+  tri1=148, 
+  v0=198, 
+  v1=199, 
+  degenerate=false 
+}
+11:45:09: Edge 206 = {
+  tri0=128, 
+  tri1=129, 
+  v0=200, 
+  v1=198, 
+  degenerate=false 
+}
+11:45:09: Edge 207 = {
+  tri0=129, 
+  tri1=175, 
+  v0=200, 
+  v1=201, 
+  degenerate=false 
+}
+11:45:09: Edge 208 = {
+  tri0=130, 
+  tri1=162, 
+  v0=202, 
+  v1=203, 
+  degenerate=false 
+}
+11:45:09: Edge 209 = {
+  tri0=130, 
+  tri1=133, 
+  v0=203, 
+  v1=204, 
+  degenerate=false 
+}
+11:45:09: Edge 210 = {
+  tri0=130, 
+  tri1=131, 
+  v0=204, 
+  v1=202, 
+  degenerate=false 
+}
+11:45:09: Edge 211 = {
+  tri0=131, 
+  tri1=189, 
+  v0=204, 
+  v1=205, 
+  degenerate=false 
+}
+11:45:09: Edge 212 = {
+  tri0=131, 
+  tri1=136, 
+  v0=205, 
+  v1=202, 
+  degenerate=false 
+}
+11:45:09: Edge 213 = {
+  tri0=132, 
+  tri1=149, 
+  v0=206, 
+  v1=207, 
+  degenerate=false 
+}
+11:45:09: Edge 214 = {
+  tri0=132, 
+  tri1=135, 
+  v0=207, 
+  v1=208, 
+  degenerate=false 
+}
+11:45:09: Edge 215 = {
+  tri0=132, 
+  tri1=133, 
+  v0=208, 
+  v1=206, 
+  degenerate=false 
+}
+11:45:09: Edge 216 = {
+  tri0=133, 
+  tri1=176, 
+  v0=208, 
+  v1=209, 
+  degenerate=false 
+}
+11:45:09: Edge 217 = {
+  tri0=134, 
+  tri1=157, 
+  v0=210, 
+  v1=211, 
+  degenerate=false 
+}
+11:45:09: Edge 218 = {
+  tri0=134, 
+  tri1=137, 
+  v0=211, 
+  v1=212, 
+  degenerate=false 
+}
+11:45:09: Edge 219 = {
+  tri0=134, 
+  tri1=135, 
+  v0=212, 
+  v1=210, 
+  degenerate=false 
+}
+11:45:09: Edge 220 = {
+  tri0=135, 
+  tri1=184, 
+  v0=212, 
+  v1=213, 
+  degenerate=false 
+}
+11:45:09: Edge 221 = {
+  tri0=136, 
+  tri1=159, 
+  v0=214, 
+  v1=215, 
+  degenerate=false 
+}
+11:45:09: Edge 222 = {
+  tri0=136, 
+  tri1=137, 
+  v0=216, 
+  v1=214, 
+  degenerate=false 
+}
+11:45:09: Edge 223 = {
+  tri0=137, 
+  tri1=186, 
+  v0=216, 
+  v1=217, 
+  degenerate=false 
+}
+11:45:09: Edge 224 = {
+  tri0=138, 
+  tri1=164, 
+  v0=218, 
+  v1=219, 
+  degenerate=false 
+}
+11:45:09: Edge 225 = {
+  tri0=138, 
+  tri1=141, 
+  v0=219, 
+  v1=220, 
+  degenerate=false 
+}
+11:45:09: Edge 226 = {
+  tri0=138, 
+  tri1=139, 
+  v0=220, 
+  v1=218, 
+  degenerate=false 
+}
+11:45:09: Edge 227 = {
+  tri0=139, 
+  tri1=191, 
+  v0=220, 
+  v1=221, 
+  degenerate=false 
+}
+11:45:09: Edge 228 = {
+  tri0=139, 
+  tri1=144, 
+  v0=221, 
+  v1=218, 
+  degenerate=false 
+}
+11:45:09: Edge 229 = {
+  tri0=140, 
+  tri1=146, 
+  v0=222, 
+  v1=223, 
+  degenerate=false 
+}
+11:45:09: Edge 230 = {
+  tri0=140, 
+  tri1=143, 
+  v0=223, 
+  v1=224, 
+  degenerate=false 
+}
+11:45:09: Edge 231 = {
+  tri0=140, 
+  tri1=141, 
+  v0=224, 
+  v1=222, 
+  degenerate=false 
+}
+11:45:09: Edge 232 = {
+  tri0=141, 
+  tri1=173, 
+  v0=224, 
+  v1=225, 
+  degenerate=false 
+}
+11:45:09: Edge 233 = {
+  tri0=142, 
+  tri1=167, 
+  v0=226, 
+  v1=227, 
+  degenerate=false 
+}
+11:45:09: Edge 234 = {
+  tri0=142, 
+  tri1=145, 
+  v0=227, 
+  v1=228, 
+  degenerate=false 
+}
+11:45:09: Edge 235 = {
+  tri0=142, 
+  tri1=143, 
+  v0=228, 
+  v1=226, 
+  degenerate=false 
+}
+11:45:09: Edge 236 = {
+  tri0=143, 
+  tri1=194, 
+  v0=228, 
+  v1=229, 
+  degenerate=false 
+}
+11:45:09: Edge 237 = {
+  tri0=144, 
+  tri1=166, 
+  v0=230, 
+  v1=231, 
+  degenerate=false 
+}
+11:45:09: Edge 238 = {
+  tri0=144, 
+  tri1=145, 
+  v0=232, 
+  v1=230, 
+  degenerate=false 
+}
+11:45:09: Edge 239 = {
+  tri0=145, 
+  tri1=193, 
+  v0=232, 
+  v1=233, 
+  degenerate=false 
+}
+11:45:09: Edge 240 = {
+  tri0=146, 
+  tri1=167, 
+  v0=234, 
+  v1=235, 
+  degenerate=false 
+}
+11:45:09: Edge 241 = {
+  tri0=146, 
+  tri1=147, 
+  v0=236, 
+  v1=234, 
+  degenerate=false 
+}
+11:45:09: Edge 242 = {
+  tri0=147, 
+  tri1=158, 
+  v0=236, 
+  v1=237, 
+  degenerate=false 
+}
+11:45:09: Edge 243 = {
+  tri0=148, 
+  tri1=160, 
+  v0=238, 
+  v1=239, 
+  degenerate=false 
+}
+11:45:09: Edge 244 = {
+  tri0=148, 
+  tri1=149, 
+  v0=240, 
+  v1=238, 
+  degenerate=false 
+}
+11:45:09: Edge 245 = {
+  tri0=149, 
+  tri1=156, 
+  v0=240, 
+  v1=241, 
+  degenerate=false 
+}
+11:45:09: Edge 246 = {
+  tri0=150, 
+  tri1=172, 
+  v0=242, 
+  v1=243, 
+  degenerate=false 
+}
+11:45:09: Edge 247 = {
+  tri0=150, 
+  tri1=154, 
+  v0=237, 
+  v1=242, 
+  degenerate=false 
+}
+11:45:09: Edge 248 = {
+  tri0=151, 
+  tri1=152, 
+  v0=244, 
+  v1=245, 
+  degenerate=false 
+}
+11:45:09: Edge 249 = {
+  tri0=151, 
+  tri1=160, 
+  v0=239, 
+  v1=244, 
+  degenerate=false 
+}
+11:45:09: Edge 250 = {
+  tri0=152, 
+  tri1=153, 
+  v0=242, 
+  v1=245, 
+  degenerate=false 
+}
+11:45:09: Edge 251 = {
+  tri0=153, 
+  tri1=154, 
+  v0=242, 
+  v1=246, 
+  degenerate=false 
+}
+11:45:09: Edge 252 = {
+  tri0=154, 
+  tri1=155, 
+  v0=237, 
+  v1=246, 
+  degenerate=false 
+}
+11:45:09: Edge 253 = {
+  tri0=155, 
+  tri1=156, 
+  v0=237, 
+  v1=240, 
+  degenerate=false 
+}
+11:45:09: Edge 254 = {
+  tri0=156, 
+  tri1=157, 
+  v0=237, 
+  v1=241, 
+  degenerate=false 
+}
+11:45:09: Edge 255 = {
+  tri0=157, 
+  tri1=158, 
+  v0=237, 
+  v1=247, 
+  degenerate=false 
+}
+11:45:09: Edge 256 = {
+  tri0=158, 
+  tri1=159, 
+  v0=236, 
+  v1=247, 
+  degenerate=false 
+}
+11:45:09: Edge 257 = {
+  tri0=159, 
+  tri1=163, 
+  v0=236, 
+  v1=248, 
+  degenerate=false 
+}
+11:45:09: Edge 258 = {
+  tri0=160, 
+  tri1=161, 
+  v0=238, 
+  v1=244, 
+  degenerate=false 
+}
+11:45:09: Edge 259 = {
+  tri0=161, 
+  tri1=162, 
+  v0=238, 
+  v1=249, 
+  degenerate=false 
+}
+11:45:09: Edge 260 = {
+  tri0=162, 
+  tri1=163, 
+  v0=248, 
+  v1=249, 
+  degenerate=false 
+}
+11:45:09: Edge 261 = {
+  tri0=163, 
+  tri1=164, 
+  v0=236, 
+  v1=249, 
+  degenerate=false 
+}
+11:45:09: Edge 262 = {
+  tri0=164, 
+  tri1=165, 
+  v0=250, 
+  v1=249, 
+  degenerate=false 
+}
+11:45:09: Edge 263 = {
+  tri0=165, 
+  tri1=166, 
+  v0=250, 
+  v1=251, 
+  degenerate=false 
+}
+11:45:09: Edge 264 = {
+  tri0=166, 
+  tri1=168, 
+  v0=252, 
+  v1=251, 
+  degenerate=false 
+}
+11:45:09: Edge 265 = {
+  tri0=167, 
+  tri1=168, 
+  v0=234, 
+  v1=252, 
+  degenerate=false 
+}
+11:45:09: Edge 266 = {
+  tri0=168, 
+  tri1=169, 
+  v0=234, 
+  v1=251, 
+  degenerate=false 
+}
+11:45:09: Edge 267 = {
+  tri0=169, 
+  tri1=170, 
+  v0=234, 
+  v1=253, 
+  degenerate=false 
+}
+11:45:09: Edge 268 = {
+  tri0=170, 
+  tri1=171, 
+  v0=254, 
+  v1=253, 
+  degenerate=false 
+}
+11:45:09: Edge 269 = {
+  tri0=171, 
+  tri1=172, 
+  v0=254, 
+  v1=242, 
+  degenerate=false 
+}
+11:45:09: Edge 270 = {
+  tri0=173, 
+  tri1=174, 
+  v0=255, 
+  v1=256, 
+  degenerate=false 
+}
+11:45:09: Edge 271 = {
+  tri0=173, 
+  tri1=194, 
+  v0=257, 
+  v1=255, 
+  degenerate=false 
+}
+11:45:09: Edge 272 = {
+  tri0=174, 
+  tri1=185, 
+  v0=258, 
+  v1=256, 
+  degenerate=false 
+}
+11:45:09: Edge 273 = {
+  tri0=175, 
+  tri1=176, 
+  v0=259, 
+  v1=260, 
+  degenerate=false 
+}
+11:45:09: Edge 274 = {
+  tri0=175, 
+  tri1=187, 
+  v0=261, 
+  v1=259, 
+  degenerate=false 
+}
+11:45:09: Edge 275 = {
+  tri0=176, 
+  tri1=183, 
+  v0=262, 
+  v1=260, 
+  degenerate=false 
+}
+11:45:09: Edge 276 = {
+  tri0=177, 
+  tri1=181, 
+  v0=263, 
+  v1=258, 
+  degenerate=false 
+}
+11:45:09: Edge 277 = {
+  tri0=177, 
+  tri1=199, 
+  v0=264, 
+  v1=263, 
+  degenerate=false 
+}
+11:45:09: Edge 278 = {
+  tri0=178, 
+  tri1=187, 
+  v0=265, 
+  v1=261, 
+  degenerate=false 
+}
+11:45:09: Edge 279 = {
+  tri0=178, 
+  tri1=179, 
+  v0=266, 
+  v1=265, 
+  degenerate=false 
+}
+11:45:09: Edge 280 = {
+  tri0=179, 
+  tri1=180, 
+  v0=266, 
+  v1=263, 
+  degenerate=false 
+}
+11:45:09: Edge 281 = {
+  tri0=180, 
+  tri1=181, 
+  v0=267, 
+  v1=263, 
+  degenerate=false 
+}
+11:45:09: Edge 282 = {
+  tri0=181, 
+  tri1=182, 
+  v0=267, 
+  v1=258, 
+  degenerate=false 
+}
+11:45:09: Edge 283 = {
+  tri0=182, 
+  tri1=183, 
+  v0=260, 
+  v1=258, 
+  degenerate=false 
+}
+11:45:09: Edge 284 = {
+  tri0=183, 
+  tri1=184, 
+  v0=262, 
+  v1=258, 
+  degenerate=false 
+}
+11:45:09: Edge 285 = {
+  tri0=184, 
+  tri1=185, 
+  v0=268, 
+  v1=258, 
+  degenerate=false 
+}
+11:45:09: Edge 286 = {
+  tri0=185, 
+  tri1=186, 
+  v0=268, 
+  v1=256, 
+  degenerate=false 
+}
+11:45:09: Edge 287 = {
+  tri0=186, 
+  tri1=190, 
+  v0=269, 
+  v1=256, 
+  degenerate=false 
+}
+11:45:09: Edge 288 = {
+  tri0=187, 
+  tri1=188, 
+  v0=265, 
+  v1=259, 
+  degenerate=false 
+}
+11:45:09: Edge 289 = {
+  tri0=188, 
+  tri1=189, 
+  v0=270, 
+  v1=259, 
+  degenerate=false 
+}
+11:45:09: Edge 290 = {
+  tri0=189, 
+  tri1=190, 
+  v0=270, 
+  v1=269, 
+  degenerate=false 
+}
+11:45:09: Edge 291 = {
+  tri0=190, 
+  tri1=191, 
+  v0=270, 
+  v1=256, 
+  degenerate=false 
+}
+11:45:09: Edge 292 = {
+  tri0=191, 
+  tri1=192, 
+  v0=270, 
+  v1=271, 
+  degenerate=false 
+}
+11:45:09: Edge 293 = {
+  tri0=192, 
+  tri1=193, 
+  v0=272, 
+  v1=271, 
+  degenerate=false 
+}
+11:45:09: Edge 294 = {
+  tri0=193, 
+  tri1=195, 
+  v0=272, 
+  v1=273, 
+  degenerate=false 
+}
+11:45:09: Edge 295 = {
+  tri0=194, 
+  tri1=195, 
+  v0=273, 
+  v1=255, 
+  degenerate=false 
+}
+11:45:09: Edge 296 = {
+  tri0=195, 
+  tri1=196, 
+  v0=272, 
+  v1=255, 
+  degenerate=false 
+}
+11:45:09: Edge 297 = {
+  tri0=196, 
+  tri1=197, 
+  v0=274, 
+  v1=255, 
+  degenerate=false 
+}
+11:45:09: Edge 298 = {
+  tri0=197, 
+  tri1=198, 
+  v0=274, 
+  v1=275, 
+  degenerate=false 
+}
+11:45:09: Edge 299 = {
+  tri0=198, 
+  tri1=199, 
+  v0=263, 
+  v1=275, 
+  degenerate=false 
+}
+11:45:09: Edge 300 = {
+  tri0=200, 
+  tri1=232, 
+  v0=276, 
+  v1=277, 
+  degenerate=false 
+}
+11:45:09: Edge 301 = {
+  tri0=200, 
+  tri1=203, 
+  v0=277, 
+  v1=278, 
+  degenerate=false 
+}
+11:45:09: Edge 302 = {
+  tri0=200, 
+  tri1=201, 
+  v0=278, 
+  v1=276, 
+  degenerate=false 
+}
+11:45:09: Edge 303 = {
+  tri0=201, 
+  tri1=246, 
+  v0=278, 
+  v1=279, 
+  degenerate=false 
+}
+11:45:09: Edge 304 = {
+  tri0=201, 
+  tri1=206, 
+  v0=279, 
+  v1=276, 
+  degenerate=false 
+}
+11:45:09: Edge 305 = {
+  tri0=202, 
+  tri1=228, 
+  v0=280, 
+  v1=281, 
+  degenerate=false 
+}
+11:45:09: Edge 306 = {
+  tri0=202, 
+  tri1=205, 
+  v0=281, 
+  v1=282, 
+  degenerate=false 
+}
+11:45:09: Edge 307 = {
+  tri0=202, 
+  tri1=203, 
+  v0=282, 
+  v1=280, 
+  degenerate=false 
+}
+11:45:09: Edge 308 = {
+  tri0=203, 
+  tri1=242, 
+  v0=282, 
+  v1=283, 
+  degenerate=false 
+}
+11:45:09: Edge 309 = {
+  tri0=204, 
+  tri1=226, 
+  v0=284, 
+  v1=285, 
+  degenerate=false 
+}
+11:45:09: Edge 310 = {
+  tri0=204, 
+  tri1=207, 
+  v0=285, 
+  v1=286, 
+  degenerate=false 
+}
+11:45:09: Edge 311 = {
+  tri0=204, 
+  tri1=205, 
+  v0=286, 
+  v1=284, 
+  degenerate=false 
+}
+11:45:09: Edge 312 = {
+  tri0=205, 
+  tri1=240, 
+  v0=286, 
+  v1=287, 
+  degenerate=false 
+}
+11:45:09: Edge 313 = {
+  tri0=206, 
+  tri1=224, 
+  v0=288, 
+  v1=289, 
+  degenerate=false 
+}
+11:45:09: Edge 314 = {
+  tri0=206, 
+  tri1=207, 
+  v0=290, 
+  v1=288, 
+  degenerate=false 
+}
+11:45:09: Edge 315 = {
+  tri0=207, 
+  tri1=238, 
+  v0=290, 
+  v1=291, 
+  degenerate=false 
+}
+11:45:09: Edge 316 = {
+  tri0=208, 
+  tri1=229, 
+  v0=292, 
+  v1=293, 
+  degenerate=false 
+}
+11:45:09: Edge 317 = {
+  tri0=208, 
+  tri1=211, 
+  v0=293, 
+  v1=294, 
+  degenerate=false 
+}
+11:45:09: Edge 318 = {
+  tri0=208, 
+  tri1=209, 
+  v0=294, 
+  v1=292, 
+  degenerate=false 
+}
+11:45:09: Edge 319 = {
+  tri0=209, 
+  tri1=243, 
+  v0=294, 
+  v1=295, 
+  degenerate=false 
+}
+11:45:09: Edge 320 = {
+  tri0=209, 
+  tri1=214, 
+  v0=295, 
+  v1=292, 
+  degenerate=false 
+}
+11:45:09: Edge 321 = {
+  tri0=210, 
+  tri1=236, 
+  v0=296, 
+  v1=297, 
+  degenerate=false 
+}
+11:45:09: Edge 322 = {
+  tri0=210, 
+  tri1=213, 
+  v0=297, 
+  v1=298, 
+  degenerate=false 
+}
+11:45:09: Edge 323 = {
+  tri0=210, 
+  tri1=211, 
+  v0=298, 
+  v1=296, 
+  degenerate=false 
+}
+11:45:09: Edge 324 = {
+  tri0=211, 
+  tri1=250, 
+  v0=298, 
+  v1=299, 
+  degenerate=false 
+}
+11:45:09: Edge 325 = {
+  tri0=212, 
+  tri1=225, 
+  v0=300, 
+  v1=301, 
+  degenerate=false 
+}
+11:45:09: Edge 326 = {
+  tri0=212, 
+  tri1=215, 
+  v0=301, 
+  v1=302, 
+  degenerate=false 
+}
+11:45:09: Edge 327 = {
+  tri0=212, 
+  tri1=213, 
+  v0=302, 
+  v1=300, 
+  degenerate=false 
+}
+11:45:09: Edge 328 = {
+  tri0=213, 
+  tri1=239, 
+  v0=302, 
+  v1=303, 
+  degenerate=false 
+}
+11:45:09: Edge 329 = {
+  tri0=214, 
+  tri1=227, 
+  v0=304, 
+  v1=305, 
+  degenerate=false 
+}
+11:45:09: Edge 330 = {
+  tri0=214, 
+  tri1=215, 
+  v0=306, 
+  v1=304, 
+  degenerate=false 
+}
+11:45:09: Edge 331 = {
+  tri0=215, 
+  tri1=241, 
+  v0=306, 
+  v1=307, 
+  degenerate=false 
+}
+11:45:09: Edge 332 = {
+  tri0=216, 
+  tri1=231, 
+  v0=308, 
+  v1=309, 
+  degenerate=false 
+}
+11:45:09: Edge 333 = {
+  tri0=216, 
+  tri1=219, 
+  v0=309, 
+  v1=310, 
+  degenerate=false 
+}
+11:45:09: Edge 334 = {
+  tri0=216, 
+  tri1=217, 
+  v0=310, 
+  v1=308, 
+  degenerate=false 
+}
+11:45:09: Edge 335 = {
+  tri0=217, 
+  tri1=245, 
+  v0=310, 
+  v1=311, 
+  degenerate=false 
+}
+11:45:09: Edge 336 = {
+  tri0=217, 
+  tri1=222, 
+  v0=311, 
+  v1=308, 
+  degenerate=false 
+}
+11:45:09: Edge 337 = {
+  tri0=218, 
+  tri1=233, 
+  v0=312, 
+  v1=313, 
+  degenerate=false 
+}
+11:45:09: Edge 338 = {
+  tri0=218, 
+  tri1=221, 
+  v0=313, 
+  v1=314, 
+  degenerate=false 
+}
+11:45:09: Edge 339 = {
+  tri0=218, 
+  tri1=219, 
+  v0=314, 
+  v1=312, 
+  degenerate=false 
+}
+11:45:09: Edge 340 = {
+  tri0=219, 
+  tri1=247, 
+  v0=314, 
+  v1=315, 
+  degenerate=false 
+}
+11:45:09: Edge 341 = {
+  tri0=220, 
+  tri1=235, 
+  v0=316, 
+  v1=317, 
+  degenerate=false 
+}
+11:45:09: Edge 342 = {
+  tri0=220, 
+  tri1=223, 
+  v0=317, 
+  v1=318, 
+  degenerate=false 
+}
+11:45:09: Edge 343 = {
+  tri0=220, 
+  tri1=221, 
+  v0=318, 
+  v1=316, 
+  degenerate=false 
+}
+11:45:09: Edge 344 = {
+  tri0=221, 
+  tri1=249, 
+  v0=318, 
+  v1=319, 
+  degenerate=false 
+}
+11:45:09: Edge 345 = {
+  tri0=222, 
+  tri1=237, 
+  v0=320, 
+  v1=321, 
+  degenerate=false 
+}
+11:45:09: Edge 346 = {
+  tri0=222, 
+  tri1=223, 
+  v0=322, 
+  v1=320, 
+  degenerate=false 
+}
+11:45:09: Edge 347 = {
+  tri0=223, 
+  tri1=251, 
+  v0=322, 
+  v1=323, 
+  degenerate=false 
+}
+11:45:09: Edge 348 = {
+  tri0=224, 
+  tri1=225, 
+  v0=324, 
+  v1=325, 
+  degenerate=false 
+}
+11:45:09: Edge 349 = {
+  tri0=224, 
+  tri1=234, 
+  v0=325, 
+  v1=326, 
+  degenerate=false 
+}
+11:45:09: Edge 350 = {
+  tri0=225, 
+  tri1=226, 
+  v0=324, 
+  v1=327, 
+  degenerate=false 
+}
+11:45:09: Edge 351 = {
+  tri0=226, 
+  tri1=227, 
+  v0=328, 
+  v1=327, 
+  degenerate=false 
+}
+11:45:09: Edge 352 = {
+  tri0=227, 
+  tri1=228, 
+  v0=328, 
+  v1=329, 
+  degenerate=false 
+}
+11:45:09: Edge 353 = {
+  tri0=228, 
+  tri1=229, 
+  v0=330, 
+  v1=329, 
+  degenerate=false 
+}
+11:45:09: Edge 354 = {
+  tri0=229, 
+  tri1=230, 
+  v0=330, 
+  v1=331, 
+  degenerate=false 
+}
+11:45:09: Edge 355 = {
+  tri0=230, 
+  tri1=231, 
+  v0=330, 
+  v1=332, 
+  degenerate=false 
+}
+11:45:09: Edge 356 = {
+  tri0=230, 
+  tri1=237, 
+  v0=332, 
+  v1=331, 
+  degenerate=false 
+}
+11:45:09: Edge 357 = {
+  tri0=231, 
+  tri1=232, 
+  v0=330, 
+  v1=333, 
+  degenerate=false 
+}
+11:45:09: Edge 358 = {
+  tri0=232, 
+  tri1=233, 
+  v0=326, 
+  v1=333, 
+  degenerate=false 
+}
+11:45:09: Edge 359 = {
+  tri0=233, 
+  tri1=234, 
+  v0=326, 
+  v1=334, 
+  degenerate=false 
+}
+11:45:09: Edge 360 = {
+  tri0=234, 
+  tri1=235, 
+  v0=325, 
+  v1=334, 
+  degenerate=false 
+}
+11:45:09: Edge 361 = {
+  tri0=235, 
+  tri1=236, 
+  v0=325, 
+  v1=335, 
+  degenerate=false 
+}
+11:45:09: Edge 362 = {
+  tri0=236, 
+  tri1=237, 
+  v0=331, 
+  v1=335, 
+  degenerate=false 
+}
+11:45:09: Edge 363 = {
+  tri0=238, 
+  tri1=248, 
+  v0=337, 
+  v1=338, 
+  degenerate=false 
+}
+11:45:09: Edge 364 = {
+  tri0=238, 
+  tri1=239, 
+  v0=338, 
+  v1=336, 
+  degenerate=false 
+}
+11:45:09: Edge 365 = {
+  tri0=239, 
+  tri1=240, 
+  v0=339, 
+  v1=336, 
+  degenerate=false 
+}
+11:45:09: Edge 366 = {
+  tri0=240, 
+  tri1=241, 
+  v0=339, 
+  v1=340, 
+  degenerate=false 
+}
+11:45:09: Edge 367 = {
+  tri0=241, 
+  tri1=242, 
+  v0=341, 
+  v1=340, 
+  degenerate=false 
+}
+11:45:09: Edge 368 = {
+  tri0=242, 
+  tri1=243, 
+  v0=341, 
+  v1=342, 
+  degenerate=false 
+}
+11:45:09: Edge 369 = {
+  tri0=243, 
+  tri1=244, 
+  v0=343, 
+  v1=342, 
+  degenerate=false 
+}
+11:45:09: Edge 370 = {
+  tri0=244, 
+  tri1=251, 
+  v0=343, 
+  v1=344, 
+  degenerate=false 
+}
+11:45:09: Edge 371 = {
+  tri0=244, 
+  tri1=245, 
+  v0=344, 
+  v1=342, 
+  degenerate=false 
+}
+11:45:09: Edge 372 = {
+  tri0=245, 
+  tri1=246, 
+  v0=345, 
+  v1=342, 
+  degenerate=false 
+}
+11:45:09: Edge 373 = {
+  tri0=246, 
+  tri1=247, 
+  v0=345, 
+  v1=337, 
+  degenerate=false 
+}
+11:45:09: Edge 374 = {
+  tri0=247, 
+  tri1=248, 
+  v0=346, 
+  v1=337, 
+  degenerate=false 
+}
+11:45:09: Edge 375 = {
+  tri0=248, 
+  tri1=249, 
+  v0=346, 
+  v1=338, 
+  degenerate=false 
+}
+11:45:09: Edge 376 = {
+  tri0=249, 
+  tri1=250, 
+  v0=347, 
+  v1=338, 
+  degenerate=false 
+}
+11:45:09: Edge 377 = {
+  tri0=250, 
+  tri1=251, 
+  v0=347, 
+  v1=343, 
+  degenerate=false 
+}

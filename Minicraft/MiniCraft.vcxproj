@@ -1,0 +1,158 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{7193039C-4E9E-4BA8-B0CE-47AFD3C7C554}</ProjectGuid>
+    <RootNamespace>MiniCraft</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>MultiByte</CharacterSet>
+    <WholeProgramOptimization>false</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>false</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>$(SolutionDir)\Build\Bin\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)\Build\Intermediate\$(Configuration)\</IntDir>
+    <GenerateManifest>false</GenerateManifest>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>$(SolutionDir)\Build\Bin\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)\Build\Intermediate\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\Kratos\Src\AI\BehaviorTree;..\Kratos\Src;..\Kratos\Dependency\Havok\Include;..\Kratos\Dependency\rapidxml;..\Kratos\Dependency\Lua5_1_4\src;..\Kratos\Dependency\CEGUI\Include;..\Kratos\Dependency\boost;..\Kratos\Dependency\OgreRecast\Include;..\Kratos\Dependency\OIS\include;..\Kratos\Dependency\Ogre\include;..\Kratos\Dependency\Ogre\include\ParticleUniverse;.\Game;.\Game\Client\UI;.\Game\Client;.\Game\Core;.\Game\Client\Object;.\Game\Client\AI;.\Game\Client\Component;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <AdditionalOptions>/Zm163 %(AdditionalOptions)</AdditionalOptions>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;HK_DEBUG;HK_FULLDEBUG;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <TreatWarningAsError>false</TreatWarningAsError>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>.\Build\Bin\$(Configuration);..\Kratos\Dependency\Lua5_1_4\lib;..\Kratos\Dependency\boost\Lib;..\Kratos\Dependency\CEGUI\lib\debug;..\Kratos\Dependency\Havok\Lib\debug_dll;..\Kratos\Dependency\OIS\Lib\$(Configuration);..\Kratos\Dependency\Ogre\Lib\$(Configuration)\opt;..\Kratos\Dependency\Ogre\Lib\$(Configuration)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>OgreMain_d.lib;ParticleUniverse_d.lib;OIS_d.lib;OgreTerrain_d.lib;CEGUIBase_d.lib;CEGUIOgreRenderer_d.lib;lua51.lib;Kratos_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <IgnoreSpecificDefaultLibraries>
+      </IgnoreSpecificDefaultLibraries>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <AdditionalIncludeDirectories>..\Kratos\Src;..\Kratos\Src\AI\BehaviorTree;..\Kratos\Dependency\rapidxml;..\Kratos\Dependency\Havok\Include;..\Kratos\Dependency\Lua5_1_4\src;..\Kratos\Dependency\CEGUI\include;..\Kratos\Dependency\boost;..\Kratos\Dependency\OgreRecast\Include;..\Kratos\Dependency\OIS\include;..\Kratos\Dependency\Ogre\include\ParticleUniverse;..\Kratos\Dependency\Ogre\include;.\Game;.\Game\Client\UI;.\Game\Client;.\Game\Core;.\Game\Client\Object;.\Game\Client\AI;.\Game\Client\Component;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_NDEBUG;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>.\Build\Bin\$(Configuration);..\Kratos\Dependency\Lua5_1_4\lib;..\Kratos\Dependency\CEGUI\lib\$(Configuration);..\Kratos\Dependency\boost\Lib;..\Kratos\Dependency\OIS\Lib\$(Configuration);..\Kratos\Dependency\Ogre\Lib\$(Configuration)\opt;..\Kratos\Dependency\Ogre\Lib\$(Configuration)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>OgreMain.lib;ParticleUniverse.lib;OIS.lib;OgreTerrain.lib;CEGUIBase.lib;CEGUIOgreRenderer.lib;lua51.lib;Kratos.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="Game\Client\AI\AIFaction.h" />
+    <ClInclude Include="Game\Client\AI\ConcreteBehavior.h" />
+    <ClInclude Include="Game\Client\Application.h" />
+    <ClInclude Include="Game\Client\BoneGizmo.h" />
+    <ClInclude Include="Game\Client\Command.h" />
+    <ClInclude Include="Game\Client\Component\AIComponent.h" />
+    <ClInclude Include="Game\Client\Component\AnimatedComponent.h" />
+    <ClInclude Include="Game\Client\Component\BehaviorComponent.h" />
+    <ClInclude Include="Game\Client\Component\Component.h" />
+    <ClInclude Include="Game\Client\Component\HarvestComponent.h" />
+    <ClInclude Include="Game\Client\Component\PathComponent.h" />
+    <ClInclude Include="Game\Client\Component\RagdollComponent.h" />
+    <ClInclude Include="Game\Client\EventCallback.h" />
+    <ClInclude Include="Game\Client\Faction.h" />
+    <ClInclude Include="Game\Client\GameDataDef.h" />
+    <ClInclude Include="Game\Client\GameProcedure\BattleState.h" />
+    <ClInclude Include="Game\Client\GameProcedure\LoadingState.h" />
+    <ClInclude Include="Game\Client\GameProcedure\LoginState.h" />
+    <ClInclude Include="Game\Client\Object\Building.h" />
+    <ClInclude Include="Game\Client\Object\ObjectBase.h" />
+    <ClInclude Include="Game\Client\Object\ObjectFactory.h" />
+    <ClInclude Include="Game\Client\Object\ObjectManager.h" />
+    <ClInclude Include="Game\Client\Object\ObjectState.h" />
+    <ClInclude Include="Game\Client\Object\Resource.h" />
+    <ClInclude Include="Game\Client\Object\SelectableObject.h" />
+    <ClInclude Include="Game\Client\Object\Unit.h" />
+    <ClInclude Include="Game\Client\stdafx.h" />
+    <ClInclude Include="Game\Client\UI\CommandPanel.h" />
+    <ClInclude Include="Game\Client\UI\InfoPanel.h" />
+    <ClInclude Include="Game\Client\UI\MinimapPanel.h" />
+    <ClInclude Include="Game\Client\UI\PortraitPanel.h" />
+    <ClInclude Include="Game\Client\World.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Game\Client\AI\AIFaction.cpp" />
+    <ClCompile Include="Game\Client\AI\ConcreteBehavior.cpp" />
+    <ClCompile Include="Game\Client\Application.cpp" />
+    <ClCompile Include="Game\Client\BoneGizmo.cpp" />
+    <ClCompile Include="Game\Client\Command.cpp" />
+    <ClCompile Include="Game\Client\Component\AIComponent.cpp" />
+    <ClCompile Include="Game\Client\Component\AnimatedComponent.cpp" />
+    <ClCompile Include="Game\Client\Component\BehaviorComponent.cpp" />
+    <ClCompile Include="Game\Client\Component\HarvestComponent.cpp" />
+    <ClCompile Include="Game\Client\Component\PathComponent.cpp" />
+    <ClCompile Include="Game\Client\Component\RagdollComponent.cpp" />
+    <ClCompile Include="Game\Client\Faction.cpp" />
+    <ClCompile Include="Game\Client\GameDataDef.cpp" />
+    <ClCompile Include="Game\Client\GameProcedure\BattleState.cpp" />
+    <ClCompile Include="Game\Client\GameProcedure\LoadingState.cpp" />
+    <ClCompile Include="Game\Client\GameProcedure\LoginState.cpp" />
+    <ClCompile Include="Game\Client\MiniCraft.cpp" />
+    <ClCompile Include="Game\Client\Object\Building.cpp" />
+    <ClCompile Include="Game\Client\Object\ObjectBase.cpp" />
+    <ClCompile Include="Game\Client\Object\ObjectFactory.cpp" />
+    <ClCompile Include="Game\Client\Object\ObjectManager.cpp" />
+    <ClCompile Include="Game\Client\Object\ObjectState.cpp" />
+    <ClCompile Include="Game\Client\Object\Resource.cpp" />
+    <ClCompile Include="Game\Client\Object\SelectableObject.cpp" />
+    <ClCompile Include="Game\Client\Object\Unit.cpp" />
+    <ClCompile Include="Game\Client\stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Game\Client\UI\CommandPanel.cpp" />
+    <ClCompile Include="Game\Client\UI\InfoPanel.cpp" />
+    <ClCompile Include="Game\Client\UI\MinimapPanel.cpp" />
+    <ClCompile Include="Game\Client\UI\PortraitPanel.cpp" />
+    <ClCompile Include="Game\Client\World.cpp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

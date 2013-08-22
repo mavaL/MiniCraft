@@ -1,0 +1,45 @@
+<?xml version="1.0" ?>
+<Imageset AutoScaled="false" Imagefile="GameMenu.png" Name="GameMenuImages" NativeHorzRes="1280" NativeVertRes="800">
+    <Image Height="220" Name="CenterImageInside" Width="220" XPos="55" YPos="1256" />
+    <Image Height="356" Name="CenterImageOutside1" Width="353" XPos="747" YPos="242" />
+    <Image Height="332" Name="CenterImageOutside2" Width="328" XPos="340" YPos="254" />
+    <Image Height="193" Name="CenterImageInside2" Width="192" XPos="69" YPos="322" />
+    <Image Height="99" Name="CenterImageButtonBG" Width="99" XPos="1619" YPos="459" />
+    <Image Height="40" Name="CenterImageButtonStartLab" Width="100" XPos="1742" YPos="465" />
+    <Image Height="99" Name="CenterImageButtonBOTH" Width="99" XPos="1887" YPos="454" />
+    <Image Height="40" Name="CenterImageButtonStartButt" Width="100" XPos="1742" YPos="526" />
+    <Image Height="37" Name="MouseCursor" Width="36" XPos="1983" YPos="202" />
+    <Image Height="1" Name="Background" Width="1" XPos="220" YPos="1400" />
+    <Image Height="140" Name="TopBar" Width="1920" XPos="0" YPos="0" />
+    <Image Height="140" Name="BotBar" Width="1844" XPos="0" YPos="1908" />
+    <Image Height="56" Name="ButtonOptionsIcon" Width="56" XPos="1972" YPos="277" />
+    <Image Height="46" Name="ButtonLoadIcon" Width="46" XPos="1913" YPos="282" />
+    <Image Height="46" Name="ButtonCharactersIcon" Width="46" XPos="1859" YPos="282" />
+    <Image Height="36" Name="ButtonQuitIcon" Width="36" XPos="1758" YPos="287" />
+    <Image Height="46" Name="ButtonEnterIcon" Width="46" XPos="1803" YPos="282" />
+    <Image Height="26" Name="BotBarLeftArrow" Width="33" XPos="1535" YPos="763" />
+    <Image Height="26" Name="BotBarRightArrow" Width="33" XPos="1968" YPos="763" />
+    <Image Height="22" Name="EditboxLeft" Width="4" XPos="1784" YPos="208" />
+    <Image Height="4" Name="EditboxLeftTop" Width="4" XPos="1784" YPos="204" />
+    <Image Height="4" Name="EditboxLeftBot" Width="4" XPos="1784" YPos="230" />
+    <Image Height="4" Name="EditboxBot" Width="17" XPos="1788" YPos="230" />
+    <Image Height="4" Name="EditboxRightTop" Width="4" XPos="1805" YPos="204" />
+    <Image Height="22" Name="EditboxRight" Width="4" XPos="1805" YPos="208" />
+    <Image Height="4" Name="EditboxRightBot" Width="4" XPos="1805" YPos="230" />
+    <Image Height="4" Name="EditboxTop" Width="17" XPos="1788" YPos="204" />
+    <Image Height="22" Name="EditboxMid" Width="17" XPos="1788" YPos="208" />
+    <Image Height="1" Name="GenericBrush" Width="1" XPos="1850" YPos="220" />
+    <Image Height="30" Name="MouseTextBar" Width="11" XPos="1813" YPos="204" />
+    <Image Height="95" Name="IconChangeDestination" Width="74" XPos="1634" YPos="627" />
+    <Image Height="30" Name="LoginButtonBG" Width="50" XPos="1725" YPos="204" />
+    <Image Height="28" Name="SupposedLook" Width="28" XPos="1728" YPos="358" />
+    <Image Height="28" Name="DotOuter" Width="28" XPos="1759" YPos="358" />
+    <Image Height="28" Name="DotInner" Width="28" XPos="1788" YPos="358" />
+    <Image Height="28" Name="DotDot" Width="28" XPos="1846" YPos="358" />
+    <Image Height="28" Name="DotInnest" Width="28" XPos="1817" YPos="358" />
+    <Image Height="129" Name="PopupLinesOptions" Width="224" XPos="761" YPos="773" />
+    <Image Height="16" Name="PopupLinesEnter" Width="103" XPos="343" YPos="723" />
+    <Image Height="24" Name="PopupLinesLoad" Width="115" XPos="283" YPos="773" />
+    <Image Height="249" Name="PopupLinesCharacter" Width="262" XPos="89" YPos="800" />
+    <Image Height="101" Name="PopupLinesQuit" Width="219" XPos="711" YPos="1066" />
+</Imageset>

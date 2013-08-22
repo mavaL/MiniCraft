@@ -1,0 +1,141 @@
+//场景中有一个主光sun light,控制台mesh也由它光照(法线贴图)
+
+///模板
+material MT_Console
+{
+	receive_shadows false
+	technique
+	{
+		pass
+		{
+            depth_check off
+
+ 			texture_unit
+			{
+				texture_alias	diffusemap
+				filtering linear linear linear
+			}
+
+			texture_unit 
+			{
+				texture_alias	normalmap
+				filtering point point point
+			}
+
+			texture_unit 
+			{
+				texture_alias	specularmap
+				filtering linear linear linear
+			}
+
+			texture_unit 
+			{
+				texture_alias	emissivemap
+				filtering linear linear linear
+			}
+		}
+	}
+}
+
+material Console_Terrain : MT_Console
+{
+	set_texture_alias diffusemap consoleterran_diff.dds
+	set_texture_alias normalmap consoleterran_nm.dds
+	set_texture_alias specularmap consoleterran_spec.dds
+	set_texture_alias emissivemap consoleterran_emiss.dds
+	
+	technique
+	{
+		pass
+		{
+			vertex_program_ref HardwareSkinningFourWeights {}
+		}
+	}
+}
+
+material Console_Protoss : MT_Console
+{
+	set_texture_alias diffusemap consoleprotoss_diff.dds
+	set_texture_alias normalmap consoleprotoss_nm.dds
+	set_texture_alias specularmap consoleprotoss_spec.dds
+	set_texture_alias emissivemap consoleprotoss_emiss.dds
+}
+
+material ConsoleBlack
+{
+	receive_shadows false
+	technique
+	{
+		pass
+		{
+			depth_check off
+			emissive 0 0 0 0
+			ambient 0 0 0 0
+ 			diffuse 0 0 0 0
+ 			specular 0 0 0 0 0
+		}
+	}
+}
+
+///////////////////////////////////////////		Portrait
+
+vertex_program Portrait_VS cg
+{
+    source portrait.cg
+    entry_point VS
+    profiles vs_2_x arbvp1
+	includes_skeletal_animation true
+
+    default_params
+    {
+        param_named_auto worldViewProj worldviewproj_matrix
+		param_named_auto worldView worldview_matrix
+        param_named_auto ambient ambient_light_colour
+    }
+}
+
+fragment_program Portrait_PS cg
+{
+    source portrait.cg
+    entry_point PS
+    profiles ps_2_x arbfp1
+
+    default_params
+    {
+		param_named_auto LightDir light_position_object_space 0
+		param_named LightColor float4 0 0 0 0
+    }
+}
+
+material MarinePortrait
+{
+	technique
+	{
+		pass
+		{
+			vertex_program_ref Portrait_VS {}
+			fragment_program_ref Portrait_PS {}
+
+			texture_unit diffusemap
+			{
+				texture marineportrait_diff.dds
+				filtering linear linear linear
+			}
+			texture_unit normalmap
+			{
+				texture marineportrait_nm.dds
+				filtering point point point
+			}
+			texture_unit emissivemap
+			{
+				texture marineportrait_emiss.dds
+				filtering linear linear linear
+			}
+			texture_unit aomap
+			{
+				texture marineportrait_ao.dds
+				filtering linear linear linear
+			}
+		}
+	}
+}

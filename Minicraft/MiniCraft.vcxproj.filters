@@ -1,0 +1,220 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="资源文件">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Client">
+      <UniqueIdentifier>{9f10a3c6-13b5-446d-bbd0-6ce31b684e40}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Client\Object">
+      <UniqueIdentifier>{020a74dd-dd10-4ce1-8f11-5fa943069379}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Client\AI">
+      <UniqueIdentifier>{1dead6f4-a841-4003-9123-7cd0d1ed3bd0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Client\UI">
+      <UniqueIdentifier>{8cd7c6ce-59c5-4679-a3dc-9a8f3a6a6675}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Client\Component">
+      <UniqueIdentifier>{253d82a1-f205-487e-9774-88b95e8683d2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Client\GameProcedure">
+      <UniqueIdentifier>{cd0c00b7-4b2b-4367-94c4-b5fb729ab873}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Game\Client\World.h">
+      <Filter>Client</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Client\stdafx.h">
+      <Filter>Client</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Client\Object\Building.h">
+      <Filter>Client\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Client\Object\ObjectBase.h">
+      <Filter>Client\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Client\Object\ObjectFactory.h">
+      <Filter>Client\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Client\Object\ObjectManager.h">
+      <Filter>Client\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Client\Object\Unit.h">
+      <Filter>Client\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Client\Object\SelectableObject.h">
+      <Filter>Client\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Client\Object\Resource.h">
+      <Filter>Client\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Client\UI\CommandPanel.h">
+      <Filter>Client\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Client\GameDataDef.h">
+      <Filter>Client</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Client\UI\InfoPanel.h">
+      <Filter>Client\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Client\Component\AIComponent.h">
+      <Filter>Client\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Client\Component\HarvestComponent.h">
+      <Filter>Client\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Client\Component\PathComponent.h">
+      <Filter>Client\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Client\Component\Component.h">
+      <Filter>Client\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Client\Faction.h">
+      <Filter>Client</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Client\Application.h">
+      <Filter>Client</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Client\UI\PortraitPanel.h">
+      <Filter>Client\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Client\Component\AnimatedComponent.h">
+      <Filter>Client\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Client\Object\ObjectState.h">
+      <Filter>Client\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Client\Command.h">
+      <Filter>Client</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Client\Component\BehaviorComponent.h">
+      <Filter>Client\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Client\AI\AIFaction.h">
+      <Filter>Client\AI</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Client\AI\ConcreteBehavior.h">
+      <Filter>Client\AI</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Client\Component\RagdollComponent.h">
+      <Filter>Client\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Client\BoneGizmo.h">
+      <Filter>Client</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Client\EventCallback.h">
+      <Filter>Client</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Client\GameProcedure\BattleState.h">
+      <Filter>Client\GameProcedure</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Client\GameProcedure\LoginState.h">
+      <Filter>Client\GameProcedure</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Client\GameProcedure\LoadingState.h">
+      <Filter>Client\GameProcedure</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Client\UI\MinimapPanel.h">
+      <Filter>Client\UI</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Game\Client\World.cpp">
+      <Filter>Client</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Client\stdafx.cpp">
+      <Filter>Client</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Client\Object\Building.cpp">
+      <Filter>Client\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Client\Object\ObjectBase.cpp">
+      <Filter>Client\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Client\Object\ObjectFactory.cpp">
+      <Filter>Client\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Client\Object\ObjectManager.cpp">
+      <Filter>Client\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Client\Object\Unit.cpp">
+      <Filter>Client\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Client\Object\SelectableObject.cpp">
+      <Filter>Client\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Client\Object\Resource.cpp">
+      <Filter>Client\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Client\UI\CommandPanel.cpp">
+      <Filter>Client\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Client\GameDataDef.cpp">
+      <Filter>Client</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Client\UI\InfoPanel.cpp">
+      <Filter>Client\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Client\Component\AIComponent.cpp">
+      <Filter>Client\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Client\Component\HarvestComponent.cpp">
+      <Filter>Client\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Client\Component\PathComponent.cpp">
+      <Filter>Client\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Client\Faction.cpp">
+      <Filter>Client</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Client\Application.cpp">
+      <Filter>Client</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Client\MiniCraft.cpp">
+      <Filter>Client</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Client\UI\PortraitPanel.cpp">
+      <Filter>Client\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Client\Component\AnimatedComponent.cpp">
+      <Filter>Client\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Client\Object\ObjectState.cpp">
+      <Filter>Client\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Client\Command.cpp">
+      <Filter>Client</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Client\Component\BehaviorComponent.cpp">
+      <Filter>Client\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Client\AI\AIFaction.cpp">
+      <Filter>Client\AI</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Client\AI\ConcreteBehavior.cpp">
+      <Filter>Client\AI</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Client\Component\RagdollComponent.cpp">
+      <Filter>Client\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Client\BoneGizmo.cpp">
+      <Filter>Client</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Client\GameProcedure\BattleState.cpp">
+      <Filter>Client\GameProcedure</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Client\GameProcedure\LoginState.cpp">
+      <Filter>Client\GameProcedure</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Client\GameProcedure\LoadingState.cpp">
+      <Filter>Client\GameProcedure</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Client\UI\MinimapPanel.cpp">
+      <Filter>Client\UI</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

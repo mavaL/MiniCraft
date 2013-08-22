@@ -1,0 +1,4 @@
+<?xml version="1.0" ?>
+<Imageset Name="Icon_ZergFrameHighlight" Imagefile="ui_commandcard_zergframe_highlighted.dds" NativeHorzRes="1280" NativeVertRes="800" AutoScaled="false">
+    <Image Name="ZergFrameHighlight" XPos="0" YPos="0" Width="76" Height="76" />
+</Imageset>

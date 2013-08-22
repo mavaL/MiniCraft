@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<Root>
+	<BehaviorTemplate name="Zergling" race="Zerg">
+    <BehaviorTree>
+      <SequenceNode>
+        <ConditionNode expression="AttackTargetID != -1 or bFindEnemy">
+          <ActionNode behavior="AttackTarget"/>
+        </ConditionNode>
+        <ActionNode behavior="MoveToEnemyBase"/>
+      </SequenceNode>
+    </BehaviorTree>
+    <BlackBoard>
+      <Variable name="AttackTargetID" value="0" type="int"/>
+      <Variable name="bFindEnemy" value="false" type="bool"/>
+    </BlackBoard>
+		<Script filename="ZerglingBlackboard.lua" entry="BBUpdate_Zergling"/>
+	</BehaviorTemplate>
+</Root>
+

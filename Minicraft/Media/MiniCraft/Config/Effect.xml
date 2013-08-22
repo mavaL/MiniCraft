@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<Root>
+	<Unit name="Marine">
+		<Animation name="Attack">
+			<AttachEffect animname="Firing" lifetime="0" locator="Ref_Weapon" meshname="MarineWeaponLaunch_0.mesh" name="Effect_-977647707" starttime="0" type="1"/>
+		</Animation>
+	</Unit>
+</Root>
+

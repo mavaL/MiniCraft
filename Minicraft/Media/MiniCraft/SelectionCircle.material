@@ -1,0 +1,64 @@
+///////选中框材质
+
+
+//玩家自己的单位,可选择的
+material SelectionCircleAlly
+{
+	technique
+	{	
+		pass
+		{
+			scene_blend add
+            ambient 0.0 0.0 0.0 
+			diffuse 0.0 0.0 0.0 
+			specular 0.0 0.0 0.0 0.0
+            emissive 0.0 0.8 0.0
+		}
+	}
+}
+
+//中立单位
+material SelectionCircleNeutral
+{
+	technique
+	{
+		pass
+		{
+			scene_blend add
+            ambient 0.0 0.0 0.0 
+			diffuse 0.0 0.0 0.0 
+			specular 0.0 0.0 0.0 0.0
+            emissive 0.8 0.8 0.0
+		}
+	}
+}
+
+//敌军单位
+material SelectionCircleEnemy
+{
+	technique
+	{
+		pass
+		{
+			scene_blend add
+            ambient 0.0 0.0 0.0 
+			diffuse 0.0 0.0 0.0 
+			specular 0.0 0.0 0.0 0.0
+            emissive 0.8 0.0 0.0
+		}
+	}
+}
+
+//血条
+material HPBar
+{
+	technique
+	{
+		pass
+		{
+			scene_blend add
+			lighting off
+			diffuse 0 1 0 1
+		}
+	}
+}
