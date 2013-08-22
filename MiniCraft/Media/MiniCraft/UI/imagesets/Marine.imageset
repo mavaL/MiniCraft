@@ -1,4 +1,0 @@
-<?xml version="1.0" ?>
-<Imageset Name="btn-unit-terran-marine.dds" Imagefile="btn-unit-terran-marine.dds" NativeHorzRes="1280" NativeVertRes="800" AutoScaled="false">
-    <Image Name="Marine" XPos="0" YPos="0" Width="76" Height="76" />
-</Imageset>

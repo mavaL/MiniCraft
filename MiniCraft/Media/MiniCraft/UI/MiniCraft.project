@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project CEGUIDefaultResolution="1280x800" CEGUIVersion="1.0" baseDirectory="." fontsPath="fonts" imagesetsPath="imagesets" layoutsPath="layouts" looknfeelsPath="looknfeel" schemesPath="schemes" version="CEED Project 1" xmlSchemasPath="xml_schemas">
-    <Items>
-        <Item name="Layout" type="folder">
-            <Item path="layouts/CommandPanel.layout" type="file" />
-        </Item>
-    </Items>
-</Project>

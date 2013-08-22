@@ -1,9 +1,0 @@
-<?xml version='1.0' encoding='utf-8' ?>
-<Root>
-	<BlackBoard race="Terran"/>
-	<BlackBoard race="Zerg">
-		<Variable name="UnitNumber" value="0" type="int"/>
-	</BlackBoard>
-	<Script filename="GlobalBlackboard.lua"/>
-</Root>
-
