@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<scene formatVersion="0.4">
+	<effect>
+		<shadow AmbientLight="1 1 1 1" EnableShadow="false" FarDistance="0" SplitPadding="1" AdjustFactor="5 1 0" UseSimpleAdjust="true" CameraLightDirectionThreshold="25" ShadowMapSize="512 0 2.64046e+008" SelfShadow="false" RenderBackFace="true" PssmLambda="0.75" LightExtrusionDistance="10000"/>
+		<ssao EnableSSAO="false" SampleLength="20" OffsetScale="1" DefaultAccessibility="0.5" EdgeHighlight="1.99"/>
+		<sharpen EnableSharpen="false"/>
+		<fxaa EnableFXAA="false"/>
+	</effect>
+	<terrain worldSize="128" mapSize="129" tuningMaxPixelError="8"/>
+	<objects count="0"/>
+</scene>
+

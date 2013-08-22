@@ -1,0 +1,9 @@
+material DefaultMaterial
+{
+	technique
+	{
+		pass
+		{
+		}
+	}
+}

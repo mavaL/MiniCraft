@@ -1,0 +1,29 @@
+material teapot
+{
+	technique
+	{
+		pass
+		{
+			texture_unit diffusemap
+			{
+				filtering linear linear linear
+				texture tiger.bmp
+			}
+		}
+	}
+}
+
+material MyMarine
+{
+	technique Unit
+	{
+		pass
+		{
+			texture_unit diffusemap
+			{
+				filtering linear linear linear
+				texture marine_diffuse.dds
+			}
+		}
+	}
+}

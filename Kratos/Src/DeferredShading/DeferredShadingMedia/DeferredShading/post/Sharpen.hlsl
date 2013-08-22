@@ -1,7 +1,7 @@
-const float SharpenEdge = 0.2;
-const float Sharpen_val0 = 1.2;
-const float sharpen = 0.9;		// Controls additional sharpening applied after previous processing. Strength should be max 0.25!
-const float Average = 0.4;		// Set values to calculate the amount of  AA produced blur to consider for the sharpening pass
+const float SharpenEdge = 0.2f;
+const float Sharpen_val0 = 1.2f;
+const float sharpen = 0.12f;		// Controls additional sharpening applied after previous processing. Strength should be max 0.25!
+const float Average = 0.4f;		// Set values to calculate the amount of  AA produced blur to consider for the sharpening pass
 const float CoefBlur = 2;
 #define CoefOri (1 + CoefBlur)
 #define Sharpen_val1 ((Sharpen_val0-1) / 8.0)
@@ -83,8 +83,8 @@ float4 main
 	color -= tex2D( sceneTex, uv + float2(0, -py));
 	color -= tex2D( sceneTex, uv + float2(px, -py));
 	color -= tex2D( sceneTex, uv + float2(px, 0));
-	color = color * 1 + (1.0 - 1) * preSharpen;
-	color.a = preSharpen.a;
+	color = color * sharpen + (1.0 - sharpen) * ori;
+	color.a = ori.a;
 
 	return color;
 }
